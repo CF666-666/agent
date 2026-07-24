@@ -35,7 +35,7 @@
 | B4 | **确认 ChatMessage 模型限制** | ✅ | `ChatMessage` 仅支持 `String content`，**不支持多模态 content 数组** | Qwen-VL 的 `messages[].content` 是数组格式 `[{image: "base64..."}, {text: "描述这个图片"}]`，需新建独立 DTO |
 | B5 | **确认 Milvus Collection 管理 API** | ✅ | `ensureVectorSpace(VectorSpaceSpec)` 可创建新 Collection，`indexDocumentChunks(collectionName, ...)` 等所有方法都接受动态 collectionName | 新增 `industrial_images`、`hypergraph_texts` Collection 零改动即可复用 |
 | B6 | **验证 API Key 环境变量** | ✅ | `BAILIAN_API_KEY`（百炼），`SILICONFLOW_API_KEY`（硅基流动） | application.yaml 中已通过 `${BAILIAN_API_KEY:}` 配置，Qwen-VL 直接复用 |
-| B7 | 验证 Tess4J 中文语言包方案 | ⬜ | 需在 Phase 1.4 实现前下载 `chi_sim.traineddata`（~47MB）放入 `src/main/resources/tessdata/` | 下载地址：`https://github.com/tesseract-ocr/tessdata/raw/main/chi_sim.traineddata` |
+| B7 | Tess4J 中文语言包方案 | ✅ | **方案 B：首次运行时自动下载**。`Tess4JParser` 初始化时检查 `resources/tessdata/chi_sim.traineddata`，不存在则从 `github.com/tesseract-ocr/tessdata/raw/main/` 下载（~47MB），后续重启跳过。不占 Git 仓库空间 | 实现细节见 Phase 1.4 |
 | B8 | 决定视频抽帧方案 | ⬜ | **推荐 JavaCV + FFmpeg 平台包**（纯 Java 集成，无需外部 ffmpeg CLI） | 当前 POM 无 JavaCV 依赖，Phase 1.6 需添加 |
 | B9 | **验证 API Key 有效（Qwen-VL 试调用）** | ✅ | 2026-07-24 curl 测试通过，`qwen-vl-max` 返回完整中文图像描述，Token 消耗 1619（1图+1问），Key 有效且额度充足 | — |
 
@@ -109,8 +109,8 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 **进入 Phase 1 前必须满足：**
 - [x] A1-A3：3 份方案文档产出
 - [x] B1-B6：6 项技术前置验证（API 端点、HTTP 客户端、ChatMessage、Milvus、API Key）
-- [ ] B7：确认 Tess4J 中文语言包下载方案（可在 Phase 1.4 前完成）
-- [x] B8：决定视频抽帧用 JavaCV 还是 ffmpeg CLI → **JavaCV 平台版**（`org.bytedeco:ffmpeg-platform` + 单平台 classifier）
+- [x] B7：Tess4J 中文语言包方案 → **方案 B：首次运行时自动从 GitHub 下载 `chi_sim.traineddata`**
+- [x] B8：决定视频抽帧用 JavaCV 还是 ffmpeg CLI → **JavaCV 平台版**
 - [x] **B9：用 curl 验证 Qwen-VL API 可用** → `qwen-vl-max` 返回完整中文描述，Key 有效，额度充足 ✅
 
 ---
@@ -288,7 +288,7 @@ Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
 | Phase | 内容 | 状态 | 开始日期 | 完成日期 | 备注 |
 |:--:|------|:--:|------|------|------|
 | 0-A | 文档产出（3 项） | ✅ 完成 | 07-24 | 07-24 | source-checklist + upgrade-plan + dev-roadmap |
-| 0-B | 技术前置验证（9 项） | ✅ 7/9 | 07-24 | 07-24 | **B7(Tess4J 中文包)、B8(视频方案已定) 在 Phase 1 对应子任务前完成即可** |
+| 0-B | 技术前置验证（9 项） | ✅ 完成 | 07-24 | 07-24 | 9 项全部确认，Phase 0 完结 |
 | 0-C | 包路径规划 | ✅ 完成 | 07-24 | 07-24 | 新增 `multimodal/` + `hypergraph/` 包 |
 | 1 | 多模态文档解析管道 | ⬜ 待开始 | | | Week 1，依赖 Phase 0-B9 |
 | 2 | 图像检索链 | ⬜ 待开始 | | | Week 2 |
