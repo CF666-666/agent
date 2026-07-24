@@ -42,3 +42,6 @@ node_modules/
 dist/
 .vite/
 .env.local
+
+### OCR language data (auto-downloaded, ~30MB) ###
+tessdata/
