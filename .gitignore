@@ -1,0 +1,30 @@
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/
+
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Frontend ###
+node_modules/
+dist/
+.vite/
+.env.local
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### External packages ###
+nageoffer-nginx-2.0.1/
+
+### Logs ###
+*.log
