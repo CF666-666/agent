@@ -127,7 +127,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 |:--:|------|------|:--:|:--:|:--:|
 | 1.1 | 新增 Maven 依赖（PDFBox/Tess4J/JavaCV/JGraphT） | `bootstrap/pom.xml` | P0 | 0.5h | ✅ |
 | 1.2 | `MultimodalDocumentParser` 接口 + `ParseResult` DTO | `bootstrap/.../parser/` | P0 | 0.5h | ✅ |
-| 1.3 | `PdfBoxParser`：电子 PDF/Word/Excel 解析（升级替代 Tika 纯文本层） | `bootstrap/.../parser/PdfBoxParser.java` | P0 | 3h | ⬜ |
+| 1.3 | `PdfBoxParser`：电子 PDF/Word/Excel 解析（PDFBox + Tika 回退） | `bootstrap/.../parser/PdfBoxParser.java` | P0 | 3h | ✅ |
 | 1.4 | `Tess4JParser`：扫描件 OCR（含中文 `chi_sim` 语言包配置） | `bootstrap/.../parser/Tess4JParser.java` | P0 | 3h | ⬜ |
 | 1.5 | `QwenVLImageParser`：Qwen-VL API 视觉描述（百炼 DashScope，Base64 图像） | `bootstrap/.../parser/QwenVLImageParser.java` | P0 | 4h | ⬜ |
 | 1.6 | `VideoKeyFrameParser`：JavaCV/ffmpeg 抽帧 + Qwen-VL 逐帧描述 | `bootstrap/.../parser/VideoKeyFrameParser.java` | P1 | 4h | ⬜ |
