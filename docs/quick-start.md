@@ -1,6 +1,7 @@
 # Ragent 快速启动指南
 
-> 从零克隆项目 → 启动全部基础设施 → 编译运行后端 → 打开前端界面
+> 从零克隆项目 → 启动全部基础设施 → 编译运行后端 → 打开前端界面  
+> **升级开发指南**：`ragent/docs/upgrade/`（多模态 RAG + 超图索引升级方案）
 
 ---
 
@@ -8,9 +9,9 @@
 
 | 软件 | 版本要求 | 说明 |
 |------|---------|------|
-| **Docker & Docker Compose** | 最新版 | 运行基础设施容器 |
+| **Docker Desktop** | 最新版 | 运行基础设施容器（**需要 Docker Desktop**，不是纯 Docker Engine，因为 Nginx 需要 `host.docker.internal` 访问宿主机后端） |
 | **Java JDK** | 17+ | 编译运行 Spring Boot 后端 |
-| **Maven** | 3.8+ | 项目构建 |
+| **Maven** | 3.8+ | 项目构建（或使用 `./mvnw` 内置 Maven Wrapper） |
 | **Node.js**（仅开发前端时） | 18+ | 前端开发/构建 |
 
 ---
@@ -54,6 +55,8 @@ docker compose ps
 
 **关于 RocketMQ：** 首次启动时 broker 会自动创建 `localhost` 集群的默认 Topic，约需 30-60 秒。如果后端日志报 RocketMQ 连接失败，稍等重试即可。
 
+**Nginx 反向代理说明：** Docker 中的 Nginx 通过 `host.docker.internal` 访问宿主机的 Spring Boot 后端（端口 9090），因此**后端必须在宿主机上运行**。如果不想用 Docker Nginx，也可以直接在宿主机运行 `nageoffer-nginx-2.0.1/nginx.exe`（Windows）或系统 nginx（Linux/macOS），使用 `conf/nginx.conf`（内部 proxy_pass 为 `127.0.0.1`）。
+
 ---
 
 ## 三、配置 API Key（必须）
@@ -83,11 +86,21 @@ export SILICONFLOW_API_KEY="你的硅基流动APIKey"
 
 ```bash
 cd ragent
+
+# Linux / macOS：先给 Maven Wrapper 添加执行权限
+chmod +x mvnw
+
+# 编译（跳过测试，仅编译核心模块）
 ./mvnw clean compile -DskipTests -pl bootstrap -am
+
+# 启动 Spring Boot（开发模式，热重载需手动重启）
 ./mvnw spring-boot:run -pl bootstrap
 ```
 
 后端启动在 `http://localhost:9090/api/ragent`
+
+> **Windows 用户注意**：`mvnw` 在 Windows 上是 `mvnw.cmd`，如果 `./mvnw` 不起作用，用 `mvnw.cmd` 替换。
+> 即：`mvnw.cmd clean compile -DskipTests -pl bootstrap -am`
 
 ---
 
@@ -166,6 +179,35 @@ docker compose -f ragent/resources/docker/lightweight/milvus-stack-2.5.8.compose
 ### Q: 端口被占用
 
 修改根目录 `docker-compose.yml` 中的端口映射，同步修改 `ragent/bootstrap/src/main/resources/application.yaml` 中对应的连接地址。
+
+### Q: Docker 中 Nginx 无法访问后端（502 Bad Gateway）
+
+Nginx 容器通过 `host.docker.internal` 访问宿主机上的 Spring Boot。这个特性**需要 Docker Desktop**（Windows/Mac 自带），纯 Docker Engine（Linux）上可能不支持。
+
+**Linux 宿主机解决方案**：不启动 Docker 中的 Nginx，改为直接在宿主机运行：
+```bash
+docker compose up -d --scale nginx=0  # 启动除 nginx 外的所有服务
+# 然后安装系统 nginx，将 nageoffer-nginx-2.0.1/conf/nginx.conf 和 html/ 复制到系统 nginx 目录
+```
+
+### Q: Linux/macOS 上 `./mvnw` 提示 Permission denied
+
+Maven Wrapper 没有执行权限：
+```bash
+chmod +x ragent/mvnw
+```
+
+---
+
+## 九、升级开发指南
+
+本项目已规划了面向央国企秋招的技术升级方案，详见：
+
+| 文档 | 路径 | 说明 |
+|------|------|------|
+| **源码排查结论** | `ragent/docs/upgrade/source-checklist.md` | 6 项关键组件确认，技术参数修正 |
+| **升级技术方案** | `ragent/docs/upgrade/upgrade-plan.md` | 多模态 RAG + 超图索引完整方案 |
+| **开发路线图** | `ragent/docs/upgrade/dev-roadmap.md` | 7 阶段开发顺序与进度追踪 |
 
 ---
 

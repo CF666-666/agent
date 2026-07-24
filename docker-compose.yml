@@ -178,15 +178,19 @@ services:
 
   # ============================================================
   # Nginx - 前端静态服务 + API 反向代理
+  # 使用 nginx-docker.conf：backend 通过 host.docker.internal 访问宿主机
+  # 如果宿主机直接运行 nginx（非 Docker），使用 conf/nginx.conf（127.0.0.1）
   # ============================================================
   nginx:
     container_name: ragent-nginx
     image: nginx:alpine
     ports:
       - "5177:5177"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./nageoffer-nginx-2.0.1/html:/usr/share/nginx/html:ro
-      - ./nageoffer-nginx-2.0.1/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nageoffer-nginx-2.0.1/conf/nginx-docker.conf:/etc/nginx/nginx.conf:ro
       - ./nageoffer-nginx-2.0.1/conf/mime.types:/etc/nginx/mime.types:ro
     depends_on:
       - postgres
