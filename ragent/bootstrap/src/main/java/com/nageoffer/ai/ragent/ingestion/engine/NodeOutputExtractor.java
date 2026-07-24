@@ -49,6 +49,7 @@ public class NodeOutputExtractor {
             case CHUNKER -> chunkerOutput(context);
             case ENRICHER -> enricherOutput(context);
             case INDEXER -> indexerOutput(context, config);
+            case MULTIMODAL_PARSE -> multimodalParseOutput(context);
         };
     }
 
@@ -107,6 +108,14 @@ public class NodeOutputExtractor {
         output.put("settings", config.getSettings());
         output.put("chunkCount", context.getChunks() == null ? 0 : context.getChunks().size());
         output.put("chunks", context.getChunks());
+        return output;
+    }
+
+    private Map<String, Object> multimodalParseOutput(IngestionContext context) {
+        Map<String, Object> output = new LinkedHashMap<>();
+        output.put("mimeType", context.getMimeType());
+        output.put("rawText", context.getRawText());
+        output.put("metadata", context.getMetadata());
         return output;
     }
 

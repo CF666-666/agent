@@ -57,7 +57,12 @@ public enum IngestionNodeType {
     /**
      * 索引节点 - 将文本块向量化并存储到向量数据库
      */
-    INDEXER("indexer");
+    INDEXER("indexer"),
+
+    /**
+     * 多模态解析节点 - 解析非纯文本文档（扫描件/图纸/照片）为语义文本
+     */
+    MULTIMODAL_PARSE("multimodal_parse");
 
     /**
      * 节点类型的字符串值（小写 snake_case）

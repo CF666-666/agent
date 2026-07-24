@@ -131,8 +131,8 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 1.4 | `Tess4JParser`：扫描件 OCR（含自动下载中文包） | `bootstrap/.../parser/Tess4JParser.java` | P0 | 3h | ✅ |
 | 1.5 | `QwenVLImageParser`：Qwen-VL API 视觉描述（百炼 DashScope，Base64 图像） | `bootstrap/.../parser/QwenVLImageParser.java` | P0 | 4h | ✅ |
 | 1.6 | `VideoKeyFrameParser`：JavaCV/ffmpeg 抽帧 + Qwen-VL 逐帧描述 | `bootstrap/.../parser/VideoKeyFrameParser.java` | P1 | 4h | ⬜ |
-| 1.7 | `MultimodalDocumentParserNode`：实现 `IngestionNode` 接入 ETL Pipeline | `bootstrap/.../parser/` | P0 | 2h | ⬜ |
-| 1.8 | 单元测试（各 Parser 独立测试 + Pipeline 集成测试） | `bootstrap/src/test/.../parser/` | P0 | 4h | ⬜ |
+| 1.7 | `MultimodalDocumentParserNode`：实现 `IngestionNode` 接入 ETL Pipeline | `bootstrap/.../parser/` | P0 | 2h | ✅ |
+| 1.8 | 单元测试（各 Parser 独立测试 + Pipeline 集成测试） | `bootstrap/src/test/.../parser/` | P0 | 4h | ✅ |
 
 **Phase 1 产出**：
 - 4 个 Parser 实现类
@@ -290,7 +290,7 @@ Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
 | 0-A | 文档产出（3 项） | ✅ 完成 | 07-24 | 07-24 | source-checklist + upgrade-plan + dev-roadmap |
 | 0-B | 技术前置验证（9 项） | ✅ 完成 | 07-24 | 07-24 | 9 项全部确认，Phase 0 完结 |
 | 0-C | 包路径规划 | ✅ 完成 | 07-24 | 07-24 | 新增 `multimodal/` + `hypergraph/` 包 |
-| 1 | 多模态文档解析管道 | ⚠️ 4/8 | | | 闭环 1-4 完成，闭环 5 待开始 |
+| 1 | 多模态文档解析管道 | ✅ 完成 | 07-25 | 07-25 | 5 个闭环全部完成，Phase 1 完结 |
 | 2 | 图像检索链 | ⬜ 待开始 | | | Week 2 |
 | 3 | 超图引擎 | ⬜ 待开始 | | | Week 3-4 |
 | 4 | 多路融合与答案增强 | ⬜ 待开始 | | | Week 5 |
