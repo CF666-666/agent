@@ -1,0 +1,81 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.nageoffer.ai:bootstrap:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 169, column 21
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-surefire-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 192, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.nageoffer.ai:framework:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 169, column 21
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-surefire-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 192, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.nageoffer.ai:infra-ai:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 169, column 21
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-surefire-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 192, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.nageoffer.ai:mcp-server:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 169, column 21
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-surefire-plugin is missing. @ com.nageoffer.ai:ragent:0.0.1-SNAPSHOT, D:\Java\agent\ragent\pom.xml, line 192, column 21
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.nageoffer.ai:ragent:pom:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-compiler-plugin is missing. @ line 169, column 21
+[WARNING] 'build.plugins.plugin.version' for org.apache.maven.plugins:maven-surefire-plugin is missing. @ line 192, column 21
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] ---------------------< com.nageoffer.ai:bootstrap >---------------------
+[INFO] Building bootstrap 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] 1 problem was encountered while building the effective model for org.javassist:javassist:jar:3.21.0-GA during dependency collection step for project (use -X to see details)
+[INFO] 
+[INFO] --- dependency:3.7.0:properties (default) @ bootstrap ---
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ bootstrap ---
+[WARNING] Using platform encoding (GBK actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 14 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ bootstrap ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- spotless:2.22.1:apply (default) @ bootstrap ---
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ bootstrap ---
+[WARNING] Using platform encoding (GBK actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ bootstrap ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ bootstrap ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.nageoffer.ai.ragent.index.InvoiceIndexDocumentTests
+01:44:22.927 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.nageoffer.ai.ragent.index.InvoiceIndexDocumentTests]: InvoiceIndexDocumentTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+01:44:23.223 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.nageoffer.ai.ragent.RagentApplication for test class com.nageoffer.ai.ragent.index.InvoiceIndexDocumentTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.7)
+
+2026-07-25T01:44:23.863+08:00  INFO 95812 --- [ragent-service] [           main] c.n.a.r.index.InvoiceIndexDocumentTests  : Starting InvoiceIndexDocumentTests using Java 17.0.14 with PID 95812 (started by cf in D:\Java\agent\ragent\bootstrap)
+2026-07-25T01:44:23.864+08:00  INFO 95812 --- [ragent-service] [           main] c.n.a.r.index.InvoiceIndexDocumentTests  : No active profile set, falling back to 1 default profile: "default"
+2026-07-25T01:44:25.432+08:00  INFO 95812 --- [ragent-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-07-25T01:44:25.438+08:00  INFO 95812 --- [ragent-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-07-25T01:44:25.609+08:00  INFO 95812 --- [ragent-service] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 146 ms. Found 0 Redis repository interfaces.
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.14 
+2026-07-25T01:44:30.100+08:00  INFO 95812 --- [ragent-service] [           main] c.n.a.r.multimodal.parser.Tess4JParser   : Tess4J datapath: D:/Java/agent/ragent/bootstrap/tessdata
+2026-07-25T01:44:30.107+08:00  INFO 95812 --- [ragent-service] [           main] c.n.a.r.m.parser.TessDataDownloader      : 中文 OCR 语言包不存在，开始下载: https://github.com/tesseract-ocr/tessdata/raw/main/chi_sim.traineddata -> D:\Java\agent\ragent\bootstrap\tessdata\chi_sim.traineddata

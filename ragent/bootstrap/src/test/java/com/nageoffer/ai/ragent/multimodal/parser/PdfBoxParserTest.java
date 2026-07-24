@@ -56,25 +56,25 @@ class PdfBoxParserTest {
                 cs.beginText();
                 cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 16);
                 cs.newLineAtOffset(50, 700);
-                cs.showText("2号轧机主轴承维护手册");
+                cs.showText("2# Rolling Mill Main Bearing Maintenance Manual");
                 cs.endText();
 
                 cs.beginText();
                 cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
                 cs.newLineAtOffset(50, 660);
-                cs.showText("设备型号: ZJ-2000-01");
+                cs.showText("Equipment Model: ZJ-2000-01");
                 cs.endText();
 
                 cs.beginText();
                 cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
                 cs.newLineAtOffset(50, 640);
-                cs.showText("维护周期: 每季度一次，冬季每月一次");
+                cs.showText("Maintenance Cycle: Quarterly, Monthly in Winter");
                 cs.endText();
 
                 cs.beginText();
                 cs.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 12);
                 cs.newLineAtOffset(50, 610);
-                cs.showText("润滑油规格: Shell Omala S4 GX 320");
+                cs.showText("Lubricant Spec: Shell Omala S4 GX 320");
                 cs.endText();
             }
             doc.save(testPdf);
@@ -89,7 +89,7 @@ class PdfBoxParserTest {
 
         assertNotNull(result);
         assertNotNull(result.getTextContent());
-        assertTrue(result.getTextContent().contains("2号轧机"), "应包含设备名");
+        assertTrue(result.getTextContent().contains("Rolling Mill"), "应包含设备名");
         assertTrue(result.getTextContent().contains("Shell Omala"), "应包含润滑油规格");
         assertTrue(result.getTextContent().length() > 50, "提取文本应 >50 字符");
 
