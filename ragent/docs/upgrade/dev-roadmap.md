@@ -36,7 +36,7 @@
 | B5 | **确认 Milvus Collection 管理 API** | ✅ | `ensureVectorSpace(VectorSpaceSpec)` 可创建新 Collection，`indexDocumentChunks(collectionName, ...)` 等所有方法都接受动态 collectionName | 新增 `industrial_images`、`hypergraph_texts` Collection 零改动即可复用 |
 | B6 | **验证 API Key 环境变量** | ✅ | `BAILIAN_API_KEY`（百炼），`SILICONFLOW_API_KEY`（硅基流动） | application.yaml 中已通过 `${BAILIAN_API_KEY:}` 配置，Qwen-VL 直接复用 |
 | B7 | Tess4J 中文语言包方案 | ✅ | **方案 B：首次运行时自动下载**。`Tess4JParser` 初始化时检查 `resources/tessdata/chi_sim.traineddata`，不存在则从 `github.com/tesseract-ocr/tessdata/raw/main/` 下载（~47MB），后续重启跳过。不占 Git 仓库空间 | 实现细节见 Phase 1.4 |
-| B8 | 决定视频抽帧方案 | ⬜ | **推荐 JavaCV + FFmpeg 平台包**（纯 Java 集成，无需外部 ffmpeg CLI） | 当前 POM 无 JavaCV 依赖，Phase 1.6 需添加 |
+| B8 | 决定视频抽帧方案 | ✅ | **JavaCV 平台版**（`org.bytedeco:ffmpeg-platform` + 单平台 classifier，~50MB） | Phase 1.6 加依赖 |
 | B9 | **验证 API Key 有效（Qwen-VL 试调用）** | ✅ | 2026-07-24 curl 测试通过，`qwen-vl-max` 返回完整中文图像描述，Token 消耗 1619（1图+1问），Key 有效且额度充足 | — |
 
 ### C. 包路径规划（✅ 已确认）
@@ -125,8 +125,8 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 | # | 任务 | 文件 | 优先级 | 预计工时 | 状态 |
 |:--:|------|------|:--:|:--:|:--:|
-| 1.1 | 新增 Maven 依赖（PDFBox/Tess4J/JavaCV/JGraphT） | `bootstrap/pom.xml` | P0 | 0.5h | ⬜ |
-| 1.2 | `MultimodalDocumentParser` 接口 + `ParseResult` DTO | `bootstrap/.../parser/` | P0 | 0.5h | ⬜ |
+| 1.1 | 新增 Maven 依赖（PDFBox/Tess4J/JavaCV/JGraphT） | `bootstrap/pom.xml` | P0 | 0.5h | ✅ |
+| 1.2 | `MultimodalDocumentParser` 接口 + `ParseResult` DTO | `bootstrap/.../parser/` | P0 | 0.5h | ✅ |
 | 1.3 | `PdfBoxParser`：电子 PDF/Word/Excel 解析（升级替代 Tika 纯文本层） | `bootstrap/.../parser/PdfBoxParser.java` | P0 | 3h | ⬜ |
 | 1.4 | `Tess4JParser`：扫描件 OCR（含中文 `chi_sim` 语言包配置） | `bootstrap/.../parser/Tess4JParser.java` | P0 | 3h | ⬜ |
 | 1.5 | `QwenVLImageParser`：Qwen-VL API 视觉描述（百炼 DashScope，Base64 图像） | `bootstrap/.../parser/QwenVLImageParser.java` | P0 | 4h | ⬜ |
