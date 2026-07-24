@@ -15,13 +15,103 @@
 
 ---
 
-## Phase 0：环境准备与基础设施（1 天）✅ 已完成
+## Phase 0：环境准备与基础设施（2 天）🔧 已启动
 
-| 任务 | 状态 | 产出 | 说明 |
-|------|:--:|------|------|
-| 源码排查（Embedding/Rerank/Milvus/LLM/ETL/实体抽取） | ✅ 完成 | `source-checklist.md` | 6 个待确认项全部排清 |
-| 升级方案文档撰写 | ✅ 完成 | `upgrade-plan.md` | 基于实际技术栈调整后的完整方案 |
-| 开发路线图撰写 | ✅ 完成 | `dev-roadmap.md`（本文档） | 模块顺序与进度追踪 |
+### A. 文档产出（✅ 已完成）
+
+| # | 任务 | 状态 | 产出 | 说明 |
+|:--:|------|:--:|------|------|
+| A1 | 源码排查（Embedding/Rerank/Milvus/LLM/ETL/实体抽取） | ✅ | `source-checklist.md` | 6 个待确认项全部排清 |
+| A2 | 升级方案文档撰写 | ✅ | `upgrade-plan.md` | 基于实际技术栈调整后的完整方案 |
+| A3 | 开发路线图撰写 | ✅ | `dev-roadmap.md`（本文档） | 模块顺序与进度追踪 |
+
+### B. 技术前置验证（⚠️ 部分完成）
+
+| # | 任务 | 状态 | 结论 | 产出/说明 |
+|:--:|------|:--:|------|------|
+| B1 | 验证项目编译通过 | ✅ | `mvnw compile -pl bootstrap -am` 编译成功 | 现有 4 万行 Java 代码无编译错误 |
+| B2 | **验证 Qwen-VL API 端点** | ✅ | DashScope 原生端点：`POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation` | 与现有 ChatClient 的 `/compatible-mode/v1/chat/completions` **完全不同的端点**，需独立实现 |
+| B3 | **确认 OkHttp 客户端复用方案** | ✅ | `syncHttpClient` Bean 可直接注入，调用模式参考 `BaiLianRerankClient` | Qwen-VL API 不走 OpenAI 兼容协议，需参照 Rerank 客户端模式（OkHttp 直接拼装请求） |
+| B4 | **确认 ChatMessage 模型限制** | ✅ | `ChatMessage` 仅支持 `String content`，**不支持多模态 content 数组** | Qwen-VL 的 `messages[].content` 是数组格式 `[{image: "base64..."}, {text: "描述这个图片"}]`，需新建独立 DTO |
+| B5 | **确认 Milvus Collection 管理 API** | ✅ | `ensureVectorSpace(VectorSpaceSpec)` 可创建新 Collection，`indexDocumentChunks(collectionName, ...)` 等所有方法都接受动态 collectionName | 新增 `industrial_images`、`hypergraph_texts` Collection 零改动即可复用 |
+| B6 | **验证 API Key 环境变量** | ✅ | `BAILIAN_API_KEY`（百炼），`SILICONFLOW_API_KEY`（硅基流动） | application.yaml 中已通过 `${BAILIAN_API_KEY:}` 配置，Qwen-VL 直接复用 |
+| B7 | 验证 Tess4J 中文语言包方案 | ⬜ | 需在 Phase 1.4 实现前下载 `chi_sim.traineddata`（~47MB）放入 `src/main/resources/tessdata/` | 下载地址：`https://github.com/tesseract-ocr/tessdata/raw/main/chi_sim.traineddata` |
+| B8 | 决定视频抽帧方案 | ⬜ | **推荐 JavaCV + FFmpeg 平台包**（纯 Java 集成，无需外部 ffmpeg CLI） | 当前 POM 无 JavaCV 依赖，Phase 1.6 需添加 |
+| B9 | **验证 API Key 有效（Qwen-VL 试调用）** | ⬜ | ⚠️ **建议在 Phase 1.5 编码前，先用 curl 或 Python 脚本验证百炼 API Key 可用 + 额度充足** | 测试命令见下方 |
+
+### C. 包路径规划（✅ 已确认）
+
+基于项目现有包结构命名规范，新增代码的包路径如下：
+
+```
+bootstrap/src/main/java/com/nageoffer/ai/ragent/
+│
+├── multimodal/                          # 🆕 多模态统一包
+│   ├── parser/                          # Phase 1 - 文档解析
+│   │   ├── MultimodalDocumentParser.java        # 接口
+│   │   ├── PdfBoxParser.java                    # 电子PDF
+│   │   ├── Tess4JParser.java                    # 扫描件OCR
+│   │   ├── QwenVLImageParser.java              # Qwen-VL 视觉描述
+│   │   ├── VideoKeyFrameParser.java            # 视频关键帧
+│   │   └── dto/
+│   │       ├── ParseResult.java                 # 解析结果DTO
+│   │       └── FileType.java                    # 文件类型枚举
+│   │
+│   ├── retrieval/                       # Phase 2 - 图像检索
+│   │   └── image/
+│   │       ├── ImageSearchChannel.java          # SearchChannel 实现
+│   │       └── ImageIngestionService.java       # 图像入库服务
+│   │
+│   └── fusion/                          # Phase 4 - 多路融合
+│       └── MultiSourceFusionProcessor.java      # PostProcessor 实现
+│
+├── rag/core/hypergraph/                 # 🆕 Phase 3 - 超图引擎
+│   ├── IndustrialHyperGraph.java                # 接口
+│   ├── IndustrialHyperGraphImpl.java            # JGraphT + 自研超边层
+│   ├── HyperEdge.java                           # 超边数据结构
+│   ├── HyperEdgeExtractor.java                  # LLM N元组抽取
+│   ├── EntityExtractor.java                     # Query实体抽取
+│   └── HyperGraphSearchChannel.java             # SearchChannel 实现
+│
+└── ingestion/node/                      # 扩展现有包
+    └── MultimodalDocumentParserNode.java         # IngestionNode 实现
+```
+
+### D. B9 Qwen-VL API 试调用命令
+
+```bash
+# 验证百炼 Qwen-VL API 是否可用（用你的 BAILIAN_API_KEY 替换）
+curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation" \
+  -H "Authorization: Bearer $BAILIAN_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen-vl-max",
+    "input": {
+      "messages": [{
+        "role": "user",
+        "content": [
+          {"image": "https://dashscope.oss-cn-beijing.aliyuncs.com/images/dog_and_girl.jpeg"},
+          {"text": "请用中文描述这张图片"}
+        ]
+      }]
+    }
+  }'
+```
+
+**期望响应**：HTTP 200，`output.choices[0].message.content` 包含中文描述文本。
+
+> ⚠️ **如果此 API 调用失败（401 无权限 / 403 额度不足），则需要先开通百炼 Qwen-VL 服务或充值，否则 Phase 1.5 无法推进。**
+
+---
+
+### E. Phase 0 完成标准
+
+**进入 Phase 1 前必须满足：**
+- [x] A1-A3：3 份方案文档产出
+- [x] B1-B6：6 项技术前置验证（API 端点、HTTP 客户端、ChatMessage、Milvus、API Key）
+- [ ] B7：确认 Tess4J 中文语言包下载方案（可在 Phase 1.4 前完成）
+- [ ] B8：决定视频抽帧用 JavaCV 还是 ffmpeg CLI（可在 Phase 1.6 前完成）
+- [ ] **B9：用 curl 验证 Qwen-VL API 可用（强烈建议，避免编码后才发现 API 不可用）**
 
 ---
 
@@ -175,7 +265,9 @@
 ## 关键里程碑
 
 ```
-Week 1 ──┐  Phase 1 完成（多模态文档解析管道）
+Phase 0 ──┐  前置准备完成（文档 + 技术验证 + 包路径）
+          │  里程碑：B9 Qwen-VL API 试调用成功，可以开始编码
+Week 1 ──┤  Phase 1 完成（多模态文档解析管道）
           │  里程碑：PDF/扫描件/图纸/视频 → 语义文本
 Week 2 ──┤  Phase 2 完成（图像检索链）
           │  里程碑：图像检索自动挂载到多路检索引擎
@@ -195,8 +287,10 @@ Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
 
 | Phase | 内容 | 状态 | 开始日期 | 完成日期 | 备注 |
 |:--:|------|:--:|------|------|------|
-| 0 | 环境准备与基础设施 | ✅ 完成 | 07-24 | 07-24 | 源码排查 + 方案文档 |
-| 1 | 多模态文档解析管道 | ⬜ 待开始 | | | Week 1 |
+| 0-A | 文档产出（3 项） | ✅ 完成 | 07-24 | 07-24 | source-checklist + upgrade-plan + dev-roadmap |
+| 0-B | 技术前置验证（9 项） | ⚠️ 6/9 | 07-24 | 07-24 | **B7(Tess4J)、B8(视频方案)、B9(API试调用) 待完成** |
+| 0-C | 包路径规划 | ✅ 完成 | 07-24 | 07-24 | 新增 `multimodal/` + `hypergraph/` 包 |
+| 1 | 多模态文档解析管道 | ⬜ 待开始 | | | Week 1，依赖 Phase 0-B9 |
 | 2 | 图像检索链 | ⬜ 待开始 | | | Week 2 |
 | 3 | 超图引擎 | ⬜ 待开始 | | | Week 3-4 |
 | 4 | 多路融合与答案增强 | ⬜ 待开始 | | | Week 5 |
