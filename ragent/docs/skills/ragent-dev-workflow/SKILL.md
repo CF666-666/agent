@@ -3,33 +3,16 @@ name: ragent-dev-workflow
 description: >
   Ragent 项目升级开发的强制工作流。当用户提到"开始编码"、"进入 Phase X"、"开发第X个闭环"、
   "实现XX模块"、"按 roadmap 开发"、或任何涉及 ragent 项目 Java 代码编写/修改的请求时，
-  必须使用此 skill 约束开发流程。核心规则：先讨论设计方案 → 最小化闭环开发 → 自测 → review
-  → 确认后再进下一闭环。每个闭环完成都必须更新 dev-roadmap.md 进度。
+  必须先读取仓库根目录的 DEVELOPMENT.md 了解完整项目背景，然后按照 5 步工作流（方案→编码→
+  自测→review→收尾）进行最小化闭环开发。每个闭环完成必须更新 dev-roadmap.md。
 ---
 
-# Ragent 项目升级开发工作流
+# Ragent 项目开发工作流
 
-## 项目上下文（给没有上下文的 AI）
+> **完整项目上下文和技术约束请先阅读仓库根目录的 `DEVELOPMENT.md`。**
 
-你在参与 **Ragent（工业Ragent智研中枢系统）** 的多模态 RAG + 超图索引升级开发。
-这是一个面向央国企秋招的 Java 企业级 Agentic RAG 系统升级项目。
-
-| 要点 | 说明 |
-|------|------|
-| **项目根目录** | 源码在仓库中的 `ragent/` 子目录，完整路径视克隆位置而定 |
-| **升级目标** | 从纯文本 RAG 升级到多模态（PDF/图纸/扫描件/视频）+ 超图索引（N 元工业关系推理） |
-| **技术栈** | Java 17 + Spring Boot 3.5.7 + Milvus 2.6 + React 18 |
-| **LLM 平台** | 百炼(阿里云) / SiliconFlow / Ollama 本地，国产化优先 |
-| **Embedding** | Qwen3-Embedding-8B，维度 1536，OpenAI 兼容协议 |
-| **Rerank** | Qwen3-Reranker（已有 `RerankPostProcessor`） |
-| **开发路线图** | `ragent/docs/upgrade/dev-roadmap.md` — 包含 Phase 0~7 全部任务和进度 |
-| **完整升级方案** | `ragent/docs/upgrade/upgrade-plan.md` — 技术选型、架构设计、面试话术 |
-| **源码排查结论** | `ragent/docs/upgrade/source-checklist.md` — 现有组件的技术参数确认 |
-| **快速启动** | 仓库根目录 `docs/quick-start.md` — 克隆→启动→开发全流程 |
-
-**重要**：升级开发在 `ragent/bootstrap/` 模块中进行，新增代码包路径为：
-- 多模态：`com.nageoffer.ai.ragent.multimodal/`
-- 超图：`com.nageoffer.ai.ragent.rag.core.hypergraph/`
+你在参与 Ragent 项目的多模态 RAG + 超图索引升级开发。
+目标岗位是央国企 Java 后端/算法岗秋招。开发路线图在 `ragent/docs/upgrade/dev-roadmap.md`。
 
 ## 核心原则
 
