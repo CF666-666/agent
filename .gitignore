@@ -23,8 +23,11 @@ dist/
 .DS_Store
 Thumbs.db
 
-### External packages ###
-nageoffer-nginx-2.0.1/
+### Nginx runtime artifacts ###
+nageoffer-nginx-2.0.1/logs/
+nageoffer-nginx-2.0.1/temp/
 
 ### Logs ###
 *.log
+logs/
+temp/

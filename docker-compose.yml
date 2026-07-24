@@ -1,0 +1,207 @@
+name: ragent-stack
+
+# ============================================================
+# Ragent 智研中枢系统 - 基础设施 Docker Compose
+# 一键启动全部依赖服务：PostgreSQL + Redis + RocketMQ + Milvus + Nginx
+# ============================================================
+#
+# 启动：docker compose up -d
+# 停止：docker compose down
+# 查看状态：docker compose ps
+
+services:
+  # ============================================================
+  # PostgreSQL 16 - 业务数据库
+  # ============================================================
+  postgres:
+    container_name: ragent-postgres
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ragent
+      TZ: Asia/Shanghai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./ragent/resources/database/schema_pg.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./ragent/resources/database/init_data_pg.sql:/docker-entrypoint-initdb.d/02_init_data.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ragent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ============================================================
+  # Redis 7 - 缓存 / 分布式限流 / 会话管理
+  # ============================================================
+  redis:
+    container_name: ragent-redis
+    image: redis:7-alpine
+    command: redis-server --requirepass 123456 --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ============================================================
+  # RocketMQ 5.2 - 消息队列
+  # ============================================================
+  rocketmq-namesrv:
+    container_name: ragent-rmq-namesrv
+    image: apache/rocketmq:5.2.0
+    command: sh mqnamesrv
+    ports:
+      - "9876:9876"
+    environment:
+      JAVA_OPT_EXT: "-Xms256m -Xmx512m -Duser.home=/home/rocketmq"
+    volumes:
+      - rmq-namesrv-data:/home/rocketmq/store
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/9876'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  rocketmq-broker:
+    container_name: ragent-rmq-broker
+    image: apache/rocketmq:5.2.0
+    command: sh mqbroker -n rocketmq-namesrv:9876 --enable-proxy
+    ports:
+      - "10911:10911"
+      - "10909:10909"
+      - "10912:10912"
+    environment:
+      JAVA_OPT_EXT: "-Xms256m -Xmx512m -Duser.home=/home/rocketmq"
+    volumes:
+      - rmq-broker-data:/home/rocketmq/store
+    depends_on:
+      rocketmq-namesrv:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ============================================================
+  # Milvus 2.6 - 向量数据库栈（etcd + RustFS + Milvus + Attu）
+  # ============================================================
+  etcd:
+    container_name: milvus-etcd
+    image: quay.io/coreos/etcd:v3.5.18
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    command: >
+      etcd
+      -advertise-client-urls=http://etcd:2379
+      -listen-client-urls http://0.0.0.0:2379
+      --data-dir /etcd
+    volumes:
+      - etcd-data:/etcd
+    healthcheck:
+      test: ["CMD", "etcdctl", "endpoint", "health"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  rustfs:
+    container_name: milvus-rustfs
+    image: rustfs/rustfs:1.0.0-alpha.72
+    command:
+      - "--address"
+      - ":9000"
+      - "--console-enable"
+      - "--access-key"
+      - "rustfsadmin"
+      - "--secret-key"
+      - "rustfsadmin"
+      - "/data"
+    environment:
+      - RUSTFS_ACCESS_KEY=rustfsadmin
+      - RUSTFS_SECRET_KEY=rustfsadmin
+      - RUSTFS_CONSOLE_ENABLE=true
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - rustfs-data:/data
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -qO- http://localhost:9000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  milvus:
+    container_name: milvus-standalone
+    image: milvusdb/milvus:v2.6.6
+    command: ["milvus", "run", "standalone"]
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: rustfs:9000
+      MINIO_ACCESS_KEY_ID: rustfsadmin
+      MINIO_SECRET_ACCESS_KEY: rustfsadmin
+    volumes:
+      - milvus-data:/var/lib/milvus
+    ports:
+      - "19530:19530"
+      - "9091:9091"
+    depends_on:
+      - etcd
+      - rustfs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      start_period: 90s
+      timeout: 20s
+      retries: 3
+
+  attu:
+    container_name: milvus-attu
+    image: zilliz/attu:v2.6.3
+    environment:
+      MILVUS_URL: milvus:19530
+    ports:
+      - "8000:3000"
+    depends_on:
+      - milvus
+
+  # ============================================================
+  # Nginx - 前端静态服务 + API 反向代理
+  # ============================================================
+  nginx:
+    container_name: ragent-nginx
+    image: nginx:alpine
+    ports:
+      - "5177:5177"
+    volumes:
+      - ./nageoffer-nginx-2.0.1/html:/usr/share/nginx/html:ro
+      - ./nageoffer-nginx-2.0.1/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nageoffer-nginx-2.0.1/conf/mime.types:/etc/nginx/mime.types:ro
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:
+  rmq-namesrv-data:
+  rmq-broker-data:
+  etcd-data:
+  rustfs-data:
+  milvus-data:
+
+networks:
+  default:
+    name: ragent-net
