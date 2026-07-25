@@ -72,11 +72,14 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
     /** 读写锁：写操作排他，读操作可并发 */
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
+    /** 单参数接口方法的默认来源标识 */
+    private static final String DEFAULT_SOURCE = "inline";
+
     // ==================== 抽取 ====================
 
     @Override
     public List<HyperEdge> extractHyperedges(String documentText) {
-        return extractHyperedges(documentText, "inline");
+        return extractHyperedges(documentText, DEFAULT_SOURCE);
     }
 
     /**
@@ -147,13 +150,17 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
     /**
      * 为同一超边内的所有实体两两建边（JGraphT 共现图）
+     * <p>
+     * 所有顶点先一次性注册，再两两建边，避免 O(N²) 次冗余 addVertex 调用。
+     * 注意：此方法始终在 {@link #lock} writeLock 下调用，外部不得直接暴露 baseGraph 引用。
      */
     private void buildCooccurrenceGraph(Set<String> entities) {
         List<String> entityList = new ArrayList<>(entities);
+        for (String entity : entityList) {
+            baseGraph.addVertex(entity);
+        }
         for (int i = 0; i < entityList.size(); i++) {
-            baseGraph.addVertex(entityList.get(i));
             for (int j = i + 1; j < entityList.size(); j++) {
-                baseGraph.addVertex(entityList.get(j));
                 baseGraph.addEdge(entityList.get(i), entityList.get(j));
             }
         }
@@ -163,7 +170,11 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
     @Override
     public List<SubgraphMatchResult> matchSubgraph(Set<String> queryEntities, int maxEdges) {
-        if (queryEntities == null || queryEntities.isEmpty() || maxEdges <= 0) {
+        if (queryEntities == null || queryEntities.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (maxEdges <= 0) {
+            log.warn("matchSubgraph 收到非法 maxEdges={}，返回空列表", maxEdges);
             return Collections.emptyList();
         }
 
