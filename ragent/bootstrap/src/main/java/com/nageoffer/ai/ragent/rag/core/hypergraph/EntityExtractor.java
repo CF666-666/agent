@@ -87,8 +87,8 @@ public class EntityExtractor {
 
     // ==================== 正则降级模式 ====================
 
-    /** 设备编号模式：{@code \d+号\w+} 如 "1号鼓风机"、"2号轧机" */
-    private static final Pattern DEVICE_PATTERN = Pattern.compile("\\d+号\\w+");
+    /** 设备编号模式：{@code \d+号\S+} 如 "1号鼓风机"、"2号轧机"（\S+ 覆盖中文设备名） */
+    private static final Pattern DEVICE_PATTERN = Pattern.compile("\\d+号\\S+");
 
     /** SOP 文档编号模式：{@code SOP-\w+} 如 "SOP-2024-001" */
     private static final Pattern SOP_PATTERN = Pattern.compile("SOP-[a-zA-Z0-9]+");
