@@ -112,7 +112,7 @@ public class HyperGraphSearchChannel implements SearchChannel {
         float entityCount = entities.size(); // 用于归一化
         for (SubgraphMatchResult result : matched) {
             String text = hyperGraph.expandToText(result.hyperEdge());
-            float score = entityCount > 0 ? result.matchCount() / entityCount : 0f;
+            float score = result.matchCount() / entityCount;
 
             chunks.add(RetrievedChunk.builder()
                     .id(result.hyperEdge().getEdgeId())
