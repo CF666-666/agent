@@ -50,5 +50,11 @@ public enum SearchChannelType {
      * 图像语义检索
      * 基于 Qwen-VL 工业图像描述向量的语义检索
      */
-    IMAGE_SEMANTIC
+    IMAGE_SEMANTIC,
+
+    /**
+     * 超图 N 元关系检索
+     * 基于倒排索引的工业实体子图匹配，返回设备-工况-参数-故障关联超边
+     */
+    HYPERGRAPH
 }
