@@ -26,6 +26,7 @@ import com.nageoffer.ai.ragent.multimodal.parser.PdfBoxParser;
 import com.nageoffer.ai.ragent.multimodal.parser.QwenVLImageParser;
 import com.nageoffer.ai.ragent.multimodal.parser.Tess4JParser;
 import com.nageoffer.ai.ragent.multimodal.parser.dto.FileType;
+import com.nageoffer.ai.ragent.multimodal.retrieval.image.ImageIngestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -49,16 +50,19 @@ public class MultimodalDocumentParserNode implements IngestionNode {
     private final PdfBoxParser pdfBoxParser;
     private final Tess4JParser tess4JParser;
     private final QwenVLImageParser qwenVLImageParser;
+    private final ImageIngestionService imageIngestionService;
 
     /** 显式路由表：FileType → Parser */
     private final Map<FileType, MultimodalDocumentParser> routing;
 
     public MultimodalDocumentParserNode(PdfBoxParser pdfBoxParser,
                                         Tess4JParser tess4JParser,
-                                        QwenVLImageParser qwenVLImageParser) {
+                                        QwenVLImageParser qwenVLImageParser,
+                                        ImageIngestionService imageIngestionService) {
         this.pdfBoxParser = pdfBoxParser;
         this.tess4JParser = tess4JParser;
         this.qwenVLImageParser = qwenVLImageParser;
+        this.imageIngestionService = imageIngestionService;
         this.routing = Map.of(
                 FileType.PDF_ELECTRONIC, pdfBoxParser,
                 FileType.PDF_SCANNED,    tess4JParser,
@@ -116,6 +120,21 @@ public class MultimodalDocumentParserNode implements IngestionNode {
             }
             meta.put("multimodalParser", parser.getClass().getSimpleName());
             meta.put("multimodalFileType", fileType.name());
+
+            // Phase 2: 图像类文件 → 向量化后写入 industrial_images Collection
+            if (fileType.isImage()) {
+                String imagePath = context.getSource() != null
+                        ? context.getSource().getFileName() : "unknown";
+                Map<String, Object> extraMeta = new HashMap<>();
+                extraMeta.put("visualDescription", mmResult.getVisualDescription());
+                imageIngestionService.ingest(
+                        mmResult.getTextContent(),
+                        imagePath,
+                        mmResult.getSourceFile(),
+                        parser.getClass().getSimpleName(),
+                        extraMeta
+                );
+            }
 
         } catch (Exception e) {
             log.error("多模态解析失败: {}", context.getTaskId(), e);

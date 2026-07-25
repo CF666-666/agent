@@ -150,8 +150,8 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 | # | 任务 | 文件 | 优先级 | 预计工时 | 状态 |
 |:--:|------|------|:--:|:--:|:--:|
-| 2.1 | 新建 Milvus Collection `industrial_images`（复用 `MilvusVectorStoreAdmin`） | 配置 + 初始化脚本 | P0 | 1h | ⬜ |
-| 2.2 | `ImageIngestionService`：图像描述 → Qwen3-Embedding-8B → Milvus 写入 | `bootstrap/.../retrieval/image/` | P0 | 3h | ⬜ |
+| 2.1 | 新建 Milvus Collection `industrial_images`（复用 `MilvusVectorStoreAdmin`） | 配置 + 初始化脚本 | P0 | 1h | ✅ |
+| 2.2 | `ImageIngestionService`：图像描述 → Qwen3-Embedding-8B → Milvus 写入 | `bootstrap/.../retrieval/image/` | P0 | 3h | ✅ |
 | 2.3 | `ImageSearchChannel`：实现 `SearchChannel`，自动加入多路检索 | `bootstrap/.../retrieval/image/` | P0 | 3h | ⬜ |
 | 2.4 | 与现有多路检索引擎集成测试 | 集成测试 | P0 | 2h | ⬜ |
 
@@ -291,7 +291,7 @@ Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
 | 0-B | 技术前置验证（9 项） | ✅ 完成 | 07-24 | 07-24 | 9 项全部确认，Phase 0 完结 |
 | 0-C | 包路径规划 | ✅ 完成 | 07-24 | 07-24 | 新增 `multimodal/` + `hypergraph/` 包 |
 | 1 | 多模态文档解析管道 | ✅ 完成 | 07-25 | 07-25 | 5 个闭环全部完成，Phase 1 完结 |
-| 2 | 图像检索链 | ⬜ 待开始 | | | Week 2 |
+| 2 | 图像检索链 | ⚠️ 2/4 | | | 闭环 1 完成，闭环 2 待开始 |
 | 3 | 超图引擎 | ⬜ 待开始 | | | Week 3-4 |
 | 4 | 多路融合与答案增强 | ⬜ 待开始 | | | Week 5 |
 | 5 | Demo 数据集构建 | ⬜ 待开始 | | | Week 6 |
