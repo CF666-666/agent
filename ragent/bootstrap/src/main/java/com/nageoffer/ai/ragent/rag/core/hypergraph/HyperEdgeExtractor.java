@@ -135,19 +135,31 @@ public class HyperEdgeExtractor {
 
     /**
      * 对单段文本进行 LLM 抽取
+     * <p>
+     * 内部 try-catch 保证 LLM 失败或 JSON 解析失败时返回空列表而非抛异常，
+     * 与长文档分段路径的逐段失败隔离语义一致。
      */
     private List<HyperEdge> extractFromSingleChunk(String chunkText, String source) {
-        ChatRequest request = ChatRequest.builder()
-                .messages(List.of(
-                        ChatMessage.system(SYSTEM_PROMPT),
-                        ChatMessage.user(chunkText)
-                ))
-                .temperature(0.01)
-                .maxTokens(4096)
-                .build();
+        try {
+            ChatRequest request = ChatRequest.builder()
+                    .messages(List.of(
+                            ChatMessage.system(SYSTEM_PROMPT),
+                            ChatMessage.user(chunkText)
+                    ))
+                    .temperature(0.01)
+                    .maxTokens(4096)
+                    .build();
 
-        String response = llmService.chat(request);
-        return parseHyperedges(response, source);
+            String response = llmService.chat(request);
+            if (response == null) {
+                log.warn("LLM 返回 null 响应。source: {}", source);
+                return Collections.emptyList();
+            }
+            return parseHyperedges(response, source);
+        } catch (Exception e) {
+            log.warn("超边抽取失败。source: {}", source, e);
+            return Collections.emptyList();
+        }
     }
 
     // ==================== 长文档分段 ====================
@@ -163,14 +175,8 @@ public class HyperEdgeExtractor {
         List<HyperEdge> allEdges = new ArrayList<>();
         for (int i = 0; i < chunks.size(); i++) {
             String chunkSource = sourceDocument + "#chunk" + i;
-            try {
-                List<HyperEdge> chunkEdges = extractFromSingleChunk(chunks.get(i), chunkSource);
-                if (chunkEdges != null) {
-                    allEdges.addAll(chunkEdges);
-                }
-            } catch (Exception e) {
-                log.warn("分段 {} 抽取失败，跳过。source: {}", chunkSource, e);
-            }
+            List<HyperEdge> chunkEdges = extractFromSingleChunk(chunks.get(i), chunkSource);
+            allEdges.addAll(chunkEdges);
         }
         return allEdges;
     }
@@ -204,6 +210,12 @@ public class HyperEdgeExtractor {
                 current = new StringBuilder();
             }
 
+            // 单段落超限 → 句子级硬切分
+            if (trimmed.length() > MAX_CHUNK_CHARS && current.length() == 0) {
+                chunks.addAll(hardSplitLongParagraph(trimmed));
+                continue;
+            }
+
             if (current.length() > 0) {
                 current.append("\n\n");
             }
@@ -215,6 +227,42 @@ public class HyperEdgeExtractor {
         }
 
         return chunks;
+    }
+
+    /**
+     * 对单段落超过 {@value MAX_CHUNK_CHARS} 字的超长段落进行句子级硬切分
+     * <p>
+     * 按句号/问号/感叹号边界切分，优先在自然断句点切分，避免截断句子；
+     * 如果找不到合适断句点则以限制长度硬切。
+     *
+     * @param paragraph 超长段落文本（已 trim）
+     * @return 切分后的子段落列表
+     */
+    private List<String> hardSplitLongParagraph(String paragraph) {
+        List<String> subChunks = new ArrayList<>();
+        String remaining = paragraph;
+
+        while (remaining.length() > MAX_CHUNK_CHARS) {
+            String sub = remaining.substring(0, MAX_CHUNK_CHARS);
+            int cutPoint = -1;
+            // 在可接受范围内找最后一个句末标点
+            for (char punct : new char[]{'。', '！', '？', '\n'}) {
+                int idx = sub.lastIndexOf(punct);
+                if (idx > MAX_CHUNK_CHARS / 2 && idx > cutPoint) {
+                    cutPoint = idx + 1;  // 包含标点
+                }
+            }
+            if (cutPoint < 0) {
+                cutPoint = MAX_CHUNK_CHARS;
+            }
+            subChunks.add(remaining.substring(0, cutPoint).trim());
+            remaining = remaining.substring(cutPoint).trim();
+        }
+
+        if (!remaining.isEmpty()) {
+            subChunks.add(remaining);
+        }
+        return subChunks;
     }
 
     // ==================== JSON 解析 ====================
@@ -318,8 +366,8 @@ public class HyperEdgeExtractor {
                     continue;
                 }
                 JsonObject entityObj = item.getAsJsonObject();
-                String label = entityObj.has("label") ? entityObj.get("label").getAsString() : null;
-                String value = entityObj.has("value") ? entityObj.get("value").getAsString() : null;
+                String label = getStringField(entityObj, "label");
+                String value = getStringField(entityObj, "value");
                 if (label != null && value != null) {
                     entities.add(new EntityNode(label.trim(), value.trim()));
                 }
