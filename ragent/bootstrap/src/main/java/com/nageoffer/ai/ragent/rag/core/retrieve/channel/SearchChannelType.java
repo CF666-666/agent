@@ -44,5 +44,11 @@ public enum SearchChannelType {
      * 混合检索
      * 结合多种检索策略
      */
-    HYBRID
+    HYBRID,
+
+    /**
+     * 图像语义检索
+     * 基于 Qwen-VL 工业图像描述向量的语义检索
+     */
+    IMAGE_SEMANTIC
 }
