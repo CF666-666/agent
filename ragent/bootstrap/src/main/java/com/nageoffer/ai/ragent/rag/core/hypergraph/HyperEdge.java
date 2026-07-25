@@ -47,8 +47,9 @@ import java.util.stream.Stream;
 @Builder
 public class HyperEdge {
 
-    /** 超边唯一标识，UUID */
-    private String edgeId;
+    /** 超边唯一标识，默认自动生成 UUID */
+    @Builder.Default
+    private String edgeId = UUID.randomUUID().toString();
 
     // === 5 个核心工业字段（命名锚点，LLM 抽取约束） ===
 

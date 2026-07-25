@@ -118,7 +118,7 @@ public class EntityExtractor {
                             ChatMessage.system(SYSTEM_PROMPT),
                             ChatMessage.user(query)
                     ))
-                    .temperature(0.1)
+                    .temperature(0.01)
                     .maxTokens(256)
                     .build();
 

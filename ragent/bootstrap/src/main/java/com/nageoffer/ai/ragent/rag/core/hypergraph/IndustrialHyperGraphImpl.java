@@ -19,9 +19,6 @@ package com.nageoffer.ai.ragent.rag.core.hypergraph;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,14 +33,13 @@ import java.util.stream.Collectors;
  * <ul>
  *   <li>倒排索引 {@code Map<实体值, Set<超边下标>>} — 子图匹配主引擎，O(k) 复杂度</li>
  *   <li>超边列表 {@code List<HyperEdge>} — 下标→超边映射</li>
- *   <li>JGraphT 实体共现图 — 同一超边内的实体两两连边，供可视化与扩展查询</li>
  *   <li>{@link ReadWriteLock} — 写入口（addHyperedges）排他，读入口（matchSubgraph）并发</li>
  * </ul>
  * <p>
  * 调用链：
  * <pre>
  *   documentText → extractHyperedges() → HyperEdgeExtractor
- *                → addHyperedges() → 倒排索引 + JGraphT 共现图
+ *                → addHyperedges() → 倒排索引
  *   queryEntities → matchSubgraph() → 倒排索引命中 → 命中数排序 → SubgraphMatchResult
  * </pre>
  *
@@ -65,9 +61,6 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
     /** 倒排索引：实体值 → 包含该实体的超边下标集合 */
     private final Map<String, Set<Integer>> entityToEdgeIdx = new HashMap<>();
-
-    /** 实体共现图：同一超边内的实体两两之间有边 */
-    private final Graph<String, DefaultEdge> baseGraph = new SimpleGraph<>(DefaultEdge.class);
 
     /** 读写锁：写操作排他，读操作可并发 */
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -136,33 +129,12 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
                 for (String entity : entities) {
                     entityToEdgeIdx.computeIfAbsent(entity, k -> new HashSet<>()).add(edgeIdx);
                 }
-
-                // JGraphT 共现图：同一超边内实体两两建边
-                buildCooccurrenceGraph(entities);
             }
 
             log.info("超边索引完成。新增={}, 跳过空超边={}, 总超边数={}, 总实体数={}",
                     edges.size() - skipped, skipped, hyperEdges.size(), entityToEdgeIdx.size());
         } finally {
             lock.writeLock().unlock();
-        }
-    }
-
-    /**
-     * 为同一超边内的所有实体两两建边（JGraphT 共现图）
-     * <p>
-     * 所有顶点先一次性注册，再两两建边，避免 O(N²) 次冗余 addVertex 调用。
-     * 注意：此方法始终在 {@link #lock} writeLock 下调用，外部不得直接暴露 baseGraph 引用。
-     */
-    private void buildCooccurrenceGraph(Set<String> entities) {
-        List<String> entityList = new ArrayList<>(entities);
-        for (String entity : entityList) {
-            baseGraph.addVertex(entity);
-        }
-        for (int i = 0; i < entityList.size(); i++) {
-            for (int j = i + 1; j < entityList.size(); j++) {
-                baseGraph.addEdge(entityList.get(i), entityList.get(j));
-            }
         }
     }
 

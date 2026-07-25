@@ -84,17 +84,56 @@ public class HyperGraphSearchChannel implements SearchChannel {
     @Override
     public SearchChannelResult search(SearchContext context) {
         String query = context.getMainQuestion();
-        log.info("{} 检索开始: query={}, topK={}", CHANNEL_NAME, query, TOP_K);
-
         long start = System.currentTimeMillis();
 
-        // Step 1: 实体抽取
-        Set<String> entities = entityExtractor.extractFromQuery(query);
-        log.debug("实体抽取完成: query={}, entities={}", query, entities);
+        try {
+            log.info("{} 检索开始: query={}, topK={}", CHANNEL_NAME, query, TOP_K);
 
-        if (entities.isEmpty()) {
+            // Step 1: 实体抽取
+            Set<String> entities = entityExtractor.extractFromQuery(query);
+            log.debug("实体抽取完成: query={}, entities={}", query, entities);
+
+            if (entities.isEmpty()) {
+                long latency = System.currentTimeMillis() - start;
+                log.info("{} 未抽取到实体，返回空结果。耗时={}ms", CHANNEL_NAME, latency);
+                return SearchChannelResult.builder()
+                        .channelType(SearchChannelType.HYPERGRAPH)
+                        .channelName(CHANNEL_NAME)
+                        .chunks(Collections.emptyList())
+                        .latencyMs(latency)
+                        .build();
+            }
+
+            // Step 2: 超图子图匹配
+            List<SubgraphMatchResult> matched = hyperGraph.matchSubgraph(entities, TOP_K);
+            log.debug("子图匹配完成: entityCount={}, hitCount={}", entities.size(), matched.size());
+
+            // Step 3: 超边展开为自然语言 → RetrievedChunk
+            List<RetrievedChunk> chunks = new ArrayList<>();
+            float entityCount = entities.size();
+            for (SubgraphMatchResult result : matched) {
+                String text = hyperGraph.expandToText(result.hyperEdge());
+                float score = result.matchCount() / entityCount;
+
+                chunks.add(RetrievedChunk.builder()
+                        .id(result.hyperEdge().getEdgeId())
+                        .text(text)
+                        .score(score)
+                        .build());
+            }
+
             long latency = System.currentTimeMillis() - start;
-            log.info("{} 未抽取到实体，返回空结果。耗时={}ms", CHANNEL_NAME, latency);
+            log.info("{} 检索完成: 命中超边={}, 耗时={}ms", CHANNEL_NAME, chunks.size(), latency);
+
+            return SearchChannelResult.builder()
+                    .channelType(SearchChannelType.HYPERGRAPH)
+                    .channelName(CHANNEL_NAME)
+                    .chunks(chunks)
+                    .latencyMs(latency)
+                    .build();
+        } catch (Exception e) {
+            long latency = System.currentTimeMillis() - start;
+            log.error("{} 检索异常，返回空结果。query={}, 耗时={}ms", CHANNEL_NAME, query, latency, e);
             return SearchChannelResult.builder()
                     .channelType(SearchChannelType.HYPERGRAPH)
                     .channelName(CHANNEL_NAME)
@@ -102,34 +141,6 @@ public class HyperGraphSearchChannel implements SearchChannel {
                     .latencyMs(latency)
                     .build();
         }
-
-        // Step 2: 超图子图匹配
-        List<SubgraphMatchResult> matched = hyperGraph.matchSubgraph(entities, TOP_K);
-        log.debug("子图匹配完成: entityCount={}, hitCount={}", entities.size(), matched.size());
-
-        // Step 3: 超边展开为自然语言 → RetrievedChunk
-        List<RetrievedChunk> chunks = new ArrayList<>();
-        float entityCount = entities.size(); // 用于归一化
-        for (SubgraphMatchResult result : matched) {
-            String text = hyperGraph.expandToText(result.hyperEdge());
-            float score = result.matchCount() / entityCount;
-
-            chunks.add(RetrievedChunk.builder()
-                    .id(result.hyperEdge().getEdgeId())
-                    .text(text)
-                    .score(score)
-                    .build());
-        }
-
-        long latency = System.currentTimeMillis() - start;
-        log.info("{} 检索完成: 命中超边={}, 耗时={}ms", CHANNEL_NAME, chunks.size(), latency);
-
-        return SearchChannelResult.builder()
-                .channelType(SearchChannelType.HYPERGRAPH)
-                .channelName(CHANNEL_NAME)
-                .chunks(chunks)
-                .latencyMs(latency)
-                .build();
     }
 
     @Override
