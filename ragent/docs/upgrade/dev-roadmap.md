@@ -174,7 +174,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 |:--:|------|------|:--:|:--:|:--:|
 | 3.1 | `HyperEdge` 数据结构 | `bootstrap/.../hypergraph/HyperEdge.java` | P0 | 0.5h | ✅ |
 | 3.2 | `IndustrialHyperGraph` 接口定义 | `bootstrap/.../hypergraph/IndustrialHyperGraph.java` | P0 | 0.5h | ✅ |
-| 3.3 | `IndustrialHyperGraphImpl`：JGraphT + 自研超边层 + 实体→超边倒排索引 | `bootstrap/.../hypergraph/IndustrialHyperGraphImpl.java` | P0 | 4h | ⬜ |
+| 3.3 | `IndustrialHyperGraphImpl`：JGraphT + 自研超边层 + 实体→超边倒排索引 | `bootstrap/.../hypergraph/IndustrialHyperGraphImpl.java` | P0 | 4h | ✅ |
 | 3.4 | `HyperEdgeExtractor`：LLM Few-shot N 元组抽取（调 DeepSeek/千问） | `bootstrap/.../hypergraph/HyperEdgeExtractor.java` | P0 | 4h | ✅ |
 | 3.5 | `EntityExtractor`：query 实体抽取（LLM Few-shot + 正则规则混合） | `bootstrap/.../hypergraph/EntityExtractor.java` | P0 | 3h | ✅ |
 | 3.6 | `HyperGraphSearchChannel`：实现 `SearchChannel`，子图匹配 + Embedding | `bootstrap/.../retrieval/hypergraph/` | P0 | 3h | ⬜ |
