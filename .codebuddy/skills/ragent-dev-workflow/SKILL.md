@@ -2,15 +2,23 @@
 name: ragent-dev-workflow
 description: >
   Ragent 项目升级开发的强制工作流。当用户提到"开始编码"、"进入 Phase X"、
-  "开发第X个闭环"、"实现XX模块"、"按 roadmap 开发"、或任何涉及 ragent 
+  "开发第X个闭环"、"实现XX模块"、"按 roadmap 开发"、或任何涉及 ragent
   项目 Java 代码编写/修改的请求时，必须先读取 DEVELOPMENT.md 了解项目背景，
-  然后按照 5 步工作流（方案→编码→自测→review→收尾）进行最小化闭环开发。
+  然后按照 7 步工作流（方案→grill-me 追问→编码→自测→代码审查→展示→收尾）进行最小化闭环开发。
+  方案设计后必须强制 grill-me 追问细节并等用户确认才能开始编码；
+  编码测试通过后必须强制调用 requesting-code-review 进行代码审查，
+  所有 Critical/Important 问题必须修复后才能进入展示和收尾。
   每个闭环完成后必须更新 dev-roadmap.md。
 ---
 
 # Ragent 项目开发工作流
 
-> **适用于所有 Phase 的所有闭环**。5 步流程不变，但每步的具体要求会根据闭环类型自动适配。
+> **适用于所有 Phase 的所有闭环**。7 步流程不变，但每步的具体要求会根据闭环类型自动适配。
+>
+> **强制门禁**：
+> 1. 方案设计完成后，**必须**调用 `grill-me` skill 进行追问细节，等用户确认后才能开始编码。
+> 2. 编码→自测通过后，**必须**调用 `requesting-code-review` skill 进行代码审查。
+>    所有 Critical/Important 问题必须修复后，才能进入展示和收尾；否则禁止 git commit。
 
 ---
 
@@ -132,7 +140,66 @@ F. 接口契约对照
 
 ### 确认门禁
 
-**用户说"可以"/"通过"/"开始编码"等明确确认词后，才能进入 Step 2。** 如果提了设计追问，补充后再次等待确认。
+**用户说"可以"/"通过"/"开始编码"等明确确认词后，才能进入 Step 1.5。** 如果提了设计追问，补充后再次等待确认。
+
+---
+
+## Step 1.5：grill-me 追问方案（强制环节 — ⭐ 全类型必经）
+
+> **本环节是设计质量门禁，禁止跳过。** Step 1 方案设计完成后，**必须**调用 `grill-me` skill
+> 对方案做一轮追问，把所有"未明确的设计决策""边界情况""异常路径"问清楚，等用户明确回答后才能进入 Step 2 编码。
+
+### 1.5.1 调用 grill-me skill
+
+在对话中明确调用：
+
+```
+请对当前闭环方案做一轮 grill-me 追问。
+```
+
+或者使用 use_skill 工具加载 grill-me：
+
+```
+use_skill: grill-me
+```
+
+**传入上下文**：
+- 当前闭环编号 + Phase 编号
+- 闭环类型（T1-T5）
+- Step 1 方案的完整内容（让 grill-me agent 对照询问细节）
+
+### 1.5.2 grill-me 输出
+
+`grill-me` 会针对方案中的：
+- **未明确的设计决策**（如"为什么不用替代方案 A/B"）
+- **边界情况**（如"输入为空怎么处理"、"单元素集合怎么处理"）
+- **异常路径**（如"外部 API 超时怎么办"、"Milvus 返回 null 怎么办"）
+- **与已有代码的兼容性**（如"是否破坏现有调用方"、"是否需要新依赖"）
+- **生产级细节**（如"是否需要 metrics/log 上报"、"是否需要 idempotent 设计"）
+
+展开追问，得到用户的明确回答。
+
+### 1.5.3 多轮追问（如需要）
+
+| 场景 | 处理 |
+|:--:|------|
+| grill-me 第一轮未解全部 | 追问 → 更新方案 → 再次 grill-me → 直到无新追问 |
+| 用户对某个决策给出 A/B/C 选择 | 按选择更新方案，再次等待确认 |
+| 用户提出新增的边界场景 | 补充到 Step 1 方案的"异常路径分析"或"已知局限" |
+
+### 1.5.4 强制门禁
+
+- ❌ **禁止**：跳过 grill-me 直接进入 Step 2 编码
+- ❌ **禁止**：grill-me 中用户提出追问后不更新方案就直接编码
+- ✅ **必须**：grill-me 追问结束 + 用户明确确认（如"开始"/"通过"）才能进 Step 2
+
+### 1.5.5 grill-me 不通过时的处理
+
+若 grill-me 过程中发现 Step 1 方案有**设计缺陷**：
+1. 立即停止 Step 2
+2. 回到 Step 1 修订方案（针对发现的问题补全）
+3. 修订后再走一轮 grill-me 追问
+4. 直到 grill-me 追问无新问题 + 用户明确确认
 
 ---
 
@@ -194,7 +261,70 @@ F. 接口契约对照
 
 ---
 
-## Step 4：Review（按类型展示）
+## Step 4：代码审查（强制环节 — ⭐ 全类型必经）
+
+> **本环节是质量门禁，禁止跳过。** 自测通过后，**必须** 调用 `requesting-code-review` skill
+> 让独立审查 agent 给出审查报告，所有 Critical/Important 问题必须修复后才能进入 Step 5。
+
+### 4.1 调用 requesting-code-review skill
+
+在对话中明确调用：
+
+```
+请审查本次闭环的代码变更。
+```
+
+或者使用 use_skill 工具加载 requesting-code-review：
+
+```
+use_skill: requesting-code-review
+```
+
+**传入上下文**：
+- 当前闭环编号 + Phase 编号
+- 本次修改的文件列表（绝对路径）
+- Step 1 方案中的关键设计决策（让审查 agent 对照检查一致性）
+
+### 4.2 接收审查报告
+
+`requesting-code-review` 会返回一份结构化报告，包含：
+- **Strengths**：代码优点
+- **Critical / Important / Minor Issues**：分级的具体问题，每个问题附带文件:行号
+- **Assessment**：总体评级（Ready to merge / Needs fixes / Major rework）
+
+### 4.3 问题修复（按严重度分流）
+
+| 严重度 | 处理方式 |
+|:--:|------|
+| **Critical** | 🔴 必修复 — 必须立即修复，否则禁止进 Step 5 |
+| **Important** | 🟡 必修复 — 建议立即修复；除非明确说明理由并经用户确认才可延期 |
+| **Minor** | 🟢 可选修复 — 记录在闭环"已知局限"或下个闭环顺手修复 |
+| **Suggestion** | ⚪ 不阻塞 — 仅作为后续迭代参考 |
+
+**修复流程**：
+1. Critical / Important 问题 → 立即进入代码修复阶段
+2. 修复完成后 → 重新跑 Step 3 自测（编译验证）→ 重新调用 requesting-code-review 复审
+3. 复审通过 → 进入 Step 5
+4. Minor / Suggestion 问题 → 记录在 Step 5 的"已知局限"段落中
+
+### 4.4 强制门禁
+
+- ❌ **禁止**：跳过 Step 4 直接进入 Step 5
+- ❌ **禁止**：在 Critical/Important 未修复时直接 git commit
+- ❌ **禁止**：用"小问题不重要"绕过 Critical/Important 问题
+- ✅ **必须**：自测通过 + 审查通过（无未解决 Critical/Important）才能 commit
+
+### 4.5 闭环审查不通过时的处理
+
+若审查报告评估为 **Major rework**：
+1. 立即停止 Step 5
+2. 回到 Step 1 重新审视方案（是否有设计缺陷）
+3. 修订方案 → 重新编码 → 重新自测 → 重新审查
+4. 直到审查评级为 **Ready to merge** 或 **Needs fixes (Minor only)**
+
+---
+
+## Step 5：展示（向用户呈现闭环产出）
 
 ### T1-T4 展示内容
 
@@ -224,22 +354,22 @@ B. 方案 vs 实际对照
 
 ### Review 门禁
 
-- 用户说"通过"/"OK"/"没问题" → Step 5
+- 用户说"通过"/"OK"/"没问题" → Step 6
 - 用户提修改意见 → 回对应 Step，改完重新走到这里
 
 ---
 
-## Step 5：收尾（全类型通用）
+## Step 6：收尾（全类型通用）
 
-### 5.1 更新 roadmap
+### 6.1 更新 roadmap
 
 在 `ragent/docs/upgrade/dev-roadmap.md` 中，找到本闭环对应的任务行，将状态 `⬜` 改为 `✅`，追加完成日期。
 
-### 5.2 更新 Phase 进度表
+### 6.2 更新 Phase 进度表
 
 如果本闭环是当前 Phase 的最后一个任务，将 roadmap 底部进度表中对应 Phase 行改为 `✅ 完成`。
 
-### 5.3 Git 提交
+### 6.3 Git 提交
 
 ```bash
 git add .
@@ -253,7 +383,7 @@ commit message 格式：
 - `feat(phase5): 闭环1 - LLM 批量生成 200 条工业 FAQ`
 - `chore(phase7): 闭环1 - 更新 README 多模态架构图`
 
-### 5.4 完成确认
+### 6.4 完成确认
 
 `闭环 X（Phase Y, T{类型}）完成。产出 N 个文件。下一个是闭环 X+1：[任务描述]`
 
@@ -264,6 +394,9 @@ commit message 格式：
 - ❌ 跳过 Step 1 设计方案直接写代码
 - ❌ 一次写多个闭环的代码
 - ❌ 跳过自测直接给用户看结果
+- ❌ **跳过 Step 4 代码审查直接进 Step 5 收尾**
+- ❌ **在 Critical/Important 未修复时直接 git commit**
+- ❌ **审查评级为 Major rework 时仍继续推进**
 - ❌ 修改已有核心逻辑（Pipeline/检索/路由/Rerank）
 - ❌ 用户 review 未通过就开始下一闭环
 - ❌ 引入方案中未声明的 Maven 依赖
@@ -282,3 +415,4 @@ commit message 格式：
 | 源码排查 | `ragent/docs/upgrade/source-checklist.md` |
 | 主 POM | `ragent/bootstrap/pom.xml` |
 | 应用配置 | `ragent/bootstrap/src/main/resources/application.yaml` |
+| 代码审查 | `.codebuddy/skills/requesting-code-review/SKILL.md` |
