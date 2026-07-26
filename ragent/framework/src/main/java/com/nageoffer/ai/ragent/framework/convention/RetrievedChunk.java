@@ -92,14 +92,14 @@ public class RetrievedChunk {
     /**
      * 向后兼容构造器（Phase 4 过渡期使用）
      * <p>
-     * 兼容老调用方（如 {@code MilvusRetrieverService}）的 3 参数构造，新代码请使用 {@link #builder()}。
+     * 兼容老调用方（如 {@code MilvusRetrieverService} L89、{@code BaiLianRerankClient} L163）的 3 参数构造，新代码请使用 {@link #builder()}。
+     * <p>
+     * 委托给全字段构造器（{@link #RetrievedChunk(String, String, Float, Map)}），未来新增字段时只需修改一处。
      *
      * @deprecated since Phase 4 — 调用方应迁移至 {@code RetrievedChunk.builder().id(...).text(...).score(...).build()}
      */
     @Deprecated
     public RetrievedChunk(String id, String text, Float score) {
-        this.id = id;
-        this.text = text;
-        this.score = score;
+        this(id, text, score, new HashMap<>());
     }
 }
