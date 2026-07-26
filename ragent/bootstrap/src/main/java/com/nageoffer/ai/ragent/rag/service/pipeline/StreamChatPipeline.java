@@ -19,8 +19,11 @@ package com.nageoffer.ai.ragent.rag.service.pipeline;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonElement;
 import com.nageoffer.ai.ragent.framework.convention.ChatMessage;
 import com.nageoffer.ai.ragent.framework.convention.ChatRequest;
+import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
 import com.nageoffer.ai.ragent.infra.chat.LLMService;
 import com.nageoffer.ai.ragent.infra.chat.StreamCallback;
 import com.nageoffer.ai.ragent.infra.chat.StreamCancellationHandle;
@@ -35,6 +38,8 @@ import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalEngine;
 import com.nageoffer.ai.ragent.rag.core.rewrite.QueryRewriteService;
 import com.nageoffer.ai.ragent.rag.core.rewrite.RewriteResult;
 import com.nageoffer.ai.ragent.rag.dto.IntentGroup;
+import com.nageoffer.ai.ragent.rag.dto.Reference;
+import com.nageoffer.ai.ragent.rag.dto.ReferenceType;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalContext;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
 import com.nageoffer.ai.ragent.rag.service.handler.StreamTaskManager;
@@ -43,7 +48,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.CHAT_SYSTEM_PROMPT_PATH;
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.DEFAULT_TOP_K;
@@ -70,6 +77,8 @@ public class StreamChatPipeline {
     private final RAGPromptService promptBuilder;
     private final PromptTemplateLoader promptTemplateLoader;
     private final StreamTaskManager taskManager;
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * 执行流式对话管道
@@ -170,13 +179,28 @@ public class StreamChatPipeline {
         // 聚合所有意图用于 prompt 规划
         IntentGroup mergedGroup = intentResolver.mergeIntentGroup(ctx.getSubIntents());
 
+        // Phase 4: 构建 references + 包装 callback 拦截 onComplete 注入 references 事件
+        List<Reference> references = buildReferences(retrievalCtx);
+        StreamCallback original = ctx.getCallback();
+        StreamCallback wrapped = new StreamCallback() {
+            @Override public void onContent(String content) { original.onContent(content); }
+            @Override public void onThinking(String thinking) { original.onThinking(thinking); }
+            @Override public void onComplete() {
+                if (!references.isEmpty()) {
+                    original.onReferences(toJson(references));
+                }
+                original.onComplete();
+            }
+            @Override public void onError(Throwable error) { original.onError(error); }
+        };
+
         StreamCancellationHandle handle = streamLLMResponse(
                 ctx.getRewriteResult(),
                 retrievalCtx,
                 mergedGroup,
                 ctx.getHistory(),
                 ctx.isDeepThinking(),
-                ctx.getCallback()
+                wrapped
         );
         taskManager.bindHandle(ctx.getTaskId(), handle);
     }
@@ -230,5 +254,111 @@ public class StreamChatPipeline {
                 .build();
 
         return llmService.streamChat(chatRequest, callback);
+    }
+
+    // ==================== Phase 4: References 构建 ====================
+
+    /**
+     * 从检索上下文中构建结构化引用列表
+     * 6→3 映射：4 种文本通道 → TEXT，IMAGE_SEMANTIC → IMAGE，HYPERGRAPH → HYPERGRAPH
+     */
+    private List<Reference> buildReferences(RetrievalContext ctx) {
+        List<Reference> refs = new ArrayList<>();
+        if (ctx.getIntentChunks() == null) {
+            return refs;
+        }
+        for (List<RetrievedChunk> chunks : ctx.getIntentChunks().values()) {
+            for (RetrievedChunk chunk : chunks) {
+                Map<String, Object> meta = chunk.getMetadata();
+                if (meta == null) continue;
+
+                String source = (String) meta.get("source");
+                if (source == null) continue;
+
+                ReferenceType type = mapToReferenceType(source);
+                refs.add(buildReference(type, chunk, meta));
+            }
+        }
+        return refs;
+    }
+
+    /**
+     * 6→3 映射：SearchChannelType.name() → ReferenceType
+     */
+    private ReferenceType mapToReferenceType(String source) {
+        return switch (source) {
+            case "IMAGE_SEMANTIC" -> ReferenceType.IMAGE;
+            case "HYPERGRAPH" -> ReferenceType.HYPERGRAPH;
+            default -> ReferenceType.TEXT;
+        };
+    }
+
+    /**
+     * 从 chunk + metadata 构造单条 Reference
+     */
+    private Reference buildReference(ReferenceType type, RetrievedChunk chunk, Map<String, Object> meta) {
+        String label = resolveLabel(type, meta);
+        String url = resolveUrl(type, meta);
+        String detail = resolveDetail(type, meta);
+        String snippet = resolveSnippet(chunk);
+        Map<String, Object> extra = resolveExtra(chunk, meta);
+        return new Reference(type, label, url, detail, snippet, extra);
+    }
+
+    private String resolveLabel(ReferenceType type, Map<String, Object> meta) {
+        return switch (type) {
+            case IMAGE -> {
+                Object path = meta.get("imagePath");
+                if (path != null) {
+                    String pathStr = path instanceof JsonElement je ? je.getAsString() : path.toString();
+                    yield "设备图纸: " + pathStr;
+                }
+                yield "设备图纸";
+            }
+            case HYPERGRAPH -> "推理路径";
+            case TEXT -> "文本引用";
+        };
+    }
+
+    private String resolveUrl(ReferenceType type, Map<String, Object> meta) {
+        if (type != ReferenceType.IMAGE) return null;
+        Object path = meta.get("imagePath");
+        if (path == null) return null;
+        return path instanceof JsonElement je ? je.getAsString() : path.toString();
+    }
+
+    private String resolveDetail(ReferenceType type, Map<String, Object> meta) {
+        if (type == ReferenceType.HYPERGRAPH) {
+            Object path = meta.get("hyperEdgePath");
+            if (path == null) return null;
+            return path instanceof JsonElement je ? je.getAsString() : path.toString();
+        }
+        return null;
+    }
+
+    private String resolveSnippet(RetrievedChunk chunk) {
+        String text = chunk.getText();
+        if (text == null) return null;
+        return text.length() <= 200 ? text : text.substring(0, 200) + "...";
+    }
+
+    private Map<String, Object> resolveExtra(RetrievedChunk chunk, Map<String, Object> meta) {
+        Map<String, Object> extra = new HashMap<>();
+        if (chunk.getScore() != null) extra.put("score", (double) chunk.getScore());
+        Object matchCount = meta.get("matchCount");
+        if (matchCount instanceof Number) extra.put("matchCount", matchCount);
+        return extra;
+    }
+
+    /**
+     * Jackson 序列化引用列表（绕过 double-wrap）
+     */
+    private String toJson(Object obj) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(obj);
+        } catch (Exception e) {
+            log.error("序列化 references 失败", e);
+            return "[]";
+        }
     }
 }

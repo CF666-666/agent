@@ -80,6 +80,28 @@ public class SseEmitterSender {
     }
 
     /**
+     * 发送原始 JSON 数据的 SSE 事件，绕过 Jackson 序列化
+     * <p>
+     * 用于已预先序列化的 JSON 数据（如 SSE references 事件载荷），
+     * 避免 Spring SseEmitter 对 String 执行二次 Jackson 序列化。
+     *
+     * @param eventName 事件名称
+     * @param rawJson   已序列化的 JSON 字符串
+     */
+    public void sendRawJsonEvent(String eventName, String rawJson) {
+        if (closed.get()) {
+            return;
+        }
+        try {
+            emitter.send(SseEmitter.event()
+                    .name(eventName)
+                    .data(rawJson, org.springframework.http.MediaType.APPLICATION_JSON));
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
+    /**
      * 正常完成并关闭 SSE 连接
      *
      * <p>使用 CAS 操作确保连接只被关闭一次，避免重复关闭导致的问题

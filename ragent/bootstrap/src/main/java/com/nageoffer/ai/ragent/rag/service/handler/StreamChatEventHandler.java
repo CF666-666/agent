@@ -154,6 +154,14 @@ public class StreamChatEventHandler implements StreamCallback {
     }
 
     @Override
+    public void onReferences(String referencesJson) {
+        if (taskManager.isCancelled(taskId)) {
+            return;
+        }
+        sender.sendRawJsonEvent(SSEEventType.REFERENCES.value(), referencesJson);
+    }
+
+    @Override
     public void onComplete() {
         if (taskManager.isCancelled(taskId)) {
             return;

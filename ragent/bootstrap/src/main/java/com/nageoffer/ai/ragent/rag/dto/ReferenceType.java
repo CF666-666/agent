@@ -15,57 +15,15 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent.rag.enums;
-
-import lombok.RequiredArgsConstructor;
+package com.nageoffer.ai.ragent.rag.dto;
 
 /**
- * SSE 事件类型枚举
+ * 引用类型（展示层枚举，与检索层 SearchChannelType 解耦）
+ * <p>
+ * 闭环 4.5 在构造 Reference 时做 6→3 映射：4 种文本通道 → TEXT，IMAGE_SEMANTIC → IMAGE，HYPERGRAPH → HYPERGRAPH。
  */
-@RequiredArgsConstructor
-public enum SSEEventType {
-
-    /**
-     * 会话与任务的元信息事件
-     */
-    META("meta"),
-
-    /**
-     * 增量消息事件
-     */
-    MESSAGE("message"),
-
-    /**
-     * 模型回复完成事件
-     */
-    FINISH("finish"),
-
-    /**
-     * 完成事件
-     */
-    DONE("done"),
-
-    /**
-     * 取消事件
-     */
-    CANCEL("cancel"),
-
-    /**
-     * 拒绝事件
-     */
-    REJECT("reject"),
-
-    /**
-     * 检索引用事件（Phase 4 扩展）
-     */
-    REFERENCES("references");
-
-    private final String value;
-
-    /**
-     * SSE 事件名称（与前端约定一致）
-     */
-    public String value() {
-        return value;
-    }
+public enum ReferenceType {
+    TEXT,
+    IMAGE,
+    HYPERGRAPH
 }

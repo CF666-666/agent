@@ -72,6 +72,20 @@ public interface StreamCallback {
     void onComplete();
 
     /**
+     * 检索引用回调（Phase 4 扩展）
+     * <p>
+     * 接收已序列化的 JSON 数组字符串（List&lt;Reference&gt;），由实现类推送到 SSE references 事件。
+     * 默认空实现，确保现有 StreamCallback 实现类无需改动。
+     * <p>
+     * 设计说明：使用 String 而非强类型参数，是因为接口定义在 infra-ai 模块（底层），
+     * 不能依赖 bootstrap 模块的 Reference 类。
+     *
+     * @param referencesJson 已序列化的 JSON 字符串
+     */
+    default void onReferences(String referencesJson) {
+    }
+
+    /**
      * 流式推送过程中出现异常
      * <p>
      * 常见场景：
