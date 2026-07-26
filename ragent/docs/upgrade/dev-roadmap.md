@@ -216,7 +216,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 |:--:|------|------|:--:|:--:|:--:|
 | 4.1 | 扩展 `RetrievedChunk` 字段（`metadata` Map + 兼容构造器） | `framework/.../convention/RetrievedChunk.java` | P0 | 1h | ✅ |
 | 4.2 | Channel 改造：`MilvusRetrieverService` 读 metadata + `ImageSearchChannel` 填 imagePath + `HyperGraphSearchChannel` 填 type + hyperEdgePath | `bootstrap/.../retrieve/` + `multimodal/retrieval/image/` + `hypergraph/` | P0 | 1.5h | ✅ |
-| 4.3 | `MultiSourceFusionProcessor` + `FusionProperties`（order=9，加权 + min-max + type 兜底） | `bootstrap/.../retrieve/postprocessor/` | P0 | 2h | ⬜ |
+| 4.3 | `MultiSourceFusionProcessor` + `FusionProperties`（order=9，加权 + min-max + type 兜底） | `bootstrap/.../retrieve/postprocessor/` | P0 | 2h | ✅ |
 | 4.4 | 扩展 `ContextFormatter` 接口 + `DefaultContextFormatter`（按 source 分组渲染 references） | `bootstrap/.../prompt/` | P0 | 2h | ⬜ |
 | 4.5 | `Reference` + `ReferenceType` + SSE 事件 `references` 推送 + 6→3 映射 | `bootstrap/.../rag/dto/` + `service/pipeline/` + `controller/` | P0 | 1.5h | ⬜ |
 | 4.6 | 端到端集成测试（三路检索 → 融合 → Rerank → 答案生成 → references 推送） | `bootstrap/src/test/` | P0 | 2h | ⬜ |

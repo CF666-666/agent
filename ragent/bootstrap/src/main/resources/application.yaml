@@ -196,3 +196,15 @@ sa-token:
 
 app:
   demo-mode: false
+
+# --- Phase 4: 多源融合权重配置 ---
+ragent:
+  fusion:
+    enabled: true
+    weights:
+      VECTOR_GLOBAL: 1.0
+      INTENT_DIRECTED: 1.0
+      KEYWORD_ES: 0.9
+      HYBRID: 1.0
+      IMAGE_SEMANTIC: 0.9
+      HYPERGRAPH: 1.1
