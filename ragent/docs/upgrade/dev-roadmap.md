@@ -2,7 +2,8 @@
 
 > **目标岗位**：央国企（国家电网、中石油、烟草、中车等）Java 后端/算法岗 秋招  
 > **起始日期**：2026-07-24  
-> **预计总周期**：7 周（49 天），含 Demo 数据集构建 + GitHub 整理
+> **预计总周期**：7 周（49 天），含生产级特性打磨 + GitHub 整理  
+> **项目定位**：**工业级可上线系统**——所有架构决策、扩展点设计、异常兜底、线程安全策略均按生产标准执行；面试官视角需能直接看到"工程成熟度 + 学术前沿性 + 信创合规性"三重价值
 
 ---
 
@@ -10,8 +11,9 @@
 
 1. **最小可验证单元**：每个模块完成即有独立可跑的 Demo，不依赖全链路完成
 2. **存量不动**：已有 Pipeline/检索/路由/Rerank 核心逻辑零修改，仅通过接口扩展接入
-3. **先跑通核心流**、再补边缘情况、最后打磨前端展示
-4. **每完成一个 Phase 推一次 GitHub**，维护 commit 历史
+3. **一次做到位**：每个闭环内同步完成"主流程 + 异常兜底 + 线程安全 + 防御编程"，不留技术债，避免后续重构
+4. **先跑通核心流**、再补边缘情况、最后打磨前端展示
+5. **每完成一个 Phase 推一次 GitHub**，维护 commit 历史
 
 ---
 
@@ -194,23 +196,41 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 ### 依赖分析
 - **前置依赖**：Phase 2 图像检索链、Phase 3 超图引擎
 
+### 核心设计决策（已 grill-me 收口）
+
+| 维度 | 决策 |
+|------|------|
+| Chunk 来源标识 | `metadata.get("source")` 字符串（SearchChannelType.name()）—— framework 不持有 bootstrap 枚举 |
+| Milvus 持久化 | 用现有 metadata JSON 字段（imagePath/sourceFile/parser 已在），**零新增列** |
+| 融合 order | order=9（紧贴 Rerank=10 之前） |
+| 加权策略 | min-max 归一化 + 加权；0/1/全相同边界兜底 |
+| 权重配置 | `@ConfigurationProperties("ragent.fusion")`（单体项目，无需 RefreshScope） |
+| Reference 响应 | 嵌套 `references: List<Reference>`（type=TEXT/IMAGE/HYPERGRAPH，6→3 映射） |
+| Reference DTO | 拆 `url`（真实 URL） + `detail`（补充描述，HYPERGRAPH=推理路径文本） |
+| ReferenceType | 新增枚举 TEXT/IMAGE/HYPERGRAPH（展示层 ↔ 检索层解耦） |
+| 答案增强方式 | 新增 SSE 事件 `references`（标准 SSE 多事件模式，前端 EventSource 订阅） |
+
 ### 开发顺序
 
 | # | 任务 | 文件 | 优先级 | 预计工时 | 状态 |
 |:--:|------|------|:--:|:--:|:--:|
-| 4.1 | `MultiSourceFusionProcessor`：实现 `SearchResultPostProcessor`（order=9，在 Rerank 之前），三路加权融合 | `bootstrap/.../retrieve/postprocessor/` | P0 | 2h | ⬜ |
-| 4.2 | 扩展 `RetrievedChunk` 增加 `source` 标识 + `imagePath` + `hyperEdgePath` 字段 | `framework/.../convention/RetrievedChunk.java` | P0 | 1h | ⬜ |
-| 4.3 | 修改 `RAGPromptService`：识别来源类型，附图像路径/推理路径到 Prompt | `bootstrap/.../rag/service/pipeline/` | P0 | 3h | ⬜ |
-| 4.4 | 答案生成增强：追加附图链接 + 超图推理路径到输出 | 同上 | P0 | 2h | ⬜ |
-| 4.5 | 端到端集成测试（工业 query → 三路检索 → 融合 → Rerank → 答案生成） | 集成测试 | P0 | 4h | ⬜ |
+| 4.1 | 扩展 `RetrievedChunk` 字段（`metadata` Map + 兼容构造器） | `framework/.../convention/RetrievedChunk.java` | P0 | 1h | ✅ |
+| 4.2 | Channel 改造：`MilvusRetrieverService` 读 metadata + `ImageSearchChannel` 填 imagePath + `HyperGraphSearchChannel` 填 type + hyperEdgePath | `bootstrap/.../retrieve/` + `multimodal/retrieval/image/` + `hypergraph/` | P0 | 1.5h | ⬜ |
+| 4.3 | `MultiSourceFusionProcessor` + `FusionProperties`（order=9，加权 + min-max + type 兜底） | `bootstrap/.../retrieve/postprocessor/` | P0 | 2h | ⬜ |
+| 4.4 | 扩展 `ContextFormatter` 接口 + `DefaultContextFormatter`（按 source 分组渲染 references） | `bootstrap/.../prompt/` | P0 | 2h | ⬜ |
+| 4.5 | `Reference` + `ReferenceType` + SSE 事件 `references` 推送 + 6→3 映射 | `bootstrap/.../rag/dto/` + `service/pipeline/` + `controller/` | P0 | 1.5h | ⬜ |
+| 4.6 | 端到端集成测试（三路检索 → 融合 → Rerank → 答案生成 → references 推送） | `bootstrap/src/test/` | P0 | 2h | ⬜ |
 
 **Phase 4 产出**：
 - 端到端多模态 RAG 链路跑通
-- 答案含文本引用 + 图纸链接 + 推理路径
+- 答案含文本引用 + 图纸链接 + 推理路径（references 列表）
+- `MultiSourceFusionProcessor` 加权融合 + 零边界处理
+- `Reference` DTO + `ReferenceType` 解耦枚举
+- SSE 多事件推送（content + references）
 
 ---
 
-## Phase 5：Demo 数据集构建（Week 6，3-5 天）
+## Phase 5：生产数据集构建与入库（Week 6，3-5 天）
 
 ### 任务列表
 
@@ -222,12 +242,12 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 5.4 | 采集维修操作视频（YouTube，3-5 段，标注来源） | `data/videos/` | 3h | ⬜ |
 | 5.5 | 视频关键帧提取 + Qwen-VL 帧描述 | `data/videos/keyframes/` | 3h | ⬜ |
 | 5.6 | 从 FAQ 文本 LLM 抽取超边（500-1000 条） | `data/hypergraph/hyperedges.jsonl` | 4h | ⬜ |
-| 5.7 | 全量数据入库脚本（Python，调入库 API） | `scripts/ingest_to_milvus.py` | 3h | ⬜ |
-| 5.8 | 准备 5 个典型工业 Query 作为 Demo 演示用例 | `demo/demo_queries.md` | 1h | ⬜ |
+| 5.7 | 全量数据入库脚本（生产级：幂等 + 失败重试 + 进度可观测） | `scripts/ingest_to_milvus.py` | 3h | ⬜ |
+| 5.8 | 准备 5 个典型工业 Query 作为端到端演示用例（覆盖文本/图像/超图 3 路） | `docs/demo_queries.md` | 1h | ⬜ |
 
 **Phase 5 产出**：
-- 完整 Demo 数据集（覆盖文本/图像/视频/超边 4 类数据）
-- 一键入库脚本
+- 完整生产数据集（覆盖文本/图像/视频/超边 4 类数据）
+- 幂等可重跑的一键入库脚本
 - 5 个端到端演示用例
 
 ---
@@ -248,17 +268,17 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 ---
 
-## Phase 7：GitHub 仓库整理与文档（Week 7，3-5 天）
+## Phase 7：生产化文档与对外发布（Week 7，3-5 天）
 
 | # | 任务 | 产出 | 预计工时 | 状态 |
 |:--:|------|------|:--:|:--:|
-| 7.1 | 更新 README：新增多模态架构图 + 快速开始 | `README.md` | 3h | ⬜ |
-| 7.2 | 撰写架构文档（本文档 `upgrade-plan.md` 的精简版） | `docs/architecture.md` | 2h | ⬜ |
-| 7.3 | 撰写 API 文档 | `docs/api.md` | 3h | ⬜ |
-| 7.4 | 更新 docker-compose.yml（保证一键启动） | `docker-compose.yml` | 2h | ⬜ |
-| 7.5 | 录制 Demo 视频（5 个典型 query 演示例） | GIF/MP4 | 4h | ⬜ |
-| 7.6 | 更新简历项目描述（嵌入话术） | 简历 Word/PDF | 2h | ⬜ |
-| 7.7 | 发布 GitHub Release v2.0 | GitHub | 1h | ⬜ |
+| 7.1 | 更新 README：架构图 + 快速开始 + 部署指南 | `README.md` | 3h | ⬜ |
+| 7.2 | 撰写架构文档（系统全景 / 模块划分 / 数据流 / 扩展点） | `docs/architecture.md` | 2h | ⬜ |
+| 7.3 | 撰写 API 文档（REST + LLM 路由 + Milvus schema） | `docs/api.md` | 3h | ⬜ |
+| 7.4 | 更新 docker-compose.yml：生产级编排（健康检查 + 资源限制 + 启动顺序） | `docker-compose.yml` | 2h | ⬜ |
+| 7.5 | 录制端到端演示视频（5 个典型工业 query，文本/图像/超图覆盖） | GIF/MP4 | 4h | ⬜ |
+| 7.6 | 撰写简历项目描述（嵌入话术 + 量化指标） | 简历 Word/PDF | 2h | ⬜ |
+| 7.7 | 发布 GitHub Release v2.0（含 CHANGELOG + 迁移说明） | GitHub | 1h | ⬜ |
 
 ---
 
