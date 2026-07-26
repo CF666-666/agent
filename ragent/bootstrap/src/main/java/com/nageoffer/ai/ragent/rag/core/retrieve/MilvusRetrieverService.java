@@ -18,6 +18,8 @@
 package com.nageoffer.ai.ragent.rag.core.retrieve;
 
 import cn.hutool.core.util.StrUtil;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
 import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
 import com.nageoffer.ai.ragent.infra.embedding.EmbeddingService;
@@ -86,11 +88,52 @@ public class MilvusRetrieverService implements RetrieverService {
         // TODO 需确认后续是否对分数较低数据进行限制，限制多少合适？0.65？
         // TODO 如果本次查询分数都较高，是否应该扩大查询范围？1.5倍？
         return results.get(0).stream()
-                .map(r -> new RetrievedChunk(
-                        Objects.toString(r.getEntity().get("id"), ""),
-                        Objects.toString(r.getEntity().get("content"), ""),
-                        r.getScore()))
+                .map(r -> RetrievedChunk.builder()
+                        .id(Objects.toString(r.getEntity().get("id"), ""))
+                        .text(Objects.toString(r.getEntity().get("content"), ""))
+                        .score(r.getScore())
+                        .metadata(parseMilvusMetadata(r.getEntity().get("metadata")))
+                        .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 将 Milvus metadata JSON 反序列化为 Java Map
+     * <p>
+     * 兼容多种 Milvus SDK 返回类型：
+     * <ul>
+     *   <li>{@code null} → 返回空 Map（旧数据无 metadata 字段）</li>
+     *   <li>{@link JsonObject}（Gson，Milvus 2.x 默认 JSON 序列化）→ 遍历 entrySet，跳过 JsonNull</li>
+     *   <li>{@link Map}（部分 SDK 版本直接返回）→ 直接 putAll</li>
+     *   <li>其他类型 → log.warn + 返回空 Map（防御编程）</li>
+     * </ul>
+     * <p>
+     * 仅展开 1 层（扁平 key-value），嵌套对象/数组保留为 {@link JsonElement}，由调用方按需按类型读取。
+     */
+    private static Map<String, Object> parseMilvusMetadata(Object rawMetadata) {
+        Map<String, Object> result = new HashMap<>();
+        if (rawMetadata == null) {
+            return result;
+        }
+
+        if (rawMetadata instanceof JsonObject json) {
+            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                JsonElement value = entry.getValue();
+                if (value == null || value.isJsonNull()) {
+                    continue;
+                }
+                result.put(entry.getKey(), value);
+            }
+            return result;
+        }
+
+        if (rawMetadata instanceof Map<?, ?> rawMap) {
+            rawMap.forEach((k, v) -> result.put(Objects.toString(k, ""), v));
+            return result;
+        }
+
+        log.warn("Milvus metadata 字段类型非预期: type={}", rawMetadata.getClass().getName());
+        return result;
     }
 
     private static float[] toArray(List<Float> list) {

@@ -28,6 +28,8 @@ import com.nageoffer.ai.ragent.infra.enums.ModelProvider;
 import com.nageoffer.ai.ragent.infra.http.HttpMediaTypes;
 import com.nageoffer.ai.ragent.infra.http.HttpResponseHelper;
 import com.nageoffer.ai.ragent.infra.http.ModelClientErrorType;
+
+import java.util.HashMap;
 import com.nageoffer.ai.ragent.infra.http.ModelClientException;
 import com.nageoffer.ai.ragent.infra.http.ModelUrlResolver;
 import com.nageoffer.ai.ragent.infra.model.ModelTarget;
@@ -160,7 +162,19 @@ public class BaiLianRerankClient implements RerankClient {
                 score = item.get("relevance_score").getAsFloat();
             }
 
-            RetrievedChunk hit = score != null ? new RetrievedChunk(src.getId(), src.getText(), score) : src;
+            RetrievedChunk hit = score != null
+                    ? RetrievedChunk.builder()
+                        .id(src.getId())
+                        .text(src.getText())
+                        .score(score)
+                        .metadata(src.getMetadata() != null ? new HashMap<>(src.getMetadata()) : new HashMap<>())
+                        .build()
+                    : src;
+
+            if (log.isDebugEnabled() && src.getMetadata() != null && !src.getMetadata().isEmpty()) {
+                log.debug("Rerank 后 metadata 已保留: id={}, metaSize={}",
+                        hit.getId(), hit.getMetadata() != null ? hit.getMetadata().size() : 0);
+            }
             reranked.add(hit);
             addedIds.add(src.getId());
 

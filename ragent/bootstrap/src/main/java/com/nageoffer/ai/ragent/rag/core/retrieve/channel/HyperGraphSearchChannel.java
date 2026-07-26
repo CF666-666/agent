@@ -19,6 +19,7 @@ package com.nageoffer.ai.ragent.rag.core.retrieve.channel;
 
 import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityExtractor;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph.SubgraphMatchResult;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.StringJoiner;
 
 /**
  * 超图 N 元关系检索通道
@@ -112,13 +116,20 @@ public class HyperGraphSearchChannel implements SearchChannel {
             List<RetrievedChunk> chunks = new ArrayList<>();
             float entityCount = entities.size();
             for (SubgraphMatchResult result : matched) {
-                String text = hyperGraph.expandToText(result.hyperEdge());
+                HyperEdge edge = result.hyperEdge();
+                String text = hyperGraph.expandToText(edge);
                 float score = result.matchCount() / entityCount;
 
+                Map<String, Object> meta = new HashMap<>();
+                meta.put("source", SearchChannelType.HYPERGRAPH.name());
+                meta.put("hyperEdgePath", buildStructuredPath(edge));
+                meta.put("matchCount", result.matchCount());
+
                 chunks.add(RetrievedChunk.builder()
-                        .id(result.hyperEdge().getEdgeId())
+                        .id(edge.getEdgeId())
                         .text(text)
                         .score(score)
+                        .metadata(meta)
                         .build());
             }
 
@@ -146,5 +157,26 @@ public class HyperGraphSearchChannel implements SearchChannel {
     @Override
     public SearchChannelType getType() {
         return SearchChannelType.HYPERGRAPH;
+    }
+
+    /**
+     * 构建结构化推理路径（前端渲染用）
+     * <p>
+     * 将超边的 4 个核心字段按 "equipment → condition → parameter → fault" 顺序
+     * 用 {@code →} 分隔。前端收到后可直接 split 渲染为节点链。
+     * <p>
+     * 示例输出：{@code "1号鼓风机 → 冷却水不足 → 电机过载 → 跳闸"}
+     *
+     * @param edge 超边
+     * @return 结构化路径字符串，纯字符串格式与整条链路类型一致
+     */
+    // package-private for unit test access
+    static String buildStructuredPath(HyperEdge edge) {
+        StringJoiner sj = new StringJoiner(" → ");
+        if (edge.getEquipment() != null) sj.add(edge.getEquipment());
+        if (edge.getCondition() != null) sj.add(edge.getCondition());
+        if (edge.getParameter() != null) sj.add(edge.getParameter());
+        if (edge.getFault() != null) sj.add(edge.getFault());
+        return sj.toString();
     }
 }

@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 工业图像语义检索通道
@@ -48,6 +49,7 @@ public class ImageSearchChannel implements SearchChannel {
     private static final String COLLECTION_NAME = "industrial_images";
     private static final int PRIORITY = 20; // 低于文本通道(10)，作为补充检索
     private static final int TOP_K = 5;
+    private static final String SOURCE = SearchChannelType.IMAGE_SEMANTIC.name();
 
     private final RetrieverService retrieverService;
 
@@ -83,6 +85,16 @@ public class ImageSearchChannel implements SearchChannel {
         long start = System.currentTimeMillis();
         List<RetrievedChunk> chunks = retrieverService.retrieve(request);
         long latency = System.currentTimeMillis() - start;
+
+        // Phase 4: 填充 source 标识到 chunk metadata
+        for (RetrievedChunk chunk : chunks) {
+            Map<String, Object> meta = chunk.getMetadata();
+            if (meta == null) {
+                meta = new java.util.HashMap<>();
+                chunk.setMetadata(meta);
+            }
+            meta.putIfAbsent("source", SOURCE);
+        }
 
         log.info("{} 检索完成: 命中文档={}, 耗时={}ms", CHANNEL_NAME, chunks.size(), latency);
         return SearchChannelResult.builder()
