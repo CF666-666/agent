@@ -65,7 +65,7 @@ public class DefaultContextFormatter implements ContextFormatter {
         String snippet = StrUtil.emptyIfNull(nodeScore.getNode().getPromptSnippet()).trim();
         String body = chunks.stream()
                 .limit(topK)
-                .map(RetrievedChunk::getText)
+                .map(this::formatChunkWithSource)
                 .collect(Collectors.joining("\n"));
         StringBuilder block = new StringBuilder();
         if (StrUtil.isNotBlank(snippet)) {
@@ -106,7 +106,7 @@ public class DefaultContextFormatter implements ContextFormatter {
 
         if (!allChunks.isEmpty()) {
             String body = allChunks.stream()
-                    .map(RetrievedChunk::getText)
+                    .map(this::formatChunkWithSource)
                     .collect(Collectors.joining("\n"));
             result.append("#### 知识库片段\n````text\n").append(body).append("\n````");
         }
@@ -136,7 +136,7 @@ public class DefaultContextFormatter implements ContextFormatter {
         }
 
         String body = chunks.stream()
-                .map(RetrievedChunk::getText)
+                .map(this::formatChunkWithSource)
                 .collect(Collectors.joining("\n"));
         return "#### 知识库片段\n````text\n" + body + "\n````";
     }
@@ -223,5 +223,44 @@ public class DefaultContextFormatter implements ContextFormatter {
         }
 
         return sb.toString().trim();
+    }
+
+    /**
+     * 按 chunk metadata["source"] 生成中文注解前缀（Phase 4 扩展）
+     * <p>
+     * LLM 通过 {@code [推理路径]}、{@code [图纸描述]} 等注解感知信息来源类型，
+     * 提升答案的引用能力。
+     *
+     * @param chunk 检索命中结果
+     * @return 注解前缀字符串，无注解时返回空串
+     */
+    private String annotateChunkBySource(RetrievedChunk chunk) {
+        Map<String, Object> meta = chunk.getMetadata();
+        if (meta == null) {
+            return "";
+        }
+        String source = (String) meta.get("source");
+        if ("IMAGE_SEMANTIC".equals(source)) {
+            return "[图纸描述] ";
+        }
+        if ("HYPERGRAPH".equals(source)) {
+            Object path = meta.get("hyperEdgePath");
+            if (path != null) {
+                return "[推理路径: " + path + "] ";
+            }
+            return "[推理路径] ";
+        }
+        return "";
+    }
+
+    /**
+     * 将 chunk 文本与来源注解拼接（Phase 4 扩展）
+     *
+     * @param chunk 检索命中结果
+     * @return 注解前缀 + 原文内容
+     */
+    private String formatChunkWithSource(RetrievedChunk chunk) {
+        String prefix = annotateChunkBySource(chunk);
+        return prefix + chunk.getText();
     }
 }
