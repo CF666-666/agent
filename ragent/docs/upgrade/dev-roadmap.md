@@ -219,7 +219,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 4.3 | `MultiSourceFusionProcessor` + `FusionProperties`（order=9，加权 + min-max + type 兜底） | `bootstrap/.../retrieve/postprocessor/` | P0 | 2h | ✅ |
 | 4.4 | 扩展 `ContextFormatter` 接口 + `DefaultContextFormatter`（按 source 分组渲染 references） | `bootstrap/.../prompt/` | P0 | 2h | ✅ |
 | 4.5 | `Reference` + `ReferenceType` + SSE 事件 `references` 推送 + 6→3 映射 | `bootstrap/.../rag/dto/` + `service/pipeline/` + `controller/` | P0 | 1.5h | ✅ |
-| 4.6 | 端到端集成测试（三路检索 → 融合 → Rerank → 答案生成 → references 推送） | `bootstrap/src/test/` | P0 | 2h | ⬜ |
+| 4.6 | 端到端集成测试（三路检索 → 融合 → Rerank → 答案生成 → references 推送） | `bootstrap/src/test/` | P0 | 2h | ✅ |
 
 **Phase 4 产出**：
 - 端到端多模态 RAG 链路跑通
