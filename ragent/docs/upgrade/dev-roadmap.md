@@ -243,7 +243,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 5.5 | ~~视频关键帧提取~~（同上，跳过） | — | — | ⏭️ |
 | 5.6 | 从 FAQ 文本 LLM 抽取超边（500-1000 条） | `data/hypergraph/hyperedges.jsonl` | 4h | ✅ |
 | 5.7 | 全量数据入库脚本（幂等：先删再全量写入 FAQ + 图像） | `scripts/ingest_to_milvus.py` → Phase5DataIngestionRunner.java | 3h | ✅ |
-| 5.8 | 准备 5 个典型工业 Query 作为端到端演示用例（覆盖文本/图像/超图 3 路） | `docs/demo_queries.md` | 1h | ⬜ |
+| 5.8 | 准备 5 个典型工业 Query 作为端到端演示用例（覆盖文本/图像/超图 3 路） | `docs/demo_queries.md` | 1h | ✅ |
 
 **Phase 5 产出**：
 - 完整生产数据集（覆盖文本/图像/视频/超边 4 类数据）
