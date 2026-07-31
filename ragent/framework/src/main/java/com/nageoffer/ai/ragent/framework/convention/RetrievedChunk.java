@@ -29,7 +29,7 @@ import java.util.Map;
  * RAG 检索命中结果
  * <p>
  * 表示一次向量检索或相关性搜索命中的单条记录
- * 包含原始文档片段 主键以及相关性得分
+ * 包含原始文档片段、主键以及相关性得分
  * <p>
  * Phase 4 扩展：
  * <ul>
@@ -92,7 +92,7 @@ public class RetrievedChunk {
     /**
      * 向后兼容构造器（Phase 4 过渡期使用）
      * <p>
-     * 兼容老调用方（如 {@code MilvusRetrieverService} L89、{@code BaiLianRerankClient} L163）的 3 参数构造，新代码请使用 {@link #builder()}。
+     * 兼容老调用方的 3 参数构造，所有已知调用方已迁移至 builder 模式。新代码请使用 {@link #builder()}。
      * <p>
      * 委托给全字段构造器（{@link #RetrievedChunk(String, String, Float, Map)}），未来新增字段时只需修改一处。
      *
