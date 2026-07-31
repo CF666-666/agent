@@ -237,7 +237,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | # | 任务 | 产出 | 预计工时 | 状态 |
 |:--:|------|------|:--:|:--:|
 | 5.1 | LLM 批量生成工业 FAQ（钢铁/石化/电力 3 个场景，200-300 条） | `data/faq/industrial_faq.jsonl` | 4h | ✅ |
-| 5.2 | 收集设备图纸素材（维基 Commons、GrabCAD、Thingiverse，10-15 张） | `data/images/drawings/` | 3h | ⬜ |
+| 5.2 | 收集设备图纸素材（维基 Commons、GrabCAD、Thingiverse，10-15 张） | `data/images/drawings/` | 3h | ✅ |
 | 5.3 | Qwen-VL 批量生成图像描述 | `data/images/descriptions.jsonl` | 2h | ⬜ |
 | 5.4 | 采集维修操作视频（YouTube，3-5 段，标注来源） | `data/videos/` | 3h | ⬜ |
 | 5.5 | 视频关键帧提取 + Qwen-VL 帧描述 | `data/videos/keyframes/` | 3h | ⬜ |
