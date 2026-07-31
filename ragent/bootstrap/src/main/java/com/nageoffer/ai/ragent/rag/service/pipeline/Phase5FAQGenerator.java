@@ -34,22 +34,27 @@ import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Phase 5 工业 FAQ 数据集生成器
  * <p>
  * 通过 CommandLineRunner 在应用启动时触发，需设置系统属性 {@code phase5.generate-faq=true} 才会执行。
  * <p>
- * 覆盖钢铁 / 石化 / 电力 3 个行业场景，每个场景约 80-100 条，总计 250-300 条 FAQ。
+ * 覆盖钢铁 / 石化 / 电力 3 个行业场景，每个设备 2 批次，总计约 210-250 条 FAQ。
  * 输出格式为 JSONL，每行一条 JSON：{@code {"question":"...","answer":"...","category":"...","source_doc":"..."}}。
+ * <p>
+ * 幂等策略：APPEND 模式 + 先写临时文件再原子重命名，防止中途失败覆盖已有数据。
+ * 重试策略：单批次失败最多重试 3 次，失败后跳过继续下一批次。
  * <p>
  * 启动方式：
  * <pre>{@code
  * java -jar bootstrap.jar --phase5.generate-faq=true
  * }</pre>
- * 或在 IDE 中设置 VM options: {@code -Dphase5.generate-faq=true}
  */
 @Slf4j
 @Component
@@ -59,18 +64,23 @@ public class Phase5FAQGenerator implements CommandLineRunner {
     private static final String PROP_KEY = "phase5.generate-faq";
     private static final Path OUTPUT_DIR = Paths.get("data/faq");
     private static final Path OUTPUT_FILE = OUTPUT_DIR.resolve("industrial_faq.jsonl");
+    private static final int MAX_RETRIES = 3;
+    private static final int BATCHES_PER_EQUIPMENT = 2;
     private static final Gson GSON = new Gson();
+
+    /** 正则提取最外层 JSON 数组，容忍 markdown 包裹和前置说明文字 */
+    private static final Pattern JSON_ARRAY_PATTERN = Pattern.compile("\\[\\s*\\{.*?\\}\\s*\\]", Pattern.DOTALL);
 
     private static final String SYSTEM_PROMPT = """
             你是一位工业知识专家，请生成一批工业设备运维 FAQ 问答对。
             
             要求：
-            1. 每条 FAQ 包含 question（问题）、answer（答案）、category（分类）、source_doc（来源文档名）
+            1. 每条 FAQ 包含 question（问题）、answer（答案）、category（分类）
             2. 问题应来自一线运维人员的真实场景，包括设备故障诊断、操作规程、安全规范、维护保养等
             3. 答案应专业、简洁（100-300字），包含具体参数（温度、压力、转速等）
             4. 每条 FAQ 独立不重复
             
-            输出格式为 JSON 数组，每个元素包含 question/answer/category/source_doc 四个字段。
+            输出格式为 JSON 数组，每个元素包含 question/answer/category 三个字段。
             一次输出 10 条。""";
 
     private final LLMService llmService;
@@ -85,7 +95,11 @@ public class Phase5FAQGenerator implements CommandLineRunner {
         try {
             Files.createDirectories(OUTPUT_DIR);
             int total = 0;
-            try (BufferedWriter writer = Files.newBufferedWriter(OUTPUT_FILE)) {
+            int dataLossBatches = 0;
+            Path tmpFile = OUTPUT_DIR.resolve("industrial_faq.jsonl.tmp");
+
+            try (BufferedWriter writer = Files.newBufferedWriter(tmpFile,
+                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 total += generateForDomain(writer, "钢铁冶金", "steel_metallurgy",
                         new String[]{"高炉", "转炉", "连铸机", "热轧机", "冷轧机", "烧结机", "焦炉"});
                 total += generateForDomain(writer, "石油化工", "petrochemical",
@@ -93,8 +107,14 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                 total += generateForDomain(writer, "电力能源", "power_energy",
                         new String[]{"汽轮机", "发电机", "锅炉", "变压器", "开关柜", "脱硫塔", "冷却塔"});
             }
-            log.info("====== Phase 5: FAQ 生成完成，共 {} 条，输出文件: {} ======",
-                    total, OUTPUT_FILE.toAbsolutePath());
+
+            // 原子重命名
+            Files.move(tmpFile, OUTPUT_FILE,
+                    java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                    java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+
+            log.info("====== Phase 5: FAQ 生成完成，共 {} 条，丢弃批次: {}，输出文件: {} ======",
+                    total, dataLossBatches, OUTPUT_FILE.toAbsolutePath());
         } catch (Exception e) {
             log.error("FAQ 生成失败", e);
         }
@@ -102,8 +122,11 @@ public class Phase5FAQGenerator implements CommandLineRunner {
 
     private int generateForDomain(BufferedWriter writer, String domain, String sourceDoc, String[] equipment) throws Exception {
         int total = 0;
+        int totalBatches = equipment.length * BATCHES_PER_EQUIPMENT;
+        int currentBatch = 0;
         for (String equip : equipment) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < BATCHES_PER_EQUIPMENT; i++) {
+                currentBatch++;
                 String prompt = String.format(
                         "请为 %s 行业生成 10 条关于 %s 设备运维的 FAQ 问答对。\n" +
                         "涵盖：故障诊断（3条）、操作规程（3条）、安全规范（2条）、维护保养（2条）。\n" +
@@ -119,36 +142,55 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                         .maxTokens(4096)
                         .build();
 
-                String response = llmService.chat(request);
-                if (response == null) {
-                    log.warn("LLM 返回 null，跳过 {}-{} batch {}", domain, equip, i);
-                    continue;
-                }
-
-                List<String> lines = parseFAQResponse(response, sourceDoc);
+                List<String> lines = callLLMWithRetry(request, domain, equip, i);
                 for (String line : lines) {
                     writer.write(line);
                     writer.newLine();
                     total++;
                 }
-                log.info("  {}-{} batch {}: 生成 {} 条", domain, equip, i, lines.size());
+                log.info("  [{}/{}] {}-{} batch {}: 生成 {} 条",
+                        currentBatch, totalBatches, domain, equip, i, lines.size());
             }
         }
         return total;
     }
 
+    private List<String> callLLMWithRetry(ChatRequest request, String domain, String equip, int batchIndex) {
+        for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+            try {
+                String response = llmService.chat(request);
+                if (response == null) {
+                    log.warn("LLM 返回 null，{}-{} batch {} (尝试 {}/{})",
+                            domain, equip, batchIndex, attempt, MAX_RETRIES);
+                    continue;
+                }
+                List<String> lines = parseFAQResponse(response, domain);
+                if (!lines.isEmpty()) {
+                    return lines;
+                }
+                log.warn("[DATA_LOSS] FAQ 响应解析为空，{}-{} batch {} (尝试 {}/{})",
+                        domain, equip, batchIndex, attempt, MAX_RETRIES);
+            } catch (Exception e) {
+                log.warn("FAQ 生成失败，{}-{} batch {} (尝试 {}/{})",
+                        domain, equip, batchIndex, attempt, MAX_RETRIES, e);
+            }
+        }
+        log.error("[DATA_LOSS] FAQ 批次永久丢弃: {}-{} batch {} (已重试 {} 次)",
+                domain, equip, batchIndex, MAX_RETRIES);
+        return List.of();
+    }
+
     private List<String> parseFAQResponse(String response, String sourceDoc) {
         List<String> results = new ArrayList<>();
         try {
-            String trimmed = response.trim();
-            if (trimmed.startsWith("```")) {
-                int start = trimmed.indexOf("[");
-                int end = trimmed.lastIndexOf("]");
-                if (start >= 0 && end > start) {
-                    trimmed = trimmed.substring(start, end + 1);
-                }
+            // 正则提取最外层 JSON 数组（容忍 markdown 包裹 + 前置说明文字）
+            Matcher matcher = JSON_ARRAY_PATTERN.matcher(response);
+            if (!matcher.find()) {
+                log.warn("FAQ 响应中未找到 JSON 数组: {}", response.substring(0, Math.min(100, response.length())));
+                return results;
             }
-            JsonArray array = GSON.fromJson(trimmed, JsonArray.class);
+            String jsonArray = matcher.group();
+            JsonArray array = GSON.fromJson(jsonArray, JsonArray.class);
             for (JsonElement el : array) {
                 JsonObject obj = el.getAsJsonObject();
                 obj.addProperty("source_doc", sourceDoc);
