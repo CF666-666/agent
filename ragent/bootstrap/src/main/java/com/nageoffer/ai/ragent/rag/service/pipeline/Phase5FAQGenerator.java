@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * <p>
  * 通过 CommandLineRunner 在应用启动时触发，需设置系统属性 {@code phase5.generate-faq=true} 才会执行。
  * <p>
- * 覆盖钢铁 / 石化 / 电力 3 个行业场景，每个设备 2 批次，总计约 210-250 条 FAQ。
+ * 覆盖钢铁 / 石化 / 电力 3 个行业场景，每个设备 1 批次（3×7×1×10=210 条），总计约 210 条 FAQ。
  * 输出格式为 JSONL，每行一条 JSON：{@code {"question":"...","answer":"...","category":"...","source_doc":"..."}}。
  * <p>
  * 幂等策略：APPEND 模式 + 先写临时文件再原子重命名，防止中途失败覆盖已有数据。
@@ -66,11 +66,12 @@ public class Phase5FAQGenerator implements CommandLineRunner {
     private static final Path OUTPUT_DIR = Paths.get("data/faq");
     private static final Path OUTPUT_FILE = OUTPUT_DIR.resolve("industrial_faq.jsonl");
     private static final int MAX_RETRIES = 3;
-    private static final int BATCHES_PER_EQUIPMENT = 2;
+    /** 每个设备生成批次数，3行业×7设备×1批次×10条=210条 */ 
+    private static final int BATCHES_PER_EQUIPMENT = 1;
     private static final Gson GSON = new Gson();
 
-    /** 正则提取最外层 JSON 数组，容忍 markdown 包裹和前置说明文字 */
-    private static final Pattern JSON_ARRAY_PATTERN = Pattern.compile("\\[\\s*\\{.*?\\}\\s*\\]", Pattern.DOTALL);
+    /** 正则提取最外层 JSON 数组（贪婪匹配完整数组，容忍 markdown 包裹和前置说明文字） */
+    private static final Pattern JSON_ARRAY_PATTERN = Pattern.compile("\\[\\s*\\{.*\\}\\s*\\]", Pattern.DOTALL);
 
     private static final String SYSTEM_PROMPT = """
             你是一位工业知识专家，请生成一批工业设备运维 FAQ 问答对。
@@ -93,11 +94,11 @@ public class Phase5FAQGenerator implements CommandLineRunner {
             return;
         }
         log.info("====== Phase 5: 开始生成工业 FAQ 数据集 ======");
+        Path tmpFile = OUTPUT_FILE.resolveSibling(OUTPUT_FILE.getFileName() + ".tmp");
         try {
             Files.createDirectories(OUTPUT_DIR);
             int total = 0;
             AtomicInteger dataLossBatches = new AtomicInteger(0);
-            Path tmpFile = OUTPUT_FILE.resolveSibling(OUTPUT_FILE.getFileName() + ".tmp");
 
             try (BufferedWriter writer = Files.newBufferedWriter(tmpFile,
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
@@ -118,6 +119,11 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                     total, dataLossBatches.get(), OUTPUT_FILE.toAbsolutePath());
         } catch (Exception e) {
             log.error("FAQ 生成失败", e);
+            try {
+                Files.deleteIfExists(tmpFile);
+            } catch (Exception ignored) {
+                // best-effort cleanup
+            }
         }
     }
 
@@ -143,7 +149,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                         .maxTokens(4096)
                         .build();
 
-                List<String> lines = callLLMWithRetry(request, domain, equip, i, dataLossBatches);
+                List<String> lines = callLLMWithRetry(request, domain, equip, i, sourceDoc, dataLossBatches);
                 for (String line : lines) {
                     writer.write(line);
                     writer.newLine();
@@ -156,7 +162,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
         return total;
     }
 
-    private List<String> callLLMWithRetry(ChatRequest request, String domain, String equip, int batchIndex, AtomicInteger dataLossBatches) {
+    private List<String> callLLMWithRetry(ChatRequest request, String domain, String equip, int batchIndex, String sourceDoc, AtomicInteger dataLossBatches) {
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 String response = llmService.chat(request);
@@ -165,7 +171,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                             domain, equip, batchIndex, attempt, MAX_RETRIES);
                     continue;
                 }
-                List<String> lines = parseFAQResponse(response, domain);
+                List<String> lines = parseFAQResponse(response, sourceDoc);
                 if (!lines.isEmpty()) {
                     return lines;
                 }
@@ -188,7 +194,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
             // 正则提取最外层 JSON 数组（容忍 markdown 包裹 + 前置说明文字）
             Matcher matcher = JSON_ARRAY_PATTERN.matcher(response);
             if (!matcher.find()) {
-                log.warn("FAQ 响应中未找到 JSON 数组: {}", response.substring(0, Math.min(100, response.length())));
+                log.warn("FAQ 响应中未找到 JSON 数组: {}", response.substring(0, Math.min(300, response.length())));
                 return results;
             }
             String jsonArray = matcher.group();
@@ -199,7 +205,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                 results.add(GSON.toJson(obj));
             }
         } catch (Exception e) {
-            log.warn("FAQ 响应解析失败: {}", response.substring(0, Math.min(100, response.length())), e);
+            log.warn("FAQ 响应解析失败: {}", response.substring(0, Math.min(300, response.length())), e);
         }
         return results;
     }
