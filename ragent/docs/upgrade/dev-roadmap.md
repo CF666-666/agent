@@ -239,9 +239,9 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 5.1 | LLM 批量生成工业 FAQ（钢铁/石化/电力 3 个场景，200-300 条） | `data/faq/industrial_faq.jsonl` | 4h | ✅ |
 | 5.2 | 收集设备图纸素材（维基 Commons、GrabCAD、Thingiverse，10-15 张） | `data/images/drawings/` | 3h | ✅ |
 | 5.3 | Qwen-VL 批量生成图像描述 | `data/images/descriptions.jsonl` | 2h | ✅ |
-| 5.4 | 采集维修操作视频（YouTube，3-5 段，标注来源） | `data/videos/` | 3h | ⬜ |
-| 5.5 | 视频关键帧提取 + Qwen-VL 帧描述 | `data/videos/keyframes/` | 3h | ⬜ |
-| 5.6 | 从 FAQ 文本 LLM 抽取超边（500-1000 条） | `data/hypergraph/hyperedges.jsonl` | 4h | ⬜ |
+| 5.4 | ~~采集维修操作视频~~（Phase 2 无视频检索通道，跳过） | — | — | ⏭️ |
+| 5.5 | ~~视频关键帧提取~~（同上，跳过） | — | — | ⏭️ |
+| 5.6 | 从 FAQ 文本 LLM 抽取超边（500-1000 条） | `data/hypergraph/hyperedges.jsonl` | 4h | ✅ |
 | 5.7 | 全量数据入库脚本（生产级：幂等 + 失败重试 + 进度可观测） | `scripts/ingest_to_milvus.py` | 3h | ⬜ |
 | 5.8 | 准备 5 个典型工业 Query 作为端到端演示用例（覆盖文本/图像/超图 3 路） | `docs/demo_queries.md` | 1h | ⬜ |
 
