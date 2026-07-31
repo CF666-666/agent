@@ -1,0 +1,633 @@
+{"edgeId":"157d43fd-ef55-4547-96b9-cb66c458da76","equipment":"高炉冷却壁","parameter":"冷却水进出口温差","fault":"漏水故障","sourceDocument":"inline"}
+{"edgeId":"a6e34df8-9367-4560-b2a4-47f36cc3f4ff","equipment":"高炉冷却壁","parameter":"炉壳表面温度","fault":"冷却失效","sourceDocument":"inline"}
+{"edgeId":"9ef606af-7ebf-437c-896e-1876e89f9d3a","equipment":"高炉冷却壁","parameter":"水质pH值","sourceDocument":"inline"}
+{"edgeId":"beb67fe3-1b0e-4e52-b0fa-abfdd65aa012","equipment":"高炉冷却壁","parameter":"水电导率","sourceDocument":"inline"}
+{"edgeId":"49b39874-f196-486f-beb7-23e60ef8ba80","equipment":"高炉冷却壁","condition":"停炉状态","parameter":"打压测试压力","fault":"泄漏点确认","sourceDocument":"inline"}
+{"edgeId":"cb8d61ef-45f7-49fd-9af9-d1cac629d641","equipment":"高炉炉缸","parameter":"侧壁热电偶监测温度持续超过300℃、相邻测点温差＞50℃、热流强度＞25 kW/m²","fault":"耐火砖侵蚀严重","sourceDocument":"inline"}
+{"edgeId":"0189ab8a-2a20-4f49-9202-91da8d1616d9","equipment":"高炉","parameter":"炉顶压力波动","fault":"料面崩料频繁","sourceDocument":"inline"}
+{"edgeId":"0452e0f8-303f-49a4-a3a5-dac8d68c4bbd","equipment":"高炉","parameter":"炉喉温度","fault":"料面崩料频繁","sourceDocument":"inline"}
+{"edgeId":"df8a9981-df49-4120-a57c-72054517a0e2","equipment":"高炉","parameter":"焦炭M40强度","fault":"料柱塌陷","sourceDocument":"inline"}
+{"edgeId":"1a9ffca8-26ed-45b1-9356-8b60337fe3a8","equipment":"高炉","parameter":"入炉矿粉率","fault":"料柱塌陷","sourceDocument":"inline"}
+{"edgeId":"77895afb-bd9d-43b2-b7ed-7f7faa82bd4e","equipment":"高炉","parameter":"布料矩阵","fault":"中心过重","sourceDocument":"inline"}
+{"edgeId":"c6768014-bfb0-40dd-9099-4d6e87eee9d7","equipment":"高炉","parameter":"压差","fault":"料面崩料频繁","sourceDocument":"inline"}
+{"edgeId":"71d5858f-a192-4f1e-9052-01113fd7ab6e","equipment":"高炉","parameter":"α角","sourceDocument":"inline"}
+{"edgeId":"78540a53-171b-452f-b9b3-8ea99d9feba2","equipment":"高炉","condition":"开炉送风前烘炉完成（炉缸温度≥300℃，炉身≥150℃）","parameter":"初始风量（0.8–1.0 m³/min·m³炉容）","sourceDocument":"inline"}
+{"edgeId":"3df8a323-98cd-463e-aaf8-72d680f99e5b","equipment":"高炉","condition":"送风后逐步加风阶段","parameter":"风口状态","sourceDocument":"inline"}
+{"edgeId":"7765d88d-7db9-48db-9723-0cbb7f2268a3","equipment":"高炉","condition":"休风复风时","parameter":"风量恢复节奏","sourceDocument":"inline"}
+{"edgeId":"0c8c7c9e-4724-44b4-9475-af318de0c9de","equipment":"无钟炉顶","condition":"炉顶压力＞220 kPa或温度＞300℃","parameter":"炉顶压力、温度","sourceDocument":"inline"}
+{"edgeId":"4f8376dd-1fd6-4825-8685-146f530accf7","equipment":"无钟炉顶","parameter":"密封阀与料流调节阀联锁","sourceDocument":"inline"}
+{"edgeId":"e457ca45-0dba-42c6-88e6-6611949b9c64","equipment":"无钟炉顶","parameter":"γ角（溜槽倾角）","sourceDocument":"inline"}
+{"edgeId":"be4fc360-1d54-48fc-a1f9-1877f9c35fad","equipment":"无钟炉顶","parameter":"每批料旋转角度偏差","sourceDocument":"inline"}
+{"edgeId":"05af7f3e-e7f1-4ff6-8493-c0dd3d068d3c","equipment":"无钟炉顶","parameter":"料罐均压压力","sourceDocument":"inline"}
+{"edgeId":"ca148a05-ae24-444b-9398-fd31820590a8","equipment":"无钟炉顶","parameter":"均压时间","sourceDocument":"inline"}
+{"edgeId":"98a248c9-fa2f-49c1-9eb6-2f42c1ceeead","equipment":"高炉","condition":"煤气区域作业","parameter":"CO浓度","sourceDocument":"inline"}
+{"edgeId":"43d273b2-cbc5-43aa-8e55-a29fec5a54af","equipment":"高炉","condition":"动火作业","parameter":"O₂含量、CO浓度","sourceDocument":"inline"}
+{"edgeId":"da9b25b4-f0c4-4cbe-9d6a-8786617a0839","equipment":"高炉","condition":"休风后作业","parameter":"通风时间、气体检测","sourceDocument":"inline"}
+{"edgeId":"70601a65-c523-43be-a272-a3d2e81ef551","equipment":"高炉风口平台","parameter":"CO浓度","sourceDocument":"inline"}
+{"edgeId":"878c6401-0fc6-41f0-b7d6-dba2064d05f9","equipment":"高炉冷却系统","condition":"日常维护","parameter":"软水密闭循环系统膨胀罐液位","sourceDocument":"inline"}
+{"edgeId":"dd6e9b75-1073-4a9c-acd0-dee0116d5f00","equipment":"高炉冷却系统","condition":"日常维护","parameter":"系统压力","sourceDocument":"inline"}
+{"edgeId":"8bf6ee5b-2c98-46bb-bdcc-9c8483cbc810","equipment":"高炉冷却系统","condition":"日常维护","parameter":"冷却壁进出水温差","sourceDocument":"inline"}
+{"edgeId":"5f4d631f-600d-434a-8b22-be2f11a114c8","equipment":"高炉冷却系统","condition":"日常维护","parameter":"回水温度","sourceDocument":"inline"}
+{"edgeId":"008b6dda-9cb3-4d3f-8c5c-2992ccbb9891","equipment":"高炉冷却系统","condition":"每月维护","parameter":"过滤器清洗","sourceDocument":"inline"}
+{"edgeId":"6225f7f3-4fa5-4a55-a1fa-bb29503aad06","equipment":"高炉冷却系统","condition":"每月维护","parameter":"水质硬度","sourceDocument":"inline"}
+{"edgeId":"9a1acf06-b947-4d97-9d97-b89bb117e1eb","equipment":"高炉冷却系统","condition":"每月维护","parameter":"氯离子浓度","sourceDocument":"inline"}
+{"edgeId":"43cdec07-4894-402d-b1b8-80afcd913915","equipment":"高炉冷却系统","parameter":"流量","fault":"流量下降10%以上","sourceDocument":"inline"}
+{"edgeId":"ddaa01c6-368d-4050-99e0-4b09273fa4bb","equipment":"高炉冷却系统","parameter":"局部温度","fault":"局部温升","sourceDocument":"inline"}
+{"edgeId":"62b27f70-4f77-402d-aed5-182452604320","equipment":"高炉液压泥炮","parameter":"打泥压力","sourceDocument":"inline"}
+{"edgeId":"f02fe6a0-8b75-4fca-b03a-1cf05964a12f","equipment":"高炉液压泥炮","parameter":"炮嘴磨损量","sourceDocument":"inline"}
+{"edgeId":"bb219c1a-4cf1-4879-a0c8-80981c5e3f4b","equipment":"开口机","parameter":"钻杆同心度","sourceDocument":"inline"}
+{"edgeId":"19ad0add-b79a-4537-a1b7-3b195ded18f1","equipment":"开口机","parameter":"减速机油温","fault":"温度过高","sourceDocument":"inline"}
+{"edgeId":"36398bb6-30ef-4298-9a02-2f611e88cf04","equipment":"高炉液压泥炮","parameter":"回转轴承和链条润滑","sourceDocument":"inline"}
+{"edgeId":"4ddd8e6d-7fd8-4f87-9540-cf8313a8e6c6","equipment":"液压系统","parameter":"油品黏度变化率","sourceDocument":"inline"}
+{"edgeId":"1bf4a60f-a564-471b-84d8-68d0e7d86963","equipment":"液压系统","parameter":"油品污染度等级","sourceDocument":"inline"}
+{"edgeId":"61923fd2-1f52-41ca-bdb3-4ac021fb6530","equipment":"转炉氧枪","parameter":"回水温度","fault":"异常升高","sourceDocument":"inline"}
+{"edgeId":"24920a95-24db-4381-905e-8bc7992e9848","equipment":"转炉氧枪","parameter":"回水量","fault":"减少","sourceDocument":"inline"}
+{"edgeId":"54139495-4990-45f5-9468-1d268100ea1c","equipment":"转炉氧枪","parameter":"冷却水pH值","sourceDocument":"inline"}
+{"edgeId":"b1aa0206-ea71-43c7-a38d-b95bf30a5899","equipment":"转炉氧枪","parameter":"局部热点","sourceDocument":"inline"}
+{"edgeId":"67617101-fed7-4d2a-bf7e-9c25be1c8e38","equipment":"转炉氧枪","fault":"喷头焊缝开裂","sourceDocument":"inline"}
+{"edgeId":"556e42df-9f63-4b17-80de-9b954e7d1601","equipment":"转炉氧枪","fault":"冷却水管腐蚀穿孔","sourceDocument":"inline"}
+{"edgeId":"769f89d9-643b-42c9-b4c3-770789fc8dee","equipment":"转炉氧枪","fault":"密封圈老化","sourceDocument":"inline"}
+{"edgeId":"fe54a3a8-59e6-463b-9336-76549c3332ad","equipment":"转炉倾动系统","parameter":"耳轴轴承间隙","fault":"异响和振动","sourceDocument":"inline"}
+{"edgeId":"43b6ab37-f20b-47ad-9426-7771d700d7d6","equipment":"转炉倾动系统","parameter":"减速机振动速度","fault":"异响和振动","sourceDocument":"inline"}
+{"edgeId":"92fced97-78bf-45e7-bb91-112b33dc6fc6","equipment":"转炉倾动系统","parameter":"倾动电机电流波动","sourceDocument":"inline"}
+{"edgeId":"0bcf1b9a-25c6-4b4b-b725-5bb43c1f2f31","equipment":"转炉倾动系统","parameter":"轴承温度","sourceDocument":"inline"}
+{"edgeId":"29369aeb-5d52-4cb7-a244-1a0d2ae97c09","equipment":"转炉","parameter":"炉衬温度","fault":"异常剥落","sourceDocument":"inline"}
+{"edgeId":"0d69aa4f-5ed6-4df8-923c-b62012d94699","equipment":"氧枪","condition":"转炉吹炼过程","parameter":"枪位","sourceDocument":"inline"}
+{"edgeId":"c7bc4bb5-c74a-42d8-b95a-17ce689295b3","equipment":"氧枪","condition":"转炉吹炼过程","parameter":"供氧压力","sourceDocument":"inline"}
+{"edgeId":"1e8066a3-63a5-4b0a-9d6c-41dc4e4d9ea9","equipment":"氧枪","condition":"转炉吹炼过程","parameter":"氧气流量","sourceDocument":"inline"}
+{"edgeId":"f74575dc-59a6-4689-bbcb-32e38164f679","equipment":"氧枪","condition":"返干工况","parameter":"枪位调整","sourceDocument":"inline"}
+{"edgeId":"cb85c022-8c04-4876-920d-cd0fc75eeb1f","equipment":"氧枪","condition":"大喷工况","parameter":"枪位调整","sourceDocument":"inline"}
+{"edgeId":"045c940c-66d9-4263-943d-f004d540c227","equipment":"氧枪","condition":"氧压异常","parameter":"供氧压力","fault":"烧枪事故","sourceDocument":"inline"}
+{"edgeId":"b64ebebd-fa45-4dae-a703-0677b19cf28f","equipment":"氧枪","condition":"冷却水异常","parameter":"冷却水流量","fault":"烧枪事故","sourceDocument":"inline"}
+{"edgeId":"7fe8c097-b67e-402c-82f6-6e20ec24a6cd","equipment":"转炉","condition":"兑铁前","parameter":"炉体倾角","sourceDocument":"inline"}
+{"edgeId":"c32db05a-133a-4285-8752-362782c61156","equipment":"转炉","condition":"兑铁前","parameter":"氧枪位置","sourceDocument":"inline"}
+{"edgeId":"adf69a79-2349-43ce-b15f-f1b580efd9ee","equipment":"转炉","condition":"兑铁前","parameter":"烟罩位置","sourceDocument":"inline"}
+{"edgeId":"d363515f-8f79-4569-b6d2-a05f0d5d0f82","equipment":"铁水包","condition":"兑铁前","parameter":"龙门钩与包嘴状态","sourceDocument":"inline"}
+{"edgeId":"d7dc5ec5-8647-4c3d-aebf-e71fce97416b","equipment":"转炉","condition":"兑铁前","parameter":"声光报警系统","sourceDocument":"inline"}
+{"edgeId":"d5d6ae64-cdfa-41e2-93f9-2da9f3ec1c0a","equipment":"铁水","condition":"兑铁前","parameter":"铁水温度","sourceDocument":"inline"}
+{"edgeId":"9600ac94-cae5-4b5a-b6a3-93605598e0e0","equipment":"铁水","condition":"兑铁前","parameter":"硅含量","sourceDocument":"inline"}
+{"edgeId":"f09d4d7d-2b50-4000-8e60-56c580eb4d92","equipment":"转炉","condition":"出钢操作","parameter":"下渣量","sourceDocument":"inline"}
+{"edgeId":"45b888f6-2307-42ca-aca2-c925b126518e","equipment":"转炉","condition":"炉衬温度≤50℃","parameter":"O₂浓度19.5–23.5%，CO＜24 ppm","sourceDocument":"inline"}
+{"edgeId":"96763752-3ae7-4188-b104-fdc221439912","equipment":"氧枪","condition":"突发停电","parameter":"UPS电源驱动","fault":"未自动提升至上限安全位（≥5.5 m）","sourceDocument":"inline"}
+{"edgeId":"97b8a93c-c2d9-489d-bf2d-24ca1e5ad97e","equipment":"转炉托圈冷却系统","parameter":"进水温度","sourceDocument":"inline"}
+{"edgeId":"87bcb43d-78d0-4df9-a262-854687447e3b","equipment":"转炉托圈冷却系统","parameter":"回水温度","sourceDocument":"inline"}
+{"edgeId":"da19da83-c0dc-403e-b7b9-9ba807230c42","equipment":"转炉托圈冷却系统","parameter":"压差","sourceDocument":"inline"}
+{"edgeId":"5a50829c-cea6-44f5-8558-1e1f83dabeb1","equipment":"转炉托圈冷却系统","parameter":"流量","sourceDocument":"inline"}
+{"edgeId":"d4cacc0f-75b7-4f6a-aca2-0618518aa979","equipment":"转炉托圈冷却系统","parameter":"过滤器","sourceDocument":"inline"}
+{"edgeId":"ee2abd48-6bae-4e24-9abf-de89311cf5d5","equipment":"转炉托圈冷却系统","parameter":"水质硬度","sourceDocument":"inline"}
+{"edgeId":"8cbc7048-86d2-4f98-ac35-354be354b3cc","equipment":"转炉托圈冷却系统","parameter":"电导率","sourceDocument":"inline"}
+{"edgeId":"f485d1a3-7e11-4ff5-81d5-9f5048794809","equipment":"转炉托圈冷却系统","parameter":"泄漏点","fault":"高温变形","sourceDocument":"inline"}
+{"edgeId":"09f16dbc-9500-4f38-a380-959aaa2285b1","equipment":"倾动减速机","condition":"稀油集中润滑，润滑油牌号ISO VG 320，油温40–55℃","parameter":"油位、粘度变化（允许偏差±10%）、水分含量（＜0.1%）、滤芯压差、抗磨添加剂、齿轮接触斑点","sourceDocument":"inline"}
+{"edgeId":"9cf7335f-95ea-4839-b22d-30b7b8c549c1","equipment":"连铸机结晶器","parameter":"振动频率或振幅","fault":"振动异常","sourceDocument":"inline"}
+{"edgeId":"dc63c32a-d60c-4d94-9428-4c2477cd1a7d","equipment":"连铸机结晶器","parameter":"液压系统压力","fault":"压力不足","sourceDocument":"inline"}
+{"edgeId":"ff53f877-a111-4d95-ab1c-c710a36e19d5","equipment":"连铸机结晶器","parameter":"偏摆机构","fault":"磨损或润滑不良","sourceDocument":"inline"}
+{"edgeId":"2b278c2c-cc53-473d-92b3-9ea635c455db","equipment":"连铸机结晶器","parameter":"传感器信号","fault":"漂移导致闭环控制失准","sourceDocument":"inline"}
+{"edgeId":"dcb7a1d9-2132-4528-bbff-f7f379834430","equipment":"连铸机结晶器","parameter":"液压伺服阀","fault":"响应异常","sourceDocument":"inline"}
+{"edgeId":"5dddcdb3-4302-45f2-8e75-06dfb93a2eb8","equipment":"连铸机结晶器","parameter":"振动波形","fault":"不对称","sourceDocument":"inline"}
+{"edgeId":"3e92aa1a-07a9-4cf9-8dfe-f21b1708f4b6","equipment":"连铸机结晶器","parameter":"实际振幅与频率","fault":"不匹配工艺卡要求","sourceDocument":"inline"}
+{"edgeId":"37ef15c7-3042-42a3-9e2a-3a531933deb7","equipment":"拉矫机","parameter":"驱动电机电流","fault":"异常波动（超出±5%额定电流）","sourceDocument":"inline"}
+{"edgeId":"f1629777-a451-4078-a05c-119f210cc8d7","equipment":"拉矫机","parameter":"编码器信号","fault":"不稳定（脉冲误差≥0.1%）","sourceDocument":"inline"}
+{"edgeId":"3567b383-fc50-4f08-aa5f-51f7f0fb058b","equipment":"PLC控制系统","parameter":"通讯状态或I/O模块","fault":"通讯延迟或I/O模块故障","sourceDocument":"inline"}
+{"edgeId":"3d73aef0-da96-473d-9522-28eec1e92027","equipment":"二冷系统","parameter":"二冷水流量","fault":"突变（偏差≥±3%）","sourceDocument":"inline"}
+{"edgeId":"0c757d99-02d3-4d69-ac8a-404fbdb84f23","equipment":"扇形段","condition":"拉速波动伴随铸坯鼓肚","parameter":"对弧精度","fault":"超差（\u003e0.3mm/m）","sourceDocument":"inline"}
+{"edgeId":"a87e1945-062e-436b-a8ef-834933346c05","equipment":"结晶器铜板","parameter":"冷却水流量不足","fault":"局部过热甚至烧穿","sourceDocument":"inline"}
+{"edgeId":"e11da60d-435b-4b6d-837e-af25e3190770","equipment":"结晶器铜板","parameter":"水质硬度超标","fault":"结垢导致局部过热甚至烧穿","sourceDocument":"inline"}
+{"edgeId":"33de2e7b-9854-4999-b333-cafa068d2364","equipment":"结晶器铜板","parameter":"保护渣润滑不良","fault":"坯壳粘结引发局部过热甚至烧穿","sourceDocument":"inline"}
+{"edgeId":"1f9d2151-8ddb-4ed5-afd9-06921d7e018e","equipment":"结晶器铜板","parameter":"铜板装配间隙过大","fault":"热传导不均导致局部过热甚至烧穿","sourceDocument":"inline"}
+{"edgeId":"afce4e03-1b44-4d40-b0e1-211956907e61","equipment":"结晶器铜板","parameter":"水压降异常","sourceDocument":"inline"}
+{"edgeId":"8137969c-7ccc-4c16-abff-ed4af1995e4a","equipment":"结晶器铜板","parameter":"铜板剩余厚度不足","sourceDocument":"inline"}
+{"edgeId":"8ba1cffd-605f-4ce9-bb29-10bb8fa3553a","equipment":"连铸机","parameter":"结晶器断面尺寸公差","sourceDocument":"inline"}
+{"edgeId":"de02b734-5f30-468c-b2ea-581d31f90ff8","equipment":"连铸机","parameter":"引锭杆定位与密封状态","sourceDocument":"inline"}
+{"edgeId":"d4df8a32-209e-4c42-bf09-7b97d9fe5edc","equipment":"连铸机","parameter":"冷却水系统压力与流量","sourceDocument":"inline"}
+{"edgeId":"b5d6ebd6-b1f1-4974-a4a6-4cc86dac858e","equipment":"中间包","parameter":"预热温度","sourceDocument":"inline"}
+{"edgeId":"4c1e429a-04df-4e7f-a043-ef6a581cbe2f","equipment":"连铸机","parameter":"拉速曲线设定","sourceDocument":"inline"}
+{"edgeId":"42582ce5-5122-421f-8827-59645b4f8dff","equipment":"连铸机","parameter":"二冷区喷嘴覆盖率","sourceDocument":"inline"}
+{"edgeId":"0b5cda65-d696-42c9-9969-e3db24211355","equipment":"连铸机","parameter":"PLC系统与安全联锁状态","sourceDocument":"inline"}
+{"edgeId":"abfe1b15-d815-4379-87ab-fa4deeb71966","equipment":"结晶器","parameter":"振动中心线同轴度","sourceDocument":"inline"}
+{"edgeId":"0eaa82a9-fc8e-4030-8ba4-cc7fbf565cdc","equipment":"连铸机","condition":"非计划停浇后重新启动","parameter":"拉矫机夹紧力","sourceDocument":"inline"}
+{"edgeId":"1e283e83-0506-4f10-a9e1-fa90db1991e5","equipment":"连铸机","condition":"高温区作业","sourceDocument":"inline"}
+{"edgeId":"2efd0bb5-c05f-4c2f-9eba-055bf0ce20f4","equipment":"拉矫机","condition":"设备运行时","sourceDocument":"inline"}
+{"edgeId":"49a8cba7-42c4-4077-8512-5287e19c6328","equipment":"扇形段","condition":"设备运行时","sourceDocument":"inline"}
+{"edgeId":"88478695-af9e-478d-8ad3-e47a8afca357","equipment":"连铸机","condition":"漏钢事故处理","sourceDocument":"inline"}
+{"edgeId":"3bb24cc6-4051-4d92-a49e-2f9a3cd0b9e0","equipment":"连铸机","condition":"受限空间作业","parameter":"气体浓度","sourceDocument":"inline"}
+{"edgeId":"fcdd5a1f-2dfd-4a89-82e0-faa19892e8c1","equipment":"连铸机","parameter":"旋转部件状态","sourceDocument":"inline"}
+{"edgeId":"800a67ce-1a0e-4630-9c22-9a7301a05878","equipment":"连铸机液压系统","parameter":"液压油清洁度","sourceDocument":"inline"}
+{"edgeId":"46502af3-e6aa-4aa7-9ab8-8ecc947a6881","equipment":"连铸机液压系统","parameter":"系统压力","sourceDocument":"inline"}
+{"edgeId":"4e48bbf1-be82-4b2a-be38-7bfb85e56d84","equipment":"连铸机液压系统","sourceDocument":"inline"}
+{"edgeId":"032cda4b-3566-4523-9409-48090befc53e","equipment":"连铸机液压系统","parameter":"高压接头","sourceDocument":"inline"}
+{"edgeId":"c282b89f-4567-41c7-936e-1da120c692a4","equipment":"连铸机液压系统","parameter":"蓄能器氮气预充压力","sourceDocument":"inline"}
+{"edgeId":"738a7ea8-bb0c-4537-8ec1-765a63da74bb","equipment":"连铸机液压系统","parameter":"渗漏或异响","fault":"高压油喷射伤人","sourceDocument":"inline"}
+{"edgeId":"5dcdd818-03d0-4504-a605-bc228ebd69e8","equipment":"连铸机扇形段辊组","parameter":"辊面磨损","fault":"凹陷超过1.0mm","sourceDocument":"inline"}
+{"edgeId":"a545a4b8-2cc7-4e1d-9581-0d0e30a269b0","equipment":"连铸机扇形段辊组","parameter":"轴承温度","fault":"温度超过65℃","sourceDocument":"inline"}
+{"edgeId":"41ad7677-1b7b-45d1-b90c-05de95b6bbbd","equipment":"连铸机扇形段辊组","parameter":"液压缸密封泄漏量","fault":"漏油超过3滴/分钟","sourceDocument":"inline"}
+{"edgeId":"cfae0dc8-bdb9-4545-bead-56e90bf34d12","equipment":"连铸机扇形段辊组","parameter":"辊缝精度","fault":"偏差超过±0.3mm","sourceDocument":"inline"}
+{"edgeId":"1a8f474c-b931-417d-988b-c2f8c87c0dd7","equipment":"连铸机扇形段辊组","parameter":"辊面氧化铁皮堆积","fault":"堆积影响运行","sourceDocument":"inline"}
+{"edgeId":"ffdc91e9-0970-4d5f-aec6-0670bf6b1e5b","equipment":"连铸机扇形段辊组","parameter":"高温润滑脂状态","fault":"润滑不足","sourceDocument":"inline"}
+{"edgeId":"411d5422-1fe8-4562-b7af-87d41e7d0701","equipment":"连铸机扇形段辊组","parameter":"对弧状态","fault":"对弧偏差超标","sourceDocument":"inline"}
+{"edgeId":"802cf5bd-4c3a-408a-ad61-1cec072c3c25","equipment":"结晶器冷却系统","parameter":"过滤器精度","sourceDocument":"inline"}
+{"edgeId":"6a0cce2f-4b73-41fd-ba78-46c7bcda928a","equipment":"结晶器冷却系统","parameter":"水质","sourceDocument":"inline"}
+{"edgeId":"2efc9073-de78-4ecd-91fb-c3f3e228de5a","equipment":"结晶器冷却系统","parameter":"水垢情况","sourceDocument":"inline"}
+{"edgeId":"c0956786-7aa2-413f-8ae1-4f7a65393d85","equipment":"结晶器冷却系统","parameter":"铜板水槽壁厚","sourceDocument":"inline"}
+{"edgeId":"c49a3963-89fd-4092-85d1-468078ba9db5","equipment":"结晶器冷却系统","condition":"工作压力0.6 MPa","parameter":"系统密封性","fault":"泄漏","sourceDocument":"inline"}
+{"edgeId":"62e2f1dc-0750-4e9e-a6bf-37b15176dd73","equipment":"冷却水流量计","parameter":"测量误差","sourceDocument":"inline"}
+{"edgeId":"0ec4fd80-1364-4904-96f9-f864343d71bb","equipment":"热轧机主电机","parameter":"振动速度有效值","fault":"异常振动","sourceDocument":"inline"}
+{"edgeId":"c598cd9c-036d-4576-9649-5dbad08d2abc","equipment":"热轧机液压系统","parameter":"压力波动","fault":"波动大","sourceDocument":"inline"}
+{"edgeId":"b9f6beff-4456-4c58-8a1b-eb9942e9aef5","equipment":"工作辊","parameter":"裂纹深度","fault":"周期性裂纹","sourceDocument":"inline"}
+{"edgeId":"2be95856-454a-4580-890c-ec8420479997","equipment":"热轧机","parameter":"对中精度","sourceDocument":"inline"}
+{"edgeId":"fdcb2470-8a66-4e7e-9da4-906ffdbe3248","equipment":"热轧机","condition":"启动前","parameter":"润滑油压力≥0.3MPa（供油温度40±5℃）","sourceDocument":"inline"}
+{"edgeId":"d9fc7d6e-3127-4bb7-b815-bd7f43d3f520","equipment":"热轧机","condition":"启动前","parameter":"液压系统压力稳定在21±0.5MPa","sourceDocument":"inline"}
+{"edgeId":"324d3411-279b-42fe-89eb-cf030604495a","equipment":"热轧机","condition":"启动前","parameter":"冷却水流量≥50m³/h（进水温度≤35℃）","sourceDocument":"inline"}
+{"edgeId":"4e14eeb2-c401-4a78-a6a3-8fe4fc7e0000","equipment":"热轧机","condition":"启动前","parameter":"各测温点显示正常（如轴承温度＜65℃）","sourceDocument":"inline"}
+{"edgeId":"a64f810d-7912-424b-8644-5dea7c19e07f","equipment":"热轧机","condition":"启动前","parameter":"AGC系统零位校准误差≤±0.02mm","sourceDocument":"inline"}
+{"edgeId":"d5d1ff20-75db-487e-acd4-11010a1abd40","equipment":"热轧机","condition":"启动前","parameter":"主传动电机绝缘电阻＞10MΩ（500V DC兆欧表测量）","sourceDocument":"inline"}
+{"edgeId":"d8fe8af9-26ee-4be5-9e31-3eaf057fb326","equipment":"轧机","condition":"轧制过程","parameter":"单道次压下量","fault":"打滑","sourceDocument":"inline"}
+{"edgeId":"c0add771-91b8-4483-8005-e9b27ccc257a","equipment":"轧机","condition":"出现打滑时","parameter":"轧制速度","fault":"打滑","sourceDocument":"inline"}
+{"edgeId":"51345c0c-00a0-4657-8ad1-43135693e36d","equipment":"轧辊","condition":"轧制过程","parameter":"表面粗糙度","sourceDocument":"inline"}
+{"edgeId":"210950c4-2818-4404-a3b1-eb657a58fcf3","equipment":"乳化液系统","condition":"轧制过程","parameter":"乳化液浓度","sourceDocument":"inline"}
+{"edgeId":"5a334820-3adf-4b8c-8364-8412855dde09","equipment":"热轧机","condition":"设备运行时","parameter":"安全护栏高度","sourceDocument":"inline"}
+{"edgeId":"8d41d507-604d-474d-8c90-de0cd4872e70","equipment":"热轧机","condition":"高温区（＞60℃）","parameter":"红外警示设置","sourceDocument":"inline"}
+{"edgeId":"d4bdf399-8761-4fb2-b812-a13e98def2aa","equipment":"热轧机","condition":"红热带钢（＞700℃）作业","parameter":"人员安全距离","sourceDocument":"inline"}
+{"edgeId":"3dcd16e4-5d09-4399-a660-488624a5ad93","equipment":"热轧机","parameter":"急停按钮响应时间","sourceDocument":"inline"}
+{"edgeId":"459ac23e-6c70-4fe4-ae95-331696377add","equipment":"热轧机","parameter":"CO浓度监测","sourceDocument":"inline"}
+{"edgeId":"c01eba24-b4b2-4ee9-ac66-c053d9d8386f","condition":"带钢温度＞500℃","parameter":"带钢温度","fault":"卡钢","sourceDocument":"inline"}
+{"edgeId":"274bfbc1-7082-4c4a-872a-7d9a9d0f6f45","equipment":"热轧机齿轮箱润滑系统","condition":"每运行2000小时","parameter":"润滑油（ISO VG 220）取样检测","sourceDocument":"inline"}
+{"edgeId":"d68792b1-fd83-49b6-97d4-43ffc91926f0","equipment":"热轧机齿轮箱润滑系统","condition":"滤芯压差＞0.15MPa","parameter":"滤芯压差","sourceDocument":"inline"}
+{"edgeId":"3ddf1624-9a51-40e3-b886-748e904b1576","equipment":"热轧机齿轮箱润滑系统","condition":"运行中","parameter":"油温","sourceDocument":"inline"}
+{"edgeId":"4fd70b6f-5c28-467d-8eb9-b7988659b188","equipment":"热轧机齿轮箱润滑系统","condition":"每季度","sourceDocument":"inline"}
+{"edgeId":"1d971703-2a18-4af4-af50-dd11d325aa84","equipment":"热轧机齿轮箱润滑系统","condition":"每年","sourceDocument":"inline"}
+{"edgeId":"ef644c6e-d6d3-4a11-8ada-31a327ecc827","equipment":"热轧机齿轮箱润滑系统","condition":"运行中","parameter":"油位","sourceDocument":"inline"}
+{"edgeId":"ba3f19a3-5093-4833-9f95-24d920087c9a","equipment":"热轧机齿轮箱润滑系统","condition":"运行中","parameter":"油压","sourceDocument":"inline"}
+{"edgeId":"59592517-6349-4ffc-b47a-d2ada40a4dfd","equipment":"轧机支撑辊轴承","parameter":"游隙","sourceDocument":"inline"}
+{"edgeId":"5ef29087-dd55-49b1-b02d-5995e7eabe6d","equipment":"轧机支撑辊轴承","parameter":"润滑脂加注","sourceDocument":"inline"}
+{"edgeId":"d344f363-71ef-433f-bb83-acac2f8a991d","equipment":"轧机支撑辊轴承","parameter":"轴承温度","fault":"温升超过环境温度40K或绝对温度＞85℃","sourceDocument":"inline"}
+{"edgeId":"aba2474c-2b73-47d5-b368-8242953a9852","equipment":"轧机支撑辊轴承","parameter":"超声波检测值（dBuV）","fault":"突增＞8","sourceDocument":"inline"}
+{"edgeId":"197903ba-3da8-4fa2-9668-df0a9e259ab7","equipment":"冷轧机","parameter":"带钢跑偏","fault":"带钢跑偏","sourceDocument":"inline"}
+{"edgeId":"110a51cb-6a8d-4590-88bd-5a43db60395a","equipment":"冷轧机主电机","parameter":"电流异常升高（超过额定值的110%）","fault":"电流异常升高","sourceDocument":"inline"}
+{"edgeId":"80adf258-6863-4707-8eb4-8cb4dee260b7","equipment":"工作辊","parameter":"辊面硬度","fault":"硬度低于90HS","sourceDocument":"inline"}
+{"edgeId":"67c340c4-6315-446e-a13a-a37e713f3919","equipment":"工作辊","parameter":"辊面粗糙度","fault":"粗糙度Ra＞0.4μm","sourceDocument":"inline"}
+{"edgeId":"3b9f0d5d-75b8-4754-8af4-59f978526330","equipment":"中间辊","parameter":"表面状态","fault":"凹坑或粘附异物","sourceDocument":"inline"}
+{"edgeId":"d1efbf40-942d-48f3-a9e5-24b2ec5b6f80","equipment":"张力辊","parameter":"表面状态","fault":"凹坑或粘附异物","sourceDocument":"inline"}
+{"edgeId":"fe0c277f-ee9f-4e7b-92b2-b86fe688ef03","equipment":"冷轧机","condition":"启动前","parameter":"液压系统压力","sourceDocument":"inline"}
+{"edgeId":"566750f3-6b44-427a-94c7-193c9a1aebfa","equipment":"冷轧机","condition":"启动前","parameter":"乳化液系统浓度","sourceDocument":"inline"}
+{"edgeId":"f94155f4-b3ee-42c1-becd-e20330e91f1b","equipment":"冷轧机","condition":"启动前","parameter":"乳化液系统温度","sourceDocument":"inline"}
+{"edgeId":"494b8111-1a1e-40b9-b91e-d12a1d9e97cb","equipment":"冷轧机","condition":"启动前","parameter":"乳化液系统流量","sourceDocument":"inline"}
+{"edgeId":"9183cb87-ac84-4dd7-a62b-a5244b02df32","equipment":"冷轧机","condition":"启动前","parameter":"辊系轴承润滑压力","sourceDocument":"inline"}
+{"edgeId":"a9781716-6e83-4c24-97ff-0a5e9bdf2d0d","equipment":"冷轧机","condition":"启动前","parameter":"AGC自动控制系统","sourceDocument":"inline"}
+{"edgeId":"0a9fb690-c894-442e-ad9c-903979228287","equipment":"冷轧机","condition":"启动前","parameter":"EPC自动控制系统","sourceDocument":"inline"}
+{"edgeId":"a9a1de1b-3692-4791-a331-3eba907e5ed8","equipment":"冷轧机","condition":"启动前","parameter":"CVC自动控制系统","sourceDocument":"inline"}
+{"edgeId":"c59ee621-81f8-433f-80d7-99bd4b9bde67","equipment":"冷轧机","condition":"启动前","parameter":"穿带路径","sourceDocument":"inline"}
+{"edgeId":"1b98ce36-1d0d-42c9-ae6c-ffbabe11a386","equipment":"冷轧机","condition":"启动前","parameter":"夹送辊间隙","sourceDocument":"inline"}
+{"edgeId":"18e9e7e2-6e75-4227-9aab-90cd2f1143ca","equipment":"冷轧机","condition":"启动前","parameter":"防护门安全联锁","sourceDocument":"inline"}
+{"edgeId":"07d1e3e6-47ab-4f9b-85f9-65d2d868dc60","equipment":"冷轧机","condition":"启动前","parameter":"急停按钮安全联锁","sourceDocument":"inline"}
+{"edgeId":"73143091-b896-4662-a265-16dbba3ccd03","equipment":"轧机","parameter":"辊径公差","sourceDocument":"inline"}
+{"edgeId":"0415f620-4359-413f-8688-022aecef742c","equipment":"轧机","parameter":"锥度","sourceDocument":"inline"}
+{"edgeId":"d0769476-3fd2-445f-9403-3ca3f703341c","equipment":"轧机","parameter":"表面质量","sourceDocument":"inline"}
+{"edgeId":"efbf34c4-5010-4add-b28a-66719e64a732","equipment":"轧机","parameter":"辊缝零位","sourceDocument":"inline"}
+{"edgeId":"30960b6b-fe89-4e72-8305-13a7c484c6de","equipment":"轧机","parameter":"CVC窜辊位置","sourceDocument":"inline"}
+{"edgeId":"458abb13-5b74-4428-9206-2ee7fa677a7e","equipment":"轧机","parameter":"空载试转速度","sourceDocument":"inline"}
+{"edgeId":"fe91ede7-a725-4193-933f-c4e9c70f1084","equipment":"轧机","parameter":"振动值","sourceDocument":"inline"}
+{"edgeId":"eda7b2f6-21ef-4dc7-9730-c81ca9c3d14e","equipment":"轧机","parameter":"换辊小车运行速度","sourceDocument":"inline"}
+{"edgeId":"4dc43719-a068-478a-a4b7-a44bbd987353","equipment":"轧机","parameter":"轧制力","sourceDocument":"inline"}
+{"edgeId":"bd914e4d-010d-44d7-8f87-fb5a93f08dcd","equipment":"轧机","parameter":"主传动电源","sourceDocument":"inline"}
+{"edgeId":"d02c2617-7a97-46c7-a732-ccb09b1cb323","equipment":"冷轧机","condition":"首次道次压下率不超过40%","parameter":"轧制速度","sourceDocument":"inline"}
+{"edgeId":"25c52e92-1ed5-4b2d-9dd5-1901c803bbc2","equipment":"冷轧机","condition":"首次道次压下率不超过40%","parameter":"前张力","sourceDocument":"inline"}
+{"edgeId":"3de50a8d-1868-4ad8-b014-bad0aa5ac82e","equipment":"冷轧机","condition":"首次道次压下率不超过40%","parameter":"后张力","sourceDocument":"inline"}
+{"edgeId":"87d63583-c1d1-42ac-8307-d641b40e639f","equipment":"冷轧机","condition":"首次道次压下率不超过40%","parameter":"乳化液浓度","sourceDocument":"inline"}
+{"edgeId":"6477866b-25c1-40e0-89af-fe70320f65dc","equipment":"冷轧机","condition":"成品厚度0.8mm","parameter":"轧制力","sourceDocument":"inline"}
+{"edgeId":"08d0b734-9079-4a24-b470-9e3d70f76a35","equipment":"冷轧机","condition":"来料材质DC01或SPCC，厚度2.0mm→0.8mm","parameter":"厚度偏差","sourceDocument":"inline"}
+{"edgeId":"b0beef13-3813-45c4-8f91-55ed7e048f1e","equipment":"冷轧机","condition":"目标板形控制","parameter":"板形I-Unit值","sourceDocument":"inline"}
+{"edgeId":"0511f723-a687-44b0-87a3-e0da97c67a62","equipment":"冷轧机","parameter":"首次道次压下率","fault":"断带","sourceDocument":"inline"}
+{"edgeId":"e06b3626-4137-484c-b2c4-0cd07406d034","equipment":"冷轧机","parameter":"安全光栅/围栏有效性","sourceDocument":"inline"}
+{"edgeId":"02359622-aae1-473c-904a-6f1bdd840bf5","equipment":"冷轧机","parameter":"液压系统压力","sourceDocument":"inline"}
+{"edgeId":"3f258010-78e3-4941-8186-b348fff754b6","equipment":"冷轧机","sourceDocument":"inline"}
+{"edgeId":"20d56cb5-6097-45ea-8903-c5d580fd0828","equipment":"冷轧机","parameter":"急停按钮响应时间","sourceDocument":"inline"}
+{"edgeId":"51e6969e-a88e-45d6-8eb9-4eef126ff048","equipment":"乳化液系统","parameter":"pH值","sourceDocument":"inline"}
+{"edgeId":"54985037-a0f3-4712-8860-2f13ef98ae12","equipment":"冷轧机工作辊","parameter":"表面裂纹、剥落或粘铝","sourceDocument":"inline"}
+{"edgeId":"a1241794-8ef8-4b9e-8b67-5adbbfd5fe39","equipment":"冷轧机工作辊","parameter":"轴承座润滑脂","sourceDocument":"inline"}
+{"edgeId":"441bc564-0c64-44a4-af85-d9f08b463c20","equipment":"冷轧机工作辊","condition":"停机后","parameter":"辊身温度","sourceDocument":"inline"}
+{"edgeId":"f0f01aeb-af1b-4691-80db-7670d16fc54d","equipment":"冷轧机工作辊","parameter":"累计轧制长度或表面硬度","sourceDocument":"inline"}
+{"edgeId":"7bd9a658-758a-4139-b4a0-196591845cbc","equipment":"冷轧机工作辊","condition":"存放时","sourceDocument":"inline"}
+{"edgeId":"cda0fe70-6dce-4de9-85ec-157f2a09f1d3","equipment":"液压系统","condition":"油温40–55℃","parameter":"油品清洁度（NAS等级≤7级）","sourceDocument":"inline"}
+{"edgeId":"d6292fd5-0cb7-44e4-a6b0-89ad9e67b60a","equipment":"液压系统","parameter":"高压滤芯（精度10μm）","sourceDocument":"inline"}
+{"edgeId":"e39f4010-9064-4429-8c49-dcb6cc8a76db","equipment":"液压系统","parameter":"回油滤芯（25μm）","sourceDocument":"inline"}
+{"edgeId":"dedeead6-291f-4ae2-a0bc-0675ed904c04","equipment":"液压系统","parameter":"油箱及吸油口滤网","fault":"堵塞","sourceDocument":"inline"}
+{"edgeId":"0376a43c-7cdc-497b-be19-80922d19cd2f","equipment":"液压系统","condition":"系统压力10MPa","parameter":"蓄能器氮气预充压力","sourceDocument":"inline"}
+{"edgeId":"005cdec9-b161-484c-aed1-574770c5fcea","equipment":"液压系统","parameter":"泄漏点","fault":"泄漏","sourceDocument":"inline"}
+{"edgeId":"a04567ac-5cd3-45dd-9671-34f650cfdba5","equipment":"烧结机台车轮","parameter":"润滑系统供油状态","fault":"卡死","sourceDocument":"inline"}
+{"edgeId":"0503fdd0-1973-4276-a3e2-4fdb037eb6be","equipment":"烧结机主抽风机","condition":"振动值超过4.5mm/s（ISO 10814标准）","parameter":"振动值","fault":"振动超标","sourceDocument":"inline"}
+{"edgeId":"cf162cb2-0690-4e00-991b-1711cef83d69","equipment":"烧结机","condition":"烧结终点温度波动超过±50℃","parameter":"混合料水分","fault":"异常波动","sourceDocument":"inline"}
+{"edgeId":"60a302a5-d711-49fb-ba8d-b5d507126386","equipment":"烧结机","condition":"烧结终点温度波动超过±50℃","parameter":"燃料配比","fault":"异常波动","sourceDocument":"inline"}
+{"edgeId":"80ae9e01-ef32-4ac9-a219-8502381b8357","equipment":"烧结机","condition":"烧结终点温度波动超过±50℃","parameter":"布料厚度","fault":"异常波动","sourceDocument":"inline"}
+{"edgeId":"7a47bb95-bd65-40cc-8c4d-6ed17260fcd6","equipment":"烧结机","condition":"烧结终点温度波动超过±50℃","parameter":"风箱负压","fault":"异常波动","sourceDocument":"inline"}
+{"edgeId":"5de9009f-76b0-451e-9839-d25982bb2b4f","equipment":"烧结机","condition":"烧结终点温度波动超过±50℃","parameter":"热电偶状态","fault":"结瘤或漂移","sourceDocument":"inline"}
+{"edgeId":"70223110-2197-4bdc-b66c-d9c7ae03f688","equipment":"烧结机","condition":"开机前","parameter":"台车轨道无卡阻","sourceDocument":"inline"}
+{"edgeId":"588c5862-45b0-4a84-a0ed-a88d7bbf2f71","equipment":"烧结机","condition":"开机前","parameter":"润滑系统压力","sourceDocument":"inline"}
+{"edgeId":"b7df6a23-6ecf-43f2-ae08-37f4b92b5240","equipment":"主抽风机","condition":"开机前","parameter":"入口挡板开度","sourceDocument":"inline"}
+{"edgeId":"233e2c26-d6b2-4997-a1a8-9ee897067fde","equipment":"点火炉","condition":"开机前","parameter":"空煤气压力","sourceDocument":"inline"}
+{"edgeId":"cd6ccbfc-8ea4-4ee8-9fa2-a081bb26f35c","equipment":"烧结机","condition":"开机前","parameter":"连锁保护系统","sourceDocument":"inline"}
+{"edgeId":"b49dfc36-3e30-4d2f-9fac-dd91f90ce581","equipment":"环冷机","condition":"开机前","sourceDocument":"inline"}
+{"edgeId":"e596cfc2-87e9-4411-bf86-04978efef4a0","equipment":"主抽风机","condition":"开机前","sourceDocument":"inline"}
+{"edgeId":"40f1b0b6-e91f-4e18-a3bd-d5ecde5ac839","equipment":"烧结机本体","condition":"开机前","sourceDocument":"inline"}
+{"edgeId":"df6c8fb2-1a81-4003-b2d2-08695a13e9c7","equipment":"烧结机","parameter":"料层厚度","sourceDocument":"inline"}
+{"edgeId":"8cd32e38-88f9-46c8-842a-1370619d3a3c","equipment":"烧结机","parameter":"台车宽度方向高差","sourceDocument":"inline"}
+{"edgeId":"7d144f03-e293-42b2-b1d2-1243bbe5406b","equipment":"烧结机","parameter":"混合料水分","sourceDocument":"inline"}
+{"edgeId":"ecd00e8b-c20e-47e6-99c5-861c97e68d7b","equipment":"烧结机","parameter":"混合料粒度＜3mm占比","sourceDocument":"inline"}
+{"edgeId":"eaefea62-981b-4e8c-ba82-78f821ef282e","equipment":"梭式布料器","parameter":"行程速度","sourceDocument":"inline"}
+{"edgeId":"9726ce5a-f94b-4d85-ab00-ae83c64070cb","equipment":"九辊布料器","parameter":"转速","sourceDocument":"inline"}
+{"edgeId":"ab65b587-b9a9-406a-966a-af9bc431a85d","equipment":"烧结机","parameter":"布料偏析","fault":"断面烧结不均","sourceDocument":"inline"}
+{"edgeId":"92327b8f-550b-4248-ace6-48fb214b4a1a","equipment":"烧结机","condition":"遇火灾、设备严重异响或电气故障","sourceDocument":"inline"}
+{"edgeId":"690dec93-1b57-4f72-a222-6706180d8272","equipment":"烧结机台车","condition":"进入台车下方检修","parameter":"CO浓度","sourceDocument":"inline"}
+{"edgeId":"a833d625-1efb-4613-bda6-69c5b3263f9a","equipment":"点火炉","condition":"动火作业前","parameter":"CO浓度＜24ppm，O₂＞20%","sopDoc":"一级动火作业许可证","sourceDocument":"inline"}
+{"edgeId":"ef83a710-3a43-4ada-9dcf-ef2245542a75","equipment":"烧结机头尾密封装置","parameter":"单片磨损深度","fault":"磨损深度超过3mm","sourceDocument":"inline"}
+{"edgeId":"6bd2a04f-bce2-44da-9cb8-bcdd89a3e2e7","equipment":"烧结机头尾密封装置","parameter":"密封间隙","fault":"漏风率升高","sourceDocument":"inline"}
+{"edgeId":"35e61a87-ff52-4f0a-84a7-a2091933856f","equipment":"烧结机头尾密封装置","parameter":"积料","fault":"卡涩","sourceDocument":"inline"}
+{"edgeId":"ccf91399-9ff7-4a6c-8571-2e13512af9be","equipment":"烧结机头尾密封装置","parameter":"弹簧预紧力","sourceDocument":"inline"}
+{"edgeId":"bc566a17-1429-46cc-8d04-5d3fe9380cf7","equipment":"烧结机头尾密封装置","condition":"适用温度≤600℃","parameter":"润滑","sourceDocument":"inline"}
+{"edgeId":"7f86a44c-aea4-457f-b856-8687f1aa6646","equipment":"烧结机减速机","parameter":"润滑油（ISO VG 320）","sourceDocument":"inline"}
+{"edgeId":"06d85fbf-a17e-4bf0-b069-0ef9068bcb68","equipment":"烧结机减速机","parameter":"润滑油水分含量","sourceDocument":"inline"}
+{"edgeId":"fedd7f44-d796-4a20-bd72-17d75b4bf1bd","equipment":"烧结机减速机","parameter":"铁谱分析磨粒尺寸","sourceDocument":"inline"}
+{"edgeId":"0fe50045-0191-4e3c-876b-e7443d91a307","equipment":"烧结机减速机","parameter":"齿轮啮合侧隙","sourceDocument":"inline"}
+{"edgeId":"d7d4caf0-b9a7-4ef6-b69d-e9c34c1abeca","equipment":"烧结机减速机","parameter":"轴承游隙（圆锥滚子轴承轴向游隙）","sourceDocument":"inline"}
+{"edgeId":"cacfbb3c-cc7d-43b1-93a7-1dee55c274ed","equipment":"烧结机减速机","parameter":"异响","fault":"存在异响","sourceDocument":"inline"}
+{"edgeId":"9d9918ce-a547-4d17-8199-1d3ab1cf3fda","equipment":"烧结机减速机","parameter":"温升速率","fault":"温升速率异常","sourceDocument":"inline"}
+{"edgeId":"d295baa3-8ab5-45c3-819b-eaa8efd0396c","equipment":"焦炉加热系统","parameter":"煤气主管压力","fault":"火焰脉动或回火","sourceDocument":"inline"}
+{"edgeId":"b1e84390-0f4a-4264-9e80-818ddca80772","equipment":"焦炉加热系统","parameter":"空燃比","fault":"火焰脉动或回火","sourceDocument":"inline"}
+{"edgeId":"b5f3e8d3-2a55-41b9-b7dc-16f45168e3c4","equipment":"焦炉加热系统","parameter":"烧嘴喷口","fault":"火焰脉动或回火","sourceDocument":"inline"}
+{"edgeId":"e65e286c-67cb-483e-bbbd-fb6f10d4592f","equipment":"焦炉加热系统","parameter":"煤气热值","fault":"燃烧不稳定","sourceDocument":"inline"}
+{"edgeId":"3a3e7a71-7ca4-481b-8176-f2cfa1bee816","equipment":"焦炉","parameter":"推焦电流","fault":"超过额定值（\u003e300 A）","sourceDocument":"inline"}
+{"edgeId":"ae24110f-592e-40d6-865e-1f9f4d1d6b8f","equipment":"焦炉","parameter":"推焦阻力","fault":"\u003e200 kN","sourceDocument":"inline"}
+{"edgeId":"0331193c-c95a-4b75-8191-caf15af573ac","equipment":"焦炉","parameter":"焦饼中心温度","fault":"低于950℃","sourceDocument":"inline"}
+{"edgeId":"cfaf401a-6df6-4925-b010-4a8fa8cc0978","equipment":"焦炉","parameter":"装煤均匀性","fault":"不均匀","sourceDocument":"inline"}
+{"edgeId":"9bc90cc2-e9ea-4d68-a9ee-550078a4b1e0","equipment":"焦炉","fault":"炭化室炉墙变形","sourceDocument":"inline"}
+{"edgeId":"0482f452-cfed-4b67-8f00-7a48e8d14252","equipment":"焦炉","fault":"石墨沉积过厚（\u003e15 mm）","sourceDocument":"inline"}
+{"edgeId":"45e02dcb-a1e3-4fd4-ad51-464df80c1dcb","equipment":"焦炉集气管","parameter":"压力波动超过±20 Pa","fault":"压力频繁波动，影响荒煤气导出","sourceDocument":"inline"}
+{"edgeId":"4c9d8c2c-3dab-464a-a98f-489ca2f795a0","equipment":"焦炉","condition":"加热煤气换向周期20–30分钟","parameter":"煤气压力≥800 Pa、废气砣提起高度≥300 mm、交换旋塞开闭到位、燃烧室温度变化不超过±30℃","sourceDocument":"inline"}
+{"edgeId":"c7784d25-c2a3-4fb2-802e-36255b9be68d","equipment":"装煤车","condition":"装煤作业中","parameter":"单孔装煤量误差","sourceDocument":"inline"}
+{"edgeId":"9e6d2153-13de-4c92-8bde-7ddd853c6527","equipment":"装煤车","condition":"装煤作业中","parameter":"装煤速度","sourceDocument":"inline"}
+{"edgeId":"f07f768b-a3eb-4886-86ce-81746aa14bb4","equipment":"装煤车","condition":"装煤作业中","parameter":"煤塔下煤温度","fault":"自燃风险","sourceDocument":"inline"}
+{"edgeId":"ccdd903c-4720-40ac-8057-12d8332979f7","equipment":"装煤车","condition":"装煤作业中","parameter":"平煤杆停留时间","sourceDocument":"inline"}
+{"edgeId":"efe0e30d-8da6-40c2-93d4-45e5d02a0f29","equipment":"装煤车","condition":"装煤作业中","parameter":"堆密度","sourceDocument":"inline"}
+{"edgeId":"842da649-7570-43b3-95df-93c9d9cc066d","equipment":"装煤车","condition":"装煤作业中","parameter":"烟尘收集系统负压","sourceDocument":"inline"}
+{"edgeId":"9293ef4c-0507-4c09-bd52-8b7a6f58e530","equipment":"6m焦炉","condition":"焦炉出炉操作","parameter":"炭化室顶部空间温度","fault":"800±20℃","sourceDocument":"inline"}
+{"edgeId":"5325b779-fd73-4808-bb51-881fc41f8551","equipment":"焦炉地下室","condition":"进入检修前","parameter":"CO浓度≤24 ppm、O₂含量19.5%–23.5%","sourceDocument":"inline"}
+{"edgeId":"50f13d15-1e69-4206-a389-e3ce14d07e94","equipment":"装煤车","condition":"联合作业时","parameter":"无线对讲与PLC联锁系统启用状态","sourceDocument":"inline"}
+{"edgeId":"20379fa0-82a2-4eda-afeb-3c58e33966d0","equipment":"推焦车","condition":"联合作业时","parameter":"对位偏差","sourceDocument":"inline"}
+{"edgeId":"30ed3ed3-9c60-4475-8952-c8c2ba143d0e","equipment":"拦焦车","condition":"联合作业时","parameter":"对位偏差","sourceDocument":"inline"}
+{"edgeId":"0018c6c9-f360-40aa-bf49-8acfae980e03","equipment":"熄焦车","condition":"接焦时","parameter":"车厢倾斜角度","sourceDocument":"inline"}
+{"edgeId":"8586aa74-c3e8-4eac-8c3b-2838aa59bee3","equipment":"焦炉四大车","condition":"联合作业时","parameter":"急停信号","fault":"全线联锁停车","sourceDocument":"inline"}
+{"edgeId":"e58af1fc-ccf7-4e0d-932c-7c81b222b224","equipment":"焦炉炉门框","parameter":"刀边平整度","fault":"变形量≤2 mm","sourceDocument":"inline"}
+{"edgeId":"d2182823-674e-4b2f-8e35-fe0a57bf05c8","equipment":"焦炉炉门","parameter":"衬砖剥蚀深度","fault":"超过30 mm","sourceDocument":"inline"}
+{"edgeId":"0172c901-d687-47a9-9c5e-fb3af4f8ff58","equipment":"焦炉炉门","parameter":"刀边积焦","sourceDocument":"inline"}
+{"edgeId":"54070236-0a63-4dcd-a5ba-dcfed3fb74d6","equipment":"焦炉炉门","parameter":"关闭后缝隙","fault":"缝隙应≤1 mm","sourceDocument":"inline"}
+{"edgeId":"37a6a556-e4a4-4818-afbd-03551b906bb9","equipment":"焦炉炉门","parameter":"泄漏率","fault":"\u003c5 m³/h","sourceDocument":"inline"}
+{"edgeId":"9a61fbb5-7186-4cd4-80db-209066da8219","equipment":"焦炉炉门","parameter":"弹簧组张力","sourceDocument":"inline"}
+{"edgeId":"2c4857e5-9c0b-4958-80f0-a717ffa1c3fb","equipment":"上升管","parameter":"内壁石墨厚度","fault":"超过10 mm","sourceDocument":"inline"}
+{"edgeId":"3bb1a163-009b-4c17-8107-80988f13d33f","equipment":"桥管","parameter":"氨水喷嘴","fault":"堵塞","sourceDocument":"inline"}
+{"edgeId":"5284cf5c-d60b-4549-8b86-64afc6932dc9","equipment":"上升管","parameter":"根部温度","fault":"超温（\u003e350℃）","sourceDocument":"inline"}
+{"edgeId":"9c8e2853-5d5d-4673-8ddf-f22c70a74a36","equipment":"上升管","condition":"超温","parameter":"氨水压力","sourceDocument":"inline"}
+{"edgeId":"e508c4eb-fb28-4253-926c-012534a29980","equipment":"上升管","condition":"超温","parameter":"氨水流量","sourceDocument":"inline"}
+{"edgeId":"9d62e993-ed14-4ada-b51c-5140f724c4bf","equipment":"桥管","parameter":"承插口密封性","fault":"泄漏率大于2%","sourceDocument":"inline"}
+{"edgeId":"2b3768f5-5136-4c60-a39f-83af85c5ae0d","equipment":"裂解炉","parameter":"出口温度","fault":"异常波动","sourceDocument":"inline"}
+{"edgeId":"418d46ce-5aa3-497e-b47a-babb8d2a4efa","equipment":"裂解炉","parameter":"炉管外壁温度","fault":"局部过热（热点）","sourceDocument":"inline"}
+{"edgeId":"ee89ccce-1e34-415b-a9a2-4df902ed76c9","equipment":"裂解炉","parameter":"负压","fault":"异常升高","sourceDocument":"inline"}
+{"edgeId":"00c05ce5-5c9d-4906-8e8e-032e34ca162c","equipment":"裂解炉","parameter":"可燃气体浓度","sourceDocument":"inline"}
+{"edgeId":"ffd1134f-5e9b-4b08-93e8-cd5e5e575542","equipment":"裂解炉","parameter":"燃料气管线氧含量","sourceDocument":"inline"}
+{"edgeId":"acdfc849-527a-46c5-9bc1-804ab5013318","equipment":"裂解炉","parameter":"烧嘴风门开度","sourceDocument":"inline"}
+{"edgeId":"ca368d4c-03cd-4080-9045-ffe283ae7c32","equipment":"裂解炉","parameter":"联锁系统状态","sourceDocument":"inline"}
+{"edgeId":"2c777c0b-e071-4c64-8365-7a3f88ae68d3","equipment":"裂解炉","parameter":"进料温度","sourceDocument":"inline"}
+{"edgeId":"ea392a5c-c7a0-4ff4-a1c8-332eed0b2a00","equipment":"裂解炉","condition":"正常运行","parameter":"进料量、炉出口温度、COT偏差、烟气氧含量","sourceDocument":"inline"}
+{"edgeId":"22c99959-4114-4a17-8cf3-f97fec16eb61","equipment":"裂解炉","condition":"紧急停车工况","parameter":"COT、炉膛负压","sourceDocument":"inline"}
+{"edgeId":"9a9f0631-6f83-4eca-be14-1c53747d391a","equipment":"裂解炉","condition":"炉膛温度＞60℃","parameter":"H₂S阈值10 ppm","sourceDocument":"inline"}
+{"edgeId":"ad00e18c-a052-461b-840f-60eb79d7dba6","equipment":"裂解炉燃料气系统","condition":"可燃气体报警≥20%LEL","parameter":"可燃气体浓度","fault":"燃料气泄漏","sourceDocument":"inline"}
+{"edgeId":"ae7492c4-363b-4a84-a7e3-c5602c99d6f8","equipment":"裂解炉烧嘴","condition":"每运行3000–5000小时","parameter":"喷口孔径偏差","sourceDocument":"inline"}
+{"edgeId":"7571908b-242d-4ce4-af5a-bc6b97bdde20","equipment":"裂解炉烧嘴","condition":"每运行3000–5000小时","parameter":"旋流器角度","sourceDocument":"inline"}
+{"edgeId":"7472703d-6eef-472e-a1eb-72d513dd9219","equipment":"裂解炉烧嘴","condition":"每运行3000–5000小时","parameter":"点火电极间隙","sourceDocument":"inline"}
+{"edgeId":"8559a62d-91e2-4f2d-b98a-9a4dd5e7b54d","equipment":"裂解炉烧嘴","condition":"每运行3000–5000小时","parameter":"燃料/空气配比阀行程线性度","sourceDocument":"inline"}
+{"edgeId":"130a6d56-1c7f-4c5e-a5e3-df46fa4c5d42","equipment":"裂解炉烧嘴","condition":"重新安装后","parameter":"火焰形态","fault":"偏烧或脱火","sourceDocument":"inline"}
+{"edgeId":"54053a46-2086-47c5-bf16-056842af25a5","equipment":"裂解炉炉管","condition":"石脑油裂解工况","parameter":"COT升高10–15℃维持相同乙烯收率或炉管压降增加15%以上","sourceDocument":"inline"}
+{"edgeId":"642ce274-42a9-4222-973c-c3efa4d1974c","equipment":"精馏塔","parameter":"塔压差","fault":"急剧上升","sourceDocument":"inline"}
+{"edgeId":"04c509b0-0b12-4a70-96bf-3df1488137e4","equipment":"精馏塔","condition":"塔压正常（0.15–0.25 MPa）","parameter":"塔顶产品纯度","fault":"纯度突然下降","sourceDocument":"inline"}
+{"edgeId":"3b0339e1-7228-4c10-b4f4-eff6e7ec50e0","equipment":"C4分离塔","parameter":"压差","fault":"异常升高","sourceDocument":"inline"}
+{"edgeId":"7b9a08ba-0849-42fb-973c-42640713057e","equipment":"精馏塔","condition":"开车时","parameter":"升温速率","sourceDocument":"inline"}
+{"edgeId":"90b0ae2e-1bc8-4a55-86e2-c7a7145ebdf3","equipment":"苯-甲苯分离塔","condition":"正常运行中","parameter":"回流比","sourceDocument":"inline"}
+{"edgeId":"7962b400-98f1-4a99-813f-db4501b4d7a6","equipment":"精馏塔","condition":"紧急停车","parameter":"塔内压力","fault":"防止空气倒吸形成爆炸性混合物","sourceDocument":"inline"}
+{"edgeId":"edada437-d5e8-4975-b65c-6d7b70284457","equipment":"精馏塔","condition":"检修前","parameter":"可燃气体浓度","fault":"形成爆炸性环境","sourceDocument":"inline"}
+{"edgeId":"2dd94d04-3649-43b0-98e6-7d02431e91d7","equipment":"精馏塔","condition":"动火作业前","parameter":"可燃气体\u003c0.2% LEL，氧含量19.5%–23.5%","sourceDocument":"inline"}
+{"edgeId":"ecae56f1-8bca-4692-8316-8dc2a425758c","equipment":"精馏塔再沸器","condition":"处理重质油或含盐进料","parameter":"传热系数（从正常800–1000 W/m²·K降至\u003c500 W/m²·K）","fault":"蒸汽耗量增加、塔釜温度难以提升","sourceDocument":"inline"}
+{"edgeId":"5f4bd7a6-0e50-48c4-bbe0-5c6863def5f6","equipment":"精馏塔塔盘","condition":"每2–3年大修时","parameter":"浮阀开度","fault":"卡死","sourceDocument":"inline"}
+{"edgeId":"7de59a9f-f701-4f8b-80a5-b178a66dd130","equipment":"精馏塔塔盘","condition":"每2–3年大修时","parameter":"降液板厚度","fault":"腐蚀穿孔","sourceDocument":"inline"}
+{"edgeId":"786b64eb-fb9a-4140-93f6-e9cd11f6e7dd","equipment":"精馏塔塔盘","condition":"每2–3年大修时","parameter":"塔盘水平度偏差","fault":"液面不平","sourceDocument":"inline"}
+{"edgeId":"31aa1e93-5bd5-48f1-8cb5-d0516135ba97","equipment":"不锈钢塔盘","condition":"每2–3年大修时","parameter":"氯离子应力腐蚀","fault":"裂纹","sourceDocument":"inline"}
+{"edgeId":"c8ac731b-a799-421b-9bd6-c5e76ef1a14f","equipment":"精馏塔塔盘","condition":"清理沉积物后","parameter":"充水试验水位","fault":"漏液","sourceDocument":"inline"}
+{"edgeId":"e7ebf4ed-d1cb-455d-b51b-43cce505b4f9","equipment":"反应釜","parameter":"温度","fault":"异常升高","sourceDocument":"inline"}
+{"edgeId":"ea0cb58f-07a9-4cb7-98cc-b635a9a1ee78","equipment":"反应釜","parameter":"压力","fault":"压力突然下降","sourceDocument":"inline"}
+{"edgeId":"06e1d5bf-8ccf-45d2-a1dd-a5a2c565436b","equipment":"搅拌电机","parameter":"物料粘度","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"fc3b27bb-2b1f-4d76-bbaf-910e44524759","equipment":"搅拌电机","parameter":"桨叶状态","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"dd7de6c9-9ebf-4c42-aac2-7ed5f0695848","equipment":"搅拌电机","parameter":"三相电流平衡","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"f4a8a01b-daba-4ff1-a477-ad398be116d0","equipment":"搅拌电机","parameter":"绕组温度","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"e823e1b0-1b2c-47b7-b7cb-e4c4eb6426c1","equipment":"搅拌电机","parameter":"变频器输出频率","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"0602f53d-8574-4cae-a203-6266324e1915","equipment":"搅拌电机","parameter":"过载保护设定值","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"f3c858a8-7424-459d-8b22-e86fb9507edb","equipment":"搅拌电机","parameter":"釜内固体颗粒","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"b0eb41b2-611a-4c85-8bd1-7b01d86d118e","equipment":"搅拌电机","parameter":"扭矩","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"75b437aa-3a53-44e7-8da4-03bebb2cf7d1","equipment":"反应釜","condition":"投料前","parameter":"干燥露点","sopDoc":"SOP-PFR-2023","sourceDocument":"inline"}
+{"edgeId":"85da6887-b9a9-4cc5-b1ff-49d5a7b8784c","equipment":"反应釜","condition":"投料前","parameter":"阀门状态","sopDoc":"SOP-PFR-2023","sourceDocument":"inline"}
+{"edgeId":"614c99c1-cd89-454c-8937-c9097cb124d4","equipment":"反应釜","condition":"投料前","parameter":"氧含量","sopDoc":"SOP-PFR-2023","sourceDocument":"inline"}
+{"edgeId":"6cffa87a-3a2f-42ee-913f-4143dc336e72","equipment":"反应釜","condition":"投料前","parameter":"夹套温度","sopDoc":"SOP-PFR-2023","sourceDocument":"inline"}
+{"edgeId":"9b0653bd-e15f-42b9-9168-7be5951a3055","equipment":"反应釜","condition":"投料前","parameter":"搅拌转速","sopDoc":"SOP-PFR-2023","sourceDocument":"inline"}
+{"edgeId":"e31697b5-6543-44c7-abdc-ade8881af960","equipment":"反应釜","condition":"投料前","sopDoc":"SOP-PFR-2023","sourceDocument":"inline"}
+{"edgeId":"d1dce015-8696-4bdf-a7e0-991c6856ce58","equipment":"反应釜","condition":"反应过程","parameter":"升温速率","sourceDocument":"inline"}
+{"edgeId":"184bd4e2-8be4-4387-9697-72fbb39e075c","equipment":"反应釜","condition":"反应结束后","parameter":"反应温度","fault":"高于60℃","sourceDocument":"inline"}
+{"edgeId":"3f2e77cd-ab60-4e29-892e-13148aa3d1e7","equipment":"反应釜","condition":"反应结束后","parameter":"釜内压力","fault":"未泄至微正压","sourceDocument":"inline"}
+{"edgeId":"8420d861-9257-4380-93cf-eb579fcfbba0","equipment":"反应釜","condition":"开启底部出料阀前","parameter":"平衡管阀状态","fault":"未打开平衡管阀","sourceDocument":"inline"}
+{"edgeId":"dad92c46-4559-400f-83da-0cd53ca6c608","equipment":"出料泵","condition":"卸料过程中","parameter":"流量","fault":"超出范围导致管线冲刷腐蚀","sourceDocument":"inline"}
+{"edgeId":"a5fda702-c6a2-4f76-a614-31bc260dd7aa","equipment":"出料管线","condition":"高粘度物料（\u003e3000 cP）卸料","parameter":"伴热温度","fault":"未维持适当温度","sourceDocument":"inline"}
+{"edgeId":"e905396e-39da-47e3-94e9-4b70aa4319d1","equipment":"卸料系统","condition":"整个卸料过程","parameter":"静电接地电阻","fault":"静电积聚风险","sourceDocument":"inline"}
+{"edgeId":"7ddf4f71-caea-40c5-beec-3e4029942f12","equipment":"反应釜","condition":"环境温度超过35℃","parameter":"可燃气体浓度\u003c0.2% LEL","sopDoc":"特级动火许可证","sourceDocument":"inline"}
+{"edgeId":"26c3ea9e-9bcb-4f9b-9edb-567d13991bb3","equipment":"反应釜","condition":"进入受限空间作业","parameter":"氧含量19.5%–23.5%，有毒气体（如H₂S）\u003c6 ppm","sopDoc":"GB 30871-2022","sourceDocument":"inline"}
+{"edgeId":"bef281b0-395e-4451-b5e2-719d9cec2086","equipment":"反应釜机械密封","condition":"每运行2000小时","parameter":"密封冲洗液压力","sourceDocument":"inline"}
+{"edgeId":"dbe7d9d9-08c5-4b95-9ddf-bd7e425ec752","equipment":"反应釜机械密封","condition":"每运行2000小时","parameter":"冲洗液流量","sourceDocument":"inline"}
+{"edgeId":"d073882a-904e-403e-841d-c311d57dc46a","equipment":"反应釜机械密封","condition":"每运行2000小时","parameter":"冲洗液温度","sourceDocument":"inline"}
+{"edgeId":"f21c9a27-7b23-46a7-b70c-68809af2d112","equipment":"反应釜机械密封","condition":"每运行2000小时","parameter":"泄漏量","fault":"超过允许值需更换","sourceDocument":"inline"}
+{"edgeId":"9ad95418-8b24-40f0-afa9-57c907d494da","equipment":"反应釜机械密封","condition":"每6个月","parameter":"密封腔润滑油","sourceDocument":"inline"}
+{"edgeId":"6fa093f0-206a-4ad9-b5bf-1d9d5d56d31e","equipment":"反应釜机械密封","condition":"每年","parameter":"动静环磨损情况","sourceDocument":"inline"}
+{"edgeId":"95ae10ec-d332-449e-824c-ffe294e0c2be","equipment":"反应釜机械密封","sourceDocument":"inline"}
+{"edgeId":"9ee6dbb6-f82d-4bd1-87bf-7826824ffe18","equipment":"反应釜夹套","condition":"每运行3000小时","parameter":"传热系数K\u003c200 W/m²·K","fault":"结垢导致传热效率下降","sourceDocument":"inline"}
+{"edgeId":"289ed136-b736-445a-80c4-232a59be5b74","equipment":"压缩机","parameter":"排气温度","fault":"异常升高","sourceDocument":"inline"}
+{"edgeId":"8339400c-868a-4d3a-948f-152bdc940689","equipment":"离心式压缩机","parameter":"出口压力波动幅度＞15%额定值","fault":"喘振","sourceDocument":"inline"}
+{"edgeId":"0d6ac3cb-e8fc-45c9-9b4b-8880c8db91db","equipment":"离心式压缩机","parameter":"流量低于最小稳定流量","fault":"喘振风险","sourceDocument":"inline"}
+{"edgeId":"535945dd-3333-4130-97d2-2158d3d6ff4c","equipment":"压缩机","parameter":"轴承温度","fault":"温度突然升至85℃以上","sourceDocument":"inline"}
+{"edgeId":"7806384a-8751-4d80-81a5-235dc2674f87","equipment":"往复式压缩机","parameter":"润滑油压力","sourceDocument":"inline"}
+{"edgeId":"2add7db6-77ed-4c6c-a810-9ca705b1181b","equipment":"压缩机","parameter":"负荷","sourceDocument":"inline"}
+{"edgeId":"08f6ce6c-c719-4571-99a6-48b6e5e89780","equipment":"备用压缩机","parameter":"油压、冷却水、盘车","sourceDocument":"inline"}
+{"edgeId":"d50a4671-e598-4c2a-906d-200d7f50ecfe","equipment":"备用压缩机","parameter":"出口阀开度","sourceDocument":"inline"}
+{"edgeId":"bc3a33df-a84a-46d4-b435-b34db98dd206","equipment":"原运行压缩机","parameter":"出口阀开度","sourceDocument":"inline"}
+{"edgeId":"e65bc457-c5d7-4f52-a4d5-207a11c4d454","equipment":"压缩机系统","parameter":"负荷分配","sourceDocument":"inline"}
+{"edgeId":"df14b6b8-101e-4b87-9654-336b5464b2da","equipment":"备用压缩机","parameter":"振动","fault":"振动＜4.5 mm/s","sourceDocument":"inline"}
+{"edgeId":"07b8c3bf-0b55-45fe-873a-ffe944457099","equipment":"原运行压缩机","sourceDocument":"inline"}
+{"edgeId":"8fc846fa-e77c-479e-8e85-1137dcc566f0","equipment":"压缩机系统","parameter":"DCS系统参数","sourceDocument":"inline"}
+{"edgeId":"015e57f6-7248-4d25-aa13-5f225e6efaa2","equipment":"压缩机","condition":"动火作业","parameter":"可燃气体浓度","sopDoc":"一级动火作业许可证","sourceDocument":"inline"}
+{"edgeId":"18e24709-bcc7-4d42-b460-50de5c6177f5","equipment":"压缩机润滑油系统","condition":"高温部位泄漏","parameter":"泄漏量＞1 L/min或喷溅至＞200℃表面","fault":"润滑油泄漏","sourceDocument":"inline"}
+{"edgeId":"dae2cd89-44ea-48bd-99dd-59a08d4baea5","equipment":"离心压缩机","condition":"常规运行","parameter":"润滑油更换周期","sourceDocument":"inline"}
+{"edgeId":"f74db338-2e06-4e41-82fc-729b2f72e977","equipment":"离心压缩机","condition":"运行环境恶劣（高温、高湿）","parameter":"润滑油更换周期","sourceDocument":"inline"}
+{"edgeId":"156df852-757a-4288-b498-740b5741c8e3","equipment":"压缩机气阀","parameter":"阀片状态、弹簧自由高度偏差、升程间隙、进排气阀温差、螺栓紧固力矩","fault":"阀片断裂、弹簧失效、积碳堵塞、密封不良","sourceDocument":"inline"}
+{"edgeId":"0fafb14c-54fb-4d45-83e2-7b33b6e5c1ac","equipment":"换热器","parameter":"压降","fault":"异常增大","sourceDocument":"inline"}
+{"edgeId":"6000f4ea-646b-4543-9482-7006ae7b5bfc","equipment":"换热器","parameter":"出口温度","fault":"持续偏低","sourceDocument":"inline"}
+{"edgeId":"c475aa6c-1bd4-42a4-8295-bd0687436f1c","equipment":"换热器","condition":"壳程流速超过3 m/s（碳钢管束）或4 m/s（不锈钢）","parameter":"壳程流速","fault":"异常振动和噪音","sourceDocument":"inline"}
+{"edgeId":"49bdba95-4aad-422a-9e7e-e21c0ccb7ec6","equipment":"换热器","condition":"启动时","parameter":"冷侧流速","sourceDocument":"inline"}
+{"edgeId":"bee5785a-5fa9-481f-a2f1-075df2ad8655","equipment":"换热器","condition":"停用时","parameter":"壳程温度","sourceDocument":"inline"}
+{"edgeId":"0d6558b9-ba4d-44ff-b42b-40c2b4bd457d","equipment":"备用换热器","condition":"切换过程中","parameter":"系统总流量波动","sourceDocument":"inline"}
+{"edgeId":"53c0498a-610e-48d7-a2b9-2d47421abd16","equipment":"换热器","condition":"曾处理高温高压介质（如\u003e200℃, \u003e2.5 MPa）","parameter":"温度","fault":"需冷却至40℃以下方可拆卸","sourceDocument":"inline"}
+{"edgeId":"0ee30e0d-dd09-4491-9835-d3055e5ca5b4","equipment":"换热器","condition":"运行中","parameter":"泄漏量","fault":"泄漏","sourceDocument":"inline"}
+{"edgeId":"9dc2026e-d907-4715-ba11-c29c070c9176","equipment":"换热器","condition":"每运行3000–5000小时","parameter":"外部检查","sourceDocument":"inline"}
+{"edgeId":"b8f3d739-5c47-498d-bb6c-1e43d4133a6b","equipment":"换热器","condition":"每年至少一次","parameter":"内部检查","sourceDocument":"inline"}
+{"edgeId":"5eb415d8-a741-41d2-b1a7-b9130ec98660","equipment":"换热器","condition":"壳程每2年","parameter":"水压试验","sourceDocument":"inline"}
+{"edgeId":"5e5bd6c8-32a9-4531-a7f7-7937728fbcf7","equipment":"换热器","parameter":"传热系数下降至设计值的70%以下","sourceDocument":"inline"}
+{"edgeId":"b4b87642-db77-4c9c-b4fc-ec6a4c1ec1d4","equipment":"换热器","parameter":"压降增加超过20%且排除流量异常","sourceDocument":"inline"}
+{"edgeId":"6894237b-45f6-4d6b-891c-cb7f7e93240f","equipment":"换热器","parameter":"结垢厚度\u003e0.5 mm","sourceDocument":"inline"}
+{"edgeId":"b4179433-f342-4bd1-81a1-923f56b1bf7c","equipment":"换热器","condition":"碳酸盐垢","parameter":"清洗液为5–10%盐酸","sourceDocument":"inline"}
+{"edgeId":"bf655741-dc66-467b-a986-2766e2c494b5","equipment":"换热器","condition":"油垢","parameter":"碱洗（NaOH 2–4%，温度60–80℃）","sourceDocument":"inline"}
+{"edgeId":"b9d2d02d-f909-423a-a3ec-702ce47ac28a","equipment":"换热器","parameter":"清洗流速控制在0.5–1.0 m/s，时间不超过8小时","sourceDocument":"inline"}
+{"edgeId":"e066527e-f15f-42c1-bfef-e4b3f8b7262f","equipment":"离心泵","parameter":"振动值","fault":"异常振动","sourceDocument":"inline"}
+{"edgeId":"9f37b15a-aec5-4894-89f5-97f04ed5e9fc","equipment":"离心泵","parameter":"径向间隙","fault":"异常振动和噪音","sourceDocument":"inline"}
+{"edgeId":"76add2d4-e027-433b-be71-30bf66afa306","equipment":"离心泵","parameter":"对中偏差","fault":"异常振动和噪音","sourceDocument":"inline"}
+{"edgeId":"af2f9191-72a8-499e-b744-183c18b1a37d","equipment":"离心泵","parameter":"NPSHa与NPSHr关系","fault":"异常振动和噪音","sourceDocument":"inline"}
+{"edgeId":"2eef1f0e-7689-4f88-90e5-a83383b9a358","equipment":"泵","parameter":"出口压力","fault":"突然下降","sourceDocument":"inline"}
+{"edgeId":"453f3f9b-153e-44f3-b42b-9940cf586428","parameter":"密封面平面度","fault":"密封面磨损或划伤","sopDoc":"API 682","sourceDocument":"inline"}
+{"edgeId":"0709dc96-ed0c-4306-a5cf-94a3805af5f6","parameter":"弹簧压缩量","fault":"弹簧压缩量不足","sopDoc":"API 682","sourceDocument":"inline"}
+{"edgeId":"f327351a-5bd4-4a22-bd84-721f1e2d8dc9","parameter":"冲洗液压力","fault":"冲洗液压力低于密封腔压力","sopDoc":"API 682","sourceDocument":"inline"}
+{"edgeId":"b56e1582-2120-4c1f-a3e1-e11d78893b4a","parameter":"介质清洁度","fault":"介质含固体颗粒导致加速磨损","sopDoc":"API 682","sourceDocument":"inline"}
+{"edgeId":"0610ea3a-8239-4bbb-a17a-9b40e3f9acf0","equipment":"离心泵","parameter":"入口阀状态","sourceDocument":"inline"}
+{"edgeId":"55292084-e9cf-4b4a-8b36-c5d4f793a2fe","equipment":"离心泵","parameter":"转子状态","sourceDocument":"inline"}
+{"edgeId":"0ff4c09c-8fd4-4f30-8b6a-f82af6862f3d","equipment":"离心泵","parameter":"泵腔液体状态","fault":"干转","sourceDocument":"inline"}
+{"edgeId":"4311b9b1-ac41-4a92-93e8-a54923c55222","equipment":"离心泵","parameter":"润滑油位","sourceDocument":"inline"}
+{"edgeId":"82a79b54-67c7-4c2c-89f1-9d69dc1bf1c8","equipment":"离心泵","parameter":"机械密封冲洗系统压力","sourceDocument":"inline"}
+{"edgeId":"d4da8ce9-fba1-4b8b-bc62-23672926372f","equipment":"离心泵","parameter":"出口阀开度","fault":"水锤","sourceDocument":"inline"}
+{"edgeId":"31814f54-0274-4ac7-8b5b-f5b7eec1cfd3","equipment":"备用泵","parameter":"出口压力波动","sourceDocument":"inline"}
+{"edgeId":"42c75672-6a18-4dcd-a89f-de4e230b1724","equipment":"离心泵","condition":"低于最小连续稳定流量（通常为额定流量的30%）下长时间运行","parameter":"液体循环升温、径向力、振动","fault":"介质温度升高20–50℃引发汽化、轴承负荷超标、振动加剧（振速可能超7.1 mm/s）","sourceDocument":"inline"}
+{"edgeId":"854b134c-65c4-424b-a558-80af11950d8e","equipment":"高温热油泵","condition":"介质温度≥200℃","parameter":"泄漏","sourceDocument":"inline"}
+{"edgeId":"5067fb7b-11ba-42c1-bab8-2c339f3f99a3","equipment":"泵区","condition":"输送烃类介质（如石脑油、液化气）","parameter":"可燃气体浓度","sopDoc":"一级动火作业许可证","sourceDocument":"inline"}
+{"edgeId":"c6fd04f1-68ed-4850-b35b-36f4227707f6","equipment":"离心泵","condition":"滚动轴承使用锂基润滑脂","parameter":"补脂周期","sourceDocument":"inline"}
+{"edgeId":"1070cb50-23e9-4ff1-99e4-df248a59a32b","equipment":"离心泵","condition":"油浴润滑","parameter":"润滑油更换周期","sourceDocument":"inline"}
+{"edgeId":"c2d04feb-0ba8-45c8-9dab-42e6c42e331c","equipment":"离心泵","condition":"运行中","parameter":"油温","fault":"温度过高","sourceDocument":"inline"}
+{"edgeId":"025d5cb9-597f-4cfd-b9a5-41a3129035ee","equipment":"泵","parameter":"振动值","sourceDocument":"inline"}
+{"edgeId":"bd755a0a-d970-4fbc-ac3e-06026affa6fc","equipment":"泵","parameter":"密封泄漏量","sourceDocument":"inline"}
+{"edgeId":"4cca8d41-33aa-40a3-9250-34f0364a1314","equipment":"泵","parameter":"地脚螺栓紧固","sourceDocument":"inline"}
+{"edgeId":"c03d86d1-a3bb-4a0c-b638-9248a5123662","equipment":"泵","parameter":"联轴器对中","sourceDocument":"inline"}
+{"edgeId":"6433eb7f-09ef-4681-bb4b-22b8477d3403","equipment":"泵","parameter":"润滑油","sourceDocument":"inline"}
+{"edgeId":"1eda854d-bc4e-4c82-bf8d-7183bf3f5960","equipment":"泵","parameter":"叶轮口环间隙","sourceDocument":"inline"}
+{"edgeId":"c9fa1079-8422-4ee4-8a8a-b69e69fcbca3","equipment":"储罐液位计","condition":"介质温度在-20℃~80℃范围内，工作压力≤1.6 MPa","parameter":"液位显示异常波动","fault":"差压信号失真","sourceDocument":"inline"}
+{"edgeId":"93f4bb92-0d91-40c5-8162-9bd838fb26f4","equipment":"储罐呼吸阀","condition":"进料/出料速率过快（\u003e50 m³/h）","parameter":"压力骤变","fault":"频繁开启","sourceDocument":"inline"}
+{"edgeId":"49fa8d58-4a43-4ad1-89dc-94273ce91282","equipment":"储罐呼吸阀","condition":"环境温度剧烈变化","parameter":"压力波动","fault":"频繁开启","sourceDocument":"inline"}
+{"edgeId":"657f3036-6450-469b-b57d-5264d349f57f","equipment":"储罐呼吸阀","condition":"设定压力偏低","parameter":"启闭压力","fault":"频繁开启","sourceDocument":"inline"}
+{"edgeId":"04589396-cb63-454f-8456-f724028d3b4f","equipment":"储罐呼吸阀","parameter":"阻火器状态","fault":"频繁开启","sourceDocument":"inline"}
+{"edgeId":"4cb9c1c8-f420-4e1e-bfe3-2270b54b663d","equipment":"储罐","parameter":"底板厚度","fault":"微量渗漏","sourceDocument":"inline"}
+{"edgeId":"fd409bcb-eb58-438f-b010-0fb688c21a61","equipment":"储罐","condition":"投用前","parameter":"罐内氧含量","sourceDocument":"inline"}
+{"edgeId":"d6041178-39af-4fa6-8999-4fa80ec48dc0","equipment":"储罐","condition":"投用前","parameter":"安全附件状态","sourceDocument":"inline"}
+{"edgeId":"3f0f1a87-b32b-4a57-9abb-6ac441c9c6c4","equipment":"储罐","condition":"投用前","parameter":"静电接地电阻","sourceDocument":"inline"}
+{"edgeId":"133a67de-d1ef-42ea-b3fe-977621a5baad","equipment":"储罐","condition":"投用前","parameter":"初始充液流速","sourceDocument":"inline"}
+{"edgeId":"ea33ce9c-6017-4776-aef5-ec0aa6353bcc","equipment":"储罐","condition":"首次进料","parameter":"液位","sourceDocument":"inline"}
+{"edgeId":"f1883d3b-ec4a-4db0-b777-8d5a93005db8","equipment":"储罐","condition":"初始进料阶段（液位\u003c200 mm）","parameter":"流速","sopDoc":"API 2003","sourceDocument":"inline"}
+{"edgeId":"82c6c238-750f-4285-958c-e091fa28f8ac","equipment":"储罐","condition":"入口浸没后","parameter":"流速","sopDoc":"API 2003","sourceDocument":"inline"}
+{"edgeId":"ab126fe4-e97f-4da3-8e83-20b4ad323b68","equipment":"储罐","parameter":"装车方式","fault":"静电积聚风险","sopDoc":"API 2003","sourceDocument":"inline"}
+{"edgeId":"a7e1545a-ab3a-4702-8914-6746db194ccc","equipment":"储罐","parameter":"静电接地电阻","sourceDocument":"inline"}
+{"edgeId":"3cf87095-89a4-44bd-ac4b-6ca1197eb4c5","equipment":"储罐","condition":"处理轻质油品（如石脑油、汽油）","parameter":"雷德蒸气压（RVP）","fault":"挥发增加","sourceDocument":"inline"}
+{"edgeId":"53303b12-d5da-4312-bfc7-689ebf31f0bd","equipment":"储罐","condition":"清罐作业前","parameter":"可燃气体浓度","sourceDocument":"inline"}
+{"edgeId":"5677324c-0d0e-4eb0-98d9-b383a7097c3a","equipment":"储罐","condition":"动火作业期间","parameter":"可燃气体浓度","sourceDocument":"inline"}
+{"edgeId":"6afeb8b5-4743-4e52-bb5c-ae93112de1cb","equipment":"钢制储罐","parameter":"接地电阻","sopDoc":"GB 50074","sourceDocument":"inline"}
+{"edgeId":"f4258103-2774-4c37-b2f7-d78e89e35610","equipment":"储罐","parameter":"外防腐涂层状态","fault":"起泡、剥落或锈蚀","sourceDocument":"inline"}
+{"edgeId":"9c8cabed-3ce8-4c8b-80e4-511547213265","equipment":"储罐内部阴极保护系统","parameter":"罐底板对地电位","fault":"电位高于-0.80 V","sourceDocument":"inline"}
+{"edgeId":"a1ec14a7-8861-4a34-9e2c-02df48c8c1ce","equipment":"牺牲阳极式阴保系统","parameter":"阳极消耗量","sourceDocument":"inline"}
+{"edgeId":"dc25c91c-2dbb-4a3a-a08d-3af95b8ebdf2","equipment":"强制电流阴保系统","parameter":"整流器输出电流密度","sourceDocument":"inline"}
+{"edgeId":"77c1a97c-c250-4c56-9ff6-107cb2d0b2b6","equipment":"强制电流阴保系统","parameter":"参比电极状态","sourceDocument":"inline"}
+{"edgeId":"00d19cbc-1560-4737-b2d2-c73117e0f737","equipment":"阴极保护系统阳极块","parameter":"阳极块剩余量","fault":"剩余量低于50%","sourceDocument":"inline"}
+{"edgeId":"a185894c-aa26-4d73-ae24-526fc1a2a2e4","equipment":"汽轮机","parameter":"振动值","fault":"振动突然增大至0.08mm以上","sourceDocument":"inline"}
+{"edgeId":"0856e518-f463-4ef5-9f71-39666d4ada57","equipment":"汽轮机","condition":"启动过程中","parameter":"正胀差＞+3.5mm","fault":"胀差异常","sourceDocument":"inline"}
+{"edgeId":"def8489c-45c2-4835-9a9e-0e5885298061","equipment":"凝汽器","parameter":"真空度","fault":"骤降（如从-92kPa降至-80kPa以下）","sourceDocument":"inline"}
+{"edgeId":"24c6b58a-0c29-46a3-9ee2-1c33a5991261","equipment":"汽轮机","condition":"冷态启动冲转前","parameter":"主蒸汽压力≥3.5MPa、温度≥360℃（过热度≥50℃）；再热蒸汽压力≥1.2MPa、温度≥320℃；润滑油温38–45℃；顶轴油压8–12MPa；盘车连续运行≥4小时且偏心度＜0.03mm；上下缸温差＜50℃；真空维持在-88kPa以上","sourceDocument":"inline"}
+{"edgeId":"b6af0846-2f97-47d7-987c-7d711b47f563","equipment":"汽轮机","condition":"正常停机","parameter":"主蒸汽压力下降速率","sourceDocument":"inline"}
+{"edgeId":"6f03dce3-6b51-4b49-875d-899155a56947","equipment":"汽轮机","condition":"正常停机","parameter":"主蒸汽温度下降速率","sourceDocument":"inline"}
+{"edgeId":"1e65fc2a-2d32-4dac-9d44-41c5d91ca139","equipment":"汽轮机","condition":"正常停机","parameter":"再热蒸汽温降速率","sourceDocument":"inline"}
+{"edgeId":"469176df-abb3-4b42-9ec3-7ae990888152","equipment":"汽轮机","condition":"负荷降至10%额定负荷","parameter":"旁路系统状态","sourceDocument":"inline"}
+{"edgeId":"434bfe3d-8a3c-455e-91b4-2e3828861ba7","equipment":"汽轮机","condition":"转速降至1200rpm","parameter":"顶轴油系统","sourceDocument":"inline"}
+{"edgeId":"c4162894-6633-43d0-8e8e-0fddca398b32","equipment":"汽轮机","condition":"转速到零","parameter":"盘车系统","sourceDocument":"inline"}
+{"edgeId":"cec77aca-69bb-4a71-a855-c25ef0487da3","equipment":"汽轮机","condition":"停机后","parameter":"上下缸温差","fault":"温差超标","sourceDocument":"inline"}
+{"edgeId":"7bdd2292-6c1a-4d44-a98b-3e346a2e2e83","equipment":"高压加热器","condition":"机组负荷≥20%","parameter":"水侧压力高于给水压力0.5MPa以上","sourceDocument":"inline"}
+{"edgeId":"294cff2e-96a3-4826-90c7-27aee8b3d708","equipment":"汽轮机本体","condition":"进入检修作业","parameter":"内部氧含量","sourceDocument":"inline"}
+{"edgeId":"81b68eab-0959-4e07-a699-5ff0ee7a27ea","equipment":"汽轮机","condition":"运行期间","parameter":"润滑油压","fault":"油压下降至0.08MPa以下","sourceDocument":"inline"}
+{"edgeId":"e6bfaf46-b35e-4ba7-a9e3-98b45954307b","equipment":"汽轮机","condition":"运行期间","parameter":"油箱油位","fault":"每分钟下降＞5mm","sourceDocument":"inline"}
+{"edgeId":"37857764-5e9c-4c63-9b98-8ce8c46de31c","equipment":"汽轮机","condition":"润滑油泄漏严重且无法隔离","fault":"需紧急停机","sourceDocument":"inline"}
+{"edgeId":"6a6e92eb-b282-4d86-8ca5-1a7ab7778814","equipment":"汽轮机","condition":"轴瓦温度超过110℃","parameter":"轴瓦温度","fault":"乌金熔化","sourceDocument":"inline"}
+{"edgeId":"d0a28444-212a-44ff-a471-d024a1f07520","equipment":"汽轮机","condition":"润滑油系统泄漏","sourceDocument":"inline"}
+{"edgeId":"00dc4272-865c-4d0e-afe4-b848016482d9","equipment":"汽轮机","condition":"大修期间","parameter":"推力轴承间隙","sourceDocument":"inline"}
+{"edgeId":"7eef2b90-98cd-41fa-a7d4-ce14be63bf8b","equipment":"汽轮机调速系统（DEH）","condition":"环境温度20–30℃、湿度＜70%RH","parameter":"伺服阀零点漂移","sourceDocument":"inline"}
+{"edgeId":"7ee5e431-6eab-4652-ab7d-65b9ad58baea","equipment":"汽轮机调速系统（DEH）","condition":"环境温度20–30℃、湿度＜70%RH","parameter":"EH油清洁度","sourceDocument":"inline"}
+{"edgeId":"fd495377-3a92-4fdc-ad38-ab9015c4925b","equipment":"汽轮机调速系统（DEH）","condition":"环境温度20–30℃、湿度＜70%RH","parameter":"蓄能器氮气预充压力","sourceDocument":"inline"}
+{"edgeId":"68976397-0c61-41bb-8305-1cf0f2d8ec59","equipment":"汽轮机调速系统（DEH）","condition":"环境温度20–30℃、湿度＜70%RH","parameter":"LVDT线性度","sourceDocument":"inline"}
+{"edgeId":"2bf66e90-2495-4a26-b928-89f861fec3e7","equipment":"汽轮机调速系统（DEH）","condition":"环境温度20–30℃、湿度＜70%RH","parameter":"OPC/AST电磁阀动作时间","sourceDocument":"inline"}
+{"edgeId":"05c57d6d-9613-4d19-a91d-f75dd0c6fbc6","equipment":"汽轮机调速系统（DEH）","condition":"环境温度20–30℃、湿度＜70%RH","sourceDocument":"inline"}
+{"edgeId":"e10fdfb4-2122-4b74-b9d7-d75731ac6ea6","equipment":"汽轮机调速系统（DEH）","condition":"环境温度20–30℃、湿度＜70%RH","sourceDocument":"inline"}
+{"edgeId":"4a3ca8eb-c1ff-4558-a295-824e5810850f","equipment":"发电机","condition":"运行中","parameter":"电压波动","fault":"超过±5%","sourceDocument":"inline"}
+{"edgeId":"53a1ad51-0938-4737-bd14-6096397193a2","equipment":"发电机","condition":"轴承温度异常升高至95℃以上（正常≤85℃，温升≤40K）","parameter":"轴承温度","fault":"温度异常升高","sourceDocument":"inline"}
+{"edgeId":"113b3508-d4cf-4b58-831f-854ad9fc6429","equipment":"发电机","condition":"空载状态","parameter":"输出频率","fault":"频率不稳定（偏离50Hz±0.5Hz）","sourceDocument":"inline"}
+{"edgeId":"93296488-1ad8-4f69-851e-e5c4f78038d1","equipment":"发电机","condition":"环境温度低于5℃","parameter":"定子绕组对地绝缘","sourceDocument":"inline"}
+{"edgeId":"826a0dca-5314-4209-ad04-c9e9ff7f460b","equipment":"发电机","parameter":"冷却系统状态","sourceDocument":"inline"}
+{"edgeId":"c3fdc231-edf6-4477-ba79-73f94accb0b5","equipment":"发电机","condition":"柴油机驱动时","parameter":"润滑油压","sourceDocument":"inline"}
+{"edgeId":"9dd45fc9-8fe5-45f9-8b2c-d7da6bf55b05","equipment":"发电机","parameter":"AVR模式与初始电压","sourceDocument":"inline"}
+{"edgeId":"5d5da7c9-1503-4081-9da3-e304262fef62","equipment":"发电机","parameter":"转子状态","sourceDocument":"inline"}
+{"edgeId":"553f2fea-1d17-4511-be3b-e2d3845ed5d6","equipment":"发电机","condition":"环境温度低于5℃","parameter":"绕组温度","sourceDocument":"inline"}
+{"edgeId":"ccfa80a3-811c-4121-afd8-38c2b2544df8","equipment":"发电机","parameter":"电压差≤±5%（如400V±20V）、频率差≤±0.2Hz、相位差≤±5°、相序一致","fault":"非同期并列导致冲击电流达额定电流6~8倍（如2000kW机组产生约17kA短路电流）","sourceDocument":"inline"}
+{"edgeId":"fde85313-eaf2-4fe5-8296-c3ae3f33365d","equipment":"发电机","condition":"正常停机","parameter":"负荷\u003c5%额定功率","sourceDocument":"inline"}
+{"edgeId":"51887aa8-37a2-497a-afbe-d64e8976e3aa","equipment":"发电机","condition":"紧急停机","sourceDocument":"inline"}
+{"edgeId":"ddab79ff-3353-4fd7-bc34-b04ff5be242d","equipment":"发电机","condition":"运行中","parameter":"带电部位安全距离","sourceDocument":"inline"}
+{"edgeId":"97e8caf2-29a9-47f3-8e4e-3618af752c91","equipment":"发电机","condition":"进行红外测温或巡检时","sourceDocument":"inline"}
+{"edgeId":"280b00ab-98a9-4ae9-9c8f-44c61fcb5cc2","equipment":"发电机","condition":"需打开防护罩时","sourceDocument":"inline"}
+{"edgeId":"e5d82c1a-2c45-4e22-ac73-37637ef51cd1","equipment":"发电机","condition":"温度\u003e130℃或绝缘电阻骤降","parameter":"绝缘电阻","fault":"冒烟或异味","sourceDocument":"inline"}
+{"edgeId":"30098e3b-5d3f-4fa4-b597-6675da313988","equipment":"发电机定子绕组","condition":"环境湿度\u003e70%","parameter":"绝缘电阻（≥10MΩ）及吸收比（R60s/R15s≥1.3）","sourceDocument":"inline"}
+{"edgeId":"2b3decea-462e-47a8-a560-d0b16830bcfd","equipment":"发电机定子绕组","parameter":"接头温升","sourceDocument":"inline"}
+{"edgeId":"6687d36d-c6b7-4177-b80d-d3c83d4b2716","equipment":"发电机定子绕组","parameter":"泄漏电流","sourceDocument":"inline"}
+{"edgeId":"bcd8d961-1f2f-4df0-9f35-f9a7e5d6642b","equipment":"发电机定子绕组","condition":"环境湿度\u003e70%","parameter":"表面温度","sourceDocument":"inline"}
+{"edgeId":"c029b33c-6f1a-4261-9018-c31fd5e00d97","equipment":"发电机励磁系统","parameter":"碳刷长度或火花等级","fault":"碳刷磨损至原长1/3或火花等级≥2级","sourceDocument":"inline"}
+{"edgeId":"1073cb56-9ce2-4c18-a2b4-68245c43fe78","equipment":"锅炉","condition":"正常运行","parameter":"汽包水位","fault":"异常波动","sourceDocument":"inline"}
+{"edgeId":"ecfe5f06-121a-4419-b9f6-4d6179cfdc38","equipment":"锅炉","parameter":"排烟温度","fault":"异常升高至180℃以上","sourceDocument":"inline"}
+{"edgeId":"c2c16bb5-5fab-4849-b438-677994b946e4","equipment":"锅炉","parameter":"主蒸汽压力波动","fault":"波动超过±0.5MPa","sourceDocument":"inline"}
+{"edgeId":"a0a445b0-9942-4edd-a279-455472955669","equipment":"锅炉","condition":"冷态启动","parameter":"汽包壁温升速率","sourceDocument":"inline"}
+{"edgeId":"f7dd9094-2c22-44e4-9008-04d7cc16415d","equipment":"锅炉","condition":"冷态启动","parameter":"饱和温度上升速度","sourceDocument":"inline"}
+{"edgeId":"70345fc9-06d7-46ed-8f79-bcf2ea1c9535","equipment":"锅炉","condition":"冷态启动","parameter":"升压阶段0~0.98MPa用时","sourceDocument":"inline"}
+{"edgeId":"e54cbf1d-3786-483b-9f9f-a4ffcd0aea40","equipment":"锅炉","condition":"冷态启动","parameter":"升压阶段0.98~4.9MPa用时","sourceDocument":"inline"}
+{"edgeId":"2074174c-0c81-4623-8ec4-9da5564a28c9","equipment":"锅炉","condition":"冷态启动","parameter":"定期排污频率","sourceDocument":"inline"}
+{"edgeId":"1cea20ec-d80f-4336-8583-c550591ed392","equipment":"锅炉","condition":"冷态启动","parameter":"炉膛负压","sourceDocument":"inline"}
+{"edgeId":"90820e2c-423c-431c-994e-3b1dc721f444","equipment":"锅炉","condition":"点火初期","parameter":"烟气温度","fault":"过热器超温","sourceDocument":"inline"}
+{"edgeId":"8ad1f621-53a8-4a39-b2c7-f08a511e7fc2","equipment":"锅炉","condition":"正常停炉","parameter":"汽包水位","sourceDocument":"inline"}
+{"edgeId":"77d17ff4-4223-4fec-9fe9-958840b42293","equipment":"锅炉","condition":"低负荷（\u003c70%额定负荷）且水位较高（+50mm）","parameter":"排污时间、排污门数量、排污扩容器压力、管道预热状态、阀门泄漏率","sourceDocument":"inline"}
+{"edgeId":"67dbfd6a-e7dd-4ac8-85bd-a38d25beae5f","equipment":"锅炉炉膛","condition":"进入检修前","parameter":"炉膛温度≤50℃","sourceDocument":"inline"}
+{"edgeId":"97f34398-a220-4809-9f2b-dfd60cef7bf8","equipment":"锅炉炉膛","condition":"进入检修前","parameter":"能源介质隔离","sourceDocument":"inline"}
+{"edgeId":"bfdd1bc3-a5eb-4531-8801-445afe774b10","equipment":"锅炉炉膛","condition":"进入检修前","parameter":"通风时间","sourceDocument":"inline"}
+{"edgeId":"59ae15bc-fca2-42e8-9108-ea4e1e6d4386","equipment":"锅炉安全阀","condition":"新安装或大修后","parameter":"起跳压力","sourceDocument":"inline"}
+{"edgeId":"fc52cb51-6691-4f54-a965-4a5b33caeb31","equipment":"屏式过热器","parameter":"吹灰频次","sourceDocument":"inline"}
+{"edgeId":"ad307e1b-816c-4148-9c10-83842a7cebad","equipment":"高温过热器","parameter":"吹灰频次","sourceDocument":"inline"}
+{"edgeId":"19416a31-bd19-479b-bee0-ef9174f22d0c","equipment":"省煤器","parameter":"吹灰频次","sourceDocument":"inline"}
+{"edgeId":"07d996aa-1526-48ef-93d9-7799d38663ff","equipment":"空预器","parameter":"吹灰频次","sourceDocument":"inline"}
+{"edgeId":"44c761aa-dafd-4d11-b1d9-558a2c5f9217","equipment":"蒸汽吹灰系统","parameter":"蒸汽压力","sourceDocument":"inline"}
+{"edgeId":"8720c09c-b807-4dae-8d5f-458521ecf534","equipment":"蒸汽吹灰系统","parameter":"蒸汽温度","sourceDocument":"inline"}
+{"edgeId":"ca352899-b583-4fff-9ec3-b81555f2dc24","equipment":"炉膛","condition":"吹灰时","parameter":"炉膛负压","fault":"正压喷灰","sourceDocument":"inline"}
+{"edgeId":"c70f1dd2-fe9c-4d8e-8b6a-884704a89faa","equipment":"锅炉受热面","condition":"排烟温度升高15℃","parameter":"排烟温度","sourceDocument":"inline"}
+{"edgeId":"269fe8d8-31fb-4c27-8a14-6cf6e4589775","equipment":"过热器","condition":"TP347H材质壁温超限","parameter":"壁温","fault":"超限","sourceDocument":"inline"}
+{"edgeId":"e2b7a7c1-c3e9-453f-a1c1-81da227a1b6a","equipment":"锅炉","condition":"停用7~30天","sourceDocument":"inline"}
+{"edgeId":"dd7f77a2-944d-43e4-868c-001483558d45","equipment":"锅炉","condition":"停用超过30天","sourceDocument":"inline"}
+{"edgeId":"46867e32-2da5-42d1-b8d2-9e746496d756","equipment":"锅炉","condition":"停用超过30天","sourceDocument":"inline"}
+{"edgeId":"3d82d561-66a2-4ff0-85c9-209c5fc1a7b8","equipment":"锅炉","condition":"保养期间","parameter":"湿度","sourceDocument":"inline"}
+{"edgeId":"89efd1aa-f651-4d98-b72a-52121f088380","equipment":"锅炉","condition":"保养期间","parameter":"氮气压力","sourceDocument":"inline"}
+{"edgeId":"186a3339-43a9-4a50-bfee-501a34d2751f","equipment":"锅炉","condition":"保养期间","parameter":"氧含量","fault":"氧腐蚀","sourceDocument":"inline"}
+{"edgeId":"e51e6c8e-e388-4b0a-9743-6193899c53dc","equipment":"油浸式变压器","condition":"运行中","parameter":"油温","fault":"异常升高至95℃以上","sopDoc":"DL/T 572","sourceDocument":"inline"}
+{"edgeId":"b5f09543-7fe6-4943-90ea-8a30cde262f5","equipment":"变压器","parameter":"差动保护动作","fault":"跳闸","sourceDocument":"inline"}
+{"edgeId":"6c8a85c4-7fb5-49f0-9c5b-9937d085853d","equipment":"变压器","condition":"运行中","parameter":"噪声水平、输入电压、谐波含量、铁芯夹件螺栓紧固力矩","fault":"异常“嗡嗡”声并伴随电压波动","sourceDocument":"inline"}
+{"edgeId":"07d25197-b55d-494b-ae00-066cc7dce495","equipment":"变压器","condition":"投运前","parameter":"绝缘电阻（20℃时高压对地）","sopDoc":"《电力安全工作规程》","sourceDocument":"inline"}
+{"edgeId":"c9725ccf-d606-40c5-97d2-43dbe2f92c0e","equipment":"变压器","condition":"投运前","parameter":"分接开关位置","sopDoc":"《电力安全工作规程》","sourceDocument":"inline"}
+{"edgeId":"c888ef4b-e6b8-4f4c-8e42-349c58a587cb","equipment":"变压器","condition":"投运前","parameter":"冷却系统试运行","sopDoc":"《电力安全工作规程》","sourceDocument":"inline"}
+{"edgeId":"f0f85ba0-61e7-4a1a-b01b-fa4665973100","equipment":"变压器","condition":"投运前","parameter":"气体继电器状态","sopDoc":"《电力安全工作规程》","sourceDocument":"inline"}
+{"edgeId":"cc9c5e72-25f5-4cda-85f6-ad751a5a1311","equipment":"变压器","condition":"投运前","parameter":"冲击合闸试验","sopDoc":"《电力安全工作规程》","sourceDocument":"inline"}
+{"edgeId":"3221a6d9-a516-4546-902e-1b199c36a364","equipment":"变压器","condition":"负载状态","parameter":"电流","sourceDocument":"inline"}
+{"edgeId":"de28af1c-9506-423f-9193-92034a301622","equipment":"变压器","condition":"停运超过7天","parameter":"绝缘电阻","sourceDocument":"inline"}
+{"edgeId":"28105d00-d06c-4d72-9ae2-8bfb8b00db90","equipment":"变压器","condition":"环境温度20℃","parameter":"油位","sourceDocument":"inline"}
+{"edgeId":"a1ff454d-1edf-4504-a087-8a2a896ed6c1","equipment":"变压器","condition":"油温低于10℃","parameter":"油温","sourceDocument":"inline"}
+{"edgeId":"032b1302-795a-468e-94fd-ab19ba6d567d","equipment":"变压器","parameter":"呼吸器硅胶状态","sourceDocument":"inline"}
+{"edgeId":"38eb70b0-cdc7-4c15-9019-fe939c7a61d1","equipment":"变压器","parameter":"气体继电器","sourceDocument":"inline"}
+{"edgeId":"d39ce556-d9c4-44c4-9dde-2d961ddff279","equipment":"10kV变压器","condition":"带电设备周围作业","parameter":"人员及工具最小安全距离","sopDoc":"GB 26859-2011","sourceDocument":"inline"}
+{"edgeId":"c22260e8-d08e-4496-9535-e1639c6ac153","equipment":"35kV变压器","condition":"带电设备周围作业","parameter":"人员及工具最小安全距离","sopDoc":"GB 26859-2011","sourceDocument":"inline"}
+{"edgeId":"6b2f946f-5bbb-41bd-af48-00ce5d86c5ec","equipment":"110kV变压器","condition":"带电设备周围作业","parameter":"人员及工具最小安全距离","sopDoc":"GB 26859-2011","sourceDocument":"inline"}
+{"edgeId":"4b70afd5-9793-4ec7-ba55-324d5fc937b1","equipment":"变压器","condition":"进行油处理或滤油作业","parameter":"接地电阻","sopDoc":"GB 26859-2011","sourceDocument":"inline"}
+{"edgeId":"45993736-fd74-4f71-9503-9bef8bac147a","equipment":"变压器","condition":"未断开高低压侧隔离开关并验电接地","fault":"打开人孔盖或进行内部检查","sopDoc":"GB 26859-2011","sourceDocument":"inline"}
+{"edgeId":"5b1f11a5-3cec-4fbf-ba09-3dc165df60e4","equipment":"变压器","parameter":"油位低于最低刻度（如低于-20℃对应油位线）","fault":"油泄漏","sourceDocument":"inline"}
+{"edgeId":"a884c650-3799-43f0-b78e-93b16cd975b2","equipment":"220kV及以上变压器","parameter":"油样检测周期","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"fe23d87e-6ebb-403d-96a1-18d38a08f33c","equipment":"110kV变压器","parameter":"油样检测周期","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"f990c576-fe8c-45dd-a276-591f6648a9b1","equipment":"变压器","parameter":"击穿电压","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"d98456ae-888a-42fe-a61d-0c3c7d87f8dd","equipment":"110kV变压器","parameter":"水分含量","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"20fccc3b-4705-42b2-86e3-7edc026bc3bf","equipment":"变压器","parameter":"酸值","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"06096bba-cc98-4c5d-8406-c491e0a5526c","equipment":"变压器","parameter":"界面张力","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"a0f89f96-44d7-4ffd-a740-03ae88c2962d","equipment":"变压器","parameter":"乙炔含量","fault":"乙炔\u003e1ppm","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"b60a754c-e6bd-44ae-8c13-a7d6e01ccfaf","equipment":"变压器","parameter":"总烃增长速率","fault":"总烃增长速率\u003e10%/月","sopDoc":"DL/T 596","sourceDocument":"inline"}
+{"edgeId":"5474aabf-98e8-4dc4-944a-7fb4eb9b10a7","equipment":"变压器散热器","parameter":"翅片积尘","sourceDocument":"inline"}
+{"edgeId":"2f7cbf8d-77ac-43e2-a1fd-e122a4896358","equipment":"变压器散热器","parameter":"油管状态","fault":"变形、渗漏","sourceDocument":"inline"}
+{"edgeId":"a0653610-0530-4449-a0f2-d8f9f4e4d136","equipment":"变压器散热器","parameter":"风扇电机绝缘电阻","sourceDocument":"inline"}
+{"edgeId":"a01b6ead-aff6-46ff-bf70-6915125cb112","equipment":"变压器散热器","parameter":"风向","sourceDocument":"inline"}
+{"edgeId":"7431888b-ea93-4129-bee4-3ea363f9b592","equipment":"变压器散热器","parameter":"油流继电器指示","sourceDocument":"inline"}
+{"edgeId":"d01e1aaa-c361-42b6-ad39-fe9324f35af7","equipment":"开关柜","condition":"运行中","parameter":"异常温升","fault":"局部温度超过110℃","sourceDocument":"inline"}
+{"edgeId":"0ae8306c-3653-4b1d-9435-c056f2b062dd","equipment":"开关柜内断路器","parameter":"实测电流","fault":"频繁跳闸","sourceDocument":"inline"}
+{"edgeId":"8fec67f8-91fe-46d8-980b-75526e0f1a8f","equipment":"开关柜内断路器","parameter":"绝缘电阻","fault":"频繁跳闸","sourceDocument":"inline"}
+{"edgeId":"78597542-0353-4570-b7d1-8332fb24dea0","equipment":"开关柜内断路器","parameter":"保护定值","fault":"频繁跳闸","sourceDocument":"inline"}
+{"edgeId":"25dedfd3-34f2-4711-bd04-c26044672d18","equipment":"开关柜内断路器","parameter":"机构及辅助触点状态","fault":"频繁跳闸","sourceDocument":"inline"}
+{"edgeId":"111ee2c2-e76e-4198-8128-3b26bdcecc1d","equipment":"开关柜内断路器","parameter":"保护装置动作特性","fault":"频繁跳闸","sourceDocument":"inline"}
+{"edgeId":"087fbce9-9447-4793-8ade-8bf951a15703","equipment":"开关柜","parameter":"电磁噪声","fault":"嗡嗡异响","sourceDocument":"inline"}
+{"edgeId":"f684a60b-89ac-4750-a3a9-ac1aebe06c83","equipment":"高压开关柜断路器","parameter":"控制电源电压","sourceDocument":"inline"}
+{"edgeId":"a0fcd4b1-f3b4-4382-9a09-86bc6d315c3d","equipment":"开关柜","condition":"从运行状态转为检修状态","sopDoc":"DL/T 596-2021","sourceDocument":"inline"}
+{"edgeId":"569a0c5a-7128-4a0d-9f0d-045d6679c83f","equipment":"开关柜手车机构","parameter":"断路器状态","sourceDocument":"inline"}
+{"edgeId":"0f5c76f4-6340-406d-89b3-6edfb2ff7daf","equipment":"开关柜","condition":"在开关柜附近作业","parameter":"安全距离（10kV≥0.7m，35kV≥1.0m）","sopDoc":"两票三制","sourceDocument":"inline"}
+{"edgeId":"146230b3-3bbb-41b2-95f9-fce5d6482b0d","equipment":"开关柜","parameter":"机械联锁力矩","sourceDocument":"inline"}
+{"edgeId":"fd5bfcba-0aa4-42cb-9110-9b8c4b92b8e0","equipment":"开关柜","parameter":"电气联锁回路绝缘电阻","sourceDocument":"inline"}
+{"edgeId":"e6645e05-ee13-4eca-a43a-2d809ae39be6","equipment":"开关柜","condition":"湿度高地区","parameter":"温升（母排≤65K）","sourceDocument":"inline"}
+{"edgeId":"f8418ad8-19ed-4cf7-98e9-0c86b6bcb5ae","equipment":"开关柜","parameter":"柜内积尘","sourceDocument":"inline"}
+{"edgeId":"909a767f-71ef-4b9a-8620-9e9b4acfab18","equipment":"开关柜","parameter":"螺栓紧固力矩","sourceDocument":"inline"}
+{"edgeId":"e9fd8738-7c9b-442e-9a6d-9b9a50f4fdab","equipment":"开关柜","parameter":"绝缘电阻","sourceDocument":"inline"}
+{"edgeId":"245b815c-dd54-427a-b5ee-b9facb77d709","equipment":"开关柜","parameter":"回路电阻","sourceDocument":"inline"}
+{"edgeId":"988e059d-47dd-4b47-b1e1-b9f34cb10b72","equipment":"开关柜","condition":"湿度高地区","parameter":"加热器状态","sourceDocument":"inline"}
+{"edgeId":"06b276e2-0427-4fe1-b875-0aac7ae1f96e","equipment":"10kV开关柜","condition":"投运后第1年或重载运行","parameter":"断路器机械特性、绝缘电阻、交流耐压、保护装置动作误差","sopDoc":"DL/T 596-2021","sourceDocument":"inline"}
+{"edgeId":"fe6df089-bd0f-44dd-a3e8-8e427b3b279a","equipment":"脱硫塔","parameter":"浆液pH值","fault":"异常波动","sourceDocument":"inline"}
+{"edgeId":"0e56b35a-550e-478d-9220-5e4163d4ca93","equipment":"脱硫塔","parameter":"出口SO₂浓度","fault":"浓度突然升高（超过35 mg/m³）","sourceDocument":"inline"}
+{"edgeId":"c93b82e8-5aec-4f30-aa92-41660e69d8dc","equipment":"石灰石浆液供给系统","parameter":"浆液供给压力","fault":"压力异常（低于0.3 MPa）","sourceDocument":"inline"}
+{"edgeId":"b9cdbdb1-8423-4415-9572-8a4fb9418cdb","equipment":"石灰石浆液供给系统","parameter":"浆液流量","fault":"流量异常","sourceDocument":"inline"}
+{"edgeId":"4b38f7f3-c15a-4e51-a757-8404ef747542","equipment":"氧化风机","parameter":"出口压力","fault":"压力异常（偏离80–100 kPa）","sourceDocument":"inline"}
+{"edgeId":"c349d4ba-e4b5-4862-a593-0494155b1d66","equipment":"氧化风机","parameter":"电流","fault":"电流异常","sourceDocument":"inline"}
+{"edgeId":"830a9b64-43d8-45da-af1a-2e95ffedcf69","equipment":"烟气挡板门","parameter":"密封性","fault":"密封不良导致泄漏","sourceDocument":"inline"}
+{"edgeId":"903a7ffb-3cb2-4839-a432-441b8f79d3a9","equipment":"脱硫塔","parameter":"浆液Cl⁻浓度","fault":"浓度过高（超过20,000 mg/L）抑制反应","sourceDocument":"inline"}
+{"edgeId":"72ad6fa2-c6ca-4afc-a011-5ebc3a5d89b1","equipment":"脱硫塔","parameter":"塔内压降","fault":"压差升高（超过1.5 kPa）","sourceDocument":"inline"}
+{"edgeId":"b6f56df7-902d-47e0-a515-33abc8a9a0f3","equipment":"脱硫塔","parameter":"吸收塔液位","sourceDocument":"inline"}
+{"edgeId":"c1c3c516-ee25-4aa4-9641-b8a3c02031d0","equipment":"浆液循环泵","parameter":"轴承温度","sourceDocument":"inline"}
+{"edgeId":"ba4e2643-6121-47b7-9162-c037513c8a9f","equipment":"浆液循环泵","parameter":"电机绝缘","sourceDocument":"inline"}
+{"edgeId":"8f4d67d7-5882-4c17-837e-eb567415ad6e","equipment":"氧化风机","parameter":"润滑油位","sourceDocument":"inline"}
+{"edgeId":"d3ebd82b-07ed-422c-a210-28260c3e35ca","equipment":"除雾器冲洗水系统","parameter":"压力","sourceDocument":"inline"}
+{"edgeId":"5b1f228b-a7fc-47f0-86a0-fc39df3d1076","equipment":"pH计","parameter":"校准状态","sourceDocument":"inline"}
+{"edgeId":"19e28490-307f-4483-8066-4378d2196111","equipment":"密度计","parameter":"校准状态","sourceDocument":"inline"}
+{"edgeId":"759d6e83-b4c9-4a5d-9455-b502d0f61399","equipment":"氧化风机","sourceDocument":"inline"}
+{"edgeId":"f4d4460e-6c18-4aa5-8b17-85227a09226e","equipment":"一级循环泵","parameter":"流量","sourceDocument":"inline"}
+{"edgeId":"b62b2fe2-3947-49cc-85ac-8eeca10b9890","equipment":"脱硫塔","condition":"系统稳定后","parameter":"入口烟温","sourceDocument":"inline"}
+{"edgeId":"8a1af2fe-b2d2-4025-b034-852c157ac4c6","equipment":"脱硫塔","condition":"正常运行中","parameter":"石灰石浆液供给量","sourceDocument":"inline"}
+{"edgeId":"6dd9ab7c-8102-408e-8847-9abe82a408b8","equipment":"脱硫塔","condition":"停运时","parameter":"冲洗水压力","sourceDocument":"inline"}
+{"edgeId":"d5d1f35f-2c66-451d-a02c-87e3e24c9570","equipment":"脱硫塔","condition":"进入塔内检修","parameter":"氧含量19.5%–23.5%，SO₂浓度＜2 ppm，残留Cl⁻＞10,000 mg/L","sourceDocument":"inline"}
+{"edgeId":"506ce62f-b369-4975-9038-a928bcb8d795","condition":"脱硫区域动火作业","parameter":"可燃气体浓度","sourceDocument":"inline"}
+{"edgeId":"715d6fe5-af7d-45b4-8496-1e5073d5d12a","equipment":"脱硫塔除雾器","parameter":"冲洗频率","sourceDocument":"inline"}
+{"edgeId":"674a00e4-b9cc-4cd6-b930-3b2d8312c75b","equipment":"脱硫塔除雾器","parameter":"喷嘴堵塞情况","sourceDocument":"inline"}
+{"edgeId":"371f2e2a-2d53-4462-ad1c-18f60490edac","equipment":"脱硫塔除雾器","parameter":"叶片积垢厚度","sourceDocument":"inline"}
+{"edgeId":"bbdc6c8a-0454-44bb-85ef-3347d84a2f30","equipment":"脱硫塔除雾器","parameter":"压差","fault":"压差持续＞200 Pa","sourceDocument":"inline"}
+{"edgeId":"31d2dfeb-90aa-47a6-8bd5-2b0b870ae9ab","equipment":"脱硫塔除雾器","parameter":"冲洗水水质Cl⁻浓度","sourceDocument":"inline"}
+{"edgeId":"8d2c13b6-5a29-4724-84b8-0f4c629ed0a5","equipment":"脱硫塔循环泵","condition":"冷却水流量＜2 m³/h或温度≥40℃","parameter":"机械密封泄漏量","fault":"泄漏量＞10 mL/h","sourceDocument":"inline"}
+{"edgeId":"6c3d7645-00cb-440a-bece-a00c838251f7","equipment":"冷却塔风机","parameter":"振动异常增大","fault":"振动异常","sourceDocument":"inline"}
+{"edgeId":"e09f1c35-7ab8-403e-a31a-8404e2125197","equipment":"冷却塔","condition":"环境湿球温度升高","parameter":"出水温度","fault":"持续高于设计值（＞35℃）","sourceDocument":"inline"}
+{"edgeId":"5493de89-714e-46f7-97ee-f3b3d91c036c","equipment":"冷却塔电机","parameter":"运行电流","fault":"频繁跳闸","sourceDocument":"inline"}
+{"edgeId":"28470ff6-cacf-40ad-a809-42037d26b62e","equipment":"冷却塔","condition":"启动前","parameter":"水位","sourceDocument":"inline"}
+{"edgeId":"a336b52e-01f2-4308-bac5-392340090182","equipment":"冷却塔","condition":"启动前","parameter":"风机转向","sourceDocument":"inline"}
+{"edgeId":"0b13a1ab-546b-4875-a6bc-27a1e43e7450","equipment":"冷却塔","condition":"启动前","parameter":"盘车状态","sourceDocument":"inline"}
+{"edgeId":"cea813e9-ec49-4012-aa5d-886b93ce0a23","equipment":"冷却塔","condition":"启动前","parameter":"电气系统绝缘电阻","sourceDocument":"inline"}
+{"edgeId":"78cc4d67-6137-4915-a398-91ab5ad903d7","equipment":"冷却塔","condition":"启动前","parameter":"阀门状态","sourceDocument":"inline"}
+{"edgeId":"331c245a-0a67-4820-a708-3e1c10d49db0","equipment":"冷却塔","condition":"首次启动","parameter":"运行状态","sourceDocument":"inline"}
+{"edgeId":"324b3b09-93d3-4dad-bf0a-8f8d781090d0","equipment":"冷却塔","condition":"首次启动","parameter":"电流","sourceDocument":"inline"}
+{"edgeId":"23a30021-356e-4d70-abff-dd70cae93e31","equipment":"冷却塔","condition":"首次启动","parameter":"振动","sourceDocument":"inline"}
+{"edgeId":"76468c71-b71a-4410-906c-62dce61ee245","equipment":"冷却塔","condition":"首次启动","parameter":"噪音","sourceDocument":"inline"}
+{"edgeId":"7b2a2d60-3669-454b-a943-cda28431e715","equipment":"冷却塔","condition":"冬季停机（环境温度＜5℃）","parameter":"集水盘水位","fault":"填料干烧变形","sourceDocument":"inline"}
+{"edgeId":"10ee69d2-fa1a-4493-9efe-6b75e14bb891","equipment":"冷却塔","condition":"热负荷变化","parameter":"风机转速","sourceDocument":"inline"}
+{"edgeId":"448314cd-2823-4206-98c0-1bd7fb7af372","equipment":"冷却塔","condition":"热负荷变化","parameter":"循环水量","sourceDocument":"inline"}
+{"edgeId":"bef43926-40ee-4cab-9498-3e807acceee3","equipment":"冷却塔","condition":"热负荷变化","parameter":"出水温度","sourceDocument":"inline"}
+{"edgeId":"8e0199a5-f085-423d-98ca-085e051498c8","equipment":"冷却塔","condition":"长期低负荷运行（＜60%额定流量）","parameter":"布水均匀性","fault":"布水不均","sourceDocument":"inline"}
+{"edgeId":"53fb5aef-aeb2-4349-ad2a-5e2920c54b6d","equipment":"冷却塔","condition":"进入内部检修","parameter":"氧含量","sourceDocument":"inline"}
+{"edgeId":"3e4defb7-2d78-4687-8c99-339917eb5c97","equipment":"风机电机及控制柜","condition":"冷却塔周边作业","parameter":"防护等级","sourceDocument":"inline"}
+{"edgeId":"b7e8317b-a76e-47e7-bdef-865c293f2592","equipment":"电缆接头","condition":"冷却塔周边作业","parameter":"防水密封","sourceDocument":"inline"}
+{"edgeId":"61768bd0-3e70-4855-b7b3-ab5e973773f6","condition":"冷却塔周边作业","parameter":"接地电阻","sourceDocument":"inline"}
+{"edgeId":"c294e1b3-3154-4f60-aa1d-0a98561d062d","condition":"潮湿环境","parameter":"照明电压","sourceDocument":"inline"}
+{"edgeId":"3d4b7930-d581-4216-8d92-be16770bddef","equipment":"带电设备","condition":"冷却塔周边作业","parameter":"喷水清洗距离","sourceDocument":"inline"}
+{"edgeId":"d7939d20-20e9-4f54-a718-7ed4d9edc2a4","condition":"冷却塔周边作业","sourceDocument":"inline"}
+{"edgeId":"fd85c4a0-5da4-4d85-a7f3-1dd2bfa753a4","equipment":"冷却塔填料","condition":"PVC填料使用温度＜60℃，避免阳光直射","parameter":"堵塞率、破损面积、pH值","sourceDocument":"inline"}
+{"edgeId":"931cf1cd-3bbb-469e-92ed-60ac687749a3","equipment":"风机减速机","condition":"首次运行200小时后","parameter":"润滑油更换周期","sourceDocument":"inline"}
+{"edgeId":"19865137-d2fd-4137-a516-b0ef057d68f5","equipment":"风机减速机","condition":"之后每2000小时或6个月（以先到为准）","parameter":"润滑油更换周期","sourceDocument":"inline"}
+{"edgeId":"5b832bd4-12b4-4c1f-95e5-8e630e48c22d","equipment":"风机减速机","parameter":"油品规格","sourceDocument":"inline"}
+{"edgeId":"4145e0d3-902d-4f8f-92ba-251fc6fb3c8f","equipment":"风机减速机","parameter":"油位","sourceDocument":"inline"}
+{"edgeId":"121d7f2b-1059-4cf7-9335-db77f1e49713","equipment":"风机减速机","condition":"运行中","parameter":"油温","fault":"油温超过80℃","sourceDocument":"inline"}
+{"edgeId":"8c0b5b66-cace-41c1-a59f-763b27b4ed6b","equipment":"风机减速机","parameter":"油色或杂质","fault":"油色变黑或含金属屑","sourceDocument":"inline"}
