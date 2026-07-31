@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,17 +96,17 @@ public class Phase5FAQGenerator implements CommandLineRunner {
         try {
             Files.createDirectories(OUTPUT_DIR);
             int total = 0;
-            int dataLossBatches = 0;
-            Path tmpFile = OUTPUT_DIR.resolve("industrial_faq.jsonl.tmp");
+            AtomicInteger dataLossBatches = new AtomicInteger(0);
+            Path tmpFile = OUTPUT_FILE.resolveSibling(OUTPUT_FILE.getFileName() + ".tmp");
 
             try (BufferedWriter writer = Files.newBufferedWriter(tmpFile,
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
                 total += generateForDomain(writer, "钢铁冶金", "steel_metallurgy",
-                        new String[]{"高炉", "转炉", "连铸机", "热轧机", "冷轧机", "烧结机", "焦炉"});
+                        new String[]{"高炉", "转炉", "连铸机", "热轧机", "冷轧机", "烧结机", "焦炉"}, dataLossBatches);
                 total += generateForDomain(writer, "石油化工", "petrochemical",
-                        new String[]{"裂解炉", "精馏塔", "反应釜", "压缩机", "换热器", "泵", "储罐"});
+                        new String[]{"裂解炉", "精馏塔", "反应釜", "压缩机", "换热器", "泵", "储罐"}, dataLossBatches);
                 total += generateForDomain(writer, "电力能源", "power_energy",
-                        new String[]{"汽轮机", "发电机", "锅炉", "变压器", "开关柜", "脱硫塔", "冷却塔"});
+                        new String[]{"汽轮机", "发电机", "锅炉", "变压器", "开关柜", "脱硫塔", "冷却塔"}, dataLossBatches);
             }
 
             // 原子重命名
@@ -114,13 +115,13 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                     java.nio.file.StandardCopyOption.ATOMIC_MOVE);
 
             log.info("====== Phase 5: FAQ 生成完成，共 {} 条，丢弃批次: {}，输出文件: {} ======",
-                    total, dataLossBatches, OUTPUT_FILE.toAbsolutePath());
+                    total, dataLossBatches.get(), OUTPUT_FILE.toAbsolutePath());
         } catch (Exception e) {
             log.error("FAQ 生成失败", e);
         }
     }
 
-    private int generateForDomain(BufferedWriter writer, String domain, String sourceDoc, String[] equipment) throws Exception {
+    private int generateForDomain(BufferedWriter writer, String domain, String sourceDoc, String[] equipment, AtomicInteger dataLossBatches) throws Exception {
         int total = 0;
         int totalBatches = equipment.length * BATCHES_PER_EQUIPMENT;
         int currentBatch = 0;
@@ -142,7 +143,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
                         .maxTokens(4096)
                         .build();
 
-                List<String> lines = callLLMWithRetry(request, domain, equip, i);
+                List<String> lines = callLLMWithRetry(request, domain, equip, i, dataLossBatches);
                 for (String line : lines) {
                     writer.write(line);
                     writer.newLine();
@@ -155,7 +156,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
         return total;
     }
 
-    private List<String> callLLMWithRetry(ChatRequest request, String domain, String equip, int batchIndex) {
+    private List<String> callLLMWithRetry(ChatRequest request, String domain, String equip, int batchIndex, AtomicInteger dataLossBatches) {
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 String response = llmService.chat(request);
@@ -177,6 +178,7 @@ public class Phase5FAQGenerator implements CommandLineRunner {
         }
         log.error("[DATA_LOSS] FAQ 批次永久丢弃: {}-{} batch {} (已重试 {} 次)",
                 domain, equip, batchIndex, MAX_RETRIES);
+        dataLossBatches.incrementAndGet();
         return List.of();
     }
 
