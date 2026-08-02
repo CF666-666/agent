@@ -17,12 +17,14 @@
 
 package com.nageoffer.ai.ragent.rag.controller.vo;
 
+import com.nageoffer.ai.ragent.rag.dto.Reference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 会话消息视图对象
@@ -52,6 +54,15 @@ public class ConversationMessageVO {
      * 消息内容
      */
     private String content;
+
+    /**
+     * 引用来源列表
+     * <p>
+     * 仅新会话实时问答可见（SSE references 事件）；历史消息未落库，为 null，
+     * 前端按 {@code type} 渲染文本卡片 / 图纸缩略图 / 推理路径。
+     * </p>
+     */
+    private List<Reference> references;
 
     /**
      * 深度思考内容

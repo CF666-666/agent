@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Github, Menu } from "lucide-react";
+import { Github, Info, Menu } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { useChatStore } from "@/stores/chatStore";
@@ -61,6 +62,14 @@ export function Header({ onToggleSidebar }: HeaderProps) {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            to="/about"
+            className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-1.5 text-sm text-gray-600 transition hover:bg-gray-100 hover:text-gray-900"
+            aria-label="关于项目"
+          >
+            <Info className="h-4 w-4" />
+            <span className="font-medium">关于项目</span>
+          </Link>
           <a
             href="https://github.com/nageoffer/ragent"
             target="_blank"

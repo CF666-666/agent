@@ -258,13 +258,17 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 | # | 任务 | 文件 | 优先级 | 预计工时 | 状态 |
 |:--:|------|------|:--:|:--:|:--:|
-| 6.1 | 答案渲染区新增图片预览（Lightbox） | `frontend/.../AnswerDisplay.tsx` | P1 | 3h | ⬜ |
-| 6.2 | 超图推理路径面包屑组件 | `frontend/.../HyperGraphPath.tsx` | P1 | 3h | ⬜ |
-| 6.3 | 视频帧缩略图 + 时间戳跳转 | `frontend/.../VideoFramePreview.tsx` | P1 | 2h | ⬜ |
-| 6.4 | 检索来源过滤面板（文本/图像/超图 可选） | `frontend/.../SourceFilter.tsx` | P2 | 3h | ⬜ |
+| 6.0 | 后端静态资源映射（/files/** 配置化 + 认证放行） | `WebConfig.java` `StaticResourceProperties.java` `SaTokenConfig.java` | P0 | 2h | ✅ |
+| 6.1 | 后端 ConversationMessageVO 扩展 references 字段 | `ConversationMessageVO.java` | P0 | 1h | ✅ |
+| 6.2 | 前端 references 接入（类型 + onEvent 捕获 + 暂存合并） | `types/index.ts` `chatStore.ts` `sessionService.ts` | P0 | 2h | ✅ |
+| 6.3 | 渲染组件（ReferencesPanel/文本卡/Lightbox/推理路径） | `frontend/.../ReferencesPanel.tsx` 等 5 个组件 | P1 | 3h | ✅ |
+| 6.4 | 检索来源过滤标签栏（集成于 ReferencesPanel） | `ReferencesPanel.tsx` | P2 | 1h | ✅ |
+| 6.5 | ~~视频帧缩略图~~（Phase 5 已跳过视频数据，取消） | — | — | — | ⏭️ |
 
 **Phase 6 产出**：
-- 前端支持多模态答案渲染
+- 前端支持多模态答案渲染（文本引用卡片 + 图纸 Lightbox + 推理路径面包屑 + 来源过滤）
+- references SSE 事件由前端完整消费（时序：meta → references → content* → finish → done）
+- 品牌更名 HIRAGent（Hypergraph-Integrated Multimodal Industrial RAG Agent）+ 新增公开"关于项目"页 `/about`（名称含义/背景/场景/技术栈/架构/岗位介绍，Header + 侧边栏双入口）
 
 ---
 
@@ -315,7 +319,7 @@ Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
 | 3 | 超图引擎 | ✅ 完成 | 07-28 | 07-31 | 超边抽取 633 条，超图检索通道可用 |
 | 4 | 多路融合与答案增强 | ✅ 完成 | 07-31 | 08-01 | 6 个闭环全部完成，多源融合 + references 推送跑通 |
 | 5 | Demo 数据集构建 | ✅ 完成 | 08-01 | 08-02 | FAQ 210 条 + 图像 12 张 + 超边 633 条，Java 全量入库，5 个用例三路命中 |
-| 6 | 前端增强 | ⬜ 待开始 | | | Week 6-7 |
+| 6 | 前端增强 | ✅ 完成 | 08-02 | 08-02 | references 多模态渲染：文本卡片 + 图纸 Lightbox + 推理路径 + 来源过滤，构建/类型检查通过 |
 | 7 | GitHub 整理与文档 | ⬜ 待开始 | | | Week 7 |
 
 ---

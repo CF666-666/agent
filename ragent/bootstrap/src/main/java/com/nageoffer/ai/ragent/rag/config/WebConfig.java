@@ -17,10 +17,12 @@
 
 package com.nageoffer.ai.ragent.rag.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.nio.charset.StandardCharsets;
@@ -30,16 +32,20 @@ import java.util.List;
  * Web MVC 配置
  *
  * <p>
- * 主要用于统一配置 Spring MVC 的消息转换器，确保字符串响应使用 UTF-8 编码，避免出现中文乱码或不同编码混用的问题
+ * 统一配置 Spring MVC 的消息转换器（UTF-8 编码）与静态资源映射（多模态引用图片），
+ * 确保字符串响应无乱码、设备图纸等资源可被前端访问。
  * </p>
  *
  * <p>
- * 默认情况下，Spring Boot 会自动配置一组 {@link HttpMessageConverter}，
- * 其中 {@link StringHttpMessageConverter} 的编码可能不是 UTF-8，通过此配置可以显式设置为 UTF-8 并放到转换器链的最前面
+ * 静态资源映射通过 {@link StaticResourceProperties} 配置（默认 {@code /files/**} → {@code file:data/images/}），
+ * 供前端渲染 references 事件中的 IMAGE 类型引用。
  * </p>
  */
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
+
+    private final StaticResourceProperties staticResourceProperties;
 
     /**
      * 自定义消息转换器配置
@@ -73,5 +79,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .exposedHeaders("Authorization")
                 .allowCredentials(true)
                 .maxAge(3600);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        if (staticResourceProperties.isEnabled()) {
+            registry.addResourceHandler(staticResourceProperties.getUrlPattern())
+                    .addResourceLocations(staticResourceProperties.getLocation());
+        }
     }
 }

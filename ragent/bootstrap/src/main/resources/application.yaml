@@ -208,3 +208,11 @@ ragent:
       HYBRID: 1.0
       IMAGE_SEMANTIC: 0.9
       HYPERGRAPH: 1.1
+
+  # --- Phase 6: 静态资源映射（多模态引用图片） ---
+  static-resource:
+    enabled: true
+    # URL 匹配模式：/files/drawings/xxx.jpg
+    url-pattern: /files/**
+    # 本地文件目录（相对 bootstrap 模块工作目录，部署时可按需改绝对路径）
+    location: file:data/images/

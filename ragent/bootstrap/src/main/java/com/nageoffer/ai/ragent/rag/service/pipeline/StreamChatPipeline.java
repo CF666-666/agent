@@ -34,6 +34,7 @@ import com.nageoffer.ai.ragent.rag.core.memory.ConversationMemoryService;
 import com.nageoffer.ai.ragent.rag.core.prompt.PromptContext;
 import com.nageoffer.ai.ragent.rag.core.prompt.PromptTemplateLoader;
 import com.nageoffer.ai.ragent.rag.core.prompt.RAGPromptService;
+import com.nageoffer.ai.ragent.rag.config.StaticResourceProperties;
 import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalEngine;
 import com.nageoffer.ai.ragent.rag.core.rewrite.QueryRewriteService;
 import com.nageoffer.ai.ragent.rag.core.rewrite.RewriteResult;
@@ -47,6 +48,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +81,7 @@ public class StreamChatPipeline {
     private final RAGPromptService promptBuilder;
     private final PromptTemplateLoader promptTemplateLoader;
     private final StreamTaskManager taskManager;
+    private final StaticResourceProperties staticResourceProperties;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -179,20 +184,13 @@ public class StreamChatPipeline {
         // 聚合所有意图用于 prompt 规划
         IntentGroup mergedGroup = intentResolver.mergeIntentGroup(ctx.getSubIntents());
 
-        // Phase 4: 构建 references + 包装 callback 拦截 onComplete 注入 references 事件
+        // Phase 4/6: 检索来源在 LLM 流开始前发送
+        // 保证取消/中断场景下引用也已到达（挂在 onComplete 会在取消时丢失）
         List<Reference> references = buildReferences(retrievalCtx);
-        StreamCallback original = ctx.getCallback();
-        StreamCallback wrapped = new StreamCallback() {
-            @Override public void onContent(String content) { original.onContent(content); }
-            @Override public void onThinking(String thinking) { original.onThinking(thinking); }
-            @Override public void onComplete() {
-                if (!references.isEmpty()) {
-                    original.onReferences(toJson(references));
-                }
-                original.onComplete();
-            }
-            @Override public void onError(Throwable error) { original.onError(error); }
-        };
+        StreamCallback callback = ctx.getCallback();
+        if (!references.isEmpty()) {
+            callback.onReferences(toJson(references));
+        }
 
         StreamCancellationHandle handle = streamLLMResponse(
                 ctx.getRewriteResult(),
@@ -200,7 +198,7 @@ public class StreamChatPipeline {
                 mergedGroup,
                 ctx.getHistory(),
                 ctx.isDeepThinking(),
-                wrapped
+                callback
         );
         taskManager.bindHandle(ctx.getTaskId(), handle);
     }
@@ -277,7 +275,12 @@ public class StreamChatPipeline {
                 String source = String.valueOf(sourceRaw);
 
                 ReferenceType type = mapToReferenceType(source);
-                refs.add(buildReference(type, chunk, meta));
+                Reference ref = buildReference(type, chunk, meta);
+                // 静态资源未启用时 IMAGE 引用无 url，过滤掉避免"有计数无卡片"
+                if (type == ReferenceType.IMAGE && StrUtil.isBlank(ref.url())) {
+                    continue;
+                }
+                refs.add(ref);
             }
         }
         return refs;
@@ -323,9 +326,55 @@ public class StreamChatPipeline {
 
     private String resolveUrl(ReferenceType type, Map<String, Object> meta) {
         if (type != ReferenceType.IMAGE) return null;
+        // 静态资源映射未启用时，不产出失效的图片引用
+        if (!staticResourceProperties.isEnabled()) {
+            return null;
+        }
         Object path = meta.get("imagePath");
         if (path == null) return null;
-        return path instanceof JsonElement je ? je.getAsString() : path.toString();
+        String imagePath = path instanceof JsonElement je ? je.getAsString() : path.toString();
+        // 归一化并校验：拒绝 ../ 路径穿越（防止越出静态资源根目录）
+        if (!isSafeAssetPath(imagePath)) {
+            log.warn("引用图片路径不安全，已跳过: {}", imagePath);
+            return null;
+        }
+        // 图片走静态资源映射：/files/** → data/images/，前缀由配置派生，与 WebConfig 保持一致
+        String urlPrefix = staticResourceProperties.getUrlPattern().replace("/**", "");
+        return urlPrefix + "/" + encodePathSegments(imagePath);
+    }
+
+    /**
+     * 对资源相对路径做 URL 编码（分段处理，保留 {@code /} 分隔符）
+     * <p>
+     * 防止中文 / 空格 / 特殊字符（#、?）导致图片加载失败。
+     * </p>
+     */
+    private static String encodePathSegments(String path) {
+        String[] segments = path.split("/");
+        StringBuilder encoded = new StringBuilder();
+        for (String segment : segments) {
+            if (encoded.length() > 0) {
+                encoded.append('/');
+            }
+            encoded.append(URLEncoder.encode(segment, StandardCharsets.UTF_8).replace("+", "%20"));
+        }
+        return encoded.toString();
+    }
+
+    /**
+     * 校验资源相对路径安全：仅允许普通文件名 / 子目录，拒绝 {@code ..}、绝对路径、协议前缀
+     */
+    private static boolean isSafeAssetPath(String path) {
+        if (path == null || path.isBlank()) {
+            return false;
+        }
+        // 拒绝绝对路径（/xxx、C:\xxx、file:...）与协议前缀
+        if (path.startsWith("/") || path.contains(":/") || path.contains(":\\")) {
+            return false;
+        }
+        // 归一化后不得包含上层目录引用
+        String normalized = Paths.get(path).normalize().toString().replace('\\', '/');
+        return !normalized.startsWith("..") && !normalized.contains("../");
     }
 
     private String resolveDetail(ReferenceType type, Map<String, Object> meta) {

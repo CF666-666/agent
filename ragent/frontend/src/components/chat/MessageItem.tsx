@@ -3,6 +3,7 @@ import { Brain, ChevronDown } from "lucide-react";
 
 import { FeedbackButtons } from "@/components/chat/FeedbackButtons";
 import { MarkdownRenderer } from "@/components/chat/MarkdownRenderer";
+import { ReferencesPanel, type ReferenceFilter } from "@/components/chat/ReferencesPanel";
 import { ThinkingIndicator } from "@/components/chat/ThinkingIndicator";
 import { cn } from "@/lib/utils";
 import type { Message } from "@/types";
@@ -21,9 +22,11 @@ export const MessageItem = React.memo(function MessageItem({ message, isLast }: 
     !message.id.startsWith("assistant-");
   const isThinking = Boolean(message.isThinking);
   const [thinkingExpanded, setThinkingExpanded] = React.useState(false);
+  const [referenceFilter, setReferenceFilter] = React.useState<ReferenceFilter>("ALL");
   const hasThinking = Boolean(message.thinking && message.thinking.trim().length > 0);
   const hasContent = message.content.trim().length > 0;
   const isWaiting = message.status === "streaming" && !isThinking && !hasContent;
+  const hasReferences = Boolean(message.references && message.references.length > 0);
 
   if (isUser) {
     return (
@@ -96,6 +99,13 @@ export const MessageItem = React.memo(function MessageItem({ message, isLast }: 
               feedback={message.feedback ?? null}
               content={message.content}
               alwaysVisible={Boolean(isLast)}
+            />
+          ) : null}
+          {hasReferences && message.references ? (
+            <ReferencesPanel
+              references={message.references}
+              filter={referenceFilter}
+              onFilterChange={setReferenceFilter}
             />
           ) : null}
         </div>

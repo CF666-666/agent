@@ -1,3 +1,4 @@
+import type { Reference } from "@/types";
 import { api } from "@/services/api";
 
 export interface ConversationVO {
@@ -15,6 +16,8 @@ export interface ConversationMessageVO {
   thinkingDuration?: number | null;
   vote: number | null;
   createTime?: string;
+  /** 引用来源列表（历史消息未落库，通常为 null） */
+  references?: Reference[] | null;
 }
 
 export async function listSessions() {

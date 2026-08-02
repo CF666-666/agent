@@ -1,7 +1,14 @@
 import { create } from "zustand";
 import { toast } from "sonner";
 
-import type { CompletionPayload, FeedbackValue, Message, MessageDeltaPayload, Session } from "@/types";
+import type {
+  CompletionPayload,
+  FeedbackValue,
+  Message,
+  MessageDeltaPayload,
+  Reference,
+  Session
+} from "@/types";
 import {
   listMessages,
   listSessions,
@@ -28,6 +35,8 @@ interface ChatState {
   streamAbort: (() => void) | null;
   streamingMessageId: string | null;
   cancelRequested: boolean;
+  /** 流式生成过程中暂存的引用（references 事件先于 finish 到达） */
+  pendingReferences: Reference[] | null;
   fetchSessions: () => Promise<void>;
   createSession: () => Promise<string>;
   deleteSession: (sessionId: string) => Promise<void>;
@@ -86,6 +95,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
   streamAbort: null,
   streamingMessageId: null,
   cancelRequested: false,
+  pendingReferences: null,
   fetchSessions: async () => {
     set({ isLoading: true });
     try {
@@ -133,7 +143,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
       streamTaskId: null,
       streamAbort: null,
       streamingMessageId: null,
-      cancelRequested: false
+      cancelRequested: false,
+      pendingReferences: null
     });
     return "";
   },
@@ -191,7 +202,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
         isDeepThinking: Boolean(item.thinkingContent),
         createdAt: item.createTime,
         feedback: mapVoteToFeedback(item.vote),
-        status: "done"
+        status: "done",
+        // 历史消息未落库引用，通常为 undefined（前端判空隐藏）
+        references: item.references || undefined
       }));
       set({ messages: mapped });
     } catch (error) {
@@ -255,7 +268,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
       thinkingStartAt: null,
       inputFocusKey,
       streamTaskId: null,
-      cancelRequested: false
+      cancelRequested: false,
+      pendingReferences: null
     }));
 
     const conversationId = get().currentSessionId;
@@ -268,6 +282,19 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const token = storage.getToken();
 
     const handlers = {
+      onEvent: (event: string, payload: unknown) => {
+        // 捕获 references 事件：暂存到 pendingReferences，待 finish 时合并到消息
+        if (event === "references") {
+          const validRefs = Array.isArray(payload)
+            ? (payload as Reference[]).filter(
+                (ref) => ref && typeof ref.type === "string" && ref.type.length > 0
+              )
+            : [];
+          if (get().streamingMessageId === assistantId) {
+            set({ pendingReferences: validRefs.length > 0 ? validRefs : null });
+          }
+        }
+      },
       onMeta: (payload: { conversationId: string; taskId: string }) => {
         if (get().streamingMessageId !== assistantId) return;
         const nextId = payload.conversationId || get().currentSessionId;
@@ -322,43 +349,33 @@ export const useChatStore = create<ChatState>((set, get) => ({
             })
           }));
         }
-        if (payload.messageId) {
-          set((state) => ({
-            messages: state.messages.map((message) =>
-              message.id === state.streamingMessageId
-                ? {
-                    ...message,
-                    id: String(payload.messageId),
-                    status: "done",
-                    isThinking: false,
-                    thinkingDuration:
-                      message.thinkingDuration ?? computeThinkingDuration(state.thinkingStartAt)
-                  }
-                : message
-            )
-          }));
-        } else {
-          set((state) => ({
-            messages: state.messages.map((message) =>
-              message.id === state.streamingMessageId
-                ? {
-                    ...message,
-                    status: "done",
-                    isThinking: false,
-                    thinkingDuration:
-                      message.thinkingDuration ?? computeThinkingDuration(state.thinkingStartAt)
-                  }
-                : message
-            )
-          }));
-        }
+        // 合并 references：从 pendingReferences 取出并挂到完成的消息上
+        const pendingRefs = get().pendingReferences;
+        set((state) => ({
+          pendingReferences: null,
+          messages: state.messages.map((message) =>
+            message.id === state.streamingMessageId
+              ? {
+                  ...message,
+                  ...(payload.messageId ? { id: String(payload.messageId) } : {}),
+                  status: "done",
+                  isThinking: false,
+                  references: pendingRefs ?? message.references,
+                  thinkingDuration:
+                    message.thinkingDuration ?? computeThinkingDuration(state.thinkingStartAt)
+                }
+              : message
+          )
+        }));
       },
       onCancel: (payload: CompletionPayload) => {
         if (get().streamingMessageId !== assistantId) return;
         if (payload?.title && get().currentSessionId) {
           get().updateSessionTitle(get().currentSessionId as string, payload.title);
         }
+        const pendingRefs = get().pendingReferences;
         set((state) => ({
+          pendingReferences: null,
           messages: state.messages.map((message) => {
             if (message.id !== state.streamingMessageId) return message;
             const suffix = message.content.includes("（已停止生成）")
@@ -371,6 +388,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
               content: message.content + suffix,
               status: "cancelled",
               isThinking: false,
+              // 取消时保留已收到的引用（Q4-A 决策：已检索到就展示）
+              references: pendingRefs ?? message.references,
               thinkingDuration:
                 message.thinkingDuration ?? computeThinkingDuration(state.thinkingStartAt)
             };
@@ -391,7 +410,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
           streamTaskId: null,
           streamAbort: null,
           streamingMessageId: null,
-          cancelRequested: false
+          cancelRequested: false,
+          pendingReferences: null
         });
       },
       onTitle: (payload: { title: string }) => {
@@ -408,6 +428,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
           streamTaskId: null,
           streamAbort: null,
           cancelRequested: false,
+          pendingReferences: null,
           messages: state.messages.map((message) =>
             message.id === state.streamingMessageId
               ? {
