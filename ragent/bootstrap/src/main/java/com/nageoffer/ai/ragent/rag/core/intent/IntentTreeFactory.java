@@ -277,12 +277,21 @@ public class IntentTreeFactory {
                 .name("关于助手")
                 .level(CATEGORY)
                 .parentId(sys.getId())
-                .description("询问助手是做什么的、是谁、能做什么等")
+                .description("询问助手是做什么的、是谁、能做什么、是什么模型等")
                 .examples(List.of(
                         "你是谁",
                         "你是做什么的",
                         "你能帮我做什么",
-                        "你是什么AI"
+                        "你是什么AI",
+                        "你是什么模型",
+                        "你用的什么模型",
+                        "你是哪个大模型",
+                        "你是GPT吗",
+                        "你是不是ChatGPT",
+                        "你叫什么名字",
+                        "介绍一下你自己",
+                        "你的功能有哪些",
+                        "你擅长什么"
                 ))
                 .kind(IntentKind.SYSTEM)
                 .build();

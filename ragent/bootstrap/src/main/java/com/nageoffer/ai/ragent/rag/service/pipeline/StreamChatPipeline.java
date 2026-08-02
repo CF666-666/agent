@@ -86,6 +86,13 @@ public class StreamChatPipeline {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
+     * 弱检索相关度阈值：检索结果最高分低于该值视为"未检索到有效内容"。
+     * 基于实测：相关问题经意图定向最高分可达 1.0（次相关 0.4~0.5）；
+     * 问候/身份等无关问题的低分误召回最高仅约 0.34。
+     */
+    private static final double WEAK_RETRIEVAL_SCORE_THRESHOLD = 0.4D;
+
+    /**
      * 执行流式对话管道
      */
     public void execute(StreamChatContext ctx) {
@@ -171,13 +178,46 @@ public class StreamChatPipeline {
     }
 
     private boolean handleEmptyRetrieval(StreamChatContext ctx, RetrievalContext retrievalCtx) {
-        if (!retrievalCtx.isEmpty()) {
+        // 检索为空，或检索结果相关度过弱（最高分仍低于阈值）：
+        // 视为"未检索到有效内容"，不发送任何检索来源（前端无 references 可渲染），
+        // 改由 LLM 用系统闲聊 Prompt 正常回答，覆盖问候/身份/闲聊等无需检索的场景，
+        // 避免固定返回"未检索到与问题相关的文档内容。"或展示低分无关引用。
+        if (!retrievalCtx.isEmpty() && !isWeakRetrieval(retrievalCtx)) {
             return false;
         }
-        StreamCallback callback = ctx.getCallback();
-        callback.onContent("未检索到与问题相关的文档内容。");
-        callback.onComplete();
+        StreamCancellationHandle handle = streamSystemResponse(
+                ctx.getRewriteResult().rewrittenQuestion(),
+                ctx.getHistory(),
+                null,
+                ctx.getCallback()
+        );
+        taskManager.bindHandle(ctx.getTaskId(), handle);
         return true;
+    }
+
+    /**
+     * 弱检索判定：遍历所有意图分片，取最高相关度；若最高分仍低于阈值，
+     * 说明没有任何强相关结果（如问候/身份等无关问题的低分误召回），视为未检索到。
+     * <p>
+     * 注意：MCP 场景的工具调用结果本身就是答案来源（无相关度分数），
+     * 只要存在 MCP 上下文即视为有效检索，不参与 KB 弱检索判定。
+     */
+    private boolean isWeakRetrieval(RetrievalContext ctx) {
+        if (ctx.hasMcp()) {
+            return false;
+        }
+        if (ctx.getIntentChunks() == null || ctx.getIntentChunks().isEmpty()) {
+            return false;
+        }
+        double maxScore = -1D;
+        for (List<RetrievedChunk> chunks : ctx.getIntentChunks().values()) {
+            for (RetrievedChunk chunk : chunks) {
+                if (chunk.getScore() != null && chunk.getScore() > maxScore) {
+                    maxScore = chunk.getScore();
+                }
+            }
+        }
+        return maxScore < WEAK_RETRIEVAL_SCORE_THRESHOLD;
     }
 
     private void streamRagResponse(StreamChatContext ctx, RetrievalContext retrievalCtx) {
