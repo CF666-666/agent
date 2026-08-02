@@ -209,6 +209,8 @@ services:
       # 演示数据与运行时数据直接挂载宿主机 ragent/bootstrap/data
       # （图纸/FAQ/超边天然可见，头像上传等运行时数据持久化到宿主机）
       - ./ragent/bootstrap/data:/app/data
+      # OCR 语言包（宿主机已下载，避免容器内从 GitHub 下载被墙）
+      - ./ragent/bootstrap/tessdata:/app/tessdata
     depends_on:
       postgres:
         condition: service_healthy
