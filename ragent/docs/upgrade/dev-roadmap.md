@@ -301,6 +301,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 **交付验收标准**：检索评测可一键重跑、指标可复现；RAGAS 指标 ≥ 1 个配置对比（如带/不带超图）；报告含原始数据与结论。
 **实测结果**：检索 Hit Rate@1=100%、MRR=1.0(48 条)；口语化 query Hit Rate@1=94.7%(重写 A/B 已对比)；RAGAS 忠诚度 0.91/上下文精准 0.86/召回 0.92。
+**测评集迭代 TODO（后续）**：多轮/指代评测集(P0)、评测集难度分层(P0)、RAGAS 扩样 40-48 条(P1)、通道级 A/B 开关 enableHyperGraph/enableImage(P1)、golden_doc_ids 标注(P2) —— 详见 `docs/evaluation-report.md` §6。
 
 ---
 
