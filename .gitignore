@@ -30,7 +30,11 @@ nageoffer-nginx-2.0.1/
 *.log
 
 ### Dev debug scripts ###
-ragent/scripts/
+ragent/scripts/*
+!ragent/scripts/eval/
 ragent/tmp_*.json
 ragent/demo_out_*.txt
 ragent/sse_out*.txt
+
+### Environment secrets ###
+.env

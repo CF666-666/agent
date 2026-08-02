@@ -127,7 +127,13 @@ public class StreamChatPipeline {
     }
 
     private void rewriteQuery(StreamChatContext ctx) {
-        RewriteResult rewriteResult = queryRewriteService.rewriteWithSplit(ctx.getQuestion(), ctx.getHistory());
+        RewriteResult rewriteResult;
+        if (ctx.isEnableRewrite()) {
+            rewriteResult = queryRewriteService.rewriteWithSplit(ctx.getQuestion(), ctx.getHistory());
+        } else {
+            // 评测模式：跳过查询重写，直接使用原始问题（用于 A/B 对比重写对检索的增益）
+            rewriteResult = new RewriteResult(ctx.getQuestion(), List.of(ctx.getQuestion()));
+        }
         ctx.setRewriteResult(rewriteResult);
     }
 

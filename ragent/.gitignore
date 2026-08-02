@@ -48,3 +48,6 @@ tessdata/
 
 ### Runtime data (user avatars uploaded to local disk) ###
 bootstrap/data/images/avatars/
+
+### Eval virtualenv ###
+scripts/eval/.venv/

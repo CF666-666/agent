@@ -1,0 +1,281 @@
+{
+  "mode": "rewrite-on",
+  "summary": {
+    "total": 19,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.9474,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 0.9737,
+    "by_scene": {
+      "安全规范": {
+        "count": 3,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0
+      },
+      "操作规程": {
+        "count": 2,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0
+      },
+      "故障诊断": {
+        "count": 12,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0
+      },
+      "维护保养": {
+        "count": 2,
+        "hit_rate": {
+          "@1": 0.5,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 0.75
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "高炉冷却壁漏水了，一般咋查啊？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "换辊咋操作啊，有啥流程吗？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "卡钢了咋处理？要注意啥安全问题？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "热轧机齿轮箱油平时咋保养？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "烧结终点温度老是忽高忽低的，怎么排查？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "冷轧出来的带钢表面有一圈圈的压痕，是哪个辊的问题？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "反应釜压力一下掉下来了，咋回事？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "换备用压缩机要注意啥？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "储罐的防雷接地有啥要求，参数是多少？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "开关柜的断路器老跳闸是啥原因？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "锅炉汽包水位不稳，怎么回事？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "泵出口压力掉了但电流没变，查哪里？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "脱硫塔pH值老不稳定，可能啥原因？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "离心泵轴承多久加一次油？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5
+    },
+    {
+      "query": "裂解炉燃料气漏了咋办？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "凝汽器真空一下降了好多，从哪开始查？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "精馏塔压差高了但没液泛，咋排查？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "热轧机液压压力波动大，什么原因？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "变压器油温升到95度以上了，要紧吗，啥原因？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    }
+  ]
+}

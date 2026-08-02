@@ -1,0 +1,628 @@
+{
+  "summary": {
+    "total": 48,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "by_scene": {
+      "安全规范": {
+        "count": 12,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0
+      },
+      "操作规程": {
+        "count": 12,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0
+      },
+      "故障诊断": {
+        "count": 12,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0
+      },
+      "维护保养": {
+        "count": 12,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "进入冷却塔内部检修时需遵守哪些安全规范？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "换辊作业的标准操作流程是什么？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "高炉冷却壁出现漏水故障如何诊断？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "处理卡钢事故时的安全操作要点是什么？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "热轧机齿轮箱润滑系统应如何维护？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "风机减速机润滑保养周期和油品要求是什么？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "储罐内部阴极保护系统如何维护？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "高炉休风复风时如何控制风量恢复节奏？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "烧结终点温度异常波动如何诊断？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "冷轧过程中带钢表面出现周期性压痕，如何定位缺陷来源？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "反应釜压力突然下降，如何快速诊断？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "如何清洁和检查变压器散热器？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "压缩机切换备用机的操作要点有哪些？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "进入转炉炉内检修前需遵守哪些安全规范？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "储罐防雷接地系统应满足哪些技术参数？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "焦炉上升管和桥管的定期维护内容及周期是什么？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "冷轧机区域有哪些强制性安全规范？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "冷轧机启动前必须执行哪些关键操作步骤？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "储罐清罐作业前需要做哪些准备工作？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "液压系统应如何进行定期保养？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "高炉区域进行煤气作业时应遵守哪些安全规范？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "启动发电机前必须执行哪些操作步骤？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "锅炉运行中出现汽包水位异常波动，可能的原因有哪些？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "如何防止连铸机液压系统引发的安全事故？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "换热器定期维护保养包括哪些内容？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "精馏塔区域动火作业需满足哪些安全条件？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "结晶器冷却系统应如何进行周期性保养？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "冷却塔填料应如何进行定期维护？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "泵出口压力突然下降，但电机电流正常，如何排查？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "脱硫塔pH值异常波动可能由哪些原因引起？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "压缩机气阀的日常检查与维护要点有哪些？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "如何正确设定冷轧机的轧制参数？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "离心泵轴承润滑维护周期和标准是什么？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "裂解炉燃料气系统泄漏如何应急处置？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "转炉出钢操作中如何控制下渣量？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "换热器停用时如何正确隔离？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "换热器切换备用设备时应注意哪些步骤？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "凝汽器真空度骤降（如从-92kPa降至-80kPa以下），应排查哪些环节？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "裂解炉区域作业时有哪些强制性安全规范？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "精馏塔压差异常升高但无液泛迹象，应如何排查？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "热轧机区域作业时有哪些强制性安全规定？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "热轧机液压系统压力波动大，如何排查？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "变压器运行中油温异常升高至95℃以上，可能原因有哪些？",
+      "scene": "故障诊断",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "高炉风口平台巡检有哪些安全要求？",
+      "scene": "安全规范",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "泵在低流量下长时间运行有何风险？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "精馏塔塔盘应如何定期检查与维护？",
+      "scene": "维护保养",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    },
+    {
+      "query": "汽轮机运行中如何正确进行高加（高压加热器）投运操作？",
+      "scene": "操作规程",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0
+    }
+  ]
+}

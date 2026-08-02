@@ -43,6 +43,12 @@ public class StreamChatContext {
     private final String userId;
     private final StreamCallback callback;
 
+    /**
+     * 评测开关：是否启用查询重写（默认开启；评测 A/B 时可关闭以对比检索效果）
+     */
+    @Builder.Default
+    private final boolean enableRewrite = true;
+
     // ==================== 管道中填充的中间状态 ====================
 
     @Setter
