@@ -286,6 +286,23 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 ---
 
+## Phase 8：RAGAS 端到端评测体系（Week 8，3-4 天）
+
+> 目标：为检索与生成链路建立可量化的评测闭环，产出**真实可讲的指标数据**（Hit Rate / MRR / 忠诚度等），
+> 既驱动系统迭代，也支撑简历第 2/3/4 条的数据真实性。
+
+| # | 任务 | 产出 | 预计工时 | 状态 |
+|:--:|------|------|:--:|:--:|
+| 8.1 | 评测集构建：从 FAQ 210 条抽取 query + 标准答案，覆盖 5 个典型工业场景 | `scripts/eval/datasets/*.jsonl` | 2h | ⬜ |
+| 8.2 | 检索指标 Runner：Hit Rate@K / MRR@K / Recall@K，支持带/不带重写、带/不带超图的 A/B 对比 | `scripts/eval/retrieval_eval.py` | 3h | ⬜ |
+| 8.3 | RAGAS 生成质量评测：接入 ragas 库（faithfulness / answer_relevancy / context_precision / context_recall） | `scripts/eval/ragas_eval.py` | 3h | ⬜ |
+| 8.4 | 评测报告：自动汇总输出 JSON/MD 对比报告，沉淀为文档 | `docs/evaluation-report.md` | 1h | ⬜ |
+| 8.5 | 简历数据校准：用真实评测结果替换简历第 2/3/4 条中的指标数字 | `docs/resume-project.md` | 1h | ⬜ |
+
+**交付验收标准**：检索评测可一键重跑、指标可复现；RAGAS 指标 ≥ 1 个配置对比（如带/不带超图）；报告含原始数据与结论。
+
+---
+
 ## 关键里程碑
 
 ```
@@ -301,8 +318,10 @@ Week 5 ──┤  Phase 4 完成（多路融合 + 答案增强）
           │  🎯 核心里程碑：端到端多模态 RAG 链路跑通
 Week 6 ──┤  Phase 5 + Phase 6 并行（数据集 + 前端增强）
           │  里程碑：完整 Demo 可演示
-Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
-          🎯 最终里程碑：GitHub Release v2.0 发布，简历就绪
+Week 7 ──┤  Phase 7（GitHub 整理 + 简历更新）
+          │  里程碑：Release v2.0 发布，简历就绪
+Week 8 ──┘  Phase 8（RAGAS 端到端评测体系）
+          🎯 最终里程碑：检索/生成指标可量化，简历数据真实可溯源
 ```
 
 ---
@@ -322,6 +341,7 @@ Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
 | 6 | 前端增强 | ✅ 完成 | 08-02 | 08-02 | references 多模态渲染：文本卡片 + 图纸 Lightbox + 推理路径 + 来源过滤，构建/类型检查通过 |
 | 增强 | 用户中心（资料自助修改 + 头像上传） | ✅ 完成 | 08-02 | 08-02 | 独立闭环：PUT /user/profile + 头像上传(魔数校验/5MB) + 6 张默认头像 + /profile 页，端到端实测通过 |
 | 7 | GitHub 整理与文档 | ✅ 完成 | 08-02 | 08-02 | README/架构/API/部署文档 + 全量容器化(前后端 Dockerfile + compose 一键启动) + CHANGELOG v2.0 + 简历描述;7.5 演示视频跳过;Release 发布动作待执行 |
+| 8 | RAGAS 端到端评测体系 | ⬜ 待开始 | | | 检索指标(RR/MRR/Recall) + RAGAS 生成质量 + A/B 对比 + 报告,产出真实简历数据 |
 
 ---
 

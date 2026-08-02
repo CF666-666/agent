@@ -515,3 +515,54 @@ if (chunk.hasImage()) {
 
 > **文档版本**：v2.0 | 2026-07-24  
 > **与 v1.0 的区别**：已根据实际源码排查结论，修正了 Embedding 模型（Qwen3-Embedding-8B）、Rerank 状态（已有独立模块）、Milvus 版本（2.6.x）等关键参数。所有新增模块均基于现有扩展接口设计，最大化复用存量代码。
+
+---
+
+## 10. RAGAS 端到端评测体系（Phase 8）
+
+### 10.1 目标与背景
+
+为检索与生成链路建立**可量化、可复现**的评测闭环，目的有三：
+1. **简历数据真实性**：当前简历第 2/3/4 条中的指标（Hit Rate / MRR / 忠诚度等）缺乏评测支撑，面试易被追问穿帮；
+2. **系统迭代驱动**：A/B 对比（带/不带查询重写、带/不带超图通道）为优化提供量化依据；
+3. **面试亮点**：评测体系本身是 RAG 项目的高分能力项。
+
+### 10.2 评测集构建（8.1）
+
+- 数据源：Phase 5 生产数据集 —— FAQ 210 条（`data/faq/industrial_faq.jsonl`）、5 个典型工业 query；
+- 抽取策略：FAQ 每条含标准问题/答案，直接作为 `query + golden_answer` 评测样本；另构造 10~20 条多轮改写样本；
+- 产出格式：`scripts/eval/datasets/*.jsonl`（`{query, golden_answer, golden_doc_ids?, scene}`）；
+- 场景覆盖：设备故障、装配工艺、图纸参数、产品 FAQ、多模态/图纸问答。
+
+### 10.3 检索指标 Runner（8.2）
+
+- 指标：`Hit Rate@K`（Top-K 是否命中）、`MRR@K`（倒数排名）、`Recall@K`；
+- 对照实验：基线（直接检索） vs 查询重写后检索；带超图通道 vs 不带；
+- 实现：`scripts/eval/retrieval_eval.py` —— 调用项目检索链路（或直接调 `/rag/v3/chat` 的 references 返回），对评测集批量执行并计算指标；
+- 输出：按场景分组的指标表 + 总体汇总。
+
+### 10.4 RAGAS 生成质量评测（8.3）
+
+- 工具：Python `ragas` 库（`pip install ragas`）；
+- 指标：`faithfulness`（答案忠诚度）、`answer_relevancy`（回答相关性）、`context_precision` / `context_recall`（上下文精准/召回）；
+- 输入：评测集 + 项目实际生成的回答（调用 SSE 接口批量获取，含 references）；
+- 实现：`scripts/eval/ragas_eval.py`，配置 LLM 打分模型（复用百炼/硅基 API）；
+- A/B 对比：不同配置（是否启用超图/重写）下同一评测集的指标差异。
+
+### 10.5 目录结构
+
+```
+scripts/eval/
+├── datasets/          # 评测集(可配置生成)
+├── retrieval_eval.py  # 检索指标 Runner
+├── ragas_eval.py      # RAGAS 生成质量评测
+├── llm_client.py      # 项目 API/LLM 客户端封装
+└── report/            # 输出报告(JSON/MD)
+```
+
+### 10.6 验收标准
+
+- [ ] 检索评测一键重跑，Hit Rate/MRR 指标可复现；
+- [ ] RAGAS 指标跑通 ≥ 1 组 A/B 对比（带/不带超图或重写）；
+- [ ] 产出 `docs/evaluation-report.md`（含数据表与结论）；
+- [ ] 用真实评测结果校准简历第 2/3/4 条指标，数字可溯源。
