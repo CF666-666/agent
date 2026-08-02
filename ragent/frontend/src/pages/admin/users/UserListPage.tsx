@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import type { PageResult, UserItem, UserCreatePayload, UserUpdatePayload } from "@/services/userService";
 import { createUser, deleteUser, getUsersPage, updateUser } from "@/services/userService";
 import { getErrorMessage } from "@/utils/error";
+import { resolveAvatar } from "@/utils/helpers";
 
 const PAGE_SIZE = 10;
 
@@ -207,7 +208,7 @@ export function UserListPage() {
                         <div className="flex items-center gap-3">
                           <Avatar
                             name={user.username || "用户"}
-                            src={user.avatar?.trim() || undefined}
+                            src={resolveAvatar(user.avatar, user.id)}
                             className="h-9 w-9 border-slate-200 bg-indigo-50 text-xs font-semibold text-indigo-600"
                           />
                           <div>

@@ -2,6 +2,8 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import { LoginPage } from "@/pages/LoginPage";
 import { ChatPage } from "@/pages/ChatPage";
+import { ProfilePage } from "@/pages/ProfilePage";
+import AboutPage from "@/pages/AboutPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { AdminLayout } from "@/pages/admin/AdminLayout";
 import { DashboardPage } from "@/pages/admin/dashboard/DashboardPage";
@@ -84,6 +86,20 @@ export const router = createBrowserRouter([
         <ChatPage />
       </RequireAuth>
     )
+  },
+  {
+    // 个人资料页（需登录，自助修改头像/用户名）
+    path: "/profile",
+    element: (
+      <RequireAuth>
+        <ProfilePage />
+      </RequireAuth>
+    )
+  },
+  {
+    // 项目介绍页（公开访问，无需登录）
+    path: "/about",
+    element: <AboutPage />
   },
   {
     path: "/admin",

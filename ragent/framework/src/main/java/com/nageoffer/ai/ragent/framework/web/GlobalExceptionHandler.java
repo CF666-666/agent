@@ -35,6 +35,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Optional;
 
@@ -118,6 +119,15 @@ public class GlobalExceptionHandler {
             message = "上传请求大小超过限制，单次请求最大允许 " + maxRequestSize;
         }
         return Results.failure(BaseErrorCode.CLIENT_ERROR.code(), message);
+    }
+
+    /**
+     * 拦截资源不存在异常（接口未定义/静态资源缺失），返回 404 明确提示
+     */
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    public Result<Void> noResourceFoundException(HttpServletRequest request, NoResourceFoundException ex) {
+        log.warn("[{}] {} [not-found] {}", request.getMethod(), getUrl(request), ex.getResourcePath());
+        return Results.failure(BaseErrorCode.CLIENT_ERROR.code(), "请求的资源不存在");
     }
 
     /**

@@ -19,6 +19,7 @@ interface AuthState {
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   fetchCurrentUser: () => Promise<void>;
+  updateCurrentUser: (partial: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -111,5 +112,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch {
       return;
     }
+  },
+  updateCurrentUser: (partial) => {
+    const current = get().user;
+    if (!current) return;
+    const nextUser = { ...current, ...partial };
+    storage.setUser(nextUser);
+    set({ user: nextUser });
   }
 }));

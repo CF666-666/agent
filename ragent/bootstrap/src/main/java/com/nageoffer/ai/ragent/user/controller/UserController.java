@@ -20,6 +20,7 @@ package com.nageoffer.ai.ragent.user.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.nageoffer.ai.ragent.user.controller.request.ChangePasswordRequest;
+import com.nageoffer.ai.ragent.user.controller.request.ProfileUpdateRequest;
 import com.nageoffer.ai.ragent.user.controller.request.UserCreateRequest;
 import com.nageoffer.ai.ragent.user.controller.request.UserPageRequest;
 import com.nageoffer.ai.ragent.user.controller.request.UserUpdateRequest;
@@ -31,13 +32,16 @@ import com.nageoffer.ai.ragent.framework.convention.Result;
 import com.nageoffer.ai.ragent.framework.web.Results;
 import com.nageoffer.ai.ragent.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户控制器
@@ -108,5 +112,22 @@ public class UserController {
     public Result<Void> changePassword(@RequestBody ChangePasswordRequest requestParam) {
         userService.changePassword(requestParam);
         return Results.success();
+    }
+
+    /**
+     * 当前登录用户修改自己的资料（用户名/头像，默认 admin 同样适用）
+     */
+    @PutMapping("/user/profile")
+    public Result<Void> updateProfile(@RequestBody ProfileUpdateRequest requestParam) {
+        userService.updateProfile(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 上传当前用户头像，返回可访问的图片 URL
+     */
+    @PostMapping(value = "/user/avatar/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result<String> uploadAvatar(@RequestPart("file") MultipartFile file) {
+        return Results.success(userService.uploadAvatar(file));
     }
 }

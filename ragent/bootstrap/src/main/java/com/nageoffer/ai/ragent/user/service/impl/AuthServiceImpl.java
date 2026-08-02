@@ -33,8 +33,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private static final String DEFAULT_AVATAR_URL = "https://avatars.githubusercontent.com/u/583231?v=4";
-
     private final UserMapper userMapper;
 
     @Override
@@ -53,8 +51,8 @@ public class AuthServiceImpl implements AuthService {
         }
         String loginId = user.getId().toString();
         StpUtil.login(loginId);
-        String avatar = StrUtil.isBlank(user.getAvatar()) ? DEFAULT_AVATAR_URL : user.getAvatar();
-        return new LoginVO(loginId, user.getRole(), StpUtil.getTokenValue(), avatar);
+        // avatar 可能为 null，由前端统一走 resolveAvatar 回退默认头像
+        return new LoginVO(loginId, user.getRole(), StpUtil.getTokenValue(), user.getAvatar());
     }
 
     @Override

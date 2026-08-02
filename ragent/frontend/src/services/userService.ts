@@ -61,3 +61,25 @@ export async function deleteUser(id: string): Promise<void> {
 export async function changePassword(payload: ChangePasswordPayload): Promise<void> {
   await api.put("/user/password", payload);
 }
+
+export interface ProfileUpdatePayload {
+  username?: string;
+  avatar?: string | null;
+}
+
+/**
+ * 当前登录用户修改自己的资料（用户名/头像）
+ */
+export async function updateProfile(payload: ProfileUpdatePayload): Promise<void> {
+  await api.put("/user/profile", payload);
+}
+
+/**
+ * 上传当前用户头像，返回可访问的图片 URL
+ */
+export async function uploadAvatar(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  // 不手动设置 Content-Type，让 axios 自动携带 multipart boundary
+  return api.post<string, string>("/user/avatar/upload", formData);
+}

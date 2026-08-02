@@ -1,17 +1,17 @@
 import * as React from "react";
 import { differenceInCalendarDays, isValid } from "date-fns";
 import {
-  BookOpen,
   Bot,
+  Info,
   LogOut,
   MessageSquare,
   MoreHorizontal,
   Pencil,
-  PlayCircle,
   Plus,
   Search,
   Settings,
-  Trash2
+  Trash2,
+  UserRound
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -35,6 +35,7 @@ import { Loading } from "@/components/common/Loading";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
+import { resolveAvatar } from "@/utils/helpers";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -121,7 +122,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     setAvatarFailed(false);
   }, [user?.avatar, user?.userId]);
 
-  const avatarUrl = user?.avatar?.trim();
+  // 无头像时按 userId 稳定回退到内置默认头像
+  const avatarUrl = resolveAvatar(user?.avatar, user?.userId);
   const showAvatar = Boolean(avatarUrl) && !avatarFailed;
   const avatarFallback = (user?.username || user?.userId || "用户").slice(0, 1).toUpperCase();
   const sessionTitleFont =
@@ -174,8 +176,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Bot className="h-5 w-5 text-white" />
             </div>
             <div style={{ fontFamily: sessionTitleFont }}>
-              <p className="text-base font-semibold text-[#1A1A1A]">Ragent AI 智能体</p>
-              <p className="text-xs text-[#999999]">Powered by AI</p>
+              <p className="text-base font-semibold text-[#1A1A1A]">HIRAGent</p>
+              <p className="text-xs text-[#999999]">多模态工业 RAG 智能体</p>
             </div>
           </div>
         </div>
@@ -411,27 +413,24 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" side="top" sideOffset={8} className="w-48">
-              <DropdownMenuItem asChild>
-                <a
-                  href="https://nageoffer.com/ragent"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center"
-                >
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  官方文档
-                </a>
+              <DropdownMenuItem
+                onClick={() => {
+                  navigate("/about");
+                }}
+                className="flex items-center"
+              >
+                <Info className="mr-2 h-4 w-4" />
+                关于项目
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <a
-                  href="https://space.bilibili.com/352177376"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center"
-                >
-                  <PlayCircle className="mr-2 h-4 w-4" />
-                  哔哩哔哩
-                </a>
+              <DropdownMenuItem
+                onClick={() => {
+                  navigate("/profile");
+                  onClose();
+                }}
+                className="flex items-center"
+              >
+                <UserRound className="mr-2 h-4 w-4" />
+                个人资料
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => logout()} className="text-rose-600 focus:text-rose-600">
                 <LogOut className="mr-2 h-4 w-4" />

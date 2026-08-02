@@ -20,6 +20,7 @@ import {
   Settings,
   Upload,
   Users,
+  UserRound,
   FolderKanban,
   Workflow
 } from "lucide-react";
@@ -37,6 +38,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { changePassword } from "@/services/userService";
+import { resolveAvatar } from "@/utils/helpers";
 import {
   getKnowledgeBases,
   searchKnowledgeDocuments,
@@ -313,7 +315,8 @@ export function AdminLayout() {
     return items;
   }, [location.pathname, location.search]);
 
-  const avatarUrl = user?.avatar?.trim();
+  // 无头像时按 userId 稳定回退到内置默认头像
+  const avatarUrl = resolveAvatar(user?.avatar, user?.userId);
   const showAvatar = Boolean(avatarUrl);
   const roleLabel = user?.role === "admin" ? "管理员" : "成员";
   const starLabel = useMemo(() => {
@@ -437,10 +440,10 @@ export function AdminLayout() {
       <aside className={cn("admin-sidebar", collapsed && "admin-sidebar--collapsed")}>
         <div className="admin-sidebar__brand">
           <div className={cn("flex items-center gap-3", collapsed && "justify-center")}>
-            <div className="admin-sidebar__logo">R</div>
+            <div className="admin-sidebar__logo">H</div>
             {!collapsed && (
               <div className="min-w-0">
-                <h1 className="admin-sidebar__title">Ragent AI 管理后台</h1>
+                <h1 className="admin-sidebar__title">HIRAGent 管理后台</h1>
                 <p className="admin-sidebar__subtitle">Knowledge Console</p>
               </div>
             )}
@@ -725,6 +728,10 @@ export function AdminLayout() {
                   <DropdownMenuItem onClick={() => setPasswordOpen(true)}>
                     <KeyRound className="mr-2 h-4 w-4" />
                     修改密码
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <UserRound className="mr-2 h-4 w-4" />
+                    个人资料
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-rose-600 focus:text-rose-600">
                     <LogOut className="mr-2 h-4 w-4" />

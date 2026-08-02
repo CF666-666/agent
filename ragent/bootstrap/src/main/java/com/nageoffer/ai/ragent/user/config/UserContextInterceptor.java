@@ -18,7 +18,6 @@
 package com.nageoffer.ai.ragent.user.config;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.util.StrUtil;
 import com.nageoffer.ai.ragent.user.dao.entity.UserDO;
 import com.nageoffer.ai.ragent.user.dao.mapper.UserMapper;
 import com.nageoffer.ai.ragent.framework.context.LoginUser;
@@ -54,8 +53,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class UserContextInterceptor implements HandlerInterceptor {
 
-    private static final String DEFAULT_AVATAR_URL = "https://avatars.githubusercontent.com/u/583231?v=4";
-
     private final UserMapper userMapper;
 
     @Override
@@ -77,7 +74,8 @@ public class UserContextInterceptor implements HandlerInterceptor {
                         .userId(user.getId().toString())
                         .username(user.getUsername())
                         .role(user.getRole())
-                        .avatar(StrUtil.isBlank(user.getAvatar()) ? DEFAULT_AVATAR_URL : user.getAvatar())
+                        // avatar 可能为 null，由前端统一走 resolveAvatar 回退默认头像
+                        .avatar(user.getAvatar())
                         .build()
         );
         return true;

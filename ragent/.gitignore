@@ -45,3 +45,6 @@ dist/
 
 ### OCR language data (auto-downloaded, ~30MB) ###
 tessdata/
+
+### Runtime data (user avatars uploaded to local disk) ###
+bootstrap/data/images/avatars/

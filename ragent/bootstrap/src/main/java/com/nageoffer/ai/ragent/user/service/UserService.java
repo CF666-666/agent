@@ -19,10 +19,12 @@ package com.nageoffer.ai.ragent.user.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.nageoffer.ai.ragent.user.controller.request.ChangePasswordRequest;
+import com.nageoffer.ai.ragent.user.controller.request.ProfileUpdateRequest;
 import com.nageoffer.ai.ragent.user.controller.request.UserCreateRequest;
 import com.nageoffer.ai.ragent.user.controller.request.UserPageRequest;
 import com.nageoffer.ai.ragent.user.controller.request.UserUpdateRequest;
 import com.nageoffer.ai.ragent.user.controller.vo.UserVO;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
 
@@ -50,4 +52,14 @@ public interface UserService {
      * 修改当前用户密码
      */
     void changePassword(ChangePasswordRequest requestParam);
+
+    /**
+     * 当前登录用户修改自己的资料（用户名/头像，admin 同样适用）
+     */
+    void updateProfile(ProfileUpdateRequest requestParam);
+
+    /**
+     * 上传当前用户头像，落盘到静态资源目录，返回可访问的图片 URL
+     */
+    String uploadAvatar(MultipartFile file);
 }
