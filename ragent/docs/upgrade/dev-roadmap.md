@@ -276,13 +276,13 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 | # | 任务 | 产出 | 预计工时 | 状态 |
 |:--:|------|------|:--:|:--:|
-| 7.1 | 更新 README：架构图 + 快速开始 + 部署指南 | `README.md` | 3h | ⬜ |
-| 7.2 | 撰写架构文档（系统全景 / 模块划分 / 数据流 / 扩展点） | `docs/architecture.md` | 2h | ⬜ |
-| 7.3 | 撰写 API 文档（REST + LLM 路由 + Milvus schema） | `docs/api.md` | 3h | ⬜ |
-| 7.4 | 更新 docker-compose.yml：生产级编排（健康检查 + 资源限制 + 启动顺序） | `docker-compose.yml` | 2h | ⬜ |
-| 7.5 | 录制端到端演示视频（5 个典型工业 query，文本/图像/超图覆盖） | GIF/MP4 | 4h | ⬜ |
-| 7.6 | 撰写简历项目描述（嵌入话术 + 量化指标） | 简历 Word/PDF | 2h | ⬜ |
-| 7.7 | 发布 GitHub Release v2.0（含 CHANGELOG + 迁移说明） | GitHub | 1h | ⬜ |
+| 7.1 | 更新 README：架构图 + 快速开始 + 部署指南 | `README.md` | 3h | ✅ |
+| 7.2 | 撰写架构文档（系统全景 / 模块划分 / 数据流 / 扩展点） | `docs/architecture.md` | 2h | ✅ |
+| 7.3 | 撰写 API 文档（REST + LLM 路由 + Milvus schema） | `docs/api.md` | 3h | ✅ |
+| 7.4 | 更新 docker-compose.yml：生产级编排（健康检查 + 资源限制 + 启动顺序） | `docker-compose.yml` + Dockerfile×2 + 部署指南 | 2h | ✅ |
+| 7.5 | 录制端到端演示视频（5 个典型工业 query，文本/图像/超图覆盖） | GIF/MP4 | 4h | ⏭️ 跳过 |
+| 7.6 | 撰写简历项目描述（嵌入话术 + 量化指标） | `docs/resume-project.md` | 2h | ✅ |
+| 7.7 | 发布 GitHub Release v2.0（含 CHANGELOG + 迁移说明） | `CHANGELOG.md` + Release | 1h | ✅(CHANGELOG 就绪,发布动作待执行) |
 
 ---
 
@@ -321,7 +321,7 @@ Week 7 ──┘  Phase 7（GitHub 整理 + 简历更新）
 | 5 | Demo 数据集构建 | ✅ 完成 | 08-01 | 08-02 | FAQ 210 条 + 图像 12 张 + 超边 633 条，Java 全量入库，5 个用例三路命中 |
 | 6 | 前端增强 | ✅ 完成 | 08-02 | 08-02 | references 多模态渲染：文本卡片 + 图纸 Lightbox + 推理路径 + 来源过滤，构建/类型检查通过 |
 | 增强 | 用户中心（资料自助修改 + 头像上传） | ✅ 完成 | 08-02 | 08-02 | 独立闭环：PUT /user/profile + 头像上传(魔数校验/5MB) + 6 张默认头像 + /profile 页，端到端实测通过 |
-| 7 | GitHub 整理与文档 | ⬜ 待开始 | | | Week 7 |
+| 7 | GitHub 整理与文档 | ✅ 完成 | 08-02 | 08-02 | README/架构/API/部署文档 + 全量容器化(前后端 Dockerfile + compose 一键启动) + CHANGELOG v2.0 + 简历描述;7.5 演示视频跳过;Release 发布动作待执行 |
 
 ---
 

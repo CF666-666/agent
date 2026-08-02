@@ -74,21 +74,21 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 }))
                 // 拦截所有路径
                 .addPathPatterns("/**")
-                // 排除认证、静态资源（多模态引用图片）与错误页面
-                .excludePathPatterns("/auth/**", "/files/**", "/error");
+                // 排除认证、健康检查、静态资源（多模态引用图片）与错误页面
+                .excludePathPatterns("/auth/**", "/health", "/files/**", "/error");
 
         // 注册体验环境只读模式拦截器
         registry.addInterceptor(demoModeInterceptor)
                 // 拦截所有路径
                 .addPathPatterns("/**")
-                // 排除认证、静态资源（多模态引用图片）与错误页面
-                .excludePathPatterns("/auth/**", "/files/**", "/error");
+                // 排除认证、健康检查、静态资源（多模态引用图片）与错误页面
+                .excludePathPatterns("/auth/**", "/health", "/files/**", "/error");
 
         // 注册用户上下文拦截器
         registry.addInterceptor(userContextInterceptor)
                 // 拦截所有路径
                 .addPathPatterns("/**")
-                // 排除认证、静态资源（多模态引用图片）与错误页面
-                .excludePathPatterns("/auth/**", "/files/**", "/error");
+                // 排除认证、健康检查、静态资源（多模态引用图片）与错误页面
+                .excludePathPatterns("/auth/**", "/health", "/files/**", "/error");
     }
 }

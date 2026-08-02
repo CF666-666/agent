@@ -51,7 +51,7 @@ import java.util.StringJoiner;
  * 不同于文本/图像通道走 Milvus 向量检索，超图通道直接使用本地倒排索引
  * 做实体级精确匹配，时间复杂度 O(k)，k = query 实体数。
  * <p>
- * 通道优先级 30：低于文本(10)和图像(20)，作为工业关系推理的补充增强。
+ * 通道优先级 30：高于文本(10)和图像(20)，作为工业关系推理的补充增强。
  *
  * @see IndustrialHyperGraph  超图引擎
  * @see EntityExtractor       query 实体抽取器

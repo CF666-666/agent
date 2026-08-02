@@ -1,13 +1,18 @@
 name: ragent-stack
 
 # ============================================================
-# Ragent 智研中枢系统 - 基础设施 Docker Compose
-# 一键启动全部依赖服务：PostgreSQL + Redis + RocketMQ + Milvus + Nginx
+# Ragent 智研中枢系统 - 一键容器化编排
+# 一键启动全部服务：PostgreSQL + Redis + RocketMQ + Milvus + 后端 + 前端
+# 刚开机零依赖，docker compose up -d --build 即可整体拉起并演示
 # ============================================================
 #
-# 启动：docker compose up -d
+# 启动（首次需构建镜像，耗时较长）：docker compose up -d --build
 # 停止：docker compose down
 # 查看状态：docker compose ps
+#
+# 访问：前端 http://localhost:5177  （默认账号 admin / admin）
+#
+# 环境变量（可选）：BAILIAN_API_KEY / SILICONFLOW_API_KEY（LLM 调用）
 
 services:
   # ============================================================
@@ -46,7 +51,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "123456", "--no-auth-warning", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -177,24 +182,65 @@ services:
       - milvus
 
   # ============================================================
-  # Nginx - 前端静态服务 + API 反向代理
-  # 使用 nginx-docker.conf：backend 通过 host.docker.internal 访问宿主机
-  # 如果宿主机直接运行 nginx（非 Docker），使用 conf/nginx.conf（127.0.0.1）
+  # 后端 - Spring Boot 服务（镜像内多阶段构建）
+  # 通过容器内服务名连接中间件；LLM API Key 从宿主机环境变量/.env 注入
   # ============================================================
-  nginx:
-    container_name: ragent-nginx
-    image: nginx:alpine
+  backend:
+    container_name: ragent-backend
+    build:
+      context: ./ragent
+      dockerfile: Dockerfile
+    environment:
+      TZ: Asia/Shanghai
+      # 容器内服务名连接中间件（覆盖 application.yaml 中的 127.0.0.1）
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ragent?client_encoding=UTF8
+      SPRING_DATA_REDIS_HOST: redis
+      ROCKETMQ_NAME_SERVER: rocketmq-namesrv:9876
+      MILVUS_URI: http://milvus:19530
+      RUSTFS_URL: http://rustfs:9000
+      # 首次启动自动将演示数据（FAQ 210 条 / 图纸 12 张 / 超边 633 条）入库（幂等：先清空再全量写入）
+      PHASE5_INGEST: "true"
+      # LLM API Key（可空，缺省时仅登录/管理功能可用）
+      BAILIAN_API_KEY: ${BAILIAN_API_KEY:-}
+      SILICONFLOW_API_KEY: ${SILICONFLOW_API_KEY:-}
+    ports:
+      - "9090:9090"
+    volumes:
+      # 演示数据与运行时数据直接挂载宿主机 ragent/bootstrap/data
+      # （图纸/FAQ/超边天然可见，头像上传等运行时数据持久化到宿主机）
+      - ./ragent/bootstrap/data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rocketmq-namesrv:
+        condition: service_healthy
+      milvus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9090/api/ragent/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
+      start_period: 90s
+    restart: unless-stopped
+
+  # ============================================================
+  # 前端 - Nginx 静态服务 + /api 反向代理（接管 5177 端口）
+  # ============================================================
+  frontend:
+    container_name: ragent-frontend
+    build:
+      context: ./ragent/frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: /api/ragent
     ports:
       - "5177:5177"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - ./nageoffer-nginx-2.0.1/html:/usr/share/nginx/html:ro
-      - ./nageoffer-nginx-2.0.1/conf/nginx-docker.conf:/etc/nginx/nginx.conf:ro
-      - ./nageoffer-nginx-2.0.1/conf/mime.types:/etc/nginx/mime.types:ro
     depends_on:
-      - postgres
-      - redis
+      backend:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

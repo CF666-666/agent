@@ -1,0 +1,13 @@
+**/target/
+**/node_modules/
+**/dist/
+**/.vite/
+frontend/
+tessdata/
+.git/
+.gitignore
+.idea/
+.vscode/
+*.log
+tmp*.log
+**/*.log

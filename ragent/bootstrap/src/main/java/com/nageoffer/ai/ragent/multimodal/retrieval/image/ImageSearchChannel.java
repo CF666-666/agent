@@ -47,7 +47,7 @@ public class ImageSearchChannel implements SearchChannel {
 
     private static final String CHANNEL_NAME = "图像语义检索";
     private static final String COLLECTION_NAME = "industrial_images";
-    private static final int PRIORITY = 20; // 低于文本通道(10)，作为补充检索
+    private static final int PRIORITY = 20; // 高于文本全局通道(10)，作为图像语义补充检索
     private static final int TOP_K = 5;
     private static final String SOURCE = SearchChannelType.IMAGE_SEMANTIC.name();
 
