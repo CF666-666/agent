@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.rag.service.pipeline;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nageoffer.ai.ragent.multimodal.parser.MultimodalDocumentParser;
 import com.nageoffer.ai.ragent.multimodal.parser.dto.FileType;
@@ -28,12 +29,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -126,6 +130,9 @@ public class Phase5ImageDescriber implements CommandLineRunner {
             return new int[]{0};
         }
 
+        // 读取可选元数据文件（filename → {url, license}），缺失时回退空串
+        Map<String, ImageMetadata> metadataMap = loadImageMetadata();
+
         log.info("发现 {} 张待描述图像", totalBatches);
 
         int total = 0;
@@ -139,20 +146,75 @@ public class Phase5ImageDescriber implements CommandLineRunner {
                 continue;
             }
 
-            JsonObject meta = new JsonObject();
-            meta.addProperty("image_path", "drawings/" + imageFile.getFileName());
-            meta.addProperty("description", description);
-            meta.addProperty("category", "industrial_equipment");
-            meta.addProperty("source_url", "");  // 由 image_metadata.jsonl 提供
-            meta.addProperty("license", "CC BY-SA 4.0");  // 默认值，元数据文件可覆盖
-            meta.addProperty("generated_by", "qwen-vl-max");
+            String relPath = "drawings/" + imageFile.getFileName();
+            ImageMetadata meta = metadataMap.getOrDefault(relPath, ImageMetadata.EMPTY);
 
-            writer.write(GSON.toJson(meta));
+            JsonObject out = new JsonObject();
+            out.addProperty("image_path", relPath);
+            out.addProperty("description", description);
+            out.addProperty("category", "industrial_equipment");
+            out.addProperty("source_url", meta.sourceUrl());
+            out.addProperty("license", meta.license());
+            out.addProperty("generated_by", "qwen-vl-max");
+
+            writer.write(GSON.toJson(out));
             writer.newLine();
             total++;
         }
 
         return new int[]{total};
+    }
+
+    /**
+     * 读取 {@code image_metadata.jsonl}（filename → {source_url, license}）
+     * <p>
+     * 元数据文件为可选项：不存在或某图缺失时回退为空串，
+     * 不固化虚假授权信息（license 未知即留空）。
+     */
+    private Map<String, ImageMetadata> loadImageMetadata() {
+        Map<String, ImageMetadata> result = new HashMap<>();
+        if (!Files.isRegularFile(METADATA_FILE)) {
+            log.info("图像元数据文件不存在，source_url/license 将留空: {}", METADATA_FILE.toAbsolutePath());
+            return result;
+        }
+        try (BufferedReader reader = Files.newBufferedReader(METADATA_FILE)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.isBlank()) {
+                    continue;
+                }
+                JsonObject obj = GSON.fromJson(line, JsonObject.class);
+                if (obj == null || !obj.has("image_path")) {
+                    continue;
+                }
+                String path = obj.get("image_path").getAsString();
+                String url = getAsString(obj, "source_url");
+                String license = getAsString(obj, "license");
+                result.put(path, new ImageMetadata(url, license));
+            }
+        } catch (Exception e) {
+            log.warn("图像元数据解析失败，source_url/license 将留空: {}", METADATA_FILE.toAbsolutePath(), e);
+        }
+        return result;
+    }
+
+    private static String getAsString(JsonObject obj, String key) {
+        JsonElement element = obj.get(key);
+        if (element == null || element.isJsonNull() || !element.isJsonPrimitive()) {
+            return "";
+        }
+        return element.getAsString();
+    }
+
+    /**
+     * 图像来源元数据
+     *
+     * @param sourceUrl 图片来源 URL（未知为空串）
+     * @param license   授权信息（未知为空串）
+     */
+    private record ImageMetadata(String sourceUrl, String license) {
+
+        static final ImageMetadata EMPTY = new ImageMetadata("", "");
     }
 
     private String callQwenVLWithRetry(Path imageFile, AtomicInteger dataLossBatches) {

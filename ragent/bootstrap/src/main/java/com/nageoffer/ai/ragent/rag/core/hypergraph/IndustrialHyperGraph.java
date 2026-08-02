@@ -65,6 +65,18 @@ public interface IndustrialHyperGraph {
     List<HyperEdge> extractHyperedges(String documentText);
 
     /**
+     * 从文档文本中抽取 N 元组超边，并填充来源文档路径
+     * <p>
+     * 用于数据生成流水线：将 FAQ 的 sourceDoc 透传给每条超边的 {@code sourceDocument} 字段，
+     * 保证数据链路末端（超边 → 来源 FAQ）溯源不中断。
+     *
+     * @param documentText   文档文本
+     * @param sourceDocument 来源文档标识（如 FAQ 的 source_doc）
+     * @return 抽取出的超边列表
+     */
+    List<HyperEdge> extractHyperedges(String documentText, String sourceDocument);
+
+    /**
      * 将超边加入倒排索引
      * <p>
      * 构建 {@code Map<实体值, Set<超边下标>>} 倒排索引，

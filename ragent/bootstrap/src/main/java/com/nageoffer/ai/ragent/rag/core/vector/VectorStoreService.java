@@ -53,6 +53,16 @@ public interface VectorStoreService {
     void deleteDocumentVectors(String collectionName, String docId);
 
     /**
+     * 清空指定 Collection 的全部向量数据（幂等）
+     * <p>
+     * 用于全量重建类任务（如 Phase 5 数据入库）：先清空再全量写入，
+     * 避免多次执行导致数据重复累计。
+     *
+     * @param collectionName 向量空间名称（知识库 collectionName）
+     */
+    void clearCollection(String collectionName);
+
+    /**
      * 删除指定的单个 chunk 向量索引
      *
      * @param collectionName 向量空间名称（知识库 collectionName）

@@ -131,8 +131,8 @@ public class MultiSourceFusionProcessor implements SearchResultPostProcessor {
         for (RetrievedChunk chunk : chunks) {
             Map<String, Object> meta = chunk.getMetadata();
             String source = null;
-            if (meta != null) {
-                source = (String) meta.get("source");
+            if (meta != null && meta.get("source") != null) {
+                source = String.valueOf(meta.get("source"));
             }
 
             if (source == null) {

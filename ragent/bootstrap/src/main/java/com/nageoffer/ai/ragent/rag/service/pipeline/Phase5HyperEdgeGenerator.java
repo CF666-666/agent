@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityNode;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
 import lombok.extern.slf4j.Slf4j;
@@ -145,7 +146,7 @@ public class Phase5HyperEdgeGenerator implements CommandLineRunner {
                                               AtomicInteger dataLossBatches) {
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
-                List<HyperEdge> edges = hyperGraph.extractHyperedges(inputText);
+                List<HyperEdge> edges = hyperGraph.extractHyperedges(inputText, sourceDoc);
                 if (edges != null && !edges.isEmpty()) {
                     return edges;
                 }
@@ -168,6 +169,18 @@ public class Phase5HyperEdgeGenerator implements CommandLineRunner {
         obj.addProperty("fault", edge.getFault());
         obj.addProperty("sopDoc", edge.getSopDoc());
         obj.addProperty("sourceDocument", edge.getSourceDocument());
+
+        // 扩展实体序列化，与 Phase5HyperEdgeLoader 反序列化保持对称
+        if (edge.getExtendedEntities() != null && !edge.getExtendedEntities().isEmpty()) {
+            JsonArray arr = new JsonArray();
+            edge.getExtendedEntities().forEach(node -> {
+                JsonObject item = new JsonObject();
+                item.addProperty("label", node.label());
+                item.addProperty("value", node.value());
+                arr.add(item);
+            });
+            obj.add("extendedEntities", arr);
+        }
         return GSON.toJson(obj);
     }
 }

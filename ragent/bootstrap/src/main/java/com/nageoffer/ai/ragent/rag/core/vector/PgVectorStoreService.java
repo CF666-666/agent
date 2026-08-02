@@ -67,6 +67,15 @@ public class PgVectorStoreService implements VectorStoreService {
     }
 
     @Override
+    public void clearCollection(String collectionName) {
+        // noinspection SqlDialectInspection,SqlNoDataSourceInspection
+        int deleted = jdbcTemplate.update(
+                "DELETE FROM t_knowledge_vector WHERE metadata->>'collection_name' = ?",
+                collectionName);
+        log.info("清空向量 Collection，collectionName={}, deleted={}", collectionName, deleted);
+    }
+
+    @Override
     public void deleteChunkById(String collectionName, String chunkId) {
         // noinspection SqlDialectInspection,SqlNoDataSourceInspection
         jdbcTemplate.update("DELETE FROM t_knowledge_vector WHERE id = ?", chunkId);

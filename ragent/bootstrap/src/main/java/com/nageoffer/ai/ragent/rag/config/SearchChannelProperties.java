@@ -21,6 +21,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * RAG 检索配置
  */
@@ -73,6 +76,12 @@ public class SearchChannelProperties {
          * 全局检索时召回更多候选，后续通过 Rerank 筛选
          */
         private int topKMultiplier = 3;
+
+        /**
+         * 全局检索覆盖的 Collection 列表（默认兜底知识库）
+         * 为空时回退到默认知识库 {@code rag_default_store}
+         */
+        private List<String> collections = new ArrayList<>();
     }
 
     @Data

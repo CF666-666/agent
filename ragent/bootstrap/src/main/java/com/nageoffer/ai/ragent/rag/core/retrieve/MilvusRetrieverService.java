@@ -24,6 +24,8 @@ import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
 import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
 import com.nageoffer.ai.ragent.infra.embedding.EmbeddingService;
 import io.milvus.v2.client.MilvusClientV2;
+import io.milvus.v2.service.collection.request.GetLoadStateReq;
+import io.milvus.v2.service.collection.request.LoadCollectionReq;
 import io.milvus.v2.service.vector.request.SearchReq;
 import io.milvus.v2.service.vector.request.data.BaseVector;
 import io.milvus.v2.service.vector.request.data.FloatVec;
@@ -61,6 +63,27 @@ public class MilvusRetrieverService implements RetrieverService {
 
     @Override
     public List<RetrievedChunk> retrieveByVector(float[] vector, RetrieveRequest retrieveParam) {
+        String collectionName = StrUtil.isBlank(retrieveParam.getCollectionName())
+                ? ragDefaultProperties.getCollectionName()
+                : retrieveParam.getCollectionName();
+
+        // Milvus 2.x 检索前必须先 load collection（异步，需等待完成）
+        try {
+            milvusClient.loadCollection(LoadCollectionReq.builder()
+                    .collectionName(collectionName).build());
+            // 等待 load 完成
+            long start = System.currentTimeMillis();
+            while (System.currentTimeMillis() - start < 10_000) {
+                var state = milvusClient.getLoadState(
+                        io.milvus.v2.service.collection.request.GetLoadStateReq.builder()
+                                .collectionName(collectionName).build());
+                if (Boolean.TRUE.equals(state)) break;
+                Thread.sleep(500);
+            }
+        } catch (Exception e) {
+            log.warn("loadCollection 异常: {}", e.getMessage());
+        }
+
         List<BaseVector> vectors = List.of(new FloatVec(vector));
 
         Map<String, Object> params = new HashMap<>();
@@ -68,9 +91,7 @@ public class MilvusRetrieverService implements RetrieverService {
         params.put("ef", 128);
 
         SearchReq req = SearchReq.builder()
-                .collectionName(
-                        StrUtil.isBlank(retrieveParam.getCollectionName()) ? ragDefaultProperties.getCollectionName() : retrieveParam.getCollectionName()
-                )
+                .collectionName(collectionName)
                 .annsField("embedding")
                 .data(vectors)
                 .topK(retrieveParam.getTopK())
@@ -122,7 +143,7 @@ public class MilvusRetrieverService implements RetrieverService {
                 if (value == null || value.isJsonNull()) {
                     continue;
                 }
-                result.put(entry.getKey(), value);
+                result.put(entry.getKey(), toJavaValue(value));
             }
             return result;
         }
@@ -134,6 +155,31 @@ public class MilvusRetrieverService implements RetrieverService {
 
         log.warn("Milvus metadata 字段类型非预期: type={}", rawMetadata.getClass().getName());
         return result;
+    }
+
+    /**
+     * 将 {@link JsonElement} 转为可安全强转的 Java 原生类型：
+     * <ul>
+     *   <li>{@link com.google.gson.JsonPrimitive} → 按类型转为 String / Number / Boolean</li>
+     *   <li>嵌套 {@link JsonObject} / {@link com.google.gson.JsonArray} → 保留为 JsonElement，由调用方按需读取</li>
+     *   <li>{@code null} / {@link com.google.gson.JsonNull} → null</li>
+     * </ul>
+     */
+    private static Object toJavaValue(JsonElement element) {
+        if (element == null || element.isJsonNull()) {
+            return null;
+        }
+        if (element.isJsonPrimitive()) {
+            var primitive = element.getAsJsonPrimitive();
+            if (primitive.isNumber()) {
+                return primitive.getAsNumber();
+            }
+            if (primitive.isBoolean()) {
+                return primitive.getAsBoolean();
+            }
+            return primitive.getAsString();
+        }
+        return element;
     }
 
     private static float[] toArray(List<Float> list) {

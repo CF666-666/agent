@@ -27,6 +27,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    networks:
+      - default
+      - ragent-net
 
   etcd:
     container_name: etcd
@@ -48,6 +51,9 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    networks:
+      - default
+      - ragent-net
 
   standalone:
     container_name: milvus-standalone
@@ -74,6 +80,9 @@ services:
       start_period: 90s
       timeout: 20s
       retries: 3
+    networks:
+      - default
+      - ragent-net
 
   attu:
     container_name: milvus-attu
@@ -84,6 +93,9 @@ services:
       - "8000:3000"
     depends_on:
       - standalone
+    networks:
+      - default
+      - ragent-net
 
 volumes:
   rustfs-data:
@@ -93,3 +105,5 @@ volumes:
 networks:
   default:
     name: milvus-net
+  ragent-net:
+    external: true

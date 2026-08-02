@@ -135,6 +135,21 @@ public class MilvusVectorStoreService implements VectorStoreService {
     }
 
     @Override
+    public void clearCollection(String collectionName) {
+        // Milvus 主键为字符串，delete with filter id != "" 删除全部存量
+        String filter = "id != \"\"";
+
+        DeleteReq deleteReq = DeleteReq.builder()
+                .collectionName(collectionName)
+                .filter(filter)
+                .build();
+
+        DeleteResp resp = milvusClient.delete(deleteReq);
+        log.info("Milvus 清空 Collection 完成, collection={}, deleteCnt={}",
+                collectionName, resp.getDeleteCnt());
+    }
+
+    @Override
     public void deleteChunkById(String collectionName, String chunkId) {
         // chunkId 就是 Milvus 中的 doc_id（主键），直接通过主键删除
         String filter = "id == \"" + chunkId + "\"";

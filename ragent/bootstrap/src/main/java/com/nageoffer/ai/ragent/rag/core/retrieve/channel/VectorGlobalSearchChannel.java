@@ -18,12 +18,8 @@
 package com.nageoffer.ai.ragent.rag.core.retrieve.channel;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
-import com.nageoffer.ai.ragent.knowledge.dao.entity.KnowledgeBaseDO;
-import com.nageoffer.ai.ragent.knowledge.dao.mapper.KnowledgeBaseMapper;
 import com.nageoffer.ai.ragent.rag.config.SearchChannelProperties;
-import com.nageoffer.ai.ragent.rag.core.intent.NodeScore;
 import com.nageoffer.ai.ragent.rag.core.retrieve.RetrieverService;
 import com.nageoffer.ai.ragent.rag.core.retrieve.channel.strategy.CollectionParallelRetriever;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +27,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 /**
@@ -43,16 +37,16 @@ import java.util.concurrent.Executor;
 @Component
 public class VectorGlobalSearchChannel implements SearchChannel {
 
+    /** 默认兜底知识库 Collection */
+    private static final String DEFAULT_KB_COLLECTION = "rag_default_store";
+
     private final SearchChannelProperties properties;
-    private final KnowledgeBaseMapper knowledgeBaseMapper;
     private final CollectionParallelRetriever parallelRetriever;
 
     public VectorGlobalSearchChannel(RetrieverService retrieverService,
                                      SearchChannelProperties properties,
-                                     KnowledgeBaseMapper knowledgeBaseMapper,
                                      @Qualifier("ragInnerRetrievalThreadPoolExecutor") Executor innerRetrievalExecutor) {
         this.properties = properties;
-        this.knowledgeBaseMapper = knowledgeBaseMapper;
         this.parallelRetriever = new CollectionParallelRetriever(retrieverService, innerRetrievalExecutor);
     }
 
@@ -68,37 +62,11 @@ public class VectorGlobalSearchChannel implements SearchChannel {
 
     @Override
     public boolean isEnabled(SearchContext context) {
-        // 检查配置是否启用
+        // Phase 5: 全局检索始终启用作为兜底，确保文本检索永远可用
         if (!properties.getChannels().getVectorGlobal().isEnabled()) {
             return false;
         }
-
-        List<NodeScore> allScores = context.getIntents().stream()
-                .flatMap(si -> si.nodeScores().stream())
-                .toList();
-        if (CollUtil.isEmpty(allScores)) {
-            log.info("未识别出任何意图，启用全局检索");
-            return true;
-        }
-
-        double maxScore = allScores.stream()
-                .mapToDouble(NodeScore::getScore)
-                .max()
-                .orElse(0.0);
-
-        double threshold = properties.getChannels().getVectorGlobal().getConfidenceThreshold();
-        if (maxScore < threshold) {
-            log.info("意图置信度过低（{}），启用全局检索", maxScore);
-            return true;
-        }
-
-        double supplementThreshold = properties.getChannels().getVectorGlobal().getSingleIntentSupplementThreshold();
-        if (allScores.size() == 1 && maxScore < supplementThreshold) {
-            log.info("单一中等置信度意图（{}），启用补充全局检索", maxScore);
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     @Override
@@ -152,25 +120,17 @@ public class VectorGlobalSearchChannel implements SearchChannel {
     }
 
     /**
-     * 获取所有 KB 类型的 collection
+     * 获取全局检索覆盖的 collection 列表
+     * <p>
+     * 优先读取配置项 {@code rag.search.channels.vector-global.collections}；
+     * 未配置时回退到默认知识库 {@code rag_default_store}。
      */
     private List<String> getAllKBCollections() {
-        Set<String> collections = new HashSet<>();
-
-        // 从知识库表获取全量 collection（全局检索兜底）
-        List<KnowledgeBaseDO> kbList = knowledgeBaseMapper.selectList(
-                Wrappers.lambdaQuery(KnowledgeBaseDO.class)
-                        .select(KnowledgeBaseDO::getCollectionName)
-                        .eq(KnowledgeBaseDO::getDeleted, 0)
-        );
-        for (KnowledgeBaseDO kb : kbList) {
-            String collectionName = kb.getCollectionName();
-            if (collectionName != null && !collectionName.isBlank()) {
-                collections.add(collectionName);
-            }
+        List<String> collections = properties.getChannels().getVectorGlobal().getCollections();
+        if (CollUtil.isNotEmpty(collections)) {
+            return collections;
         }
-
-        return new ArrayList<>(collections);
+        return List.of(DEFAULT_KB_COLLECTION);
     }
 
     /**

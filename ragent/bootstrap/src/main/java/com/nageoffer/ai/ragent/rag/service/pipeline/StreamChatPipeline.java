@@ -272,8 +272,9 @@ public class StreamChatPipeline {
                 Map<String, Object> meta = chunk.getMetadata();
                 if (meta == null) continue;
 
-                String source = (String) meta.get("source");
-                if (source == null) continue;
+                Object sourceRaw = meta.get("source");
+                if (sourceRaw == null) continue;
+                String source = String.valueOf(sourceRaw);
 
                 ReferenceType type = mapToReferenceType(source);
                 refs.add(buildReference(type, chunk, meta));

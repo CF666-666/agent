@@ -239,7 +239,7 @@ public class DefaultContextFormatter implements ContextFormatter {
         if (meta == null) {
             return "";
         }
-        String source = (String) meta.get("source");
+        String source = String.valueOf(meta.get("source"));
         if ("IMAGE_SEMANTIC".equals(source)) {
             return "[图纸描述] ";
         }
