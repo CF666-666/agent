@@ -19,6 +19,7 @@
 - SSE 接口新增 `enableRewrite` 评测开关(查询重写 A/B 对比用)
 - 评测结果:检索 Hit Rate@1=100% / MRR=1.0(48 条);RAGAS 忠诚度 0.91 / 上下文精准 0.86 / 召回 0.92
 - 评测报告 `docs/evaluation-report.md` 与简历数据校准
+- HTML 评测报告生成器 `scripts/eval/report_html.py`(自包含 HTML,含指标卡片/进度条/分场景表/A-B 对比)
 
 ## [2.0.0] - 2026-08-02
 
