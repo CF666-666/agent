@@ -25,3 +25,12 @@ map key is an alias and the value is its canonical entity. For example, `风机1
 - hypergraph retrieval: two query aliases match a canonical equipment/fault edge with a
   match count of two;
 - existing document replacement regression remains covered.
+
+## Next closure: bounded relation paths
+
+The hypergraph now exposes a bounded 1–2 hop `RelationPath` API. It starts from
+directly matched edges, expands only through indexed non-query bridge entities, avoids
+reusing the same edge, and deduplicates paths by their edge pair. A path retains the
+ordered hyperedges, bridge entities, score, and therefore each edge's document/chunk
+evidence. Search-channel rendering will be connected in a later closure because its
+working-tree changes belong to the parallel retrieval work.

@@ -43,4 +43,27 @@ class IndustrialHyperGraphNormalizationTest {
         assertEquals("1号鼓风机", result.hyperEdge().getEquipment());
         assertEquals("过载跳闸", result.hyperEdge().getFault());
     }
+
+    @Test
+    void shouldReturnTwoHopPathWithBridgeAndSourceEvidence() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        normalizer.setAliases(Map.of("泵一号", "1号泵"));
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer);
+        graph.addHyperedges(List.of(
+                HyperEdge.builder().edgeId("edge-pump").equipment("1号泵").parameter("轴承温度高")
+                        .sourceDocument("pump-sop.pdf").sourceChunkId("pump#2").build(),
+                HyperEdge.builder().edgeId("edge-bearing").condition("轴承温度高").fault("润滑不足")
+                        .sourceDocument("lube-sop.pdf").sourceChunkId("lube#7").build()));
+
+        IndustrialHyperGraph.RelationPath path = graph.findRelationPaths(Set.of("泵一号"), 2, 10).stream()
+                .filter(candidate -> candidate.hopCount() == 2)
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals(List.of("edge-pump", "edge-bearing"),
+                path.hyperEdges().stream().map(HyperEdge::getEdgeId).toList());
+        assertEquals(List.of("轴承温度高"), path.bridgeEntities());
+        assertEquals(List.of("pump-sop.pdf", "lube-sop.pdf"),
+                path.hyperEdges().stream().map(HyperEdge::getSourceDocument).toList());
+    }
 }

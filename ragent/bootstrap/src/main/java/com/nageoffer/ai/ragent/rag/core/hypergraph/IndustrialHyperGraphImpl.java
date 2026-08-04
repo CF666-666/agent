@@ -52,6 +52,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
+    private static final int MAX_RELATION_HOPS = 2;
+    private static final int MAX_PATH_SEEDS = 20;
+
     private final HyperEdgeExtractor extractor;
     private final IndustrialEntityNormalizer entityNormalizer;
 
@@ -210,6 +213,82 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
                     .collect(Collectors.toList());
         } finally {
             lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public List<RelationPath> findRelationPaths(Set<String> queryEntities, int maxHops, int maxPaths) {
+        if (maxHops < 1 || maxHops > MAX_RELATION_HOPS || maxPaths <= 0) {
+            return Collections.emptyList();
+        }
+        Set<String> normalizedQueries = entityNormalizer.normalizeAll(queryEntities);
+        if (normalizedQueries.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        lock.readLock().lock();
+        try {
+            Map<Integer, Integer> hitCounts = matchedEdgeCounts(normalizedQueries);
+            if (hitCounts.isEmpty()) {
+                return Collections.emptyList();
+            }
+            List<Map.Entry<Integer, Integer>> seeds = hitCounts.entrySet().stream()
+                    .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed()
+                            .thenComparing(Map.Entry::getKey))
+                    .limit(MAX_PATH_SEEDS)
+                    .toList();
+            Map<String, RelationPath> paths = new LinkedHashMap<>();
+            for (Map.Entry<Integer, Integer> seed : seeds) {
+                paths.put("edge:" + seed.getKey(), new RelationPath(
+                        List.of(hyperEdges.get(seed.getKey())), List.of(), seed.getValue()));
+            }
+            if (maxHops == 2) {
+                addTwoHopPaths(normalizedQueries, seeds, paths);
+            }
+            return paths.values().stream()
+                    .sorted(Comparator.comparingInt(RelationPath::score).reversed()
+                            .thenComparing(Comparator.comparingInt(RelationPath::hopCount).reversed()))
+                    .limit(maxPaths)
+                    .toList();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    private Map<Integer, Integer> matchedEdgeCounts(Set<String> queryEntities) {
+        Map<Integer, Integer> hitCounts = new HashMap<>();
+        for (String entity : queryEntities) {
+            Set<Integer> matchedEdges = entityToEdgeIdx.get(entity);
+            if (matchedEdges != null) {
+                for (int edgeIdx : matchedEdges) {
+                    hitCounts.merge(edgeIdx, 1, Integer::sum);
+                }
+            }
+        }
+        return hitCounts;
+    }
+
+    private void addTwoHopPaths(Set<String> queryEntities,
+                                List<Map.Entry<Integer, Integer>> seeds,
+                                Map<String, RelationPath> paths) {
+        for (Map.Entry<Integer, Integer> seed : seeds) {
+            int firstEdgeIndex = seed.getKey();
+            for (String bridgeEntity : indexableEntityValues(hyperEdges.get(firstEdgeIndex))) {
+                if (queryEntities.contains(bridgeEntity)) {
+                    continue;
+                }
+                Set<Integer> connectedEdges = entityToEdgeIdx.getOrDefault(bridgeEntity, Set.of());
+                for (int secondEdgeIndex : connectedEdges) {
+                    if (secondEdgeIndex == firstEdgeIndex) {
+                        continue;
+                    }
+                    String pathKey = "path:" + Math.min(firstEdgeIndex, secondEdgeIndex)
+                            + ':' + Math.max(firstEdgeIndex, secondEdgeIndex);
+                    paths.putIfAbsent(pathKey, new RelationPath(
+                            List.of(hyperEdges.get(firstEdgeIndex), hyperEdges.get(secondEdgeIndex)),
+                            List.of(bridgeEntity), seed.getValue() + 1));
+                }
+            }
         }
     }
 }

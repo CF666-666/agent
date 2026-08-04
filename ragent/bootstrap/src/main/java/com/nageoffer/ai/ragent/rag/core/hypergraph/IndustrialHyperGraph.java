@@ -130,6 +130,12 @@ public interface IndustrialHyperGraph {
     List<SubgraphMatchResult> matchSubgraph(Set<String> queryEntities, int maxEdges);
 
     /**
+     * Finds bounded relation paths from query entities. The current contract
+     * supports one or two hyperedges and preserves each edge's source evidence.
+     */
+    List<RelationPath> findRelationPaths(Set<String> queryEntities, int maxHops, int maxPaths);
+
+    /**
      * 将超边展开为自然语言文本（模板方法，0 API 消耗）
      * <p>
      * 用途：
@@ -182,5 +188,15 @@ public interface IndustrialHyperGraph {
      * @param matchCount query 中有几个实体命中了此超边
      */
     record SubgraphMatchResult(HyperEdge hyperEdge, int matchCount) {
+    }
+
+    /**
+     * Ordered hyperedges connected by the listed bridge entities.
+     */
+    record RelationPath(List<HyperEdge> hyperEdges, List<String> bridgeEntities, int score) {
+
+        public int hopCount() {
+            return hyperEdges.size();
+        }
     }
 }
