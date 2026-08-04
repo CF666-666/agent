@@ -85,14 +85,15 @@ public class Phase5HyperEdgeLoader implements CommandLineRunner {
         List<HyperEdge> persistedEdges;
         try {
             persistedEdges = hyperEdgeStore.loadActiveHyperedges();
+            if (!persistedEdges.isEmpty()) {
+                hyperGraph.addHyperedges(persistedEdges);
+                log.info("Loaded {} persisted hyperedges", persistedEdges.size());
+            } else {
+                log.info("Persisted hyperedge store is available but contains no active hyperedges");
+            }
+            return;
         } catch (RuntimeException exception) {
             log.warn("Persisted hyperedge store is unavailable; falling back to JSONL", exception);
-            persistedEdges = List.of();
-        }
-        if (!persistedEdges.isEmpty()) {
-            hyperGraph.addHyperedges(persistedEdges);
-            log.info("Loaded {} persisted hyperedges", persistedEdges.size());
-            return;
         }
         if (!Files.isRegularFile(EDGE_FILE)) {
             log.warn("超边文件不存在，跳过加载: {}", EDGE_FILE.toAbsolutePath());

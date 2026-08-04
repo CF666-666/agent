@@ -50,6 +50,13 @@ index, so deleted facts can no longer appear in relation retrieval. This hook ap
 to documents processed through the configurable ingestion pipeline; documents using
 the legacy chunk-only path have no hyperedges to remove.
 
+## Startup recovery invariant
+
+An available persistent store is authoritative even when it contains zero active
+hyperedges. JSONL is used only when the persistent-store read fails, preventing a
+deleted document or an intentionally empty re-ingestion from being resurrected at
+process startup.
+
 ## Closure verification
 
 - Reactor compile: `mvn -pl bootstrap -am -DskipTests compile`;
