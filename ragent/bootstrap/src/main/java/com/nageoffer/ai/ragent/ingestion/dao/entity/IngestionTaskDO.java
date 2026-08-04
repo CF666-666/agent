@@ -52,6 +52,24 @@ public class IngestionTaskDO {
      */
     private String pipelineId;
 
+    private String idempotencyKey;
+
+    @TableField(typeHandler = JsonbTypeHandler.class)
+    private String pipelineSnapshotJson;
+
+    @TableField(typeHandler = JsonbTypeHandler.class)
+    private String checkpointJson;
+
+    private String lastSuccessNodeId;
+
+    private String nextNodeId;
+
+    private Integer resumeCount;
+
+    private String executionLeaseToken;
+
+    private Date leaseExpiresAt;
+
     /**
      * 数据源类型 (如: file, url, feishu, s3)
      */

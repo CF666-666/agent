@@ -107,7 +107,8 @@ public class IndexerNode implements IngestionNode {
             return NodeResult.ok("已准备 " + rows.size() + " 个分块（向量写入由调用方统一完成）");
         }
 
-        insertRows(collectionName, context.getTaskId(), rows);
+        insertRows(collectionName, StringUtils.hasText(context.getIdempotencyKey())
+                ? context.getIdempotencyKey() : context.getTaskId(), rows);
         return NodeResult.ok("已写入 " + rows.size() + " 个分块到集合 " + collectionName);
     }
 
@@ -173,6 +174,9 @@ public class IndexerNode implements IngestionNode {
                     .build();
         }).toList();
 
+        // 同一幂等文档重新入库时，切块数量可能减少。先按 docId 定向清理，
+        // 再整批写入，避免上一次运行遗留的尾部切块参与召回。
+        vectorStoreService.deleteDocumentVectors(collectionName, docId);
         vectorStoreService.indexDocumentChunks(collectionName, docId, chunks);
 
         log.info("向量写入成功，集合={}，行数={}", collectionName, chunks.size());
@@ -214,7 +218,9 @@ public class IndexerNode implements IngestionNode {
         List<JsonObject> rows = new java.util.ArrayList<>(chunks.size());
         for (int i = 0; i < chunks.size(); i++) {
             VectorChunk chunk = chunks.get(i);
-            String chunkId = StringUtils.hasText(chunk.getChunkId()) ? chunk.getChunkId() : IdUtil.getSnowflakeNextIdStr();
+            String chunkId = StringUtils.hasText(context.getIdempotencyKey())
+                    ? context.getIdempotencyKey().substring(0, 14) + String.format("%06x", i)
+                    : (StringUtils.hasText(chunk.getChunkId()) ? chunk.getChunkId() : IdUtil.getSnowflakeNextIdStr());
             chunk.setChunkId(chunkId);
             chunk.setEmbedding(vectors[i]);
 

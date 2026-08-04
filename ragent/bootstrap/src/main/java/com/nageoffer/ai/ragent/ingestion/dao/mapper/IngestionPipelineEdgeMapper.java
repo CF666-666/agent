@@ -18,13 +18,13 @@
 package com.nageoffer.ai.ragent.ingestion.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionPipelineNodeDO;
+import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionPipelineEdgeDO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 
-public interface IngestionPipelineNodeMapper extends BaseMapper<IngestionPipelineNodeDO> {
+public interface IngestionPipelineEdgeMapper extends BaseMapper<IngestionPipelineEdgeDO> {
 
     /** Pipeline definitions are replace-on-save configuration, not historical records. */
-    @Delete("DELETE FROM t_ingestion_pipeline_node WHERE pipeline_id = #{pipelineId}")
+    @Delete("DELETE FROM t_ingestion_pipeline_edge WHERE pipeline_id = #{pipelineId}")
     int deleteByPipelineId(@Param("pipelineId") String pipelineId);
 }

@@ -15,54 +15,35 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent.ingestion.controller.vo;
+package com.nageoffer.ai.ragent.ingestion.domain.pipeline;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
-
-/**
- * 数据摄取管道视图对象
- */
+/** Per-node retry policy. A missing policy means one attempt without backoff. */
 @Data
-public class IngestionPipelineVO {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class NodeExecutionPolicy {
 
-    /**
-     * 管道ID
-     */
-    private String id;
+    public static final int DEFAULT_MAX_ATTEMPTS = 1;
 
-    /**
-     * 管道名称
-     */
-    private String name;
+    public static final int MAX_ALLOWED_ATTEMPTS = 5;
 
-    /**
-     * 管道描述
-     */
-    private String description;
+    public static final long MAX_ALLOWED_BACKOFF_MS = 60_000L;
 
-    /**
-     * 创建人
-     */
-    private String createdBy;
+    private Integer maxAttempts;
 
-    /**
-     * 管道节点列表
-     */
-    private List<IngestionPipelineNodeVO> nodes;
+    private Long retryBackoffMs;
 
-    /** Explicit graph edges. Legacy links remain available from node.nextNodeId. */
-    private List<IngestionPipelineEdgeVO> edges;
+    public int effectiveMaxAttempts() {
+        return maxAttempts == null ? DEFAULT_MAX_ATTEMPTS : maxAttempts;
+    }
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    public long effectiveRetryBackoffMs() {
+        return retryBackoffMs == null ? 0L : retryBackoffMs;
+    }
 }

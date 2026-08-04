@@ -25,18 +25,24 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nageoffer.ai.ragent.ingestion.controller.request.IngestionPipelineCreateRequest;
+import com.nageoffer.ai.ragent.ingestion.controller.request.IngestionPipelineEdgeRequest;
 import com.nageoffer.ai.ragent.ingestion.controller.request.IngestionPipelineNodeRequest;
 import com.nageoffer.ai.ragent.ingestion.controller.request.IngestionPipelineUpdateRequest;
+import com.nageoffer.ai.ragent.ingestion.controller.vo.IngestionPipelineEdgeVO;
 import com.nageoffer.ai.ragent.ingestion.controller.vo.IngestionPipelineNodeVO;
 import com.nageoffer.ai.ragent.ingestion.controller.vo.IngestionPipelineVO;
 import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionPipelineDO;
+import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionPipelineEdgeDO;
 import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionPipelineNodeDO;
+import com.nageoffer.ai.ragent.ingestion.dao.mapper.IngestionPipelineEdgeMapper;
 import com.nageoffer.ai.ragent.ingestion.dao.mapper.IngestionPipelineMapper;
 import com.nageoffer.ai.ragent.ingestion.dao.mapper.IngestionPipelineNodeMapper;
 import com.nageoffer.ai.ragent.framework.context.UserContext;
 import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionNodeType;
+import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeEdge;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig;
+import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineGraph;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineDefinition;
 import com.nageoffer.ai.ragent.ingestion.service.IngestionPipelineService;
 import lombok.RequiredArgsConstructor;
@@ -56,12 +62,16 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
 
     private final IngestionPipelineMapper pipelineMapper;
     private final IngestionPipelineNodeMapper nodeMapper;
+    private final IngestionPipelineEdgeMapper edgeMapper;
     private final ObjectMapper objectMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public IngestionPipelineVO create(IngestionPipelineCreateRequest request) {
         Assert.notNull(request, () -> new ClientException("请求不能为空"));
+        List<NodeConfig> nodes = toNodeConfigs(request.getNodes());
+        List<NodeEdge> edges = toNodeEdges(request.getEdges());
+        validateDefinition(null, request.getName(), request.getDescription(), nodes, edges);
         IngestionPipelineDO pipeline = IngestionPipelineDO.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -73,18 +83,32 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
         } catch (DuplicateKeyException dke) {
             throw new ClientException("流水线名称已存在");
         }
-        upsertNodes(pipeline.getId(), request.getNodes());
-        return toVO(pipeline, fetchNodes(pipeline.getId()));
+        replaceNodes(pipeline.getId(), request.getNodes());
+        replaceEdges(pipeline.getId(), request.getEdges());
+        return toVO(pipeline, fetchNodes(pipeline.getId()), fetchEdges(pipeline.getId()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public IngestionPipelineVO update(String pipelineId, IngestionPipelineUpdateRequest request) {
+        Assert.notNull(request, () -> new ClientException("请求不能为空"));
         IngestionPipelineDO pipeline = pipelineMapper.selectById(pipelineId);
         Assert.notNull(pipeline, () -> new ClientException("未找到流水线"));
 
+        List<IngestionPipelineNodeDO> persistedNodes = fetchNodes(pipeline.getId());
+        List<IngestionPipelineEdgeDO> persistedEdges = fetchEdges(pipeline.getId());
+        List<NodeConfig> nodes = request.getNodes() == null
+                ? persistedNodes.stream().map(this::toNodeConfig).toList()
+                : toNodeConfigs(request.getNodes());
+        List<NodeEdge> edges = request.getEdges() == null
+                ? persistedEdges.stream().map(this::toNodeEdge).toList()
+                : toNodeEdges(request.getEdges());
+        String candidateName = StringUtils.hasText(request.getName()) ? request.getName() : pipeline.getName();
+        String candidateDescription = request.getDescription() == null ? pipeline.getDescription() : request.getDescription();
+        validateDefinition(pipeline.getId(), candidateName, candidateDescription, nodes, edges);
+
         if (StringUtils.hasText(request.getName())) {
-            pipeline.setName(request.getName());
+            pipeline.setName(candidateName);
         }
         if (request.getDescription() != null) {
             pipeline.setDescription(request.getDescription());
@@ -93,16 +117,19 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
         pipelineMapper.updateById(pipeline);
 
         if (request.getNodes() != null) {
-            upsertNodes(pipeline.getId(), request.getNodes());
+            replaceNodes(pipeline.getId(), request.getNodes());
         }
-        return toVO(pipeline, fetchNodes(pipeline.getId()));
+        if (request.getEdges() != null) {
+            replaceEdges(pipeline.getId(), request.getEdges());
+        }
+        return toVO(pipeline, fetchNodes(pipeline.getId()), fetchEdges(pipeline.getId()));
     }
 
     @Override
     public IngestionPipelineVO get(String pipelineId) {
         IngestionPipelineDO pipeline = pipelineMapper.selectById(pipelineId);
         Assert.notNull(pipeline, () -> new ClientException("未找到流水线"));
-        return toVO(pipeline, fetchNodes(pipeline.getId()));
+        return toVO(pipeline, fetchNodes(pipeline.getId()), fetchEdges(pipeline.getId()));
     }
 
     @Override
@@ -115,7 +142,7 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
         IPage<IngestionPipelineDO> result = pipelineMapper.selectPage(mpPage, qw);
         Page<IngestionPipelineVO> voPage = new Page<>(result.getCurrent(), result.getSize(), result.getTotal());
         voPage.setRecords(result.getRecords().stream()
-                .map(each -> toVO(each, fetchNodes(each.getId())))
+                .map(each -> toVO(each, fetchNodes(each.getId()), fetchEdges(each.getId())))
                 .toList());
         return voPage;
     }
@@ -129,9 +156,8 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
         pipeline.setUpdatedBy(UserContext.getUsername());
         pipelineMapper.deleteById(pipeline);
 
-        LambdaQueryWrapper<IngestionPipelineNodeDO> qw = new LambdaQueryWrapper<IngestionPipelineNodeDO>()
-                .eq(IngestionPipelineNodeDO::getPipelineId, pipeline.getId());
-        nodeMapper.delete(qw);
+        nodeMapper.deleteByPipelineId(pipeline.getId());
+        edgeMapper.deleteByPipelineId(pipeline.getId());
     }
 
     @Override
@@ -142,21 +168,23 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
         List<NodeConfig> nodes = fetchNodes(pipeline.getId()).stream()
                 .map(this::toNodeConfig)
                 .toList();
+        List<NodeEdge> edges = fetchEdges(pipeline.getId()).stream()
+                .map(this::toNodeEdge)
+                .toList();
         return PipelineDefinition.builder()
                 .id(String.valueOf(pipeline.getId()))
                 .name(pipeline.getName())
                 .description(pipeline.getDescription())
                 .nodes(nodes)
+                .edges(edges)
                 .build();
     }
 
-    private void upsertNodes(String pipelineId, List<IngestionPipelineNodeRequest> nodes) {
+    private void replaceNodes(String pipelineId, List<IngestionPipelineNodeRequest> nodes) {
         if (nodes == null) {
             return;
         }
-        LambdaQueryWrapper<IngestionPipelineNodeDO> qw = new LambdaQueryWrapper<IngestionPipelineNodeDO>()
-                .eq(IngestionPipelineNodeDO::getPipelineId, pipelineId);
-        nodeMapper.delete(qw);
+        nodeMapper.deleteByPipelineId(pipelineId);
         for (IngestionPipelineNodeRequest node : nodes) {
             if (node == null) {
                 continue;
@@ -168,10 +196,35 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
                     .nextNodeId(node.getNextNodeId())
                     .settingsJson(toJson(node.getSettings()))
                     .conditionJson(toJson(node.getCondition()))
+                    .executionPolicyJson(toJson(objectMapper.valueToTree(node.getExecutionPolicy())))
                     .createdBy(UserContext.getUsername())
                     .updatedBy(UserContext.getUsername())
                     .build();
             nodeMapper.insert(entity);
+        }
+    }
+
+    private void replaceEdges(String pipelineId, List<IngestionPipelineEdgeRequest> edges) {
+        if (edges == null) {
+            return;
+        }
+        edgeMapper.deleteByPipelineId(pipelineId);
+        for (IngestionPipelineEdgeRequest edge : edges) {
+            if (edge == null) {
+                continue;
+            }
+            IngestionPipelineEdgeDO entity = IngestionPipelineEdgeDO.builder()
+                    .id(edge.getEdgeId())
+                    .pipelineId(pipelineId)
+                    .fromNodeId(edge.getFromNodeId())
+                    .toNodeId(edge.getToNodeId())
+                    .conditionJson(toJson(edge.getCondition()))
+                    .priority(edge.getPriority() == null ? 0 : edge.getPriority())
+                    .defaultEdge(Boolean.TRUE.equals(edge.getDefaultEdge()))
+                    .createdBy(UserContext.getUsername())
+                    .updatedBy(UserContext.getUsername())
+                    .build();
+            edgeMapper.insert(entity);
         }
     }
 
@@ -182,9 +235,21 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
         return nodeMapper.selectList(qw);
     }
 
-    private IngestionPipelineVO toVO(IngestionPipelineDO pipeline, List<IngestionPipelineNodeDO> nodes) {
+    private List<IngestionPipelineEdgeDO> fetchEdges(String pipelineId) {
+        LambdaQueryWrapper<IngestionPipelineEdgeDO> qw = new LambdaQueryWrapper<IngestionPipelineEdgeDO>()
+                .eq(IngestionPipelineEdgeDO::getPipelineId, pipelineId)
+                .eq(IngestionPipelineEdgeDO::getDeleted, 0)
+                .orderByDesc(IngestionPipelineEdgeDO::getPriority)
+                .orderByAsc(IngestionPipelineEdgeDO::getCreateTime);
+        return edgeMapper.selectList(qw);
+    }
+
+    private IngestionPipelineVO toVO(IngestionPipelineDO pipeline,
+                                     List<IngestionPipelineNodeDO> nodes,
+                                     List<IngestionPipelineEdgeDO> edges) {
         IngestionPipelineVO vo = BeanUtil.toBean(pipeline, IngestionPipelineVO.class);
         vo.setNodes(nodes.stream().map(this::toNodeVO).toList());
+        vo.setEdges(edges.stream().map(this::toEdgeVO).toList());
         return vo;
     }
 
@@ -193,6 +258,7 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
         vo.setNodeType(normalizeNodeTypeForOutput(node.getNodeType()));
         vo.setSettings(parseJson(node.getSettingsJson()));
         vo.setCondition(parseJson(node.getConditionJson()));
+        vo.setExecutionPolicy(parseExecutionPolicy(node.getExecutionPolicyJson()));
         return vo;
     }
 
@@ -202,8 +268,73 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
                 .nodeType(normalizeNodeType(node.getNodeType()))
                 .settings(parseJson(node.getSettingsJson()))
                 .condition(parseJson(node.getConditionJson()))
+                .executionPolicy(parseExecutionPolicy(node.getExecutionPolicyJson()))
                 .nextNodeId(node.getNextNodeId())
                 .build();
+    }
+
+    private List<NodeConfig> toNodeConfigs(List<IngestionPipelineNodeRequest> nodes) {
+        if (nodes == null) {
+            return List.of();
+        }
+        return nodes.stream().filter(java.util.Objects::nonNull).map(node -> NodeConfig.builder()
+                .nodeId(node.getNodeId())
+                .nodeType(normalizeNodeType(node.getNodeType()))
+                .settings(node.getSettings())
+                .condition(node.getCondition())
+                .executionPolicy(node.getExecutionPolicy())
+                .nextNodeId(node.getNextNodeId())
+                .build()).toList();
+    }
+
+    private List<NodeEdge> toNodeEdges(List<IngestionPipelineEdgeRequest> edges) {
+        if (edges == null) {
+            return List.of();
+        }
+        return edges.stream().filter(java.util.Objects::nonNull).map(edge -> NodeEdge.builder()
+                .edgeId(edge.getEdgeId())
+                .fromNodeId(edge.getFromNodeId())
+                .toNodeId(edge.getToNodeId())
+                .condition(edge.getCondition())
+                .priority(edge.getPriority() == null ? 0 : edge.getPriority())
+                .defaultEdge(Boolean.TRUE.equals(edge.getDefaultEdge()))
+                .build()).toList();
+    }
+
+    private NodeEdge toNodeEdge(IngestionPipelineEdgeDO edge) {
+        return NodeEdge.builder()
+                .edgeId(edge.getId())
+                .fromNodeId(edge.getFromNodeId())
+                .toNodeId(edge.getToNodeId())
+                .condition(parseJson(edge.getConditionJson()))
+                .priority(edge.getPriority() == null ? 0 : edge.getPriority())
+                .defaultEdge(Boolean.TRUE.equals(edge.getDefaultEdge()))
+                .build();
+    }
+
+    private IngestionPipelineEdgeVO toEdgeVO(IngestionPipelineEdgeDO edge) {
+        IngestionPipelineEdgeVO vo = new IngestionPipelineEdgeVO();
+        vo.setEdgeId(edge.getId());
+        vo.setFromNodeId(edge.getFromNodeId());
+        vo.setToNodeId(edge.getToNodeId());
+        vo.setCondition(parseJson(edge.getConditionJson()));
+        vo.setPriority(edge.getPriority());
+        vo.setDefaultEdge(edge.getDefaultEdge());
+        return vo;
+    }
+
+    private void validateDefinition(String pipelineId,
+                                    String name,
+                                    String description,
+                                    List<NodeConfig> nodes,
+                                    List<NodeEdge> edges) {
+        PipelineGraph.of(PipelineDefinition.builder()
+                .id(pipelineId)
+                .name(name)
+                .description(description)
+                .nodes(nodes)
+                .edges(edges)
+                .build());
     }
 
     private String toJson(JsonNode node) {
@@ -221,6 +352,17 @@ public class IngestionPipelineServiceImpl implements IngestionPipelineService {
             return objectMapper.readTree(raw);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeExecutionPolicy parseExecutionPolicy(String raw) {
+        if (!StringUtils.hasText(raw)) {
+            return null;
+        }
+        try {
+            return objectMapper.readValue(raw, com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeExecutionPolicy.class);
+        } catch (Exception e) {
+            throw new ClientException("Invalid node execution policy");
         }
     }
 

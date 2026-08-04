@@ -79,6 +79,9 @@ public class IngestionPipelineNodeDO {
     @TableField(typeHandler = JsonbTypeHandler.class)
     private String conditionJson;
 
+    @TableField(typeHandler = JsonbTypeHandler.class)
+    private String executionPolicyJson;
+
     /**
      * 创建者
      */

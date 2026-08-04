@@ -40,28 +40,26 @@ import com.nageoffer.ai.ragent.ingestion.domain.context.NodeLog;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionNodeType;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionStatus;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.SourceType;
-import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineDefinition;
 import com.nageoffer.ai.ragent.ingestion.domain.result.IngestionResult;
 import com.nageoffer.ai.ragent.ingestion.engine.IngestionEngine;
+import com.nageoffer.ai.ragent.ingestion.engine.IngestionIdempotencyKeyFactory;
 import com.nageoffer.ai.ragent.ingestion.util.MimeTypeDetector;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorSpaceId;
 import com.nageoffer.ai.ragent.ingestion.service.IngestionPipelineService;
 import com.nageoffer.ai.ragent.ingestion.service.IngestionTaskService;
+import com.nageoffer.ai.ragent.ingestion.service.TaskCheckpointStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 数据摄入任务服务实现
@@ -75,9 +73,10 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
     private final IngestionTaskMapper taskMapper;
     private final IngestionTaskNodeMapper taskNodeMapper;
     private final ObjectMapper objectMapper;
+    private final IngestionIdempotencyKeyFactory idempotencyKeyFactory;
+    private final TaskCheckpointStore checkpointStore;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public IngestionResult execute(IngestionTaskCreateRequest request) {
         Assert.notNull(request, () -> new ClientException("请求不能为空"));
         DocumentSource source = toSource(request.getSource());
@@ -85,7 +84,6 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public IngestionResult upload(String pipelineId, MultipartFile file) {
         Assert.notNull(file, () -> new ClientException("文件不能为空"));
         try {
@@ -104,6 +102,16 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
         } catch (Exception e) {
             throw new ClientException("读取上传文件失败: " + e.getMessage());
         }
+    }
+
+    @Override
+    public IngestionResult resume(String taskId) {
+        TaskCheckpointStore.ResumeState resume = checkpointStore.restoreUpload(taskId);
+        IngestionContext result = executePipeline(resume.getPipeline(), resume.getContext(), resume.getNextNodeId());
+        IngestionTaskDO task = taskMapper.selectById(taskId);
+        saveNodeLogs(task, result.getLogs());
+        checkpointStore.complete(result);
+        return toResult(result);
     }
 
     @Override
@@ -145,9 +153,16 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                                             VectorSpaceId vectorSpaceId) {
         String resolvedPipelineId = resolvePipelineId(pipelineId);
         PipelineDefinition pipeline = pipelineService.getDefinition(resolvedPipelineId);
+        String idempotencyKey = idempotencyKeyFactory.create(source, rawBytes, pipeline,
+                vectorSpaceId == null ? null : vectorSpaceId.getLogicalName());
+        IngestionTaskDO existing = findActiveTask(idempotencyKey);
+        if (existing != null) {
+            return toResult(existing);
+        }
 
         IngestionTaskDO task = IngestionTaskDO.builder()
                 .pipelineId(resolvedPipelineId)
+                .idempotencyKey(idempotencyKey)
                 .sourceType(source.getType() == null ? null : source.getType().getValue())
                 .sourceLocation(source.getLocation())
                 .sourceFileName(source.getFileName())
@@ -157,11 +172,21 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                 .createdBy(UserContext.getUsername())
                 .updatedBy(UserContext.getUsername())
                 .build();
-        taskMapper.insert(task);
+        try {
+            checkpointStore.initialize(task, pipeline, rawBytes, mimeType);
+        } catch (DuplicateKeyException e) {
+            IngestionTaskDO concurrent = findActiveTask(idempotencyKey);
+            if (concurrent != null) {
+                return toResult(concurrent);
+            }
+            throw e;
+        }
 
         IngestionContext context = IngestionContext.builder()
                 .taskId(String.valueOf(task.getId()))
                 .pipelineId(resolvedPipelineId)
+                .idempotencyKey(idempotencyKey)
+                .executionLeaseToken(task.getExecutionLeaseToken())
                 .source(source)
                 .rawBytes(rawBytes)
                 .mimeType(mimeType)
@@ -169,35 +194,58 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                 .logs(new ArrayList<>())
                 .build();
 
-        IngestionContext result = engine.execute(pipeline, context);
-        saveNodeLogs(task, pipeline, result.getLogs());
-        updateTaskFromContext(task, result);
+        IngestionContext result = executePipeline(pipeline, context, null);
+        saveNodeLogs(task, result.getLogs());
+        checkpointStore.complete(result);
+        return toResult(result);
+    }
+
+    private IngestionContext executePipeline(PipelineDefinition pipeline,
+                                             IngestionContext context,
+                                             String resumeNodeId) {
+        try {
+            return engine.execute(pipeline, context, resumeNodeId, checkpointStore::checkpoint);
+        } catch (RuntimeException e) {
+            context.setStatus(IngestionStatus.FAILED);
+            context.setError(e);
+            return context;
+        }
+    }
+
+    private IngestionTaskDO findActiveTask(String idempotencyKey) {
+        return taskMapper.selectOne(new LambdaQueryWrapper<IngestionTaskDO>()
+                .eq(IngestionTaskDO::getIdempotencyKey, idempotencyKey)
+                .eq(IngestionTaskDO::getDeleted, 0)
+                .in(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue(), IngestionStatus.COMPLETED.getValue())
+                .last("LIMIT 1"));
+    }
+
+    private IngestionResult toResult(IngestionTaskDO task) {
+        return IngestionResult.builder().taskId(task.getId()).pipelineId(task.getPipelineId())
+                .status(IngestionStatus.fromValue(task.getStatus())).chunkCount(task.getChunkCount())
+                .message("Idempotent task reused").build();
+    }
+
+    private IngestionResult toResult(IngestionContext context) {
         return IngestionResult.builder()
-                .taskId(result.getTaskId())
-                .pipelineId(result.getPipelineId())
-                .status(result.getStatus())
-                .chunkCount(result.getChunks() == null ? 0 : result.getChunks().size())
-                .message(result.getError() == null ? "OK" : result.getError().getMessage())
+                .taskId(context.getTaskId())
+                .pipelineId(context.getPipelineId())
+                .status(context.getStatus())
+                .chunkCount(context.getChunks() == null ? 0 : context.getChunks().size())
+                .message(context.getError() == null ? "OK" : context.getError().getMessage())
                 .build();
     }
 
-    private void updateTaskFromContext(IngestionTaskDO task, IngestionContext context) {
-        task.setStatus(context.getStatus() == null ? IngestionStatus.FAILED.getValue() : context.getStatus().getValue());
-        task.setChunkCount(context.getChunks() == null ? 0 : context.getChunks().size());
-        task.setErrorMessage(context.getError() == null ? null : context.getError().getMessage());
-        task.setCompletedAt(new Date());
-        task.setUpdatedBy(UserContext.getUsername());
-        task.setLogsJson(writeJson(buildLogSummary(context.getLogs())));
-        task.setMetadataJson(writeJson(buildTaskMetadata(context)));
-        taskMapper.updateById(task);
-    }
-
-    private void saveNodeLogs(IngestionTaskDO task, PipelineDefinition pipeline, List<NodeLog> logs) {
+    private void saveNodeLogs(IngestionTaskDO task, List<NodeLog> logs) {
         if (logs == null || logs.isEmpty()) {
             return;
         }
-        Map<String, Integer> nodeOrderMap = buildNodeOrderMap(pipeline);
-        for (NodeLog log : logs) {
+        long persistedLogCount = taskNodeMapper.selectCount(new LambdaQueryWrapper<IngestionTaskNodeDO>()
+                .eq(IngestionTaskNodeDO::getDeleted, 0)
+                .eq(IngestionTaskNodeDO::getTaskId, task.getId()));
+        int nodeOrder = Math.toIntExact(persistedLogCount) + 1;
+        for (int i = Math.toIntExact(persistedLogCount); i < logs.size(); i++) {
+            NodeLog log = logs.get(i);
             String status = resolveNodeStatus(log);
             String outputJson = truncateOutputJson(log.getOutput());
             IngestionTaskNodeDO nodeDO = IngestionTaskNodeDO.builder()
@@ -205,7 +253,8 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                     .pipelineId(task.getPipelineId())
                     .nodeId(log.getNodeId())
                     .nodeType(log.getNodeType())
-                    .nodeOrder(nodeOrderMap.getOrDefault(log.getNodeId(), 0))
+                    .attempt(log.getAttempt())
+                    .nodeOrder(nodeOrder++)
                     .status(status)
                     .durationMs(log.getDurationMs())
                     .message(log.getMessage())
@@ -214,52 +263,6 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                     .build();
             taskNodeMapper.insert(nodeDO);
         }
-    }
-
-    private Map<String, Integer> buildNodeOrderMap(PipelineDefinition pipeline) {
-        Map<String, Integer> orderMap = new HashMap<>();
-        if (pipeline == null || pipeline.getNodes() == null || pipeline.getNodes().isEmpty()) {
-            return orderMap;
-        }
-        Map<String, NodeConfig> nodeMap = new LinkedHashMap<>();
-        for (NodeConfig node : pipeline.getNodes()) {
-            if (node == null || !StringUtils.hasText(node.getNodeId())) {
-                continue;
-            }
-            nodeMap.putIfAbsent(node.getNodeId(), node);
-        }
-        if (nodeMap.isEmpty()) {
-            return orderMap;
-        }
-        Set<String> referenced = new HashSet<>();
-        for (NodeConfig node : nodeMap.values()) {
-            if (StringUtils.hasText(node.getNextNodeId())) {
-                referenced.add(node.getNextNodeId());
-            }
-        }
-        int order = 1;
-        Set<String> visited = new HashSet<>();
-        for (String nodeId : nodeMap.keySet()) {
-            if (referenced.contains(nodeId)) {
-                continue;
-            }
-            String current = nodeId;
-            while (StringUtils.hasText(current) && !visited.contains(current)) {
-                orderMap.put(current, order++);
-                visited.add(current);
-                NodeConfig config = nodeMap.get(current);
-                if (config == null) {
-                    break;
-                }
-                current = config.getNextNodeId();
-            }
-        }
-        for (String nodeId : nodeMap.keySet()) {
-            if (!visited.contains(nodeId)) {
-                orderMap.put(nodeId, order++);
-            }
-        }
-        return orderMap;
     }
 
     private String resolveNodeStatus(NodeLog log) {
@@ -349,6 +352,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                 .pipelineId(String.valueOf(node.getPipelineId()))
                 .nodeId(node.getNodeId())
                 .nodeType(normalizeNodeType(node.getNodeType()))
+                .attempt(node.getAttempt())
                 .nodeOrder(node.getNodeOrder())
                 .status(normalizeNodeStatus(node.getStatus()))
                 .durationMs(node.getDurationMs())
@@ -379,6 +383,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                 .map(log -> NodeLog.builder()
                         .nodeId(log.getNodeId())
                         .nodeType(log.getNodeType())
+                        .attempt(log.getAttempt())
                         .message(log.getMessage())
                         .durationMs(log.getDurationMs())
                         .success(log.isSuccess())

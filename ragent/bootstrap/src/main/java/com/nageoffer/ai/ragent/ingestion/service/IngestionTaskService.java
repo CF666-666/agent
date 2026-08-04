@@ -50,6 +50,11 @@ public interface IngestionTaskService {
     IngestionResult upload(String pipelineId, MultipartFile file);
 
     /**
+     * Resume a failed upload task from its last durable checkpoint.
+     */
+    IngestionResult resume(String taskId);
+
+    /**
      * 获取任务详情
      *
      * @param taskId 任务ID

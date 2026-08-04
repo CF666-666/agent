@@ -361,6 +361,7 @@ CREATE TABLE t_ingestion_pipeline_node (
     next_node_id   VARCHAR(20),
     settings_json  JSONB,
     condition_json JSONB,
+    execution_policy_json JSONB,
     created_by     VARCHAR(20) DEFAULT '',
     updated_by     VARCHAR(20) DEFAULT '',
     create_time    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -371,9 +372,35 @@ CREATE TABLE t_ingestion_pipeline_node (
 CREATE INDEX idx_ingestion_pipeline_node_pipeline ON t_ingestion_pipeline_node (pipeline_id);
 COMMENT ON TABLE t_ingestion_pipeline_node IS '摄取流水线节点表';
 
+CREATE TABLE t_ingestion_pipeline_edge (
+    id           VARCHAR(20) NOT NULL PRIMARY KEY,
+    pipeline_id  VARCHAR(20) NOT NULL,
+    from_node_id VARCHAR(20) NOT NULL,
+    to_node_id   VARCHAR(20) NOT NULL,
+    condition_json JSONB,
+    priority     INTEGER     NOT NULL DEFAULT 0,
+    default_edge BOOLEAN     NOT NULL DEFAULT FALSE,
+    created_by   VARCHAR(20) DEFAULT '',
+    updated_by   VARCHAR(20) DEFAULT '',
+    create_time  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted      SMALLINT    NOT NULL DEFAULT 0
+);
+CREATE INDEX idx_ingestion_pipeline_edge_pipeline ON t_ingestion_pipeline_edge (pipeline_id);
+CREATE INDEX idx_ingestion_pipeline_edge_from ON t_ingestion_pipeline_edge (pipeline_id, from_node_id, priority DESC);
+COMMENT ON TABLE t_ingestion_pipeline_edge IS '摄取流水线显式边表';
+
 CREATE TABLE t_ingestion_task (
     id               VARCHAR(20)      NOT NULL PRIMARY KEY,
     pipeline_id      VARCHAR(20)      NOT NULL,
+    idempotency_key  VARCHAR(64)      NOT NULL,
+    pipeline_snapshot_json JSONB,
+    checkpoint_json  JSONB,
+    last_success_node_id VARCHAR(64),
+    next_node_id     VARCHAR(64),
+    resume_count     INTEGER     NOT NULL DEFAULT 0,
+    execution_lease_token VARCHAR(64),
+    lease_expires_at TIMESTAMP,
     source_type      VARCHAR(20) NOT NULL,
     source_location  TEXT,
     source_file_name VARCHAR(255),
@@ -391,8 +418,17 @@ CREATE TABLE t_ingestion_task (
     deleted          SMALLINT    NOT NULL DEFAULT 0
 );
 CREATE INDEX idx_ingestion_task_pipeline ON t_ingestion_task (pipeline_id);
+CREATE UNIQUE INDEX uk_ingestion_task_active_idempotency ON t_ingestion_task (idempotency_key)
+    WHERE deleted = 0 AND status IN ('running', 'completed');
 CREATE INDEX idx_ingestion_task_status ON t_ingestion_task (status);
 COMMENT ON TABLE t_ingestion_task IS '摄取任务表';
+
+CREATE TABLE t_ingestion_task_payload (
+    task_id   VARCHAR(20) PRIMARY KEY,
+    raw_bytes BYTEA       NOT NULL,
+    mime_type VARCHAR(255)
+);
+COMMENT ON TABLE t_ingestion_task_payload IS '上传任务断点恢复的原始载荷';
 
 CREATE TABLE t_ingestion_task_node (
     id            VARCHAR(20)      NOT NULL PRIMARY KEY,
@@ -400,6 +436,7 @@ CREATE TABLE t_ingestion_task_node (
     pipeline_id   VARCHAR(20)      NOT NULL,
     node_id       VARCHAR(20) NOT NULL,
     node_type     VARCHAR(16) NOT NULL,
+    attempt       INTEGER     NOT NULL DEFAULT 1,
     node_order    INTEGER     NOT NULL DEFAULT 0,
     status        VARCHAR(16) NOT NULL,
     duration_ms   BIGINT      NOT NULL DEFAULT 0,
@@ -691,6 +728,14 @@ COMMENT ON COLUMN t_ingestion_pipeline_node.deleted IS '是否删除 0：正常 
 -- t_ingestion_task
 COMMENT ON COLUMN t_ingestion_task.id IS 'ID';
 COMMENT ON COLUMN t_ingestion_task.pipeline_id IS '流水线ID';
+COMMENT ON COLUMN t_ingestion_task.idempotency_key IS '文档版本幂等键';
+COMMENT ON COLUMN t_ingestion_task.pipeline_snapshot_json IS '创建任务时的不可变流水线快照';
+COMMENT ON COLUMN t_ingestion_task.checkpoint_json IS '最近成功节点的上下文快照';
+COMMENT ON COLUMN t_ingestion_task.last_success_node_id IS '最近成功节点ID';
+COMMENT ON COLUMN t_ingestion_task.next_node_id IS '恢复时的起始节点ID';
+COMMENT ON COLUMN t_ingestion_task.resume_count IS '已触发恢复次数';
+COMMENT ON COLUMN t_ingestion_task.execution_lease_token IS '当前执行者租约令牌';
+COMMENT ON COLUMN t_ingestion_task.lease_expires_at IS '执行租约过期时间';
 COMMENT ON COLUMN t_ingestion_task.source_type IS '来源类型';
 COMMENT ON COLUMN t_ingestion_task.source_location IS '来源地址或URL';
 COMMENT ON COLUMN t_ingestion_task.source_file_name IS '原始文件名';

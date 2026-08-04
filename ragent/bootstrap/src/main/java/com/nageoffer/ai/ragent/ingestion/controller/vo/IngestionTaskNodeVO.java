@@ -60,6 +60,8 @@ public class IngestionTaskNodeVO {
      */
     private String nodeType;
 
+    private Integer attempt;
+
     /**
      * 节点排序
      */

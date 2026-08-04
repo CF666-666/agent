@@ -15,54 +15,19 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent.ingestion.controller.vo;
+package com.nageoffer.ai.ragent.ingestion.domain.result;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
-/**
- * 数据摄取管道视图对象
- */
+/** Final node result together with every physical attempt made to obtain it. */
 @Data
-public class IngestionPipelineVO {
+@AllArgsConstructor
+public class NodeExecutionOutcome {
 
-    /**
-     * 管道ID
-     */
-    private String id;
+    private NodeResult result;
 
-    /**
-     * 管道名称
-     */
-    private String name;
-
-    /**
-     * 管道描述
-     */
-    private String description;
-
-    /**
-     * 创建人
-     */
-    private String createdBy;
-
-    /**
-     * 管道节点列表
-     */
-    private List<IngestionPipelineNodeVO> nodes;
-
-    /** Explicit graph edges. Legacy links remain available from node.nextNodeId. */
-    private List<IngestionPipelineEdgeVO> edges;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private List<NodeAttemptResult> attempts;
 }

@@ -15,54 +15,35 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent.ingestion.controller.vo;
+package com.nageoffer.ai.ragent.ingestion.domain.pipeline;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 /**
- * 数据摄取管道视图对象
+ * A directed connection between two ingestion nodes.
+ *
+ * <p>Conditional edges are evaluated by descending priority. A default edge is evaluated only
+ * after no conditional edge matches.</p>
  */
 @Data
-public class IngestionPipelineVO {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class NodeEdge {
 
-    /**
-     * 管道ID
-     */
-    private String id;
+    private String edgeId;
 
-    /**
-     * 管道名称
-     */
-    private String name;
+    private String fromNodeId;
 
-    /**
-     * 管道描述
-     */
-    private String description;
+    private String toNodeId;
 
-    /**
-     * 创建人
-     */
-    private String createdBy;
+    private JsonNode condition;
 
-    /**
-     * 管道节点列表
-     */
-    private List<IngestionPipelineNodeVO> nodes;
+    private int priority;
 
-    /** Explicit graph edges. Legacy links remain available from node.nextNodeId. */
-    private List<IngestionPipelineEdgeVO> edges;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private boolean defaultEdge;
 }

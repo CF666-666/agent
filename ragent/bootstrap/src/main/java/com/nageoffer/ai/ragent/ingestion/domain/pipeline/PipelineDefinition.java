@@ -54,4 +54,10 @@ public class PipelineDefinition {
      * 按执行顺序排列的节点配置
      */
     private List<NodeConfig> nodes;
+
+    /**
+     * Explicit graph edges. A node without an explicit outgoing edge may still use its legacy
+     * {@link NodeConfig#getNextNodeId()} field.
+     */
+    private List<NodeEdge> edges;
 }

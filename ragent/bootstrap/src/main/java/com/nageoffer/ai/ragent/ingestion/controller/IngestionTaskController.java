@@ -70,6 +70,14 @@ public class IngestionTaskController {
     }
 
     /**
+     * Resume a failed upload task from its latest durable checkpoint.
+     */
+    @PostMapping("/ingestion/tasks/{id}/resume")
+    public Result<IngestionResult> resume(@PathVariable String id) {
+        return Results.success(taskService.resume(id));
+    }
+
+    /**
      * 根据任务 ID 获取任务详情
      */
     @GetMapping("/ingestion/tasks/{id}")

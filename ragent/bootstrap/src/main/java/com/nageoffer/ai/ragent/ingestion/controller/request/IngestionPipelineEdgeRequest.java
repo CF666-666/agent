@@ -15,54 +15,24 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent.ingestion.controller.vo;
+package com.nageoffer.ai.ragent.ingestion.controller.request;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-
-/**
- * 数据摄取管道视图对象
- */
+/** Explicit outgoing edge configured in the ingestion pipeline editor. */
 @Data
-public class IngestionPipelineVO {
+public class IngestionPipelineEdgeRequest {
 
-    /**
-     * 管道ID
-     */
-    private String id;
+    private String edgeId;
 
-    /**
-     * 管道名称
-     */
-    private String name;
+    private String fromNodeId;
 
-    /**
-     * 管道描述
-     */
-    private String description;
+    private String toNodeId;
 
-    /**
-     * 创建人
-     */
-    private String createdBy;
+    private JsonNode condition;
 
-    /**
-     * 管道节点列表
-     */
-    private List<IngestionPipelineNodeVO> nodes;
+    private Integer priority;
 
-    /** Explicit graph edges. Legacy links remain available from node.nextNodeId. */
-    private List<IngestionPipelineEdgeVO> edges;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private Boolean defaultEdge;
 }

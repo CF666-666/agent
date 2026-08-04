@@ -46,6 +46,10 @@ public class NodeLog {
      */
     private String nodeType;
 
+    /** The one-based execution attempt for this node log. */
+    @Builder.Default
+    private int attempt = 1;
+
     /**
      * 节点执行的日志消息
      */

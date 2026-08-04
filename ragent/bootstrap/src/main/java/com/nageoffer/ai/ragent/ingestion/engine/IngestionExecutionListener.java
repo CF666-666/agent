@@ -15,54 +15,17 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent.ingestion.controller.vo;
+package com.nageoffer.ai.ragent.ingestion.engine;
 
-import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
+import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
 
 /**
- * 数据摄取管道视图对象
+ * Receives a durable-progress signal after one node has completed successfully
+ * and its next route has been resolved. Implementations may persist a resume
+ * checkpoint; failures are deliberately propagated to prevent invisible progress.
  */
-@Data
-public class IngestionPipelineVO {
+@FunctionalInterface
+public interface IngestionExecutionListener {
 
-    /**
-     * 管道ID
-     */
-    private String id;
-
-    /**
-     * 管道名称
-     */
-    private String name;
-
-    /**
-     * 管道描述
-     */
-    private String description;
-
-    /**
-     * 创建人
-     */
-    private String createdBy;
-
-    /**
-     * 管道节点列表
-     */
-    private List<IngestionPipelineNodeVO> nodes;
-
-    /** Explicit graph edges. Legacy links remain available from node.nextNodeId. */
-    private List<IngestionPipelineEdgeVO> edges;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    void afterNodeSuccess(IngestionContext context, String completedNodeId, String nextNodeId);
 }

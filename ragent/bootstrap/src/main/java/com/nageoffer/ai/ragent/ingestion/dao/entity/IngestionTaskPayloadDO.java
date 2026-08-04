@@ -15,54 +15,30 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent.ingestion.controller.vo;
+package com.nageoffer.ai.ragent.ingestion.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 /**
- * 数据摄取管道视图对象
+ * Upload-only input retained for an explicit task resume. External-source
+ * credentials are intentionally never persisted here.
  */
 @Data
-public class IngestionPipelineVO {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@TableName("t_ingestion_task_payload")
+public class IngestionTaskPayloadDO {
 
-    /**
-     * 管道ID
-     */
-    private String id;
+    @TableId
+    private String taskId;
 
-    /**
-     * 管道名称
-     */
-    private String name;
+    private byte[] rawBytes;
 
-    /**
-     * 管道描述
-     */
-    private String description;
-
-    /**
-     * 创建人
-     */
-    private String createdBy;
-
-    /**
-     * 管道节点列表
-     */
-    private List<IngestionPipelineNodeVO> nodes;
-
-    /** Explicit graph edges. Legacy links remain available from node.nextNodeId. */
-    private List<IngestionPipelineEdgeVO> edges;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
+    private String mimeType;
 }

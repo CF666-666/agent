@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.ingestion.controller.request;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeExecutionPolicy;
 import lombok.Data;
 
 /**
@@ -49,6 +50,8 @@ public class IngestionPipelineNodeRequest {
      * 满足条件时才执行该节点
      */
     private JsonNode condition;
+
+    private NodeExecutionPolicy executionPolicy;
 
     /**
      * 下一个节点ID

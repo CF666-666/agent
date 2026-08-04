@@ -48,6 +48,13 @@ public class IngestionContext {
      */
     private String pipelineId;
 
+    private String idempotencyKey;
+
+    /**
+     * Opaque lease token proving that this worker currently owns task progress.
+     */
+    private String executionLeaseToken;
+
     /**
      * 文档源信息
      */

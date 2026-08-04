@@ -42,4 +42,7 @@ public class IngestionPipelineUpdateRequest {
      * 管道节点配置列表
      */
     private List<IngestionPipelineNodeRequest> nodes;
+
+    /** Null preserves existing explicit edges; an empty array removes all explicit edges. */
+    private List<IngestionPipelineEdgeRequest> edges;
 }

@@ -23,6 +23,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.nageoffer.ai.ragent.knowledge.dao.handler.JsonbTypeHandler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,90 +31,40 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-/**
- * 知识库数据接入任务节点实体
- */
+/** Persisted explicit edge of an ingestion pipeline. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@TableName("t_ingestion_task_node")
-public class IngestionTaskNodeDO {
+@TableName("t_ingestion_pipeline_edge")
+public class IngestionPipelineEdgeDO {
 
-    /**
-     * ID
-     */
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
-    /**
-     * 任务ID
-     */
-    private String taskId;
-
-    /**
-     * 流水线ID
-     */
     private String pipelineId;
 
-    /**
-     * 节点ID
-     */
-    private String nodeId;
+    private String fromNodeId;
 
-    /**
-     * 节点类型
-     * 如 fetcher、parser、chunker 等
-     */
-    private String nodeType;
+    private String toNodeId;
 
-    private Integer attempt;
+    @TableField(typeHandler = JsonbTypeHandler.class)
+    private String conditionJson;
 
-    /**
-     * 节点顺序
-     */
-    private Integer nodeOrder;
+    private Integer priority;
 
-    /**
-     * 状态 (如: success, failed, skipped)
-     */
-    private String status;
+    private Boolean defaultEdge;
 
-    /**
-     * 持续时间（毫秒）
-     */
-    private Long durationMs;
+    private String createdBy;
 
-    /**
-     * 消息
-     */
-    private String message;
+    private String updatedBy;
 
-    /**
-     * 错误消息
-     */
-    private String errorMessage;
-
-    /**
-     * 输出JSON
-     */
-    private String outputJson;
-
-    /**
-     * 创建时间
-     */
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
-    /**
-     * 更新时间
-     */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
-    /**
-     * 删除标记
-     */
     @TableLogic
     private Integer deleted;
 }

@@ -42,4 +42,7 @@ public class IngestionPipelineCreateRequest {
      * 管道节点配置列表
      */
     private List<IngestionPipelineNodeRequest> nodes;
+
+    /** Explicit graph edges. Omit to create a legacy nextNodeId-only pipeline. */
+    private List<IngestionPipelineEdgeRequest> edges;
 }

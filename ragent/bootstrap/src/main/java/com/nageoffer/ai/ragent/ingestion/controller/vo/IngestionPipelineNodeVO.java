@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.ingestion.controller.vo;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeExecutionPolicy;
 import lombok.Data;
 
 @Data
@@ -32,6 +33,8 @@ public class IngestionPipelineNodeVO {
     private JsonNode settings;
 
     private JsonNode condition;
+
+    private NodeExecutionPolicy executionPolicy;
 
     private String nextNodeId;
 }

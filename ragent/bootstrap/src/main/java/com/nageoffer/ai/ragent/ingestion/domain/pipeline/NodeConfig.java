@@ -57,6 +57,11 @@ public class NodeConfig {
     private JsonNode condition;
 
     /**
+     * Retry behavior for this node. A null value preserves the legacy single-attempt execution.
+     */
+    private NodeExecutionPolicy executionPolicy;
+
+    /**
      * 下一个节点ID
      * 用于定义管道中节点的执行顺序
      */
