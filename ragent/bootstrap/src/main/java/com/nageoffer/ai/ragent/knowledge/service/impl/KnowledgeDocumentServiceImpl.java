@@ -71,6 +71,7 @@ import com.nageoffer.ai.ragent.knowledge.service.KnowledgeDocumentScheduleServic
 import com.nageoffer.ai.ragent.knowledge.service.KnowledgeDocumentService;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorSpaceId;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorStoreService;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdgeDocumentLifecycle;
 import com.nageoffer.ai.ragent.rag.dto.StoredFileDTO;
 import com.nageoffer.ai.ragent.rag.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
@@ -114,6 +115,7 @@ public class KnowledgeDocumentServiceImpl implements KnowledgeDocumentService {
     private final MessageQueueProducer messageQueueProducer;
     private final KnowledgeScheduleProperties scheduleProperties;
     private final RemoteFileFetcher remoteFileFetcher;
+    private final HyperEdgeDocumentLifecycle hyperEdgeDocumentLifecycle;
 
     @Value("knowledge-document-chunk_topic${unique-name:}")
     private String chunkTopic;
@@ -416,6 +418,7 @@ public class KnowledgeDocumentServiceImpl implements KnowledgeDocumentService {
 
         String collectionName = resolveCollectionName(documentDO.getKbId());
         vectorStoreService.deleteDocumentVectors(collectionName, docId);
+        hyperEdgeDocumentLifecycle.removeDocument("ingestion:" + docId);
         deleteStoredFileQuietly(documentDO);
     }
 

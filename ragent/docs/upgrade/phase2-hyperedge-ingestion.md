@@ -41,6 +41,15 @@ vectors. The corresponding pipeline nodes use `fetcher`, `parser`, `chunker`,
 the order above. The execution test protects the critical inner segment
 `chunker -> hyperedge_extract -> indexer` from route-order regressions.
 
+## Knowledge-document deletion cleanup
+
+The existing knowledge-document delete transaction now removes the matching
+`ingestion:{docId}` hyperedges after vector cleanup. A dedicated lifecycle seam first
+replaces durable facts with an empty document set and then refreshes the in-memory
+index, so deleted facts can no longer appear in relation retrieval. This hook applies
+to documents processed through the configurable ingestion pipeline; documents using
+the legacy chunk-only path have no hyperedges to remove.
+
 ## Closure verification
 
 - Reactor compile: `mvn -pl bootstrap -am -DskipTests compile`;
