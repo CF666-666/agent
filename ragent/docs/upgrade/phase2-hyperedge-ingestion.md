@@ -64,6 +64,13 @@ transport failures, null responses and malformed JSON fail the whole document
 extraction so the node cannot replace a document's existing hyperedges with a
 partial or empty result.
 
+## Knowledge-document identity invariant
+
+Knowledge-document pipeline execution and deletion both derive the hyperedge
+owner key from `HyperEdgeDocumentIdentity.forKnowledgeDocument(docId)`. The
+stable `ingestion:{docId}` key is separate from a mutable filename or source URL,
+so document deletion removes the same facts that ingestion created.
+
 ## Closure verification
 
 - Reactor compile: `mvn -pl bootstrap -am -DskipTests compile`;

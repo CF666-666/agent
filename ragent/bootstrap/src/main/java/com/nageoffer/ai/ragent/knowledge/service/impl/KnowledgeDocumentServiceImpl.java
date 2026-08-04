@@ -41,6 +41,7 @@ import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.framework.mq.producer.MessageQueueProducer;
 import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionPipelineDO;
 import com.nageoffer.ai.ragent.ingestion.dao.mapper.IngestionPipelineMapper;
+import com.nageoffer.ai.ragent.ingestion.domain.context.DocumentSource;
 import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineDefinition;
 import com.nageoffer.ai.ragent.ingestion.engine.IngestionEngine;
@@ -71,6 +72,7 @@ import com.nageoffer.ai.ragent.knowledge.service.KnowledgeDocumentScheduleServic
 import com.nageoffer.ai.ragent.knowledge.service.KnowledgeDocumentService;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorSpaceId;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorStoreService;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdgeDocumentIdentity;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdgeDocumentLifecycle;
 import com.nageoffer.ai.ragent.rag.dto.StoredFileDTO;
 import com.nageoffer.ai.ragent.rag.service.FileStorageService;
@@ -356,6 +358,11 @@ public class KnowledgeDocumentServiceImpl implements KnowledgeDocumentService {
         IngestionContext context = IngestionContext.builder()
                 .taskId(docId)
                 .pipelineId(pipelineId)
+                .source(DocumentSource.builder()
+                        .type(com.nageoffer.ai.ragent.ingestion.domain.enums.SourceType.FILE)
+                        .location(HyperEdgeDocumentIdentity.forKnowledgeDocument(docId).value())
+                        .fileName(documentDO.getDocName())
+                        .build())
                 .rawBytes(fileBytes)
                 .mimeType(documentDO.getFileType())
                 .vectorSpaceId(VectorSpaceId.builder()
@@ -418,7 +425,7 @@ public class KnowledgeDocumentServiceImpl implements KnowledgeDocumentService {
 
         String collectionName = resolveCollectionName(documentDO.getKbId());
         vectorStoreService.deleteDocumentVectors(collectionName, docId);
-        hyperEdgeDocumentLifecycle.removeDocument("ingestion:" + docId);
+        hyperEdgeDocumentLifecycle.removeDocument(HyperEdgeDocumentIdentity.forKnowledgeDocument(docId).value());
         deleteStoredFileQuietly(documentDO);
     }
 
