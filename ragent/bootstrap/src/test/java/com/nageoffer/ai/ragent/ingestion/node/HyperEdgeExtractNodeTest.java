@@ -24,6 +24,7 @@ import com.nageoffer.ai.ragent.ingestion.domain.enums.SourceType;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig;
 import com.nageoffer.ai.ragent.ingestion.domain.result.NodeResult;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdgeDocumentStore;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -46,9 +47,10 @@ class HyperEdgeExtractNodeTest {
     @Test
     void shouldExtractEachChunkAndAttachTraceableEvidenceBeforeIndexing() {
         IndustrialHyperGraph hyperGraph = mock(IndustrialHyperGraph.class);
+        HyperEdgeDocumentStore hyperEdgeStore = mock(HyperEdgeDocumentStore.class);
         HyperEdge edge = HyperEdge.builder().equipment("Fan-1").fault("overload trip").build();
         when(hyperGraph.extractHyperedges(anyString(), eq("sop/fan-maintenance.pdf"))).thenReturn(List.of(edge));
-        HyperEdgeExtractNode node = new HyperEdgeExtractNode(hyperGraph);
+        HyperEdgeExtractNode node = new HyperEdgeExtractNode(hyperGraph, hyperEdgeStore);
         IngestionContext context = IngestionContext.builder()
                 .taskId("task-1")
                 .idempotencyKey("doc-v2")
@@ -61,7 +63,8 @@ class HyperEdgeExtractNodeTest {
         NodeResult result = node.execute(context, NodeConfig.builder().build());
 
         ArgumentCaptor<List<HyperEdge>> captured = ArgumentCaptor.forClass(List.class);
-        verify(hyperGraph).addHyperedges(captured.capture());
+        verify(hyperEdgeStore).replaceDocument(eq("sop/fan-maintenance.pdf"), captured.capture());
+        verify(hyperGraph).replaceDocumentHyperedges(eq("sop/fan-maintenance.pdf"), eq(captured.getValue()));
         HyperEdge persisted = captured.getValue().get(0);
         assertTrue(result.isSuccess());
         assertEquals("sop/fan-maintenance.pdf", persisted.getSourceDocument());
@@ -74,20 +77,23 @@ class HyperEdgeExtractNodeTest {
     @Test
     void shouldFailWithoutChunks() {
         IndustrialHyperGraph hyperGraph = mock(IndustrialHyperGraph.class);
-        HyperEdgeExtractNode node = new HyperEdgeExtractNode(hyperGraph);
+        HyperEdgeDocumentStore hyperEdgeStore = mock(HyperEdgeDocumentStore.class);
+        HyperEdgeExtractNode node = new HyperEdgeExtractNode(hyperGraph, hyperEdgeStore);
 
         NodeResult result = node.execute(IngestionContext.builder().build(), NodeConfig.builder().build());
 
         assertFalse(result.isSuccess());
         verifyNoInteractions(hyperGraph);
+        verifyNoInteractions(hyperEdgeStore);
     }
 
     @Test
     void shouldNotIndexPartialEdgesWhenExtractionFails() {
         IndustrialHyperGraph hyperGraph = mock(IndustrialHyperGraph.class);
+        HyperEdgeDocumentStore hyperEdgeStore = mock(HyperEdgeDocumentStore.class);
         when(hyperGraph.extractHyperedges(anyString(), anyString()))
                 .thenThrow(new IllegalStateException("extractor unavailable"));
-        HyperEdgeExtractNode node = new HyperEdgeExtractNode(hyperGraph);
+        HyperEdgeExtractNode node = new HyperEdgeExtractNode(hyperGraph, hyperEdgeStore);
         IngestionContext context = IngestionContext.builder()
                 .taskId("task-2")
                 .chunks(List.of(VectorChunk.builder().content("Fan-1 overload trip").build()))
@@ -97,6 +103,7 @@ class HyperEdgeExtractNodeTest {
 
         assertFalse(result.isSuccess());
         verify(hyperGraph).extractHyperedges("Fan-1 overload trip", "ingestion:task-2");
-        verify(hyperGraph, org.mockito.Mockito.never()).addHyperedges(org.mockito.ArgumentMatchers.anyList());
+        verify(hyperGraph, org.mockito.Mockito.never()).replaceDocumentHyperedges(org.mockito.ArgumentMatchers.anyString(), org.mockito.ArgumentMatchers.anyList());
+        verifyNoInteractions(hyperEdgeStore);
     }
 }

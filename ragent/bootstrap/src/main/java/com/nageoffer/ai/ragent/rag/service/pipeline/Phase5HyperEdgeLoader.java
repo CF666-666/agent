@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityNode;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdgeDocumentStore;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -63,10 +64,14 @@ public class Phase5HyperEdgeLoader implements CommandLineRunner {
     private static final Gson GSON = new Gson();
 
     private final IndustrialHyperGraph hyperGraph;
+    private final HyperEdgeDocumentStore hyperEdgeStore;
     private final Environment env;
 
-    public Phase5HyperEdgeLoader(IndustrialHyperGraph hyperGraph, Environment env) {
+    public Phase5HyperEdgeLoader(IndustrialHyperGraph hyperGraph,
+                                 HyperEdgeDocumentStore hyperEdgeStore,
+                                 Environment env) {
         this.hyperGraph = hyperGraph;
+        this.hyperEdgeStore = hyperEdgeStore;
         this.env = env;
     }
 
@@ -75,6 +80,18 @@ public class Phase5HyperEdgeLoader implements CommandLineRunner {
         // 生成模式下由 Generator 负责内存加载，此处跳过避免重复
         if ("true".equals(env.getProperty(GENERATE_PROP))) {
             log.info("生成模式已启用，超边加载器跳过（由 Generator 负责内存加载）");
+            return;
+        }
+        List<HyperEdge> persistedEdges;
+        try {
+            persistedEdges = hyperEdgeStore.loadActiveHyperedges();
+        } catch (RuntimeException exception) {
+            log.warn("Persisted hyperedge store is unavailable; falling back to JSONL", exception);
+            persistedEdges = List.of();
+        }
+        if (!persistedEdges.isEmpty()) {
+            hyperGraph.addHyperedges(persistedEdges);
+            log.info("Loaded {} persisted hyperedges", persistedEdges.size());
             return;
         }
         if (!Files.isRegularFile(EDGE_FILE)) {

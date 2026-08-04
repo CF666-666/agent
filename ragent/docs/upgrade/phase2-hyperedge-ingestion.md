@@ -17,4 +17,14 @@ The node fails if no chunks are available. Runtime extraction failures fail the 
 
 ## Deliberate boundary
 
-This closure indexes into the existing process-local `IndustrialHyperGraph` only. Durable storage, re-ingestion replacement, deletion cleanup, and process-start reconstruction require a separate persistence contract and are the next closure; they are not represented as complete yet.
+This first closure indexes into the existing process-local `IndustrialHyperGraph` only. Durable storage, re-ingestion replacement, deletion cleanup, and process-start reconstruction are handled by the following persistence closure.
+
+## Persistence closure design
+
+`HyperEdgeDocumentStore` is the seam between ETL and durable storage. Its two operations replace all facts for one document (including an empty extraction) and load active facts at startup. The PostgreSQL adapter physically removes the old document rows and writes the replacement in one transaction; the node then replaces the corresponding in-memory facts. Startup prefers persisted edges and uses the legacy JSONL loader only as a fallback.
+
+## Closure verification
+
+- Reactor compile: `mvn -pl bootstrap -am -DskipTests compile`;
+- unit and retrieval regression: 7 tests, 0 failures;
+- PostgreSQL replacement and JSONB evidence restoration: 1 integration test, 0 failures.

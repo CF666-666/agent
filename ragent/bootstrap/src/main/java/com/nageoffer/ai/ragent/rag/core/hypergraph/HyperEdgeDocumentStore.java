@@ -15,28 +15,18 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent;
+package com.nageoffer.ai.ragent.rag.core.hypergraph;
 
-import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import java.util.List;
 
 /**
- * Ragent 核心应用启动类
+ * Durable document-level hyperedge replacement seam.
+ * A replacement succeeds with an empty list, which explicitly removes every
+ * old fact for the document after a re-ingestion finds no relationships.
  */
-@SpringBootApplication
-@EnableScheduling
-@MapperScan(basePackages = {
-        "com.nageoffer.ai.ragent.rag.dao.mapper",
-        "com.nageoffer.ai.ragent.rag.core.hypergraph.persistence",
-        "com.nageoffer.ai.ragent.ingestion.dao.mapper",
-        "com.nageoffer.ai.ragent.knowledge.dao.mapper",
-        "com.nageoffer.ai.ragent.user.dao.mapper"
-})
-public class RagentApplication {
+public interface HyperEdgeDocumentStore {
 
-    public static void main(String[] args) {
-        SpringApplication.run(RagentApplication.class, args);
-    }
+    void replaceDocument(String sourceDocument, List<HyperEdge> edges);
+
+    List<HyperEdge> loadActiveHyperedges();
 }

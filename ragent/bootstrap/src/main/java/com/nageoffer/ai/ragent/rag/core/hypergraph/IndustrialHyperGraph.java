@@ -98,6 +98,13 @@ public interface IndustrialHyperGraph {
     void addHyperedges(List<HyperEdge> edges);
 
     /**
+     * Atomically replaces every in-memory edge for one source document.
+     * Re-ingestion must use this operation instead of {@link #addHyperedges(List)}
+     * so stale document versions no longer participate in retrieval.
+     */
+    void replaceDocumentHyperedges(String sourceDocument, List<HyperEdge> edges);
+
+    /**
      * 根据 query 实体做子图匹配
      * <p>
      * 匹配逻辑：

@@ -15,28 +15,16 @@
  * limitations under the License.
  */
 
-package com.nageoffer.ai.ragent;
+package com.nageoffer.ai.ragent.rag.core.hypergraph.persistence;
 
-import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
-/**
- * Ragent 核心应用启动类
- */
-@SpringBootApplication
-@EnableScheduling
-@MapperScan(basePackages = {
-        "com.nageoffer.ai.ragent.rag.dao.mapper",
-        "com.nageoffer.ai.ragent.rag.core.hypergraph.persistence",
-        "com.nageoffer.ai.ragent.ingestion.dao.mapper",
-        "com.nageoffer.ai.ragent.knowledge.dao.mapper",
-        "com.nageoffer.ai.ragent.user.dao.mapper"
-})
-public class RagentApplication {
+@Mapper
+public interface HyperEdgeMapper extends BaseMapper<HyperEdgeDO> {
 
-    public static void main(String[] args) {
-        SpringApplication.run(RagentApplication.class, args);
-    }
+    @Delete("DELETE FROM t_hyperedge WHERE source_document = #{sourceDocument}")
+    int deleteBySourceDocument(@Param("sourceDocument") String sourceDocument);
 }

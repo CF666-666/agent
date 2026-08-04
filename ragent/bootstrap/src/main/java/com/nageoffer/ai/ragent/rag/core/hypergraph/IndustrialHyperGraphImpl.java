@@ -138,6 +138,32 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
         }
     }
 
+    @Override
+    public void replaceDocumentHyperedges(String sourceDocument, List<HyperEdge> edges) {
+        lock.writeLock().lock();
+        try {
+            hyperEdges.removeIf(edge -> Objects.equals(sourceDocument, edge.getSourceDocument()));
+            if (edges != null) {
+                hyperEdges.addAll(edges.stream()
+                        .filter(edge -> !edge.allEntityValues().isEmpty())
+                        .toList());
+            }
+            rebuildEntityIndex();
+            log.info("Replaced hyperedges for document {}, total edges={}", sourceDocument, hyperEdges.size());
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private void rebuildEntityIndex() {
+        entityToEdgeIdx.clear();
+        for (int edgeIndex = 0; edgeIndex < hyperEdges.size(); edgeIndex++) {
+            for (String entity : hyperEdges.get(edgeIndex).allEntityValues()) {
+                entityToEdgeIdx.computeIfAbsent(entity, ignored -> new HashSet<>()).add(edgeIndex);
+            }
+        }
+    }
+
     // ==================== 检索 ====================
 
     @Override

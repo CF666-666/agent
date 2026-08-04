@@ -25,6 +25,7 @@ import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionNodeType;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig;
 import com.nageoffer.ai.ragent.ingestion.domain.result.NodeResult;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdgeDocumentStore;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,7 @@ public class HyperEdgeExtractNode implements IngestionNode {
     private static final String PAGE_NUMBER_METADATA_KEY = "pageNumber";
 
     private final IndustrialHyperGraph hyperGraph;
+    private final HyperEdgeDocumentStore hyperEdgeStore;
 
     @Override
     public String getNodeType() {
@@ -74,9 +76,8 @@ public class HyperEdgeExtractNode implements IngestionNode {
                 }
                 extracted.addAll(edges);
             }
-            if (!extracted.isEmpty()) {
-                hyperGraph.addHyperedges(extracted);
-            }
+            hyperEdgeStore.replaceDocument(sourceDocument, extracted);
+            hyperGraph.replaceDocumentHyperedges(sourceDocument, extracted);
             return NodeResult.ok("Extracted " + extracted.size() + " hyperedges from " + chunks.size() + " chunks");
         } catch (RuntimeException exception) {
             return NodeResult.fail(new ClientException("Hyperedge extraction failed: " + exception.getMessage()));
