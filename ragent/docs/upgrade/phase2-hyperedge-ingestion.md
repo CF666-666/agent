@@ -23,8 +23,27 @@ This first closure indexes into the existing process-local `IndustrialHyperGraph
 
 `HyperEdgeDocumentStore` is the seam between ETL and durable storage. Its two operations replace all facts for one document (including an empty extraction) and load active facts at startup. The PostgreSQL adapter physically removes the old document rows and writes the replacement in one transaction; the node then replaces the corresponding in-memory facts. Startup prefers persisted edges and uses the legacy JSONL loader only as a fallback.
 
+## Recommended industrial-document topology
+
+There is intentionally no implicit default pipeline: an ingestion task always names a
+pipeline, so different document types can keep their own parser and indexing policy.
+For industrial PDF, scanned document, and drawing ingestion, configure the following
+ordered path:
+
+```text
+fetcher -> parser -> chunker -> hyperedge_extract -> indexer
+```
+
+`hyperedge_extract` consumes the chunks created by `chunker`; it persists document
+facts and refreshes the in-memory hyperedge index before `indexer` writes the text
+vectors. The corresponding pipeline nodes use `fetcher`, `parser`, `chunker`,
+`hyperedge_extract`, and `indexer` as their `nodeType` values, with default edges in
+the order above. The execution test protects the critical inner segment
+`chunker -> hyperedge_extract -> indexer` from route-order regressions.
+
 ## Closure verification
 
 - Reactor compile: `mvn -pl bootstrap -am -DskipTests compile`;
 - unit and retrieval regression: 7 tests, 0 failures;
 - PostgreSQL replacement and JSONB evidence restoration: 1 integration test, 0 failures.
+- configured `chunker -> hyperedge_extract -> indexer` route execution: 1 test, 0 failures.
