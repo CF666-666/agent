@@ -89,24 +89,20 @@ public class TaskCheckpointStore implements IngestionTaskProgressStore {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     @Override
     public void checkpoint(IngestionContext context, String completedNodeId, String nextNodeId) {
-        int updated = taskMapper.update(null, new LambdaUpdateWrapper<IngestionTaskDO>()
+        int updated = taskMapper.update(null, activeLeaseUpdate(context)
                 .set(IngestionTaskDO::getLastSuccessNodeId, completedNodeId)
                 .set(IngestionTaskDO::getNextNodeId, nextNodeId)
                 .setSql("checkpoint_json = CAST({0} AS jsonb)", writeJson(IngestionCheckpoint.from(context)))
                 .setSql("logs_json = CAST({0} AS jsonb)", writeJson(summarizeLogs(context.getLogs())))
                 .set(IngestionTaskDO::getLeaseExpiresAt, nextLeaseExpiry())
-                .set(IngestionTaskDO::getUpdatedBy, UserContext.getUsername())
-                .eq(IngestionTaskDO::getId, context.getTaskId())
-                .eq(IngestionTaskDO::getExecutionLeaseToken, context.getExecutionLeaseToken())
-                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue())
-                .apply("lease_expires_at > clock_timestamp()"));
+                .set(IngestionTaskDO::getUpdatedBy, UserContext.getUsername()));
         assertLeaseOwner(updated);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     @Override
     public void complete(IngestionContext context) {
-        int updated = taskMapper.update(null, new LambdaUpdateWrapper<IngestionTaskDO>()
+        int updated = taskMapper.update(null, activeLeaseUpdate(context)
                 .set(IngestionTaskDO::getStatus, context.getStatus() == null ? IngestionStatus.FAILED.getValue() : context.getStatus().getValue())
                 .set(IngestionTaskDO::getChunkCount, context.getChunks() == null ? 0 : context.getChunks().size())
                 .set(IngestionTaskDO::getErrorMessage, context.getError() == null ? null : context.getError().getMessage())
@@ -114,11 +110,7 @@ public class TaskCheckpointStore implements IngestionTaskProgressStore {
                 .set(IngestionTaskDO::getLeaseExpiresAt, null)
                 .set(IngestionTaskDO::getUpdatedBy, UserContext.getUsername())
                 .setSql("logs_json = CAST({0} AS jsonb)", writeJson(summarizeLogs(context.getLogs())))
-                .setSql("metadata_json = CAST({0} AS jsonb)", writeJson(buildTaskMetadata(context)))
-                .eq(IngestionTaskDO::getId, context.getTaskId())
-                .eq(IngestionTaskDO::getExecutionLeaseToken, context.getExecutionLeaseToken())
-                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue())
-                .apply("lease_expires_at > clock_timestamp()"));
+                .setSql("metadata_json = CAST({0} AS jsonb)", writeJson(buildTaskMetadata(context))));
         assertLeaseOwner(updated);
     }
 
@@ -199,6 +191,14 @@ public class TaskCheckpointStore implements IngestionTaskProgressStore {
 
     private void assertLeaseOwner(int updated) {
         Assert.isTrue(updated == 1, () -> new ClientException("Task execution lease has been lost"));
+    }
+
+    private LambdaUpdateWrapper<IngestionTaskDO> activeLeaseUpdate(IngestionContext context) {
+        return new LambdaUpdateWrapper<IngestionTaskDO>()
+                .eq(IngestionTaskDO::getId, context.getTaskId())
+                .eq(IngestionTaskDO::getExecutionLeaseToken, context.getExecutionLeaseToken())
+                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue())
+                .apply("lease_expires_at > clock_timestamp()");
     }
 
     private String newLeaseToken() {

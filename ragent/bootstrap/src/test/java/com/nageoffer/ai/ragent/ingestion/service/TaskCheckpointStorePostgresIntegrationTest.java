@@ -95,29 +95,13 @@ class TaskCheckpointStorePostgresIntegrationTest {
     @Test
     void shouldResumeFailedUploadThroughAuthenticatedHttpEndpoint() throws Exception {
         taskId = String.valueOf(System.currentTimeMillis());
-        taskMapper.insert(IngestionTaskDO.builder()
-                .id(taskId)
-                .pipelineId("pipeline-http")
-                .idempotencyKey("integration-http-" + taskId)
-                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder()
+        taskMapper.insert(newUploadTask(PipelineDefinition.builder()
                         .id("pipeline-http")
                         .nodes(List.of(new com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig(
                                 "fetch", "fetcher", null, null, null, null)))
                         .edges(List.of())
-                        .build()))
-                .sourceType("file")
-                .sourceLocation("integration.txt")
-                .sourceFileName("integration.txt")
-                .status(IngestionStatus.FAILED.getValue())
-                .chunkCount(0)
-                .resumeCount(0)
-                .deleted(0)
-                .build());
-        payloadMapper.insert(IngestionTaskPayloadDO.builder()
-                .taskId(taskId)
-                .rawBytes("integration payload".getBytes())
-                .mimeType("text/plain")
-                .build());
+                        .build(), IngestionStatus.FAILED));
+        insertPayload("integration payload".getBytes());
 
         String loginBody = mockMvc.perform(post("/auth/login")
                         .contentType(APPLICATION_JSON)
@@ -146,25 +130,11 @@ class TaskCheckpointStorePostgresIntegrationTest {
         IngestionCheckpoint checkpoint = IngestionCheckpoint.builder()
                 .chunks(List.of(VectorChunk.builder().chunkId("checkpoint-1").content("checkpoint content").build()))
                 .build();
-        taskMapper.insert(IngestionTaskDO.builder()
-                .id(taskId)
-                .pipelineId("pipeline-claim-first")
-                .idempotencyKey("integration-claim-first-" + taskId)
-                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder().nodes(List.of()).build()))
-                .checkpointJson(objectMapper.writeValueAsString(checkpoint))
-                .sourceType("file")
-                .sourceLocation("checkpoint.txt")
-                .sourceFileName("checkpoint.txt")
-                .status(IngestionStatus.FAILED.getValue())
-                .chunkCount(1)
-                .resumeCount(0)
-                .deleted(0)
-                .build());
-        payloadMapper.insert(IngestionTaskPayloadDO.builder()
-                .taskId(taskId)
-                .rawBytes("checkpoint payload".getBytes())
-                .mimeType("text/plain")
-                .build());
+        IngestionTaskDO task = newUploadTask(PipelineDefinition.builder().nodes(List.of()).build(), IngestionStatus.FAILED);
+        task.setCheckpointJson(objectMapper.writeValueAsString(checkpoint));
+        task.setChunkCount(1);
+        taskMapper.insert(task);
+        insertPayload("checkpoint payload".getBytes());
         doAnswer(invocation -> {
             IngestionTaskDO claimed = taskMapper.selectById(taskId);
             assertEquals(IngestionStatus.RUNNING.getValue(), claimed.getStatus());
@@ -181,24 +151,8 @@ class TaskCheckpointStorePostgresIntegrationTest {
     @Test
     void shouldAtomicallyClaimFailedTaskAndReclaimExpiredRunningTask() throws Exception {
         taskId = String.valueOf(System.currentTimeMillis());
-        taskMapper.insert(IngestionTaskDO.builder()
-                .id(taskId)
-                .pipelineId("pipeline-it")
-                .idempotencyKey("integration-" + taskId)
-                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder().nodes(List.of()).build()))
-                .sourceType("file")
-                .sourceLocation("integration.pdf")
-                .sourceFileName("integration.pdf")
-                .status(IngestionStatus.FAILED.getValue())
-                .chunkCount(0)
-                .resumeCount(0)
-                .deleted(0)
-                .build());
-        payloadMapper.insert(IngestionTaskPayloadDO.builder()
-                .taskId(taskId)
-                .rawBytes("integration payload".getBytes())
-                .mimeType("application/pdf")
-                .build());
+        taskMapper.insert(newUploadTask(PipelineDefinition.builder().nodes(List.of()).build(), IngestionStatus.FAILED));
+        insertPayload("integration payload".getBytes());
 
         String firstLease = checkpointStore.restoreUpload(taskId).getContext().getExecutionLeaseToken();
         assertThrows(ClientException.class, () -> checkpointStore.restoreUpload(taskId));
@@ -215,23 +169,14 @@ class TaskCheckpointStorePostgresIntegrationTest {
     void shouldRejectCheckpointAndCompletionFromExpiredLeaseWithoutChangingProgress() throws Exception {
         taskId = String.valueOf(System.currentTimeMillis());
         Date expiredAt = new Date(System.currentTimeMillis() - 1000);
-        taskMapper.insert(IngestionTaskDO.builder()
-                .id(taskId)
-                .pipelineId("lease")
-                .idempotencyKey(taskId)
-                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder().nodes(List.of()).build()))
-                .sourceType("file")
-                .sourceLocation("expired.txt")
-                .sourceFileName("expired.txt")
-                .status(IngestionStatus.RUNNING.getValue())
-                .lastSuccessNodeId("previous")
-                .nextNodeId("next")
-                .executionLeaseToken("expired-lease-token")
-                .leaseExpiresAt(expiredAt)
-                .chunkCount(0)
-                .resumeCount(0)
-                .deleted(0)
-                .build());
+        IngestionTaskDO task = newUploadTask(PipelineDefinition.builder().nodes(List.of()).build(), IngestionStatus.RUNNING);
+        task.setPipelineId("lease");
+        task.setIdempotencyKey(taskId);
+        task.setLastSuccessNodeId("previous");
+        task.setNextNodeId("next");
+        task.setExecutionLeaseToken("expired-lease-token");
+        task.setLeaseExpiresAt(expiredAt);
+        taskMapper.insert(task);
         IngestionContext context = IngestionContext.builder()
                 .taskId(taskId)
                 .executionLeaseToken("expired-lease-token")
@@ -253,24 +198,8 @@ class TaskCheckpointStorePostgresIntegrationTest {
     @Test
     void shouldPersistCheckpointAndCompletionJsonToPostgresJsonbColumns() throws Exception {
         taskId = String.valueOf(System.currentTimeMillis());
-        taskMapper.insert(IngestionTaskDO.builder()
-                .id(taskId)
-                .pipelineId("pipeline-it")
-                .idempotencyKey("integration-jsonb-" + taskId)
-                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder().nodes(List.of()).build()))
-                .sourceType("file")
-                .sourceLocation("integration.txt")
-                .sourceFileName("integration.txt")
-                .status(IngestionStatus.FAILED.getValue())
-                .chunkCount(0)
-                .resumeCount(0)
-                .deleted(0)
-                .build());
-        payloadMapper.insert(IngestionTaskPayloadDO.builder()
-                .taskId(taskId)
-                .rawBytes("integration payload".getBytes())
-                .mimeType("text/plain")
-                .build());
+        taskMapper.insert(newUploadTask(PipelineDefinition.builder().nodes(List.of()).build(), IngestionStatus.FAILED));
+        insertPayload("integration payload".getBytes());
 
         IngestionContext context = checkpointStore.restoreUpload(taskId).getContext();
         checkpointStore.checkpoint(context, "fetch", null);
@@ -282,5 +211,29 @@ class TaskCheckpointStorePostgresIntegrationTest {
         assertNotNull(persisted.getCheckpointJson());
         assertNotNull(persisted.getLogsJson());
         assertNotNull(persisted.getMetadataJson());
+    }
+
+    private IngestionTaskDO newUploadTask(PipelineDefinition pipeline, IngestionStatus status) throws Exception {
+        return IngestionTaskDO.builder()
+                .id(taskId)
+                .pipelineId("pipeline-it")
+                .idempotencyKey("integration-" + taskId)
+                .pipelineSnapshotJson(objectMapper.writeValueAsString(pipeline))
+                .sourceType("file")
+                .sourceLocation("integration.txt")
+                .sourceFileName("integration.txt")
+                .status(status.getValue())
+                .chunkCount(0)
+                .resumeCount(0)
+                .deleted(0)
+                .build();
+    }
+
+    private void insertPayload(byte[] rawBytes) {
+        payloadMapper.insert(IngestionTaskPayloadDO.builder()
+                .taskId(taskId)
+                .rawBytes(rawBytes)
+                .mimeType("text/plain")
+                .build());
     }
 }
