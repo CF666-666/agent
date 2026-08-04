@@ -26,6 +26,9 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 节点输出提取器
@@ -34,9 +37,25 @@ import java.util.Map;
 @Component
 public class NodeOutputExtractor {
 
+    private final Map<String, NodeOutputProjector> projectors;
+
+    public NodeOutputExtractor(List<NodeOutputProjector> projectors) {
+        this.projectors = projectors.stream().collect(Collectors.toMap(
+                NodeOutputProjector::nodeType,
+                Function.identity(),
+                (first, second) -> {
+                    throw new IllegalStateException("Duplicate node output projector: " + first.nodeType());
+                }
+        ));
+    }
+
     public Map<String, Object> extract(IngestionContext context, NodeConfig config) {
         if (context == null || config == null) {
             return Map.of();
+        }
+        NodeOutputProjector projector = projectors.get(config.getNodeType());
+        if (projector != null) {
+            return projector.project(context, config);
         }
         IngestionNodeType nodeType = resolveNodeType(config.getNodeType());
         if (nodeType == null) {
@@ -49,8 +68,7 @@ public class NodeOutputExtractor {
             case CHUNKER -> chunkerOutput(context);
             case ENRICHER -> enricherOutput(context);
             case INDEXER -> indexerOutput(context, config);
-            case HYPEREDGE_EXTRACT -> hyperedgeExtractOutput(context);
-            case MULTIMODAL_PARSE -> multimodalParseOutput(context);
+            case HYPEREDGE_EXTRACT, MULTIMODAL_PARSE -> genericOutput(context);
         };
     }
 
@@ -109,23 +127,6 @@ public class NodeOutputExtractor {
         output.put("settings", config.getSettings());
         output.put("chunkCount", context.getChunks() == null ? 0 : context.getChunks().size());
         output.put("chunks", context.getChunks());
-        return output;
-    }
-
-    private Map<String, Object> multimodalParseOutput(IngestionContext context) {
-        Map<String, Object> output = new LinkedHashMap<>();
-        output.put("mimeType", context.getMimeType());
-        output.put("rawText", context.getRawText());
-        output.put("metadata", context.getMetadata());
-        return output;
-    }
-
-    private Map<String, Object> hyperedgeExtractOutput(IngestionContext context) {
-        Map<String, Object> output = new LinkedHashMap<>();
-        DocumentSource source = context.getSource();
-        output.put("sourceDocument", source == null ? null : source.getLocation());
-        output.put("chunkCount", context.getChunks() == null ? 0 : context.getChunks().size());
-        output.put("documentVersion", context.getMetadata() == null ? null : context.getMetadata().get("documentVersion"));
         return output;
     }
 

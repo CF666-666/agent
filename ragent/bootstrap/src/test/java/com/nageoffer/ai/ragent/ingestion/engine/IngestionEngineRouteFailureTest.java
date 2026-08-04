@@ -50,7 +50,7 @@ class IngestionEngineRouteFailureTest {
         };
         ConditionEvaluator conditionMatcher = new ConditionEvaluator(new ObjectMapper());
         IngestionEngine engine = new IngestionEngine(List.of(successfulNode), conditionMatcher,
-                new ConditionalPipelineRouteResolver(conditionMatcher), new NodeOutputExtractor(), new NodeExecutionRunner());
+                new ConditionalPipelineRouteResolver(conditionMatcher), new NodeOutputExtractor(List.of()), new NodeExecutionRunner());
         PipelineDefinition pipeline = PipelineDefinition.builder()
                 .nodes(List.of(node("start"), node("end")))
                 .edges(List.of(NodeEdge.builder().fromNodeId("start").toNodeId("end").defaultEdge(true).build()))
@@ -80,7 +80,7 @@ class IngestionEngineRouteFailureTest {
             }
         };
         IngestionEngine engine = new IngestionEngine(List.of(successfulNode), failingMatcher,
-                new ConditionalPipelineRouteResolver(failingMatcher), new NodeOutputExtractor(), new NodeExecutionRunner());
+                new ConditionalPipelineRouteResolver(failingMatcher), new NodeOutputExtractor(List.of()), new NodeExecutionRunner());
         PipelineDefinition pipeline = PipelineDefinition.builder()
                 .nodes(List.of(node("start"), node("end")))
                 .edges(List.of(NodeEdge.builder().fromNodeId("start").toNodeId("end")
@@ -110,7 +110,7 @@ class IngestionEngineRouteFailureTest {
         };
         ConditionEvaluator conditionMatcher = new ConditionEvaluator(new ObjectMapper());
         IngestionEngine engine = new IngestionEngine(List.of(successfulNode), conditionMatcher,
-                new ConditionalPipelineRouteResolver(conditionMatcher), new NodeOutputExtractor(), new NodeExecutionRunner());
+                new ConditionalPipelineRouteResolver(conditionMatcher), new NodeOutputExtractor(List.of()), new NodeExecutionRunner());
         PipelineDefinition pipeline = PipelineDefinition.builder()
                 .nodes(List.of(NodeConfig.builder().nodeId("start").nodeType("fetcher")
                         .condition(new ObjectMapper().readTree("\"broken [ spel\""))

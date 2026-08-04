@@ -44,7 +44,7 @@ class HyperEdgePipelineExecutionTest {
                 recordingNode("indexer", executedNodeTypes)),
                 conditionMatcher,
                 new ConditionalPipelineRouteResolver(conditionMatcher),
-                new NodeOutputExtractor(),
+                new NodeOutputExtractor(List.of()),
                 new NodeExecutionRunner());
         PipelineDefinition pipeline = PipelineDefinition.builder()
                 .nodes(List.of(
