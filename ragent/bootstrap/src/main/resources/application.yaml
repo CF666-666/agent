@@ -199,6 +199,13 @@ app:
 
 # --- Phase 4: 多源融合权重配置 ---
 ragent:
+  hypergraph:
+    entity-normalization:
+      aliases:
+        "风机1号": "1号鼓风机"
+        "一号风机": "1号鼓风机"
+        "跳机": "过载跳闸"
+
   fusion:
     enabled: true
     weights:

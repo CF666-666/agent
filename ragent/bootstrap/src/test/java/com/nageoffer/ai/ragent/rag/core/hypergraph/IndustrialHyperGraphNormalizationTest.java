@@ -20,24 +20,27 @@ package com.nageoffer.ai.ragent.rag.core.hypergraph;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class IndustrialHyperGraphReplacementTest {
+class IndustrialHyperGraphNormalizationTest {
 
     @Test
-    void shouldReplaceOldDocumentEdgesWithoutRemovingOtherDocuments() {
-        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, new ConfigurableIndustrialEntityNormalizer());
-        graph.addHyperedges(List.of(
-                HyperEdge.builder().sourceDocument("doc-a").equipment("fan-a").fault("old-fault").build(),
-                HyperEdge.builder().sourceDocument("doc-b").equipment("pump-b").fault("pump-fault").build()));
+    void shouldMatchAliasesAgainstCanonicalDocumentEntities() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        normalizer.setAliases(Map.of("风机1号", "1号鼓风机", "跳机", "过载跳闸"));
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer);
+        graph.addHyperedges(List.of(HyperEdge.builder()
+                .equipment("1号鼓风机")
+                .fault("过载跳闸")
+                .build()));
 
-        graph.replaceDocumentHyperedges("doc-a", List.of(
-                HyperEdge.builder().sourceDocument("doc-a").equipment("fan-a").fault("new-fault").build()));
+        IndustrialHyperGraph.SubgraphMatchResult result = graph.matchSubgraph(Set.of("风机1号", "跳机"), 1).get(0);
 
-        assertEquals(0, graph.matchSubgraph(Set.of("old-fault"), 10).size());
-        assertEquals("new-fault", graph.matchSubgraph(Set.of("new-fault"), 10).get(0).hyperEdge().getFault());
-        assertEquals("pump-b", graph.matchSubgraph(Set.of("pump-b"), 10).get(0).hyperEdge().getEquipment());
+        assertEquals(2, result.matchCount());
+        assertEquals("1号鼓风机", result.hyperEdge().getEquipment());
+        assertEquals("过载跳闸", result.hyperEdge().getFault());
     }
 }

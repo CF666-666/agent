@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
 public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
     private final HyperEdgeExtractor extractor;
+    private final IndustrialEntityNormalizer entityNormalizer;
 
     // ==================== 存储结构 ====================
 
@@ -114,7 +115,7 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
         try {
             int skipped = 0;
             for (HyperEdge edge : edges) {
-                Set<String> entities = edge.allEntityValues();
+                Set<String> entities = indexableEntityValues(edge);
                 // 修法 A：无实体超边完全不加入（无检索价值，占内存无意义）
                 if (entities.isEmpty()) {
                     log.warn("跳过无实体超边: edgeId={}, source={}", edge.getEdgeId(), edge.getSourceDocument());
@@ -144,9 +145,11 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
         try {
             hyperEdges.removeIf(edge -> Objects.equals(sourceDocument, edge.getSourceDocument()));
             if (edges != null) {
-                hyperEdges.addAll(edges.stream()
-                        .filter(edge -> !edge.allEntityValues().isEmpty())
-                        .toList());
+                for (HyperEdge edge : edges) {
+                    if (!indexableEntityValues(edge).isEmpty()) {
+                        hyperEdges.add(edge);
+                    }
+                }
             }
             rebuildEntityIndex();
             log.info("Replaced hyperedges for document {}, total edges={}", sourceDocument, hyperEdges.size());
@@ -158,10 +161,14 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
     private void rebuildEntityIndex() {
         entityToEdgeIdx.clear();
         for (int edgeIndex = 0; edgeIndex < hyperEdges.size(); edgeIndex++) {
-            for (String entity : hyperEdges.get(edgeIndex).allEntityValues()) {
+            for (String entity : indexableEntityValues(hyperEdges.get(edgeIndex))) {
                 entityToEdgeIdx.computeIfAbsent(entity, ignored -> new HashSet<>()).add(edgeIndex);
             }
         }
+    }
+
+    private Set<String> indexableEntityValues(HyperEdge edge) {
+        return entityNormalizer.normalizeAll(edge.allEntityValues());
     }
 
     // ==================== 检索 ====================
@@ -180,7 +187,7 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
         try {
             // 统计每条超边的命中数
             Map<Integer, Integer> hitCounts = new HashMap<>();
-            for (String entity : queryEntities) {
+            for (String entity : entityNormalizer.normalizeAll(queryEntities)) {
                 Set<Integer> matchedEdges = entityToEdgeIdx.get(entity);
                 if (matchedEdges != null) {
                     for (int edgeIdx : matchedEdges) {

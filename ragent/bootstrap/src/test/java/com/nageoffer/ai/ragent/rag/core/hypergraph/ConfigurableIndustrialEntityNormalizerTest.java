@@ -20,24 +20,23 @@ package com.nageoffer.ai.ragent.rag.core.hypergraph;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-class IndustrialHyperGraphReplacementTest {
+class ConfigurableIndustrialEntityNormalizerTest {
 
     @Test
-    void shouldReplaceOldDocumentEdgesWithoutRemovingOtherDocuments() {
-        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, new ConfigurableIndustrialEntityNormalizer());
-        graph.addHyperedges(List.of(
-                HyperEdge.builder().sourceDocument("doc-a").equipment("fan-a").fault("old-fault").build(),
-                HyperEdge.builder().sourceDocument("doc-b").equipment("pump-b").fault("pump-fault").build()));
+    void shouldNormalizeConfiguredAliasesWithoutChangingUnknownEntities() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        normalizer.setAliases(Map.of("风机1号", "1号鼓风机", "一号风机", "1号鼓风机"));
 
-        graph.replaceDocumentHyperedges("doc-a", List.of(
-                HyperEdge.builder().sourceDocument("doc-a").equipment("fan-a").fault("new-fault").build()));
-
-        assertEquals(0, graph.matchSubgraph(Set.of("old-fault"), 10).size());
-        assertEquals("new-fault", graph.matchSubgraph(Set.of("new-fault"), 10).get(0).hyperEdge().getFault());
-        assertEquals("pump-b", graph.matchSubgraph(Set.of("pump-b"), 10).get(0).hyperEdge().getEquipment());
+        assertEquals("1号鼓风机", normalizer.normalize(" 风机1号 "));
+        assertEquals("轴承过热", normalizer.normalize("轴承过热"));
+        assertNull(normalizer.normalize("  "));
+        assertEquals(Set.of("1号鼓风机", "轴承过热"),
+                normalizer.normalizeAll(List.of("风机1号", "一号风机", "轴承过热")));
     }
 }
