@@ -27,6 +27,7 @@ This acceptance record closes the durability risks found after the original inge
 | Resume ownership | Conditional lease claim occurs before checkpoint restoration and embedding; restore setup failures release the lease and return the task to `FAILED`. | Done |
 | Idempotent replacement | Vector-store replacement upserts new chunks before removing stale chunks; PostgreSQL performs both operations transactionally. | Done |
 | Condition observability | Invalid SpEL becomes a failed task with a node-level error log instead of a silent false route. | Done |
+| Dependency seams | `IngestionEngine` depends on `NodeExecutionExecutor`; task orchestration depends on `IngestionTaskProgressStore`, not the concrete adapters. | Done |
 
 Acceptance tests: `TaskCheckpointStorePostgresIntegrationTest`, `IndexerNodeTest`, `MilvusVectorStoreServiceTest`, and `IngestionEngineRouteFailureTest`. The full Phase 1 closure is committed and pushed only after these tests pass together.
 

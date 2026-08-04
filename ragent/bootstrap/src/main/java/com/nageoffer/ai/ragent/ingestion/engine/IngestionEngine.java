@@ -44,13 +44,13 @@ public class IngestionEngine {
     private final Map<String, IngestionNode> nodeMap;
     private final ConditionEvaluator conditionEvaluator;
     private final NodeOutputExtractor outputExtractor;
-    private final NodeExecutionRunner executionRunner;
+    private final NodeExecutionExecutor executionRunner;
 
     public IngestionEngine(
             List<IngestionNode> nodes,
             ConditionEvaluator conditionEvaluator,
             NodeOutputExtractor outputExtractor,
-            NodeExecutionRunner executionRunner) {
+            NodeExecutionExecutor executionRunner) {
         this.nodeMap = nodes.stream()
                 .collect(Collectors.toMap(IngestionNode::getNodeType, n -> n));
         this.conditionEvaluator = conditionEvaluator;

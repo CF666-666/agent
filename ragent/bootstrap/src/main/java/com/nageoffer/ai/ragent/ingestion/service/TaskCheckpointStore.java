@@ -37,7 +37,6 @@ import com.nageoffer.ai.ragent.ingestion.domain.context.NodeLog;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionStatus;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.SourceType;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineDefinition;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -57,7 +56,7 @@ import java.util.UUID;
  */
 @Component
 @RequiredArgsConstructor
-public class TaskCheckpointStore {
+public class TaskCheckpointStore implements IngestionTaskProgressStore {
 
     private static final long LEASE_DURATION_MS = 30 * 60 * 1000L;
 
@@ -67,6 +66,7 @@ public class TaskCheckpointStore {
     private final ChunkEmbeddingService chunkEmbeddingService;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    @Override
     public IngestionTaskDO initialize(IngestionTaskDO task,
                                       PipelineDefinition pipeline,
                                       byte[] rawBytes,
@@ -87,6 +87,7 @@ public class TaskCheckpointStore {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    @Override
     public void checkpoint(IngestionContext context, String completedNodeId, String nextNodeId) {
         int updated = taskMapper.update(null, new LambdaUpdateWrapper<IngestionTaskDO>()
                 .set(IngestionTaskDO::getLastSuccessNodeId, completedNodeId)
@@ -102,6 +103,7 @@ public class TaskCheckpointStore {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    @Override
     public void complete(IngestionContext context) {
         int updated = taskMapper.update(null, new LambdaUpdateWrapper<IngestionTaskDO>()
                 .set(IngestionTaskDO::getStatus, context.getStatus() == null ? IngestionStatus.FAILED.getValue() : context.getStatus().getValue())
@@ -118,6 +120,7 @@ public class TaskCheckpointStore {
         assertLeaseOwner(updated);
     }
 
+    @Override
     public ResumeState restoreUpload(String taskId) {
         IngestionTaskDO task = requireTask(taskId);
         Date now = new Date();
@@ -302,12 +305,4 @@ public class TaskCheckpointStore {
         }
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    public static class ResumeState {
-
-        private final PipelineDefinition pipeline;
-        private final IngestionContext context;
-        private final String nextNodeId;
-    }
 }

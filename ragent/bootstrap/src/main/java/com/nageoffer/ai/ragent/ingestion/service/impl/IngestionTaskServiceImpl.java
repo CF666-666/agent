@@ -48,7 +48,7 @@ import com.nageoffer.ai.ragent.ingestion.util.MimeTypeDetector;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorSpaceId;
 import com.nageoffer.ai.ragent.ingestion.service.IngestionPipelineService;
 import com.nageoffer.ai.ragent.ingestion.service.IngestionTaskService;
-import com.nageoffer.ai.ragent.ingestion.service.TaskCheckpointStore;
+import com.nageoffer.ai.ragent.ingestion.service.IngestionTaskProgressStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.dao.DuplicateKeyException;
@@ -74,7 +74,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
     private final IngestionTaskNodeMapper taskNodeMapper;
     private final ObjectMapper objectMapper;
     private final IngestionIdempotencyKeyFactory idempotencyKeyFactory;
-    private final TaskCheckpointStore checkpointStore;
+    private final IngestionTaskProgressStore checkpointStore;
 
     @Override
     public IngestionResult execute(IngestionTaskCreateRequest request) {
@@ -106,7 +106,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
 
     @Override
     public IngestionResult resume(String taskId) {
-        TaskCheckpointStore.ResumeState resume = checkpointStore.restoreUpload(taskId);
+        IngestionTaskProgressStore.ResumeState resume = checkpointStore.restoreUpload(taskId);
         IngestionContext result = executePipeline(resume.getPipeline(), resume.getContext(), resume.getNextNodeId());
         IngestionTaskDO task = taskMapper.selectById(taskId);
         saveNodeLogs(task, result.getLogs());

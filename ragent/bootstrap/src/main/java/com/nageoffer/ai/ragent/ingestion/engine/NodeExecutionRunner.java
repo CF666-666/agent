@@ -34,8 +34,9 @@ import java.util.List;
  * Callers only need to consume the final result and append the returned attempts to their logs.
  */
 @Component
-public class NodeExecutionRunner {
+public class NodeExecutionRunner implements NodeExecutionExecutor {
 
+    @Override
     public NodeExecutionOutcome execute(IngestionNode node, IngestionContext context, NodeConfig config) {
         NodeExecutionPolicy policy = config.getExecutionPolicy();
         int maxAttempts = policy == null ? NodeExecutionPolicy.DEFAULT_MAX_ATTEMPTS : policy.effectiveMaxAttempts();
