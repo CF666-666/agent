@@ -17,10 +17,19 @@
 
 package com.nageoffer.ai.ragent.rag.core.retrieve.channel;
 
+import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityExtractor;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * HyperGraphSearchChannel 结构化路径构建测试
@@ -56,5 +65,35 @@ class HyperGraphSearchChannelTest {
         HyperEdge edge = HyperEdge.builder().build();
         String path = HyperGraphSearchChannel.buildStructuredPath(edge);
         assertThat(path).isEqualTo("");
+    }
+
+    @Test
+    void shouldRenderTwoHopPathWithEvidenceMetadata() {
+        IndustrialHyperGraph graph = mock(IndustrialHyperGraph.class);
+        EntityExtractor extractor = mock(EntityExtractor.class);
+        HyperEdge first = HyperEdge.builder().edgeId("edge-1").equipment("1号泵")
+                .parameter("轴承温度高").sourceDocument("pump-sop.pdf").sourceChunkId("pump#2").build();
+        HyperEdge second = HyperEdge.builder().edgeId("edge-2").condition("轴承温度高")
+                .fault("润滑不足").sourceDocument("lube-sop.pdf").sourceChunkId("lube#7").build();
+        when(extractor.extractFromQuery("1号泵怎么处理")).thenReturn(Set.of("1号泵"));
+        when(graph.findRelationPaths(Set.of("1号泵"), 2, 10)).thenReturn(List.of(
+                new IndustrialHyperGraph.RelationPath(List.of(first, second), List.of("轴承温度高"), 2)));
+        when(graph.expandToText(first)).thenReturn("1号泵，轴承温度高");
+        when(graph.expandToText(second)).thenReturn("轴承温度高，润滑不足");
+        HyperGraphSearchChannel channel = new HyperGraphSearchChannel(graph, extractor);
+
+        SearchChannelResult result = channel.search(SearchContext.builder()
+                .originalQuestion("1号泵怎么处理")
+                .retrievalOptions(RetrievalOptions.defaults())
+                .build());
+
+        assertThat(result.getChunks()).hasSize(1);
+        assertThat(result.getChunks().get(0).getId()).isEqualTo("edge-1->edge-2");
+        assertThat(result.getChunks().get(0).getMetadata())
+                .containsEntry("relationHops", 2)
+                .containsEntry("bridgeEntities", List.of("轴承温度高"));
+        assertThat((List<?>) result.getChunks().get(0).getMetadata().get("relationEvidence"))
+                .hasSize(2);
+        verify(graph).findRelationPaths(Set.of("1号泵"), 2, 10);
     }
 }

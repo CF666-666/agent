@@ -34,3 +34,11 @@ reusing the same edge, and deduplicates paths by their edge pair. A path retains
 ordered hyperedges, bridge entities, score, and therefore each edge's document/chunk
 evidence. Search-channel rendering will be connected in a later closure because its
 working-tree changes belong to the parallel retrieval work.
+
+## Retrieval rendering closure
+
+`HyperGraphSearchChannel` now consumes `RelationPath` directly and emits one chunk per
+path. Its metadata contains the hop count, bridge entities, a readable relation path,
+and per-edge document/chunk/version evidence. This keeps graph traversal inside the
+hypergraph module while allowing downstream fusion and SSE references to display a
+traceable relation path without parsing natural-language text.

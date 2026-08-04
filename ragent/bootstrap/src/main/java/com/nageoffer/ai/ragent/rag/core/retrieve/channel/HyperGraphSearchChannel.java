@@ -21,7 +21,7 @@ import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityExtractor;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
-import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph.SubgraphMatchResult;
+import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph.RelationPath;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,24 +110,31 @@ public class HyperGraphSearchChannel implements SearchChannel {
             }
 
             // Step 2: 超图子图匹配
-            List<SubgraphMatchResult> matched = hyperGraph.matchSubgraph(entities, TOP_K);
-            log.debug("子图匹配完成: entityCount={}, hitCount={}", entities.size(), matched.size());
+            List<RelationPath> matched = hyperGraph.findRelationPaths(entities, 2, TOP_K);
+            log.debug("关系路径匹配完成: entityCount={}, pathCount={}", entities.size(), matched.size());
 
             // Step 3: 超边展开为自然语言 → RetrievedChunk
             List<RetrievedChunk> chunks = new ArrayList<>();
             float entityCount = entities.size();
-            for (SubgraphMatchResult result : matched) {
-                HyperEdge edge = result.hyperEdge();
-                String text = hyperGraph.expandToText(edge);
-                float score = result.matchCount() / entityCount;
+            for (RelationPath result : matched) {
+                String text = result.hyperEdges().stream()
+                        .map(hyperGraph::expandToText)
+                        .collect(java.util.stream.Collectors.joining(" => "));
+                float score = Math.min(1.0F, result.score() / entityCount);
 
                 Map<String, Object> meta = new HashMap<>();
                 meta.put("source", SearchChannelType.HYPERGRAPH.name());
-                meta.put("hyperEdgePath", buildStructuredPath(edge));
-                meta.put("matchCount", result.matchCount());
+                meta.put("hyperEdgePath", buildRelationPath(result));
+                meta.put("matchCount", result.score());
+                meta.put("relationHops", result.hopCount());
+                meta.put("bridgeEntities", result.bridgeEntities());
+                meta.put("relationEvidence", result.hyperEdges().stream()
+                        .map(HyperGraphSearchChannel::buildEvidence)
+                        .toList());
 
                 chunks.add(RetrievedChunk.builder()
-                        .id(edge.getEdgeId())
+                        .id(result.hyperEdges().stream().map(HyperEdge::getEdgeId)
+                                .collect(java.util.stream.Collectors.joining("->")))
                         .text(text)
                         .score(score)
                         .metadata(meta)
@@ -178,5 +186,22 @@ public class HyperGraphSearchChannel implements SearchChannel {
         if (edge.getParameter() != null) sj.add(edge.getParameter());
         if (edge.getFault() != null) sj.add(edge.getFault());
         return sj.toString();
+    }
+
+    static String buildRelationPath(RelationPath path) {
+        return path.hyperEdges().stream()
+                .map(HyperGraphSearchChannel::buildStructuredPath)
+                .collect(java.util.stream.Collectors.joining(" => "));
+    }
+
+    private static Map<String, Object> buildEvidence(HyperEdge edge) {
+        Map<String, Object> evidence = new LinkedHashMap<>();
+        evidence.put("hyperEdgeId", edge.getEdgeId());
+        evidence.put("sourceDocument", edge.getSourceDocument());
+        evidence.put("sourceChunkId", edge.getSourceChunkId());
+        evidence.put("sourceChunkIndex", edge.getSourceChunkIndex());
+        evidence.put("sourcePage", edge.getSourcePage());
+        evidence.put("documentVersion", edge.getDocumentVersion());
+        return evidence;
     }
 }
