@@ -60,6 +60,11 @@ public enum IngestionNodeType {
     INDEXER("indexer"),
 
     /**
+     * 超边抽取节点 - 从已切分的文档块中提取带来源证据的工业关系事实。
+     */
+    HYPEREDGE_EXTRACT("hyperedge_extract"),
+
+    /**
      * 多模态解析节点 - 解析非纯文本文档（扫描件/图纸/照片）为语义文本
      */
     MULTIMODAL_PARSE("multimodal_parse");

@@ -49,6 +49,7 @@ public class NodeOutputExtractor {
             case CHUNKER -> chunkerOutput(context);
             case ENRICHER -> enricherOutput(context);
             case INDEXER -> indexerOutput(context, config);
+            case HYPEREDGE_EXTRACT -> hyperedgeExtractOutput(context);
             case MULTIMODAL_PARSE -> multimodalParseOutput(context);
         };
     }
@@ -116,6 +117,15 @@ public class NodeOutputExtractor {
         output.put("mimeType", context.getMimeType());
         output.put("rawText", context.getRawText());
         output.put("metadata", context.getMetadata());
+        return output;
+    }
+
+    private Map<String, Object> hyperedgeExtractOutput(IngestionContext context) {
+        Map<String, Object> output = new LinkedHashMap<>();
+        DocumentSource source = context.getSource();
+        output.put("sourceDocument", source == null ? null : source.getLocation());
+        output.put("chunkCount", context.getChunks() == null ? 0 : context.getChunks().size());
+        output.put("documentVersion", context.getMetadata() == null ? null : context.getMetadata().get("documentVersion"));
         return output;
     }
 

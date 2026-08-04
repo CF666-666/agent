@@ -81,6 +81,18 @@ public class HyperEdge {
     /** 来源文档路径 */
     private String sourceDocument;
 
+    /** 来源 Chunk 的稳定标识，用于检索结果回溯到原始证据。 */
+    private String sourceChunkId;
+
+    /** 来源 Chunk 在文档中的顺序。 */
+    private Integer sourceChunkIndex;
+
+    /** 来源页码；原始解析链路未提供页码时为空。 */
+    private Integer sourcePage;
+
+    /** 文档版本，用于后续重入库时淘汰旧超边。 */
+    private String documentVersion;
+
     // === 工具方法 ===
 
     /**
