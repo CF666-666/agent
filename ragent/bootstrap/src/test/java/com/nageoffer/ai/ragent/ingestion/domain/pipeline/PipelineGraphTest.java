@@ -20,7 +20,9 @@ package com.nageoffer.ai.ragent.ingestion.domain.pipeline;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
+import com.nageoffer.ai.ragent.ingestion.engine.ConditionalPipelineRouteResolver;
 import com.nageoffer.ai.ragent.ingestion.engine.ConditionEvaluator;
+import com.nageoffer.ai.ragent.ingestion.engine.PipelineRouteResolver;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -32,6 +34,7 @@ class PipelineGraphTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ConditionEvaluator conditionEvaluator = new ConditionEvaluator(objectMapper);
+    private final PipelineRouteResolver routeResolver = new ConditionalPipelineRouteResolver(conditionEvaluator);
 
     @Test
     void shouldChooseHighestPriorityMatchedEdgeThenFallbackToDefaultEdge() throws Exception {
@@ -46,12 +49,12 @@ class PipelineGraphTest {
                 .build());
 
         assertEquals("fetch", graph.startNodeId());
-        assertEquals("pdf-parser", graph.resolveNextNodeId("fetch",
-                IngestionContext.builder().mimeType("application/pdf").build(), conditionEvaluator));
-        assertEquals("low-priority-parser", graph.resolveNextNodeId("fetch",
-                IngestionContext.builder().mimeType("image/png").build(), conditionEvaluator));
-        assertEquals("generic-parser", graph.resolveNextNodeId("fetch",
-                IngestionContext.builder().build(), conditionEvaluator));
+        assertEquals("pdf-parser", routeResolver.resolveNextNodeId(graph, "fetch",
+                IngestionContext.builder().mimeType("application/pdf").build()));
+        assertEquals("low-priority-parser", routeResolver.resolveNextNodeId(graph, "fetch",
+                IngestionContext.builder().mimeType("image/png").build()));
+        assertEquals("generic-parser", routeResolver.resolveNextNodeId(graph, "fetch",
+                IngestionContext.builder().build()));
     }
 
     @Test
@@ -61,8 +64,8 @@ class PipelineGraphTest {
                 .build());
 
         assertEquals("fetch", graph.startNodeId());
-        assertEquals("parser", graph.resolveNextNodeId("fetch", IngestionContext.builder().build(), conditionEvaluator));
-        assertEquals(null, graph.resolveNextNodeId("parser", IngestionContext.builder().build(), conditionEvaluator));
+        assertEquals("parser", routeResolver.resolveNextNodeId(graph, "fetch", IngestionContext.builder().build()));
+        assertEquals(null, routeResolver.resolveNextNodeId(graph, "parser", IngestionContext.builder().build()));
     }
 
     @Test

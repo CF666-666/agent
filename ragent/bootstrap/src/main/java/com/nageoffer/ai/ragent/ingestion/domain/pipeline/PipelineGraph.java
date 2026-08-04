@@ -19,8 +19,6 @@ package com.nageoffer.ai.ragent.ingestion.domain.pipeline;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nageoffer.ai.ragent.framework.exception.ClientException;
-import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
-import com.nageoffer.ai.ragent.ingestion.engine.ConditionEvaluator;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayDeque;
@@ -84,24 +82,10 @@ public final class PipelineGraph {
     }
 
     /**
-     * Selects the next node using matched conditional edges first, then the default edge.
-     * A null result means that the current node is a terminal node or no route matches.
+     * Returns validated, priority-sorted outgoing edges for a routing policy.
      */
-    public String resolveNextNodeId(String nodeId,
-                                    IngestionContext context,
-                                    ConditionEvaluator conditionEvaluator) {
-        List<NodeEdge> edges = outgoingEdges.getOrDefault(nodeId, List.of());
-        NodeEdge defaultEdge = null;
-        for (NodeEdge edge : edges) {
-            if (edge.isDefaultEdge()) {
-                defaultEdge = edge;
-                continue;
-            }
-            if (conditionEvaluator.evaluate(context, edge.getCondition())) {
-                return edge.getToNodeId();
-            }
-        }
-        return defaultEdge == null ? null : defaultEdge.getToNodeId();
+    public List<NodeEdge> outgoingEdges(String nodeId) {
+        return List.copyOf(outgoingEdges.getOrDefault(nodeId, List.of()));
     }
 
     private static Map<String, NodeConfig> indexNodes(Collection<NodeConfig> nodeConfigs) {

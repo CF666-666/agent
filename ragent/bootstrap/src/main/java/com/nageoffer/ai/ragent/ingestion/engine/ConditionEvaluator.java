@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
+import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineConditionMatcher;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -36,7 +37,7 @@ import java.util.Objects;
  * 用于根据给定的 IngestionContext 上下文和 JsonNode 格式的条件配置来评估条件是否满足
  */
 @Component
-public class ConditionEvaluator {
+public class ConditionEvaluator implements PipelineConditionMatcher {
 
     private final ObjectMapper objectMapper;
     private final ExpressionParser parser = new SpelExpressionParser();
@@ -45,7 +46,8 @@ public class ConditionEvaluator {
         this.objectMapper = objectMapper;
     }
 
-    public boolean evaluate(IngestionContext context, JsonNode condition) {
+    @Override
+    public boolean matches(IngestionContext context, JsonNode condition) {
         if (condition == null || condition.isNull()) {
             return true;
         }
@@ -63,7 +65,7 @@ public class ConditionEvaluator {
                 return evalAny(context, condition.get("any"));
             }
             if (condition.has("not")) {
-                return !evaluate(context, condition.get("not"));
+                return !matches(context, condition.get("not"));
             }
             if (condition.has("field")) {
                 return evalRule(context, condition);
@@ -77,7 +79,7 @@ public class ConditionEvaluator {
             return true;
         }
         for (JsonNode item : node) {
-            if (!evaluate(context, item)) {
+            if (!matches(context, item)) {
                 return false;
             }
         }
@@ -89,7 +91,7 @@ public class ConditionEvaluator {
             return true;
         }
         for (JsonNode item : node) {
-            if (evaluate(context, item)) {
+            if (matches(context, item)) {
                 return true;
             }
         }

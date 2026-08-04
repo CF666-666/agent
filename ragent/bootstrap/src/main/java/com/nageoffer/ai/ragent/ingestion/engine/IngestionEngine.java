@@ -22,6 +22,7 @@ import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
 import com.nageoffer.ai.ragent.ingestion.domain.context.NodeLog;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionStatus;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig;
+import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineConditionMatcher;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineGraph;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineDefinition;
 import com.nageoffer.ai.ragent.ingestion.domain.result.NodeResult;
@@ -42,20 +43,23 @@ import java.util.stream.Collectors;
 public class IngestionEngine {
 
     private final Map<String, IngestionNode> nodeMap;
-    private final ConditionEvaluator conditionEvaluator;
+    private final PipelineConditionMatcher conditionMatcher;
+    private final PipelineRouteResolver routeResolver;
     private final NodeOutputExtractor outputExtractor;
-    private final NodeExecutionExecutor executionRunner;
+    private final NodeExecutionExecutor executionExecutor;
 
     public IngestionEngine(
             List<IngestionNode> nodes,
-            ConditionEvaluator conditionEvaluator,
+            PipelineConditionMatcher conditionMatcher,
+            PipelineRouteResolver routeResolver,
             NodeOutputExtractor outputExtractor,
-            NodeExecutionExecutor executionRunner) {
+            NodeExecutionExecutor executionExecutor) {
         this.nodeMap = nodes.stream()
                 .collect(Collectors.toMap(IngestionNode::getNodeType, n -> n));
-        this.conditionEvaluator = conditionEvaluator;
+        this.conditionMatcher = conditionMatcher;
+        this.routeResolver = routeResolver;
         this.outputExtractor = outputExtractor;
-        this.executionRunner = executionRunner;
+        this.executionExecutor = executionExecutor;
     }
 
     /**
@@ -138,7 +142,7 @@ public class IngestionEngine {
 
             // 根据满足条件的最高优先级边选择下一个节点，未命中时使用默认边。
             try {
-                currentNodeId = graph.resolveNextNodeId(currentNodeId, context, conditionEvaluator);
+                currentNodeId = routeResolver.resolveNextNodeId(graph, currentNodeId, context);
             } catch (RuntimeException e) {
                 context.setStatus(IngestionStatus.FAILED);
                 context.setError(e);
@@ -184,7 +188,7 @@ public class IngestionEngine {
         if (nodeConfig.getCondition() != null && !nodeConfig.getCondition().isNull()) {
             boolean conditionMatched;
             try {
-                conditionMatched = conditionEvaluator.evaluate(context, nodeConfig.getCondition());
+                conditionMatched = conditionMatcher.matches(context, nodeConfig.getCondition());
             } catch (RuntimeException e) {
                 context.getLogs().add(NodeLog.builder()
                         .nodeId(nodeId)
@@ -211,7 +215,7 @@ public class IngestionEngine {
         }
 
         // 执行节点
-        NodeExecutionOutcome outcome = executionRunner.execute(node, context, nodeConfig);
+        NodeExecutionOutcome outcome = executionExecutor.execute(node, context, nodeConfig);
         outcome.getAttempts().forEach(attempt -> {
             context.getLogs().add(NodeLog.builder()
                     .nodeId(nodeId)

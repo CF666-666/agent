@@ -74,7 +74,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
     private final IngestionTaskNodeMapper taskNodeMapper;
     private final ObjectMapper objectMapper;
     private final IngestionIdempotencyKeyFactory idempotencyKeyFactory;
-    private final IngestionTaskProgressStore checkpointStore;
+    private final IngestionTaskProgressStore progressStore;
 
     @Override
     public IngestionResult execute(IngestionTaskCreateRequest request) {
@@ -106,11 +106,11 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
 
     @Override
     public IngestionResult resume(String taskId) {
-        IngestionTaskProgressStore.ResumeState resume = checkpointStore.restoreUpload(taskId);
+        IngestionTaskProgressStore.ResumeState resume = progressStore.restoreUpload(taskId);
         IngestionContext result = executePipeline(resume.getPipeline(), resume.getContext(), resume.getNextNodeId());
         IngestionTaskDO task = taskMapper.selectById(taskId);
         saveNodeLogs(task, result.getLogs());
-        checkpointStore.complete(result);
+        progressStore.complete(result);
         return toResult(result);
     }
 
@@ -173,7 +173,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                 .updatedBy(UserContext.getUsername())
                 .build();
         try {
-            checkpointStore.initialize(task, pipeline, rawBytes, mimeType);
+            progressStore.initialize(task, pipeline, rawBytes, mimeType);
         } catch (DuplicateKeyException e) {
             IngestionTaskDO concurrent = findActiveTask(idempotencyKey);
             if (concurrent != null) {
@@ -196,7 +196,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
 
         IngestionContext result = executePipeline(pipeline, context, null);
         saveNodeLogs(task, result.getLogs());
-        checkpointStore.complete(result);
+        progressStore.complete(result);
         return toResult(result);
     }
 
@@ -204,7 +204,7 @@ public class IngestionTaskServiceImpl implements IngestionTaskService {
                                              IngestionContext context,
                                              String resumeNodeId) {
         try {
-            return engine.execute(pipeline, context, resumeNodeId, checkpointStore::checkpoint);
+            return engine.execute(pipeline, context, resumeNodeId, progressStore::checkpoint);
         } catch (RuntimeException e) {
             context.setStatus(IngestionStatus.FAILED);
             context.setError(e);

@@ -22,6 +22,7 @@ import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionStatus;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeEdge;
+import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineConditionMatcher;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineDefinition;
 import com.nageoffer.ai.ragent.ingestion.domain.result.NodeResult;
 import com.nageoffer.ai.ragent.ingestion.node.IngestionNode;
@@ -47,8 +48,9 @@ class IngestionEngineRouteFailureTest {
                 return NodeResult.ok();
             }
         };
-        IngestionEngine engine = new IngestionEngine(List.of(successfulNode), new ConditionEvaluator(new ObjectMapper()),
-                new NodeOutputExtractor(), new NodeExecutionRunner());
+        ConditionEvaluator conditionMatcher = new ConditionEvaluator(new ObjectMapper());
+        IngestionEngine engine = new IngestionEngine(List.of(successfulNode), conditionMatcher,
+                new ConditionalPipelineRouteResolver(conditionMatcher), new NodeOutputExtractor(), new NodeExecutionRunner());
         PipelineDefinition pipeline = PipelineDefinition.builder()
                 .nodes(List.of(node("start"), node("end")))
                 .edges(List.of(NodeEdge.builder().fromNodeId("start").toNodeId("end").defaultEdge(true).build()))
@@ -63,11 +65,8 @@ class IngestionEngineRouteFailureTest {
 
     @Test
     void shouldPersistFailureInContextWhenRouteEvaluationThrows() throws Exception {
-        ConditionEvaluator failingEvaluator = new ConditionEvaluator(new ObjectMapper()) {
-            @Override
-            public boolean evaluate(IngestionContext context, com.fasterxml.jackson.databind.JsonNode condition) {
-                throw new IllegalStateException("broken route condition");
-            }
+        PipelineConditionMatcher failingMatcher = (context, condition) -> {
+            throw new IllegalStateException("broken route condition");
         };
         IngestionNode successfulNode = new IngestionNode() {
             @Override
@@ -80,8 +79,8 @@ class IngestionEngineRouteFailureTest {
                 return NodeResult.ok();
             }
         };
-        IngestionEngine engine = new IngestionEngine(List.of(successfulNode), failingEvaluator,
-                new NodeOutputExtractor(), new NodeExecutionRunner());
+        IngestionEngine engine = new IngestionEngine(List.of(successfulNode), failingMatcher,
+                new ConditionalPipelineRouteResolver(failingMatcher), new NodeOutputExtractor(), new NodeExecutionRunner());
         PipelineDefinition pipeline = PipelineDefinition.builder()
                 .nodes(List.of(node("start"), node("end")))
                 .edges(List.of(NodeEdge.builder().fromNodeId("start").toNodeId("end")
@@ -109,8 +108,9 @@ class IngestionEngineRouteFailureTest {
                 return NodeResult.ok();
             }
         };
-        IngestionEngine engine = new IngestionEngine(List.of(successfulNode), new ConditionEvaluator(new ObjectMapper()),
-                new NodeOutputExtractor(), new NodeExecutionRunner());
+        ConditionEvaluator conditionMatcher = new ConditionEvaluator(new ObjectMapper());
+        IngestionEngine engine = new IngestionEngine(List.of(successfulNode), conditionMatcher,
+                new ConditionalPipelineRouteResolver(conditionMatcher), new NodeOutputExtractor(), new NodeExecutionRunner());
         PipelineDefinition pipeline = PipelineDefinition.builder()
                 .nodes(List.of(NodeConfig.builder().nodeId("start").nodeType("fetcher")
                         .condition(new ObjectMapper().readTree("\"broken [ spel\""))
