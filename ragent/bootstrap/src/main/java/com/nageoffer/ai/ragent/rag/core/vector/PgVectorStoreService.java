@@ -24,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +48,8 @@ public class PgVectorStoreService implements VectorStoreService {
 
         // noinspection SqlDialectInspection,SqlNoDataSourceInspection
         jdbcTemplate.batchUpdate(
-                "INSERT INTO t_knowledge_vector (id, content, metadata, embedding) VALUES (?, ?, ?::jsonb, ?::vector)",
+                "INSERT INTO t_knowledge_vector (id, content, metadata, embedding) VALUES (?, ?, ?::jsonb, ?::vector) " +
+                        "ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata, embedding = EXCLUDED.embedding",
                 chunks, chunks.size(), (ps, chunk) -> {
                     ps.setString(1, chunk.getChunkId());
                     ps.setString(2, chunk.getContent());
@@ -55,6 +58,28 @@ public class PgVectorStoreService implements VectorStoreService {
                 });
 
         log.info("批量写入向量到 PostgreSQL，collectionName={}, docId={}, count={}", collectionName, docId, chunks.size());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void replaceDocumentChunks(String collectionName, String docId, List<VectorChunk> chunks) {
+        if (chunks == null || chunks.isEmpty()) {
+            deleteDocumentVectors(collectionName, docId);
+            return;
+        }
+        indexDocumentChunks(collectionName, docId, chunks);
+        String placeholders = chunks.stream().map(chunk -> "?").collect(java.util.stream.Collectors.joining(", "));
+        List<Object> parameters = new ArrayList<>();
+        parameters.add(collectionName);
+        parameters.add(docId);
+        chunks.stream().map(VectorChunk::getChunkId).forEach(parameters::add);
+        // noinspection SqlDialectInspection,SqlNoDataSourceInspection
+        int deleted = jdbcTemplate.update(
+                "DELETE FROM t_knowledge_vector WHERE metadata->>'collection_name' = ? AND metadata->>'doc_id' = ? " +
+                        "AND id NOT IN (" + placeholders + ")",
+                parameters.toArray());
+        log.info("PostgreSQL upserted document chunks then removed stale chunks, collectionName={}, docId={}, deleted={}",
+                collectionName, docId, deleted);
     }
 
     @Override

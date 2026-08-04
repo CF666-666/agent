@@ -19,6 +19,7 @@ package com.nageoffer.ai.ragent.ingestion.engine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.expression.ExpressionParser;
@@ -199,7 +200,7 @@ public class ConditionEvaluator {
             Boolean result = parser.parseExpression(expression).getValue(ctx, Boolean.class);
             return Boolean.TRUE.equals(result);
         } catch (Exception e) {
-            return false;
+            throw new ClientException("SpEL condition evaluation failed: " + e.getMessage());
         }
     }
 }

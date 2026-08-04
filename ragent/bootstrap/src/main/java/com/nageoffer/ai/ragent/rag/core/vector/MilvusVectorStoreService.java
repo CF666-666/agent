@@ -27,10 +27,8 @@ import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.vector.request.DeleteReq;
-import io.milvus.v2.service.vector.request.InsertReq;
 import io.milvus.v2.service.vector.request.UpsertReq;
 import io.milvus.v2.service.vector.response.DeleteResp;
-import io.milvus.v2.service.vector.response.InsertResp;
 import io.milvus.v2.service.vector.response.UpsertResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,13 +76,34 @@ public class MilvusVectorStoreService implements VectorStoreService {
             rows.add(row);
         }
 
-        InsertReq req = InsertReq.builder()
+        UpsertReq req = UpsertReq.builder()
                 .collectionName(collectionName)
                 .data(rows)
                 .build();
 
-        InsertResp resp = milvusClient.insert(req);
-        log.info("Milvus chunk 建立/写入向量索引成功, collection={}, rows={}", collectionName, resp.getInsertCnt());
+        UpsertResp resp = milvusClient.upsert(req);
+        log.info("Milvus chunk upsert succeeded, collection={}, rows={}", collectionName, resp.getUpsertCnt());
+    }
+
+    @Override
+    public void replaceDocumentChunks(String collectionName, String docId, List<VectorChunk> chunks) {
+        if (chunks == null || chunks.isEmpty()) {
+            deleteDocumentVectors(collectionName, docId);
+            return;
+        }
+        indexDocumentChunks(collectionName, docId, chunks);
+        String activeIds = chunks.stream()
+                .map(VectorChunk::getChunkId)
+                .map(this::quoteFilterString)
+                .collect(java.util.stream.Collectors.joining(", "));
+        String filter = "metadata[\"doc_id\"] == " + quoteFilterString(docId)
+                + " and id not in [" + activeIds + "]";
+        DeleteResp resp = milvusClient.delete(DeleteReq.builder()
+                .collectionName(collectionName)
+                .filter(filter)
+                .build());
+        log.info("Milvus removed stale document chunks after upsert, collection={}, docId={}, deleted={}",
+                collectionName, docId, resp.getDeleteCnt());
     }
 
     @Override
@@ -132,6 +151,10 @@ public class MilvusVectorStoreService implements VectorStoreService {
         DeleteResp resp = milvusClient.delete(deleteReq);
         log.info("Milvus 删除指定文档的所有 chunk 向量索引成功, collection={}, docId={}, deleteCnt={}",
                 collectionName, docId, resp.getDeleteCnt());
+    }
+
+    private String quoteFilterString(String value) {
+        return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 
     @Override

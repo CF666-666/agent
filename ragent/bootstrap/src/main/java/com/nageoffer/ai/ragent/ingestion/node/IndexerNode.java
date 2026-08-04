@@ -176,8 +176,7 @@ public class IndexerNode implements IngestionNode {
 
         // 同一幂等文档重新入库时，切块数量可能减少。先按 docId 定向清理，
         // 再整批写入，避免上一次运行遗留的尾部切块参与召回。
-        vectorStoreService.deleteDocumentVectors(collectionName, docId);
-        vectorStoreService.indexDocumentChunks(collectionName, docId, chunks);
+        vectorStoreService.replaceDocumentChunks(collectionName, docId, chunks);
 
         log.info("向量写入成功，集合={}，行数={}", collectionName, chunks.size());
     }

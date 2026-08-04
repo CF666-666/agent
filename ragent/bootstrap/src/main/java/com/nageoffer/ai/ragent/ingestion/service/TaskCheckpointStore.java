@@ -118,7 +118,6 @@ public class TaskCheckpointStore {
         assertLeaseOwner(updated);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public ResumeState restoreUpload(String taskId) {
         IngestionTaskDO task = requireTask(taskId);
         Date now = new Date();
@@ -128,35 +127,6 @@ public class TaskCheckpointStore {
         Assert.isTrue(claimable, () -> new ClientException("Task is not eligible for resume"));
         Assert.isTrue(SourceType.FILE.getValue().equals(task.getSourceType()),
                 () -> new ClientException("Only uploaded file tasks can be resumed"));
-
-        IngestionTaskPayloadDO payload = payloadMapper.selectById(taskId);
-        Assert.notNull(payload, () -> new ClientException("Upload payload is unavailable for this task"));
-        PipelineDefinition pipeline = readJson(task.getPipelineSnapshotJson(), PipelineDefinition.class,
-                "Pipeline snapshot is unavailable for this task");
-
-        IngestionContext context = IngestionContext.builder()
-                .taskId(task.getId())
-                .pipelineId(task.getPipelineId())
-                .idempotencyKey(task.getIdempotencyKey())
-                .source(DocumentSource.builder()
-                        .type(SourceType.FILE)
-                        .location(task.getSourceLocation())
-                        .fileName(task.getSourceFileName())
-                        .build())
-                .rawBytes(payload.getRawBytes())
-                .mimeType(payload.getMimeType())
-                .logs(readLogs(task.getLogsJson()))
-                .build();
-        if (StringUtils.hasText(task.getCheckpointJson())) {
-            IngestionCheckpoint checkpoint = readJson(task.getCheckpointJson(), IngestionCheckpoint.class,
-                    "Task checkpoint cannot be restored");
-            checkpoint.restoreTo(context);
-            // VectorChunk#embedding is deliberately not serialized. Recreate it before
-            // an indexer-only resume so downstream nodes retain their normal contract.
-            if (context.getChunks() != null && !context.getChunks().isEmpty()) {
-                chunkEmbeddingService.embed(context.getChunks(), null);
-            }
-        }
 
         String leaseToken = newLeaseToken();
         int claimed = taskMapper.update(null, new LambdaUpdateWrapper<IngestionTaskDO>()
@@ -173,8 +143,53 @@ public class TaskCheckpointStore {
                         .or(nested -> nested.eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue())
                                 .lt(IngestionTaskDO::getLeaseExpiresAt, now))));
         Assert.isTrue(claimed == 1, () -> new ClientException("Task has already been claimed for resume"));
-        context.setExecutionLeaseToken(leaseToken);
-        return new ResumeState(pipeline, context, task.getNextNodeId());
+
+        try {
+            IngestionTaskPayloadDO payload = payloadMapper.selectById(taskId);
+            Assert.notNull(payload, () -> new ClientException("Upload payload is unavailable for this task"));
+            PipelineDefinition pipeline = readJson(task.getPipelineSnapshotJson(), PipelineDefinition.class,
+                    "Pipeline snapshot is unavailable for this task");
+
+            IngestionContext context = IngestionContext.builder()
+                    .taskId(task.getId())
+                    .pipelineId(task.getPipelineId())
+                    .idempotencyKey(task.getIdempotencyKey())
+                    .source(DocumentSource.builder()
+                            .type(SourceType.FILE)
+                            .location(task.getSourceLocation())
+                            .fileName(task.getSourceFileName())
+                            .build())
+                    .rawBytes(payload.getRawBytes())
+                    .mimeType(payload.getMimeType())
+                    .logs(readLogs(task.getLogsJson()))
+                    .executionLeaseToken(leaseToken)
+                    .build();
+            if (StringUtils.hasText(task.getCheckpointJson())) {
+                IngestionCheckpoint checkpoint = readJson(task.getCheckpointJson(), IngestionCheckpoint.class,
+                        "Task checkpoint cannot be restored");
+                checkpoint.restoreTo(context);
+                // VectorChunk#embedding is deliberately not serialized. The lease is
+                // claimed first, so concurrent resume requests cannot duplicate this cost.
+                if (context.getChunks() != null && !context.getChunks().isEmpty()) {
+                    chunkEmbeddingService.embed(context.getChunks(), null);
+                }
+            }
+            return new ResumeState(pipeline, context, task.getNextNodeId());
+        } catch (RuntimeException exception) {
+            releaseFailedResumeClaim(taskId, leaseToken, exception);
+            throw exception;
+        }
+    }
+
+    private void releaseFailedResumeClaim(String taskId, String leaseToken, RuntimeException exception) {
+        taskMapper.update(null, new LambdaUpdateWrapper<IngestionTaskDO>()
+                .set(IngestionTaskDO::getStatus, IngestionStatus.FAILED.getValue())
+                .set(IngestionTaskDO::getErrorMessage, exception.getMessage())
+                .set(IngestionTaskDO::getLeaseExpiresAt, null)
+                .set(IngestionTaskDO::getUpdatedBy, UserContext.getUsername())
+                .eq(IngestionTaskDO::getId, taskId)
+                .eq(IngestionTaskDO::getExecutionLeaseToken, leaseToken)
+                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue()));
     }
 
     private void assertLeaseOwner(int updated) {

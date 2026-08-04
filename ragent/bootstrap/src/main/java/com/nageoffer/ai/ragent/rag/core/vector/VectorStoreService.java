@@ -36,6 +36,12 @@ public interface VectorStoreService {
     void indexDocumentChunks(String collectionName, String docId, List<VectorChunk> chunks);
 
     /**
+     * Replaces a document's chunk set without exposing an empty-document window.
+     * Implementations must upsert the new chunks before removing stale chunks.
+     */
+    void replaceDocumentChunks(String collectionName, String docId, List<VectorChunk> chunks);
+
+    /**
      * 更新单个 chunk 的向量索引
      *
      * @param collectionName 向量空间名称（知识库 collectionName）

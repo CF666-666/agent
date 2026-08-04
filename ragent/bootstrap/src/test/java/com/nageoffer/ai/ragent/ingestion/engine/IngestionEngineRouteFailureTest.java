@@ -96,6 +96,35 @@ class IngestionEngineRouteFailureTest {
         assertEquals(false, result.getLogs().get(1).isSuccess());
     }
 
+    @Test
+    void shouldFailTaskAndPersistNodeLogWhenSpelConditionIsInvalid() throws Exception {
+        IngestionNode successfulNode = new IngestionNode() {
+            @Override
+            public String getNodeType() {
+                return "fetcher";
+            }
+
+            @Override
+            public NodeResult execute(IngestionContext context, NodeConfig config) {
+                return NodeResult.ok();
+            }
+        };
+        IngestionEngine engine = new IngestionEngine(List.of(successfulNode), new ConditionEvaluator(new ObjectMapper()),
+                new NodeOutputExtractor(), new NodeExecutionRunner());
+        PipelineDefinition pipeline = PipelineDefinition.builder()
+                .nodes(List.of(NodeConfig.builder().nodeId("start").nodeType("fetcher")
+                        .condition(new ObjectMapper().readTree("\"broken [ spel\""))
+                        .build()))
+                .build();
+
+        IngestionContext result = engine.execute(pipeline, IngestionContext.builder().build());
+
+        assertEquals(IngestionStatus.FAILED, result.getStatus());
+        assertEquals(true, result.getError().getMessage().startsWith("SpEL condition evaluation failed:"));
+        assertEquals(1, result.getLogs().size());
+        assertEquals(false, result.getLogs().get(0).isSuccess());
+    }
+
     private NodeConfig node(String nodeId) {
         return NodeConfig.builder().nodeId(nodeId).nodeType("fetcher").build();
     }

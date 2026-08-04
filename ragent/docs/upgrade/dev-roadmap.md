@@ -17,6 +17,21 @@
 
 ---
 
+## Durable ingestion hardening — review closeout
+
+This acceptance record closes the durability risks found after the original ingestion-orchestration delivery (`84bf986`). It is intentionally kept separate from the multimodal delivery phases below.
+
+| Item | Acceptance evidence | Status |
+|---|---|:---:|
+| HTTP resume | Authenticated `POST /ingestion/tasks/{id}/resume` MockMvc test exercises controller, service, checkpoint store and PostgreSQL persistence. | Done |
+| Resume ownership | Conditional lease claim occurs before checkpoint restoration and embedding; restore setup failures release the lease and return the task to `FAILED`. | Done |
+| Idempotent replacement | Vector-store replacement upserts new chunks before removing stale chunks; PostgreSQL performs both operations transactionally. | Done |
+| Condition observability | Invalid SpEL becomes a failed task with a node-level error log instead of a silent false route. | Done |
+
+Acceptance tests: `TaskCheckpointStorePostgresIntegrationTest`, `IndexerNodeTest`, `MilvusVectorStoreServiceTest`, and `IngestionEngineRouteFailureTest`. The full Phase 1 closure is committed and pushed only after these tests pass together.
+
+---
+
 ## Phase 0：环境准备与基础设施（2 天）🔧 已启动
 
 ### A. 文档产出（✅ 已完成）

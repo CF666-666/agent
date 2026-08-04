@@ -18,19 +18,25 @@
 package com.nageoffer.ai.ragent.ingestion.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nageoffer.ai.ragent.core.chunk.ChunkEmbeddingService;
+import com.nageoffer.ai.ragent.core.chunk.VectorChunk;
 import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionTaskDO;
 import com.nageoffer.ai.ragent.ingestion.dao.entity.IngestionTaskPayloadDO;
 import com.nageoffer.ai.ragent.ingestion.dao.mapper.IngestionTaskMapper;
 import com.nageoffer.ai.ragent.ingestion.dao.mapper.IngestionTaskPayloadMapper;
 import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionContext;
+import com.nageoffer.ai.ragent.ingestion.domain.context.IngestionCheckpoint;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionStatus;
 import com.nageoffer.ai.ragent.ingestion.domain.pipeline.PipelineDefinition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Date;
 import java.util.List;
@@ -39,8 +45,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class TaskCheckpointStorePostgresIntegrationTest {
 
     @Autowired
@@ -58,14 +75,107 @@ class TaskCheckpointStorePostgresIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ChunkEmbeddingService chunkEmbeddingService;
+
     private String taskId;
 
     @AfterEach
     void cleanup() {
         if (taskId != null) {
+            jdbcTemplate.update("DELETE FROM t_ingestion_task_node WHERE task_id = ?", taskId);
             jdbcTemplate.update("DELETE FROM t_ingestion_task_payload WHERE task_id = ?", taskId);
             jdbcTemplate.update("DELETE FROM t_ingestion_task WHERE id = ?", taskId);
         }
+    }
+
+    @Test
+    void shouldResumeFailedUploadThroughAuthenticatedHttpEndpoint() throws Exception {
+        taskId = String.valueOf(System.currentTimeMillis());
+        taskMapper.insert(IngestionTaskDO.builder()
+                .id(taskId)
+                .pipelineId("pipeline-http")
+                .idempotencyKey("integration-http-" + taskId)
+                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder()
+                        .id("pipeline-http")
+                        .nodes(List.of(new com.nageoffer.ai.ragent.ingestion.domain.pipeline.NodeConfig(
+                                "fetch", "fetcher", null, null, null, null)))
+                        .edges(List.of())
+                        .build()))
+                .sourceType("file")
+                .sourceLocation("integration.txt")
+                .sourceFileName("integration.txt")
+                .status(IngestionStatus.FAILED.getValue())
+                .chunkCount(0)
+                .resumeCount(0)
+                .deleted(0)
+                .build());
+        payloadMapper.insert(IngestionTaskPayloadDO.builder()
+                .taskId(taskId)
+                .rawBytes("integration payload".getBytes())
+                .mimeType("text/plain")
+                .build());
+
+        String loginBody = mockMvc.perform(post("/auth/login")
+                        .contentType(APPLICATION_JSON)
+                        .content("{\"username\":\"admin\",\"password\":\"admin\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andReturn().getResponse().getContentAsString();
+        String token = objectMapper.readTree(loginBody).at("/data/token").asText();
+
+        mockMvc.perform(post("/ingestion/tasks/{id}/resume", taskId)
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.status").value("completed"));
+
+        IngestionTaskDO persisted = taskMapper.selectById(taskId);
+        assertEquals(IngestionStatus.COMPLETED.getValue(), persisted.getStatus());
+        assertEquals(1, persisted.getResumeCount());
+        assertEquals("fetch", persisted.getLastSuccessNodeId());
+        assertEquals(null, persisted.getLeaseExpiresAt());
+    }
+
+    @Test
+    void shouldClaimLeaseBeforeReembeddingCheckpointChunks() throws Exception {
+        taskId = String.valueOf(System.currentTimeMillis());
+        IngestionCheckpoint checkpoint = IngestionCheckpoint.builder()
+                .chunks(List.of(VectorChunk.builder().chunkId("checkpoint-1").content("checkpoint content").build()))
+                .build();
+        taskMapper.insert(IngestionTaskDO.builder()
+                .id(taskId)
+                .pipelineId("pipeline-claim-first")
+                .idempotencyKey("integration-claim-first-" + taskId)
+                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder().nodes(List.of()).build()))
+                .checkpointJson(objectMapper.writeValueAsString(checkpoint))
+                .sourceType("file")
+                .sourceLocation("checkpoint.txt")
+                .sourceFileName("checkpoint.txt")
+                .status(IngestionStatus.FAILED.getValue())
+                .chunkCount(1)
+                .resumeCount(0)
+                .deleted(0)
+                .build());
+        payloadMapper.insert(IngestionTaskPayloadDO.builder()
+                .taskId(taskId)
+                .rawBytes("checkpoint payload".getBytes())
+                .mimeType("text/plain")
+                .build());
+        doAnswer(invocation -> {
+            IngestionTaskDO claimed = taskMapper.selectById(taskId);
+            assertEquals(IngestionStatus.RUNNING.getValue(), claimed.getStatus());
+            assertNotNull(claimed.getExecutionLeaseToken());
+            assertTrue(claimed.getLeaseExpiresAt().after(new Date()));
+            return null;
+        }).when(chunkEmbeddingService).embed(any(), isNull());
+
+        checkpointStore.restoreUpload(taskId);
+
+        verify(chunkEmbeddingService, times(1)).embed(any(), isNull());
     }
 
     @Test

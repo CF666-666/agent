@@ -182,7 +182,21 @@ public class IngestionEngine {
 
         // 条件检查
         if (nodeConfig.getCondition() != null && !nodeConfig.getCondition().isNull()) {
-            if (!conditionEvaluator.evaluate(context, nodeConfig.getCondition())) {
+            boolean conditionMatched;
+            try {
+                conditionMatched = conditionEvaluator.evaluate(context, nodeConfig.getCondition());
+            } catch (RuntimeException e) {
+                context.getLogs().add(NodeLog.builder()
+                        .nodeId(nodeId)
+                        .nodeType(nodeType)
+                        .message("Node condition evaluation failed: " + e.getMessage())
+                        .durationMs(0)
+                        .success(false)
+                        .error(e.getMessage())
+                        .build());
+                return NodeResult.fail(e);
+            }
+            if (!conditionMatched) {
                 NodeResult skip = NodeResult.skip("条件未满足");
                 context.getLogs().add(NodeLog.builder()
                         .nodeId(nodeId)
