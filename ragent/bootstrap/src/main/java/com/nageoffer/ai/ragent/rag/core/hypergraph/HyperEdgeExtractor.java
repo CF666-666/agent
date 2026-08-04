@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * <ol>
  *   <li>文档 ≤ 2000 字 → 直接送 LLM 单次抽取</li>
  *   <li>文档 > 2000 字 → 按段落切分 → 逐段 LLM 抽取 → 合并全部超边</li>
- *   <li>任一段抽取失败 → 跳过该段，不影响其他段</li>
+ *   <li>任一段抽取失败 → 整份文档失败，不写入部分结果</li>
  * </ol>
  * <p>
  * 调用链：
@@ -136,8 +136,8 @@ public class HyperEdgeExtractor {
     /**
      * 对单段文本进行 LLM 抽取
      * <p>
-     * 内部 try-catch 保证 LLM 失败或 JSON 解析失败时返回空列表而非抛异常，
-     * 与长文档分段路径的逐段失败隔离语义一致。
+     * LLM 调用或 JSON 解析失败会抛出异常。调用方以文档为原子单位替换超边，
+     * 因此不能把失败伪装成空抽取结果。
      */
     private List<HyperEdge> extractFromSingleChunk(String chunkText, String source) {
         try {
@@ -152,13 +152,11 @@ public class HyperEdgeExtractor {
 
             String response = llmService.chat(request);
             if (response == null) {
-                log.warn("LLM 返回 null 响应。source: {}", source);
-                return Collections.emptyList();
+                throw new IllegalStateException("LLM returned null response");
             }
             return parseHyperedges(response, source);
         } catch (Exception e) {
-            log.warn("超边抽取失败。source: {}", source, e);
-            return Collections.emptyList();
+            throw new IllegalStateException("Hyperedge extraction failed for source: " + source, e);
         }
     }
 

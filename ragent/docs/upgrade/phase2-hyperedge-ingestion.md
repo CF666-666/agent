@@ -57,6 +57,13 @@ hyperedges. JSONL is used only when the persistent-store read fails, preventing 
 deleted document or an intentionally empty re-ingestion from being resurrected at
 process startup.
 
+## Extraction failure invariant
+
+Only an explicit LLM JSON array (`[]`) represents a valid empty extraction. LLM
+transport failures, null responses and malformed JSON fail the whole document
+extraction so the node cannot replace a document's existing hyperedges with a
+partial or empty result.
+
 ## Closure verification
 
 - Reactor compile: `mvn -pl bootstrap -am -DskipTests compile`;
