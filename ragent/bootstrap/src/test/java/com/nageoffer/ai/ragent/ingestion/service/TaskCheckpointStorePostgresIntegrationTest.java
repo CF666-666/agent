@@ -212,6 +212,45 @@ class TaskCheckpointStorePostgresIntegrationTest {
     }
 
     @Test
+    void shouldRejectCheckpointAndCompletionFromExpiredLeaseWithoutChangingProgress() throws Exception {
+        taskId = String.valueOf(System.currentTimeMillis());
+        Date expiredAt = new Date(System.currentTimeMillis() - 1000);
+        taskMapper.insert(IngestionTaskDO.builder()
+                .id(taskId)
+                .pipelineId("lease")
+                .idempotencyKey(taskId)
+                .pipelineSnapshotJson(objectMapper.writeValueAsString(PipelineDefinition.builder().nodes(List.of()).build()))
+                .sourceType("file")
+                .sourceLocation("expired.txt")
+                .sourceFileName("expired.txt")
+                .status(IngestionStatus.RUNNING.getValue())
+                .lastSuccessNodeId("previous")
+                .nextNodeId("next")
+                .executionLeaseToken("expired-lease-token")
+                .leaseExpiresAt(expiredAt)
+                .chunkCount(0)
+                .resumeCount(0)
+                .deleted(0)
+                .build());
+        IngestionContext context = IngestionContext.builder()
+                .taskId(taskId)
+                .executionLeaseToken("expired-lease-token")
+                .logs(List.of())
+                .build();
+
+        assertThrows(ClientException.class, () -> checkpointStore.checkpoint(context, "stale", null));
+        context.setStatus(IngestionStatus.COMPLETED);
+        assertThrows(ClientException.class, () -> checkpointStore.complete(context));
+
+        IngestionTaskDO persisted = taskMapper.selectById(taskId);
+        assertEquals(IngestionStatus.RUNNING.getValue(), persisted.getStatus());
+        assertEquals("previous", persisted.getLastSuccessNodeId());
+        assertEquals("next", persisted.getNextNodeId());
+        assertEquals("expired-lease-token", persisted.getExecutionLeaseToken());
+        assertEquals(expiredAt, persisted.getLeaseExpiresAt());
+    }
+
+    @Test
     void shouldPersistCheckpointAndCompletionJsonToPostgresJsonbColumns() throws Exception {
         taskId = String.valueOf(System.currentTimeMillis());
         taskMapper.insert(IngestionTaskDO.builder()

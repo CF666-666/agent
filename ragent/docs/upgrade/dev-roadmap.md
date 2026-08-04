@@ -25,6 +25,7 @@ This acceptance record closes the durability risks found after the original inge
 |---|---|:---:|
 | HTTP resume | Authenticated `POST /ingestion/tasks/{id}/resume` MockMvc test exercises controller, service, checkpoint store and PostgreSQL persistence. | Done |
 | Resume ownership | Conditional lease claim occurs before checkpoint restoration and embedding; restore setup failures release the lease and return the task to `FAILED`. | Done |
+| Lease validity | `checkpoint` and `complete` require `lease_expires_at > clock_timestamp()` in the same conditional update, so expired workers cannot overwrite progress. | Done |
 | Idempotent replacement | Vector-store replacement upserts new chunks before removing stale chunks; PostgreSQL performs both operations transactionally. | Done |
 | Condition observability | Invalid SpEL becomes a failed task with a node-level error log instead of a silent false route. | Done |
 | Dependency seams | `IngestionEngine` depends on `NodeExecutionExecutor`; task orchestration depends on `IngestionTaskProgressStore`, not the concrete adapters. | Done |
@@ -352,6 +353,7 @@ Week 8 ──┘  Phase 8（RAGAS 端到端评测体系）
 | 0-B | 技术前置验证（9 项） | ✅ 完成 | 07-24 | 07-24 | 9 项全部确认，Phase 0 完结 |
 | 0-C | 包路径规划 | ✅ 完成 | 07-24 | 07-24 | 新增 `multimodal/` + `hypergraph/` 包 |
 | 1 | 多模态文档解析管道 | ✅ 完成 | 07-25 | 07-25 | 5 个闭环全部完成，Phase 1 完结 |
+| 1A | 耐久摄取编排加固 | ✅ 完成 | 08-03 | 08-04 | DAG/重试/幂等写入/检查点恢复/租约有效性/HTTP 恢复验收；编排与进度存储已抽出 seam |
 | 2 | 图像检索链 | ✅ 完成 | 07-25 | 07-25 | 2 个闭环全部完成，Phase 2 完结 |
 | 3 | 超图引擎 | ✅ 完成 | 07-28 | 07-31 | 超边抽取 633 条，超图检索通道可用 |
 | 4 | 多路融合与答案增强 | ✅ 完成 | 07-31 | 08-01 | 6 个闭环全部完成，多源融合 + references 推送跑通 |

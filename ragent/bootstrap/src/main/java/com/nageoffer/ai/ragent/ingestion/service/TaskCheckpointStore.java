@@ -98,7 +98,8 @@ public class TaskCheckpointStore implements IngestionTaskProgressStore {
                 .set(IngestionTaskDO::getUpdatedBy, UserContext.getUsername())
                 .eq(IngestionTaskDO::getId, context.getTaskId())
                 .eq(IngestionTaskDO::getExecutionLeaseToken, context.getExecutionLeaseToken())
-                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue()));
+                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue())
+                .apply("lease_expires_at > clock_timestamp()"));
         assertLeaseOwner(updated);
     }
 
@@ -116,7 +117,8 @@ public class TaskCheckpointStore implements IngestionTaskProgressStore {
                 .setSql("metadata_json = CAST({0} AS jsonb)", writeJson(buildTaskMetadata(context)))
                 .eq(IngestionTaskDO::getId, context.getTaskId())
                 .eq(IngestionTaskDO::getExecutionLeaseToken, context.getExecutionLeaseToken())
-                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue()));
+                .eq(IngestionTaskDO::getStatus, IngestionStatus.RUNNING.getValue())
+                .apply("lease_expires_at > clock_timestamp()"));
         assertLeaseOwner(updated);
     }
 
