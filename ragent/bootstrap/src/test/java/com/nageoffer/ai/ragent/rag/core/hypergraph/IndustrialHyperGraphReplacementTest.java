@@ -28,7 +28,9 @@ class IndustrialHyperGraphReplacementTest {
 
     @Test
     void shouldReplaceOldDocumentEdgesWithoutRemovingOtherDocuments() {
-        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, new ConfigurableIndustrialEntityNormalizer());
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
         graph.addHyperedges(List.of(
                 HyperEdge.builder().sourceDocument("doc-a").equipment("fan-a").fault("old-fault").build(),
                 HyperEdge.builder().sourceDocument("doc-b").equipment("pump-b").fault("pump-fault").build()));

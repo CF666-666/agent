@@ -57,6 +57,7 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
     private final HyperEdgeExtractor extractor;
     private final IndustrialEntityNormalizer entityNormalizer;
+    private final HyperEdgeMatchScorer matchScorer;
 
     // ==================== 存储结构 ====================
 
@@ -186,11 +187,12 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
             return Collections.emptyList();
         }
 
+        Set<String> normalizedQueries = entityNormalizer.normalizeAll(queryEntities);
         lock.readLock().lock();
         try {
             // 统计每条超边的命中数
             Map<Integer, Integer> hitCounts = new HashMap<>();
-            for (String entity : entityNormalizer.normalizeAll(queryEntities)) {
+            for (String entity : normalizedQueries) {
                 Set<Integer> matchedEdges = entityToEdgeIdx.get(entity);
                 if (matchedEdges != null) {
                     for (int edgeIdx : matchedEdges) {
@@ -205,7 +207,9 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
             // 按命中数降序 → Top-N
             return hitCounts.entrySet().stream()
-                    .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
+                    .sorted(Comparator.comparingDouble((Map.Entry<Integer, Integer> entry) ->
+                                    matchScorer.score(hyperEdges.get(entry.getKey()), normalizedQueries)).reversed()
+                            .thenComparing(Map.Entry::getKey))
                     .limit(maxEdges)
                     .map(entry -> new SubgraphMatchResult(
                             hyperEdges.get(entry.getKey()),

@@ -31,7 +31,8 @@ class IndustrialHyperGraphNormalizationTest {
     void shouldMatchAliasesAgainstCanonicalDocumentEntities() {
         ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
         normalizer.setAliases(Map.of("风机1号", "1号鼓风机", "跳机", "过载跳闸"));
-        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer);
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
         graph.addHyperedges(List.of(HyperEdge.builder()
                 .equipment("1号鼓风机")
                 .fault("过载跳闸")
@@ -48,7 +49,8 @@ class IndustrialHyperGraphNormalizationTest {
     void shouldReturnTwoHopPathWithBridgeAndSourceEvidence() {
         ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
         normalizer.setAliases(Map.of("泵一号", "1号泵"));
-        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer);
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
         graph.addHyperedges(List.of(
                 HyperEdge.builder().edgeId("edge-pump").equipment("1号泵").parameter("轴承温度高")
                         .sourceDocument("pump-sop.pdf").sourceChunkId("pump#2").build(),
@@ -65,5 +67,21 @@ class IndustrialHyperGraphNormalizationTest {
         assertEquals(List.of("轴承温度高"), path.bridgeEntities());
         assertEquals(List.of("pump-sop.pdf", "lube-sop.pdf"),
                 path.hyperEdges().stream().map(HyperEdge::getSourceDocument).toList());
+    }
+
+    @Test
+    void shouldRankEquipmentMatchAboveConditionOnlyMatch() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+        graph.addHyperedges(List.of(
+                HyperEdge.builder().edgeId("condition-edge").condition("高温工况").fault("润滑不足").build(),
+                HyperEdge.builder().edgeId("equipment-edge").equipment("1号泵").fault("机械故障").build()));
+
+        List<IndustrialHyperGraph.SubgraphMatchResult> matches = graph.matchSubgraph(
+                Set.of("高温工况", "1号泵"), 2);
+
+        assertEquals(List.of("equipment-edge", "condition-edge"),
+                matches.stream().map(match -> match.hyperEdge().getEdgeId()).toList());
     }
 }

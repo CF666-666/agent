@@ -42,3 +42,9 @@ path. Its metadata contains the hop count, bridge entities, a readable relation 
 and per-edge document/chunk/version evidence. This keeps graph traversal inside the
 hypergraph module while allowing downstream fusion and SSE references to display a
 traceable relation path without parsing natural-language text.
+
+## Typed match scoring closure
+
+`HyperEdgeMatchScorer` centralizes field-role weighting for direct hyperedge ranking.
+Default weights favor equipment, fault, and parameter matches over generic operating
+conditions; deployments may override them under `ragent.hypergraph.entity-weights`.
