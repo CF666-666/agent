@@ -21,6 +21,7 @@ import com.nageoffer.ai.ragent.framework.convention.Result;
 import com.nageoffer.ai.ragent.framework.idempotent.IdempotentSubmit;
 import com.nageoffer.ai.ragent.framework.web.Results;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import com.nageoffer.ai.ragent.rag.service.RAGChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,9 +52,14 @@ public class RAGChatController {
     public SseEmitter chat(@RequestParam String question,
                            @RequestParam(required = false) String conversationId,
                            @RequestParam(required = false, defaultValue = "false") Boolean deepThinking,
-                           @RequestParam(required = false, defaultValue = "true") Boolean enableRewrite) {
+                           @RequestParam(required = false, defaultValue = "true") Boolean enableRewrite,
+                           @RequestParam(required = false, defaultValue = "true") Boolean enableImage,
+                           @RequestParam(required = false, defaultValue = "true") Boolean enableHyperGraph,
+                           @RequestParam(required = false, defaultValue = "true") Boolean enableFusion) {
         SseEmitter emitter = new SseEmitter(ragDefaultProperties.getSseTimeoutMs());
-        ragChatService.streamChat(question, conversationId, deepThinking, enableRewrite, emitter);
+        RetrievalOptions options = RetrievalOptions.from(
+                enableRewrite, enableImage, enableHyperGraph, enableFusion);
+        ragChatService.streamChat(question, conversationId, deepThinking, options, emitter);
         return emitter;
     }
 

@@ -69,9 +69,12 @@ public class MultiSourceFusionProcessor implements SearchResultPostProcessor {
 
     @Override
     public boolean isEnabled(SearchContext context) {
-        boolean enabled = fusionProperties.isEnabled();
+        boolean enabled = context != null
+                && context.getRetrievalOptions() != null
+                && context.getRetrievalOptions().enableFusion()
+                && fusionProperties.isEnabled();
         if (!enabled) {
-            log.info("多源融合已关闭（ragent.fusion.enabled=false），跳过融合处理");
+            log.info("多源融合已关闭（全局配置或请求开关），跳过融合处理");
         }
         return enabled;
     }

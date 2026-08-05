@@ -25,6 +25,7 @@ import com.nageoffer.ai.ragent.rag.core.retrieve.channel.SearchChannelResult;
 import com.nageoffer.ai.ragent.rag.core.retrieve.channel.SearchContext;
 import com.nageoffer.ai.ragent.rag.core.retrieve.postprocessor.SearchResultPostProcessor;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -64,8 +65,16 @@ public class MultiChannelRetrievalEngine {
      */
     @RagTraceNode(name = "multi-channel-retrieval", type = "RETRIEVE_CHANNEL")
     public List<RetrievedChunk> retrieveKnowledgeChannels(List<SubQuestionIntent> subIntents, int topK) {
+        return retrieveKnowledgeChannels(subIntents, topK, RetrievalOptions.defaults());
+    }
+
+    @RagTraceNode(name = "multi-channel-retrieval", type = "RETRIEVE_CHANNEL")
+    public List<RetrievedChunk> retrieveKnowledgeChannels(List<SubQuestionIntent> subIntents,
+                                                          int topK,
+                                                          RetrievalOptions retrievalOptions) {
         // 构建检索上下文
-        SearchContext context = buildSearchContext(subIntents, topK);
+        SearchContext context = buildSearchContext(subIntents, topK,
+                retrievalOptions == null ? RetrievalOptions.defaults() : retrievalOptions);
 
         // 【阶段1：多通道并行检索】
         List<SearchChannelResult> channelResults = executeSearchChannels(context);
@@ -207,7 +216,9 @@ public class MultiChannelRetrievalEngine {
     /**
      * 构建检索上下文
      */
-    private SearchContext buildSearchContext(List<SubQuestionIntent> subIntents, int topK) {
+    private SearchContext buildSearchContext(List<SubQuestionIntent> subIntents,
+                                             int topK,
+                                             RetrievalOptions retrievalOptions) {
         String question = CollUtil.isEmpty(subIntents) ? "" : subIntents.get(0).subQuestion();
 
         return SearchContext.builder()
@@ -215,6 +226,7 @@ public class MultiChannelRetrievalEngine {
                 .rewrittenQuestion(question)
                 .intents(subIntents)
                 .topK(topK)
+                .retrievalOptions(retrievalOptions)
                 .build();
     }
 }

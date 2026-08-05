@@ -128,7 +128,7 @@ public class StreamChatPipeline {
 
     private void rewriteQuery(StreamChatContext ctx) {
         RewriteResult rewriteResult;
-        if (ctx.isEnableRewrite()) {
+        if (ctx.getRetrievalOptions().enableRewrite()) {
             rewriteResult = queryRewriteService.rewriteWithSplit(ctx.getQuestion(), ctx.getHistory());
         } else {
             // 评测模式：跳过查询重写，直接使用原始问题（用于 A/B 对比重写对检索的增益）
@@ -180,7 +180,7 @@ public class StreamChatPipeline {
     }
 
     private RetrievalContext retrieve(StreamChatContext ctx) {
-        return retrievalEngine.retrieve(ctx.getSubIntents(), DEFAULT_TOP_K);
+        return retrievalEngine.retrieve(ctx.getSubIntents(), DEFAULT_TOP_K, ctx.getRetrievalOptions());
     }
 
     private boolean handleEmptyRetrieval(StreamChatContext ctx, RetrievalContext retrievalCtx) {

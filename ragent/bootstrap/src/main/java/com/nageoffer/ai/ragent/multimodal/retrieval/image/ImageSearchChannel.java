@@ -65,9 +65,13 @@ public class ImageSearchChannel implements SearchChannel {
 
     @Override
     public boolean isEnabled(SearchContext context) {
+        if (context == null || context.getRetrievalOptions() == null
+                || !context.getRetrievalOptions().enableImage()) {
+            return false;
+        }
         // Phase 2 MVP: 不检查意图，直接启用。
         // 后续可加意图过滤：仅识别到设备/图纸类问题时启用。
-        return context != null && context.getMainQuestion() != null
+        return context.getMainQuestion() != null
                 && !context.getMainQuestion().isBlank();
     }
 

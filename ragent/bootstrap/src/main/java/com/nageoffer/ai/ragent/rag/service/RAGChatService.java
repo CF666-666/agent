@@ -17,6 +17,7 @@
 
 package com.nageoffer.ai.ragent.rag.service;
 
+import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
@@ -31,10 +32,11 @@ public interface RAGChatService {
      * @param question       用户问题
      * @param conversationId 会话 ID（可选，空时创建新会话）
      * @param deepThinking   是否开启深度思考模式
-     * @param enableRewrite  是否启用查询重写（评测 A/B 用，默认 true）
+     * @param options         请求级检索能力开关（缺省时默认全开）
      * @param emitter        SSE 发射器
      */
-    void streamChat(String question, String conversationId, Boolean deepThinking, Boolean enableRewrite, SseEmitter emitter);
+    void streamChat(String question, String conversationId, Boolean deepThinking,
+                    RetrievalOptions options, SseEmitter emitter);
 
     /**
      * 停止指定任务 ID 的流式会话

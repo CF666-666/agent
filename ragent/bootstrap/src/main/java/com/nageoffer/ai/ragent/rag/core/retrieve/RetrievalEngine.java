@@ -22,6 +22,7 @@ import cn.hutool.core.util.StrUtil;
 import com.nageoffer.ai.ragent.rag.dto.KbResult;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalContext;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
 import com.nageoffer.ai.ragent.framework.trace.RagTraceNode;
 import com.nageoffer.ai.ragent.rag.core.intent.IntentNode;
@@ -74,11 +75,22 @@ public class RetrievalEngine {
      */
     @RagTraceNode(name = "retrieval-engine", type = "RETRIEVE")
     public RetrievalContext retrieve(List<SubQuestionIntent> subIntents, int topK) {
+        return retrieve(subIntents, topK, RetrievalOptions.defaults());
+    }
+
+    @RagTraceNode(name = "retrieval-engine", type = "RETRIEVE")
+    public RetrievalContext retrieve(List<SubQuestionIntent> subIntents,
+                                     int topK,
+                                     RetrievalOptions retrievalOptions) {
         if (CollUtil.isEmpty(subIntents)) {
             return RetrievalContext.builder()
                     .intentChunks(Map.of())
                     .build();
         }
+
+        RetrievalOptions actualOptions = retrievalOptions == null
+                ? RetrievalOptions.defaults()
+                : retrievalOptions;
 
         int finalTopK = topK > 0 ? topK : DEFAULT_TOP_K;
         List<CompletableFuture<SubQuestionContext>> tasks = subIntents.stream()
@@ -87,7 +99,8 @@ public class RetrievalEngine {
                             try {
                                 return buildSubQuestionContext(
                                         si,
-                                        resolveSubQuestionTopK(si, finalTopK)
+                                        resolveSubQuestionTopK(si, finalTopK),
+                                        actualOptions
                                 );
                             } catch (Exception e) {
                                 log.error("子问题上下文构建失败，降级为空上下文，question：{}", si.subQuestion(), e);
@@ -124,11 +137,13 @@ public class RetrievalEngine {
                 .build();
     }
 
-    private SubQuestionContext buildSubQuestionContext(SubQuestionIntent intent, int topK) {
+    private SubQuestionContext buildSubQuestionContext(SubQuestionIntent intent,
+                                                       int topK,
+                                                       RetrievalOptions retrievalOptions) {
         List<NodeScore> kbIntents = NodeScoreFilters.kb(intent.nodeScores());
         List<NodeScore> mcpIntents = NodeScoreFilters.mcp(intent.nodeScores());
 
-        KbResult kbResult = retrieveAndRerank(intent, kbIntents, topK);
+        KbResult kbResult = retrieveAndRerank(intent, kbIntents, topK, retrievalOptions);
 
         String mcpContext = CollUtil.isNotEmpty(mcpIntents)
                 ? executeMcpAndMerge(intent.subQuestion(), mcpIntents)
@@ -171,10 +186,14 @@ public class RetrievalEngine {
         return contextFormatter.formatMcpContext(responses, mcpIntents);
     }
 
-    private KbResult retrieveAndRerank(SubQuestionIntent intent, List<NodeScore> kbIntents, int topK) {
+    private KbResult retrieveAndRerank(SubQuestionIntent intent,
+                                       List<NodeScore> kbIntents,
+                                       int topK,
+                                       RetrievalOptions retrievalOptions) {
         // 使用多通道检索引擎（是否启用全局检索由置信度阈值决定）
         List<SubQuestionIntent> subIntents = List.of(intent);
-        List<RetrievedChunk> chunks = multiChannelRetrievalEngine.retrieveKnowledgeChannels(subIntents, topK);
+        List<RetrievedChunk> chunks = multiChannelRetrievalEngine.retrieveKnowledgeChannels(
+                subIntents, topK, retrievalOptions);
 
         if (CollUtil.isEmpty(chunks)) {
             return KbResult.empty();

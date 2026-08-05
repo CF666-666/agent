@@ -82,6 +82,8 @@ public class HyperGraphSearchChannel implements SearchChannel {
     @Override
     public boolean isEnabled(SearchContext context) {
         return context != null
+                && context.getRetrievalOptions() != null
+                && context.getRetrievalOptions().enableHyperGraph()
                 && context.getMainQuestion() != null
                 && !context.getMainQuestion().isBlank();
     }

@@ -24,6 +24,7 @@ import com.nageoffer.ai.ragent.framework.trace.RagTraceContext;
 import com.nageoffer.ai.ragent.infra.chat.StreamCallback;
 import com.nageoffer.ai.ragent.rag.aop.ChatRateLimit;
 import com.nageoffer.ai.ragent.rag.service.RAGChatService;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import com.nageoffer.ai.ragent.rag.service.handler.StreamCallbackFactory;
 import com.nageoffer.ai.ragent.rag.service.handler.StreamTaskManager;
 import com.nageoffer.ai.ragent.rag.service.pipeline.StreamChatContext;
@@ -47,12 +48,15 @@ public class RAGChatServiceImpl implements RAGChatService {
 
     @Override
     @ChatRateLimit
-    public void streamChat(String question, String conversationId, Boolean deepThinking, Boolean enableRewrite, SseEmitter emitter) {
+    public void streamChat(String question, String conversationId, Boolean deepThinking,
+                           RetrievalOptions options, SseEmitter emitter) {
+        RetrievalOptions actualOptions = options == null ? RetrievalOptions.defaults() : options;
         String actualConversationId = StrUtil.isBlank(conversationId) ? IdUtil.getSnowflakeNextIdStr() : conversationId;
         String taskId = StrUtil.isBlank(RagTraceContext.getTaskId())
                 ? IdUtil.getSnowflakeNextIdStr()
                 : RagTraceContext.getTaskId();
-        log.info("开始流式对话，会话ID：{}，任务ID：{}，enableRewrite：{}", actualConversationId, taskId, enableRewrite);
+        log.info("开始流式对话，会话ID：{}，任务ID：{}，retrievalOptions：{}",
+                actualConversationId, taskId, actualOptions);
         boolean thinkingEnabled = Boolean.TRUE.equals(deepThinking);
 
         StreamCallback callback = callbackFactory.createChatEventHandler(emitter, actualConversationId, taskId);
@@ -64,7 +68,7 @@ public class RAGChatServiceImpl implements RAGChatService {
                 .deepThinking(thinkingEnabled)
                 .userId(UserContext.getUserId())
                 .callback(callback)
-                .enableRewrite(enableRewrite == null || enableRewrite)
+                .retrievalOptions(actualOptions)
                 .build();
 
         try {
