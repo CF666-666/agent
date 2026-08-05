@@ -57,6 +57,7 @@ class EvaluationArtifactsTest(unittest.TestCase):
 
         descriptor = retrieval_eval.describe_dataset(dataset)
         options = retrieval_eval.retrieval_options(False, False, True, False, "C-hypergraph")
+        runtime = retrieval_eval.runtime_metadata("local-isolated", 12)
 
         self.assertEqual(64, len(descriptor["sha256"]))
         self.assertEqual("scripts/eval/datasets/industrial_eval_v2.jsonl", descriptor["path"])
@@ -65,6 +66,7 @@ class EvaluationArtifactsTest(unittest.TestCase):
              "enableHyperGraph": True, "enableFusion": False},
             options,
         )
+        self.assertEqual({"label": "local-isolated", "request_timeout_seconds": 12}, runtime)
 
     def test_evaluation_slice_applies_offset_after_scene_filtering(self):
         items = [
@@ -108,6 +110,25 @@ class EvaluationArtifactsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "different retrieval options"):
             merge_eval_reports.merge_documents([text_only, full_chain],
                                                [Path("A.json"), Path("D.json")])
+
+    def test_report_merger_rejects_mismatched_runtime(self):
+        base = {
+            "schema_version": 2,
+            "mode": "rewrite-off",
+            "dataset": {"path": "dataset.jsonl", "sha256": "a" * 64},
+            "retrieval_options": {"label": "C", "enableRewrite": False,
+                                  "enableImage": False, "enableHyperGraph": True,
+                                  "enableFusion": True},
+            "summary": {},
+            "results": [],
+        }
+
+        with self.assertRaisesRegex(ValueError, "different runtimes"):
+            merge_eval_reports.merge_documents(
+                [{**base, "runtime": {"label": "rate-limit-on", "request_timeout_seconds": 12}},
+                 {**base, "runtime": {"label": "rate-limit-off", "request_timeout_seconds": 12}}],
+                [Path("one.json"), Path("two.json")],
+            )
 
     def test_report_merger_retains_shared_provenance(self):
         document = {

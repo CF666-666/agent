@@ -205,6 +205,13 @@ def retrieval_options(enable_rewrite: bool,
     }
 
 
+def runtime_metadata(label: str, request_timeout_seconds: int) -> dict:
+    return {
+        "label": label,
+        "request_timeout_seconds": request_timeout_seconds,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description="检索指标 Runner")
     parser.add_argument("--base-url", default="http://localhost:9090/api/ragent")
@@ -217,6 +224,8 @@ def main():
     parser.add_argument("--label", default="",
                         help="本次实验配置标签，例如 A-text-baseline 或 D-full-chain")
     parser.add_argument("--limit", type=int, default=0, help="仅评测前 N 条(调试用,0=全部)")
+    parser.add_argument("--runtime-label", default="",
+                        help="Explicit runtime label, for example seeded-hyperedges-rate-limit-disabled.")
     parser.add_argument("--offset", type=int, default=0,
                         help="Start after N scene-filtered samples; use with --limit for batched runs.")
     parser.add_argument("--enable-rewrite", action="store_true", default=True,
@@ -305,6 +314,7 @@ def main():
         "dataset": describe_dataset(args.dataset),
         "retrieval_options": retrieval_options(
             enable_rewrite, enable_image, enable_hypergraph, enable_fusion, args.label),
+        "runtime": runtime_metadata(args.runtime_label, args.request_timeout),
         "evaluation_slice": {
             "scenes": args.scenes,
             "offset": args.offset,
