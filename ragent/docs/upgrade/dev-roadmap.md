@@ -226,6 +226,16 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 **Phase 2A 验收**：超边不会因无效 LLM 输出、空状态重启或文档删除而复活或被误清空；相关单元、路由与持久化替换回归可独立运行。
 
+### Phase 2B：受控 Demo 超边导入（08-05）
+
+| # | 闭环 | 关键产出 | 优先级 | 状态 |
+|:--:|------|----------|:--:|:--:|
+| 2B.1 | 显式种子导入 | `phase5.import-demo-hyperedges=true` 才导入 JSONL，默认不改变持久化库 | P0 | ✅ |
+| 2B.2 | 文档级幂等替换 | 按 `sourceDocument` 分组调用 `HyperEdgeDocumentStore.replaceDocument`，重导入不叠加旧超边 | P0 | ✅ |
+| 2B.3 | 输入原子性 | 缺失 `edgeId` / `sourceDocument` 或扩展实体结构无效时，在首次写入前失败 | P0 | ✅ |
+
+**Phase 2B 验收**：本地 Demo/评测环境可显式把版本化 JSONL 转为持久化数据；生产加载器仍只以持久化库为准，不会发生隐式 JSONL 回退。
+
 ---
 
 ## Phase 4：多路融合与答案增强（Week 5，3-5 天）
@@ -378,6 +388,7 @@ Week 8 ──┘  Phase 8（RAGAS 端到端评测体系）
 | 1 | 多模态文档解析管道 | ✅ 完成 | 07-25 | 07-25 | 5 个闭环全部完成，Phase 1 完结 |
 | 1A | 耐久摄取编排加固 | ✅ 完成 | 08-03 | 08-04 | DAG/重试/幂等写入/检查点恢复/租约有效性/HTTP 恢复验收；条件、路由、执行与进度存储均已抽出 seam |
 | 2A | 超边入库与生命周期一致性 | ✅ 完成 | 08-04 | 08-05 | `hyperedge_extract` 节点、证据持久化/替换、空状态启动恢复、提取失败原子性、知识文档删除清理；节点输出已通过 `NodeOutputProjector` seam 扩展 |
+| 2B | 受控 Demo 超边导入 | ✅ 完成 | 08-05 | 08-05 | 显式属性触发 JSONL → PostgreSQL 按文档替换，默认不执行；为空库 Demo/评测环境补齐可追溯数据源且不破坏 2A 的无回退语义 |
 | 8.2-A | 请求级检索通道开关 | ✅ 完成 | 08-05 | 08-05 | `RetrievalOptions` 由 `/rag/v3/chat` 透传至检索上下文；图像、超图和融合开关均为请求隔离，默认保持全开 |
 | 8.2-B | 可复现分层评测工件 | ✅ 完成 | 08-05 | 08-05 | 固定种子生成 100 条 `fact/colloquial/image/relation` 样本；报告固化数据集 SHA-256、四类开关和标签，合并时拒绝混合配置 |
 | 8.2-C | 隔离服务 A/B 重跑 | ⏳ 待执行 | - | - | 当前机器无运行中的 RAG 服务；不得将缺少 schema v2 配置元数据的旧快照作为正式基线 |
