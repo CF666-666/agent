@@ -66,6 +66,22 @@ class EvaluationArtifactsTest(unittest.TestCase):
             options,
         )
 
+    def test_evaluation_slice_applies_offset_after_scene_filtering(self):
+        items = [
+            {"scene": "fact", "query": "fact-1"},
+            {"scene": "relation", "query": "relation-1"},
+            {"scene": "relation", "query": "relation-2"},
+            {"scene": "relation", "query": "relation-3"},
+        ]
+
+        selected = retrieval_eval.select_evaluation_items(items, "relation", offset=1, limit=1)
+
+        self.assertEqual(["relation-2"], [item["query"] for item in selected])
+        with self.assertRaisesRegex(ValueError, "offset"):
+            retrieval_eval.select_evaluation_items(items, "relation", offset=-1, limit=0)
+        with self.assertRaisesRegex(ValueError, "empty"):
+            retrieval_eval.select_evaluation_items(items, "relation", offset=3, limit=1)
+
     def test_report_merger_rejects_mismatched_retrieval_options(self):
         base = {
             "schema_version": 2,
@@ -102,6 +118,21 @@ class EvaluationArtifactsTest(unittest.TestCase):
         self.assertEqual(document["dataset"], merged["dataset"])
         self.assertEqual(document["retrieval_options"], merged["retrieval_options"])
         self.assertEqual(1, merged["summary"]["total"])
+
+    def test_report_merger_rejects_duplicate_queries(self):
+        document = {
+            "schema_version": 2,
+            "mode": "rewrite-off",
+            "dataset": {"path": "dataset.jsonl", "sha256": "a" * 64},
+            "retrieval_options": {"label": "C", "enableRewrite": False,
+                                  "enableImage": False, "enableHyperGraph": True,
+                                  "enableFusion": True},
+            "summary": {},
+            "results": [{"query": "same query"}],
+        }
+
+        with self.assertRaisesRegex(ValueError, "duplicate queries"):
+            merge_eval_reports.merge_documents([document, document], [Path("one.json"), Path("two.json")])
 
 
 if __name__ == "__main__":

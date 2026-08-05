@@ -152,6 +152,25 @@ def load_dataset(path: Path):
     return items
 
 
+def select_evaluation_items(items, scenes: str, offset: int, limit: int):
+    """Select a deterministic, non-empty evaluation slice after scene filtering."""
+    if offset < 0:
+        raise ValueError("evaluation offset must be greater than or equal to zero")
+    if limit < 0:
+        raise ValueError("evaluation limit must be greater than or equal to zero")
+
+    selected = items
+    if scenes.strip():
+        selected_scenes = {scene.strip() for scene in scenes.split(",") if scene.strip()}
+        selected = [item for item in selected if item.get("scene") in selected_scenes]
+    selected = selected[offset:]
+    if limit > 0:
+        selected = selected[:limit]
+    if not selected:
+        raise ValueError("evaluation dataset is empty after scene, offset and limit filters")
+    return selected
+
+
 def describe_dataset(path: Path) -> dict:
     """Return stable provenance for an evaluation dataset."""
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -192,6 +211,8 @@ def main():
     parser.add_argument("--label", default="",
                         help="本次实验配置标签，例如 A-text-baseline 或 D-full-chain")
     parser.add_argument("--limit", type=int, default=0, help="仅评测前 N 条(调试用,0=全部)")
+    parser.add_argument("--offset", type=int, default=0,
+                        help="Start after N scene-filtered samples; use with --limit for batched runs.")
     parser.add_argument("--enable-rewrite", action="store_true", default=True,
                         help="是否启用查询重写(默认启用;配合 A/B 对比关闭)")
     parser.add_argument("--disable-rewrite", action="store_true", default=False,
@@ -213,13 +234,7 @@ def main():
     print(f"[retrieval_eval] 登录 {args.base_url} ...")
     token = login(args.base_url, args.username, args.password)
     items = load_dataset(args.dataset)
-    if args.scenes.strip():
-        selected_scenes = {scene.strip() for scene in args.scenes.split(",") if scene.strip()}
-        items = [item for item in items if item.get("scene") in selected_scenes]
-    if args.limit > 0:
-        items = items[: args.limit]
-    if not items:
-        raise ValueError("evaluation dataset is empty after scene and limit filters")
+    items = select_evaluation_items(items, args.scenes, args.offset, args.limit)
     mode = "rewrite-on" if enable_rewrite else "rewrite-off"
     print(f"[retrieval_eval] 评测集 {len(items)} 条 | 查询重写: {'开启' if enable_rewrite else '关闭'}")
 
@@ -283,6 +298,12 @@ def main():
         "dataset": describe_dataset(args.dataset),
         "retrieval_options": retrieval_options(
             enable_rewrite, enable_image, enable_hypergraph, enable_fusion, args.label),
+        "evaluation_slice": {
+            "scenes": args.scenes,
+            "offset": args.offset,
+            "limit": args.limit,
+            "count": len(results),
+        },
         "summary": summary,
         "results": results,
     }

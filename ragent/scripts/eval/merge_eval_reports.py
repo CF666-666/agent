@@ -68,6 +68,9 @@ def merge_documents(documents: list[dict], report_paths: list[Path]) -> dict:
         raise ValueError("reports use different retrieval options")
 
     results = [result for document in documents for result in document.get("results", [])]
+    queries = [result.get("query") for result in results]
+    if len(queries) != len(set(queries)):
+        raise ValueError("reports contain duplicate queries")
     return {
         "schema_version": REPORT_SCHEMA_VERSION,
         "mode": documents[0]["mode"],
@@ -76,6 +79,7 @@ def merge_documents(documents: list[dict], report_paths: list[Path]) -> dict:
         "summary": summarize(results),
         "results": results,
         "batch_reports": [str(path) for path in report_paths],
+        "batch_slices": [document.get("evaluation_slice") for document in documents],
     }
 
 
