@@ -268,8 +268,9 @@ public class HyperEdgeExtractor {
     /**
      * 解析 LLM 返回的 JSON 数组，逐字段填充 HyperEdge
      * <p>
-     * 防御性解析：strip markdown → 截取 [...] → Gson 解析 → 逐字段读取。
-     * 个别字段缺失或非法不影响其他字段。
+     * The complete response must be a JSON array. Only an explicit empty array
+     * represents a successful empty extraction; explanatory text and non-object
+     * array elements are extraction failures.
      *
      * @param llmResponse    LLM 原始响应文本
      * @param sourceDocument 来源文档路径
@@ -277,23 +278,20 @@ public class HyperEdgeExtractor {
      * @throws IllegalArgumentException 响应中无合法 JSON 数组
      */
     private List<HyperEdge> parseHyperedges(String llmResponse, String sourceDocument) {
-        String cleaned = llmResponse.trim()
-                .replaceAll("```json\\s*", "")
-                .replaceAll("```\\s*", "");
-
-        int start = cleaned.indexOf('[');
-        int end = cleaned.lastIndexOf(']');
-        if (start < 0 || end < 0 || start >= end) {
+        String jsonArray = llmResponse.trim();
+        if (!jsonArray.startsWith("[") || !jsonArray.endsWith("]")) {
             throw new IllegalArgumentException("LLM 响应中未找到 JSON 数组: " + llmResponse);
         }
 
-        String jsonArray = cleaned.substring(start, end + 1);
         JsonArray array = GSON.fromJson(jsonArray, JsonArray.class);
+        if (array == null) {
+            throw new IllegalArgumentException("LLM response must be a JSON array: " + llmResponse);
+        }
 
         List<HyperEdge> edges = new ArrayList<>();
         for (JsonElement element : array) {
             if (!element.isJsonObject()) {
-                continue;
+                throw new IllegalArgumentException("Hyperedge array elements must be JSON objects: " + element);
             }
             JsonObject obj = element.getAsJsonObject();
 

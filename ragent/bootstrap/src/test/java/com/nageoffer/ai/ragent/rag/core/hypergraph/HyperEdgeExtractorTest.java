@@ -21,6 +21,7 @@ import com.nageoffer.ai.ragent.infra.chat.LLMService;
 import com.nageoffer.ai.ragent.framework.convention.ChatRequest;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -44,6 +45,29 @@ class HyperEdgeExtractorTest {
         when(llmService.chat(any(ChatRequest.class))).thenReturn("not-json");
         HyperEdgeExtractor extractor = new HyperEdgeExtractor(llmService);
 
+        assertThrows(IllegalStateException.class,
+                () -> extractor.extractHyperedges("Fan-1 overload trip", "ingestion:document-1"));
+    }
+
+    @Test
+    void shouldAcceptOnlyACompleteEmptyJsonArrayAsEmptyExtraction() {
+        LLMService llmService = mock(LLMService.class);
+        when(llmService.chat(any(ChatRequest.class))).thenReturn("[]");
+        HyperEdgeExtractor extractor = new HyperEdgeExtractor(llmService);
+
+        assertTrue(extractor.extractHyperedges("No industrial fact", "ingestion:document-1").isEmpty());
+    }
+
+    @Test
+    void shouldRejectInvalidResponsesThatPreviouslyLookedLikeEmptyExtraction() {
+        LLMService llmService = mock(LLMService.class);
+        when(llmService.chat(any(ChatRequest.class))).thenReturn("说明：[]", "[null]", "[\"unexpected\"]");
+        HyperEdgeExtractor extractor = new HyperEdgeExtractor(llmService);
+
+        assertThrows(IllegalStateException.class,
+                () -> extractor.extractHyperedges("Fan-1 overload trip", "ingestion:document-1"));
+        assertThrows(IllegalStateException.class,
+                () -> extractor.extractHyperedges("Fan-1 overload trip", "ingestion:document-1"));
         assertThrows(IllegalStateException.class,
                 () -> extractor.extractHyperedges("Fan-1 overload trip", "ingestion:document-1"));
     }

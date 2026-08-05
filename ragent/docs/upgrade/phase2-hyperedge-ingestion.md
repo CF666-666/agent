@@ -59,10 +59,10 @@ process startup.
 
 ## Extraction failure invariant
 
-Only an explicit LLM JSON array (`[]`) represents a valid empty extraction. LLM
-transport failures, null responses and malformed JSON fail the whole document
-extraction so the node cannot replace a document's existing hyperedges with a
-partial or empty result.
+Only a complete, trimmed LLM JSON array (`[]`) represents a valid empty
+extraction. LLM transport failures, null responses, explanatory text, malformed
+JSON and non-object array elements fail the whole document extraction so the node
+cannot replace a document's existing hyperedges with a partial or empty result.
 
 ## Knowledge-document identity invariant
 
