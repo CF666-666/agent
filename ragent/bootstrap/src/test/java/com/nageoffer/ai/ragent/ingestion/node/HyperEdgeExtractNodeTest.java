@@ -88,6 +88,23 @@ class HyperEdgeExtractNodeTest {
     }
 
     @Test
+    void shouldFailWhenEveryChunkIsBlankInsteadOfReplacingExistingHyperedges() {
+        IndustrialHyperGraph hyperGraph = mock(IndustrialHyperGraph.class);
+        HyperEdgeDocumentStore hyperEdgeStore = mock(HyperEdgeDocumentStore.class);
+        HyperEdgeExtractNode node = new HyperEdgeExtractNode(hyperGraph, hyperEdgeStore);
+        IngestionContext context = IngestionContext.builder()
+                .taskId("task-blank")
+                .chunks(List.of(VectorChunk.builder().content("   ").build()))
+                .build();
+
+        NodeResult result = node.execute(context, NodeConfig.builder().build());
+
+        assertFalse(result.isSuccess());
+        verifyNoInteractions(hyperGraph);
+        verifyNoInteractions(hyperEdgeStore);
+    }
+
+    @Test
     void shouldNotIndexPartialEdgesWhenExtractionFails() {
         IndustrialHyperGraph hyperGraph = mock(IndustrialHyperGraph.class);
         HyperEdgeDocumentStore hyperEdgeStore = mock(HyperEdgeDocumentStore.class);

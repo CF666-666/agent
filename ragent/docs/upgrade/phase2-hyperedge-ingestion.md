@@ -63,6 +63,9 @@ Only a complete, trimmed LLM JSON array (`[]`) represents a valid empty
 extraction. LLM transport failures, null responses, explanatory text, malformed
 JSON and non-object array elements fail the whole document extraction so the node
 cannot replace a document's existing hyperedges with a partial or empty result.
+Likewise, a non-empty chunk list with no non-blank content fails before document
+replacement; an explicit `[]` is accepted only after at least one chunk reaches
+the extractor.
 
 ## Knowledge-document identity invariant
 

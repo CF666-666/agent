@@ -220,7 +220,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 2A.1 | 节点入库 | `hyperedge_extract` 节点、chunk/page/version 证据与 `chunker -> hyperedge_extract -> indexer` 路由测试 | P0 | ✅ |
 | 2A.2 | 文档替换持久化 | `HyperEdgeDocumentStore` seam、PostgreSQL 文档级替换及内存索引同步 | P0 | ✅ |
 | 2A.3 | 启动恢复 | 持久化存储为空时保持空状态；仅存储不可用时回退 JSONL | P0 | ✅ |
-| 2A.4 | 失败原子性 | LLM/JSON 错误使整文档失败；仅完整 `[]` 是合法空抽取，非对象数组元素拒绝写入 | P0 | ✅ |
+| 2A.4 | 失败原子性 | LLM/JSON 错误或全空白 chunks 使整文档失败；仅完整 `[]` 是合法空抽取，非对象数组元素拒绝写入 | P0 | ✅ |
 | 2A.5 | 生命周期标识 | `HyperEdgeDocumentIdentity` 统一 Pipeline 入库与知识文档删除的归属键 | P0 | ✅ |
 | 2A.6 | 编排输出扩展 | `NodeOutputProjector` seam 承载 hyperedge 输出投影，避免扩展 Pipeline 核心 `switch` | P1 | ✅ |
 

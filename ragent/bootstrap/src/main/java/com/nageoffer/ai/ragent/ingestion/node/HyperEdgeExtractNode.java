@@ -61,6 +61,9 @@ public class HyperEdgeExtractNode implements IngestionNode {
         if (chunks == null || chunks.isEmpty()) {
             return NodeResult.fail(new ClientException("Hyperedge extraction requires chunked document content"));
         }
+        if (!hasExtractableChunk(chunks)) {
+            return NodeResult.fail(new ClientException("Hyperedge extraction requires at least one non-blank chunk"));
+        }
 
         String sourceDocument = resolveSourceDocument(context);
         List<HyperEdge> extracted = new ArrayList<>();
@@ -82,6 +85,10 @@ public class HyperEdgeExtractNode implements IngestionNode {
         } catch (RuntimeException exception) {
             return NodeResult.fail(new ClientException("Hyperedge extraction failed: " + exception.getMessage()));
         }
+    }
+
+    private boolean hasExtractableChunk(List<VectorChunk> chunks) {
+        return chunks.stream().anyMatch(chunk -> chunk != null && StringUtils.hasText(chunk.getContent()));
     }
 
     private void attachEvidence(HyperEdge edge,
