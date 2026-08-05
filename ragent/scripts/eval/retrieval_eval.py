@@ -15,6 +15,7 @@
         [--dataset datasets/industrial_eval.jsonl] [--out report/retrieval_report.json]
 """
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -26,6 +27,12 @@ import requests
 import urllib.parse
 
 TOPK = (1, 3, 5)
+REPORT_SCHEMA_VERSION = 2
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 
 def login(base: str, username: str, password: str) -> str:
@@ -37,13 +44,21 @@ def login(base: str, username: str, password: str) -> str:
     return data["data"]["token"]
 
 
-def stream_refs(base: str, token: str, question: str, enable_rewrite: bool = True, timeout: int = 60):
+def stream_refs(base: str, token: str, question: str,
+                enable_rewrite: bool = True,
+                enable_image: bool = True,
+                enable_hypergraph: bool = True,
+                enable_fusion: bool = True,
+                timeout: int = 60):
     """
     流式调用 SSE,读取到 references 事件(检索结果)即断开。
     返回 (references, ok) ;ok=False 表示未获取到检索结果(弱检索/未检索到)。
     """
     url = (f"{base}/rag/v3/chat?question=" + urllib.parse.quote(question)
-           + f"&enableRewrite={str(enable_rewrite).lower()}")
+           + f"&enableRewrite={str(enable_rewrite).lower()}"
+           + f"&enableImage={str(enable_image).lower()}"
+           + f"&enableHyperGraph={str(enable_hypergraph).lower()}"
+           + f"&enableFusion={str(enable_fusion).lower()}")
     references = []
     current_event = ""
     try:
@@ -75,8 +90,11 @@ def stream_refs(base: str, token: str, question: str, enable_rewrite: bool = Tru
     return references, bool(references)
 
 
+REMOVE_CHARS = " \t\r\n\u3000，。！？、；：\"'（）[]{}《》.,;:!?<>/\\|_—-"
+
+
 def normalize(s: str) -> str:
-    return re.sub(r"[\s\u3000，。！？、；：""''（）\[\]{}《》\.\,\;\:\!\?\(\)\[\]<>/\\|_\-—-]+", "", str(s))
+    return str(s).translate(str.maketrans("", "", REMOVE_CHARS))
 
 
 def is_hit(golden: str, snippet: str) -> bool:
@@ -89,14 +107,39 @@ def is_hit(golden: str, snippet: str) -> bool:
     return SequenceMatcher(None, g, s).ratio() > 0.6
 
 
-def metrics(references, golden):
+def expected_reference_types(expected_channels):
+    mapping = {
+        "IMAGE_SEMANTIC": "IMAGE",
+        "HYPERGRAPH": "HYPERGRAPH",
+        "VECTOR_GLOBAL": "TEXT",
+        "INTENT_DIRECTED": "TEXT",
+        "KEYWORD_ES": "TEXT",
+        "HYBRID": "TEXT",
+    }
+    return {mapping[channel] for channel in expected_channels if channel in mapping}
+
+
+def source_id_hit(references, golden_source_ids):
+    golden_ids = {str(value) for value in (golden_source_ids or [])}
+    if not golden_ids:
+        return False
+    for reference in references:
+        extra = reference.get("extra") or {}
+        if str(extra.get("sourceId")) in golden_ids:
+            return True
+    return False
+
+
+def metrics(references, golden, expected_channels=None, golden_source_ids=None):
     hits = {k: any(is_hit(golden, r.get("snippet") or "") for r in references[:k]) for k in TOPK}
     mrr = 0.0
     for i, r in enumerate(references):
         if is_hit(golden, r.get("snippet") or ""):
             mrr = 1.0 / (i + 1)
             break
-    return hits, mrr
+    expected_types = expected_reference_types(expected_channels or [])
+    channel_hit = any(r.get("type") in expected_types for r in references)
+    return hits, mrr, channel_hit, source_id_hit(references, golden_source_ids)
 
 
 def load_dataset(path: Path):
@@ -109,37 +152,92 @@ def load_dataset(path: Path):
     return items
 
 
+def describe_dataset(path: Path) -> dict:
+    """Return stable provenance for an evaluation dataset."""
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    project_root = Path(__file__).resolve().parents[2]
+    try:
+        display_path = path.resolve().relative_to(project_root).as_posix()
+    except ValueError:
+        display_path = path.as_posix()
+    return {
+        "path": display_path,
+        "sha256": digest,
+    }
+
+
+def retrieval_options(enable_rewrite: bool,
+                      enable_image: bool,
+                      enable_hypergraph: bool,
+                      enable_fusion: bool,
+                      label: str) -> dict:
+    return {
+        "label": label,
+        "enableRewrite": enable_rewrite,
+        "enableImage": enable_image,
+        "enableHyperGraph": enable_hypergraph,
+        "enableFusion": enable_fusion,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description="检索指标 Runner")
     parser.add_argument("--base-url", default="http://localhost:9090/api/ragent")
     parser.add_argument("--username", default="admin")
     parser.add_argument("--password", default="admin")
     parser.add_argument("--dataset", type=Path, default=Path(__file__).parent / "datasets/industrial_eval.jsonl")
+    parser.add_argument("--scenes", default="",
+                        help="仅评测指定场景，逗号分隔；例如 fact,colloquial")
     parser.add_argument("--out", type=Path, default=Path(__file__).parent / "report/retrieval_report.json")
+    parser.add_argument("--label", default="",
+                        help="本次实验配置标签，例如 A-text-baseline 或 D-full-chain")
     parser.add_argument("--limit", type=int, default=0, help="仅评测前 N 条(调试用,0=全部)")
     parser.add_argument("--enable-rewrite", action="store_true", default=True,
                         help="是否启用查询重写(默认启用;配合 A/B 对比关闭)")
     parser.add_argument("--disable-rewrite", action="store_true", default=False,
                         help="禁用查询重写(评测基线用)")
+    parser.add_argument("--disable-image", action="store_true", default=False,
+                        help="关闭图像语义通道")
+    parser.add_argument("--disable-hypergraph", action="store_true", default=False,
+                        help="关闭超图通道")
+    parser.add_argument("--disable-fusion", action="store_true", default=False,
+                        help="关闭多源融合")
+    parser.add_argument("--request-timeout", type=int, default=10,
+                        help="单条 SSE 检索请求超时秒数(无 references 时快速判定 no_retrieval)")
     args = parser.parse_args()
     enable_rewrite = not args.disable_rewrite
+    enable_image = not args.disable_image
+    enable_hypergraph = not args.disable_hypergraph
+    enable_fusion = not args.disable_fusion
 
     print(f"[retrieval_eval] 登录 {args.base_url} ...")
     token = login(args.base_url, args.username, args.password)
     items = load_dataset(args.dataset)
+    if args.scenes.strip():
+        selected_scenes = {scene.strip() for scene in args.scenes.split(",") if scene.strip()}
+        items = [item for item in items if item.get("scene") in selected_scenes]
     if args.limit > 0:
         items = items[: args.limit]
+    if not items:
+        raise ValueError("evaluation dataset is empty after scene and limit filters")
     mode = "rewrite-on" if enable_rewrite else "rewrite-off"
     print(f"[retrieval_eval] 评测集 {len(items)} 条 | 查询重写: {'开启' if enable_rewrite else '关闭'}")
 
     results = []
     for idx, it in enumerate(items, 1):
         query, golden = it["query"], it["golden_answer"]
-        refs, ok = stream_refs(args.base_url, token, query, enable_rewrite)
-        hits, mrr = metrics(refs, golden) if ok else ({k: False for k in TOPK}, 0.0)
+        refs, ok = stream_refs(args.base_url, token, query,
+                               enable_rewrite, enable_image,
+                               enable_hypergraph, enable_fusion,
+                               timeout=args.request_timeout)
+        hits, mrr, channel_hit, source_hit = metrics(
+            refs, golden, it.get("expected_channels", []), it.get("golden_source_ids", [])) if ok else (
+                {k: False for k in TOPK}, 0.0, False, False)
         results.append({
             "query": query, "scene": it.get("scene", ""), "ok": ok,
             "num_refs": len(refs), "hit": hits, "mrr": mrr,
+            "channel_hit": channel_hit,
+            "source_id_hit": source_hit,
         })
         detail = f"{idx}/{len(items)} [{it.get('scene','')}] hit@1={hits[1]} mrr={mrr:.3f} refs={len(refs)}"
         print("  " + detail)
@@ -155,24 +253,41 @@ def main():
     for r in results:
         by_scene[r["scene"]].append(r)
 
+    channel_hit_rate = sum(1 for r in results if r["channel_hit"]) / total if total else 0.0
+    source_id_hit_rate = sum(1 for r in results if r["source_id_hit"]) / total if total else 0.0
     summary = {
         "total": total, "no_retrieval": no_retrieval,
         "hit_rate": {f"@{k}": round(v, 4) for k, v in hit_agg.items()},
         "mrr": round(mrr_agg, 4),
+        "expected_channel_hit_rate": round(channel_hit_rate, 4),
+        "source_id_hit_rate": round(source_id_hit_rate, 4),
         "by_scene": {
             scene: {
                 "count": len(lst),
                 "hit_rate": {f"@{k}": round(sum(1 for r in lst if r["hit"][k]) / len(lst), 4) for k in TOPK},
                 "mrr": round(sum(r["mrr"] for r in lst) / len(lst), 4),
+                "expected_channel_hit_rate": round(
+                    sum(1 for r in lst if r["channel_hit"]) / len(lst), 4),
+                "source_id_hit_rate": round(
+                    sum(1 for r in lst if r["source_id_hit"]) / len(lst), 4),
             }
             for scene, lst in sorted(by_scene.items())
         },
     }
-    if args.out.name.endswith(".json"):
+    if args.out.name == "retrieval_report.json":
         args.out = args.out.with_name(f"retrieval_{mode}.json")
     args.out.parent.mkdir(parents=True, exist_ok=True)
+    report = {
+        "schema_version": REPORT_SCHEMA_VERSION,
+        "mode": mode,
+        "dataset": describe_dataset(args.dataset),
+        "retrieval_options": retrieval_options(
+            enable_rewrite, enable_image, enable_hypergraph, enable_fusion, args.label),
+        "summary": summary,
+        "results": results,
+    }
     with open(args.out, "w", encoding="utf-8") as f:
-        json.dump({"mode": mode, "summary": summary, "results": results}, f, ensure_ascii=False, indent=2)
+        json.dump(report, f, ensure_ascii=False, indent=2)
 
     print("\n================ 检索指标汇总 ================")
     print(f"模式: {'查询重写开启' if enable_rewrite else '查询重写关闭'}")

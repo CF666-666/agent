@@ -333,6 +333,8 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 8.1 | 评测集构建：从 FAQ 210 条抽取 query + 标准答案，覆盖 5 个典型工业场景 | `scripts/eval/datasets/*.jsonl` | 2h | ✅ |
 | 8.2 | 检索指标 Runner：Hit Rate@K / MRR@K / Recall@K，支持带/不带重写、带/不带超图的 A/B 对比 | `scripts/eval/retrieval_eval.py` | 3h | ✅ |
 | 8.2-A | 请求级通道开关：`enableRewrite` / `enableImage` / `enableHyperGraph` / `enableFusion` 从 HTTP 透传到检索通道 | `RetrievalOptions` + 单测 | 1h | ✅ |
+| 8.2-B | 固定 100 条分层评测集、报告配置/数据集指纹及合并一致性校验 | `industrial_eval_v2` + 离线回归 | 1h | ✅ |
+| 8.2-C | 在隔离服务重跑四组通道 A/B，提交 schema v2 原始报告与结论 | `scripts/eval/report/*.json` | 1h | ⏳ |
 | 8.3 | RAGAS 生成质量评测：接入 ragas 库（faithfulness / answer_relevancy / context_precision / context_recall） | `scripts/eval/ragas_eval.py` | 3h | ✅ |
 | 8.4 | 评测报告：自动汇总输出 JSON/MD 对比报告，沉淀为文档 | `docs/evaluation-report.md` | 1h | ✅ |
 | 8.5 | 简历数据校准：用真实评测结果替换简历第 2/3/4 条中的指标数字 | `docs/resume-project.md` | 1h | ✅ |
@@ -377,6 +379,8 @@ Week 8 ──┘  Phase 8（RAGAS 端到端评测体系）
 | 1A | 耐久摄取编排加固 | ✅ 完成 | 08-03 | 08-04 | DAG/重试/幂等写入/检查点恢复/租约有效性/HTTP 恢复验收；条件、路由、执行与进度存储均已抽出 seam |
 | 2A | 超边入库与生命周期一致性 | ✅ 完成 | 08-04 | 08-05 | `hyperedge_extract` 节点、证据持久化/替换、空状态启动恢复、提取失败原子性、知识文档删除清理；节点输出已通过 `NodeOutputProjector` seam 扩展 |
 | 8.2-A | 请求级检索通道开关 | ✅ 完成 | 08-05 | 08-05 | `RetrievalOptions` 由 `/rag/v3/chat` 透传至检索上下文；图像、超图和融合开关均为请求隔离，默认保持全开 |
+| 8.2-B | 可复现分层评测工件 | ✅ 完成 | 08-05 | 08-05 | 固定种子生成 100 条 `fact/colloquial/image/relation` 样本；报告固化数据集 SHA-256、四类开关和标签，合并时拒绝混合配置 |
+| 8.2-C | 隔离服务 A/B 重跑 | ⏳ 待执行 | - | - | 当前机器无运行中的 RAG 服务；不得将缺少 schema v2 配置元数据的旧快照作为正式基线 |
 | 2 | 图像检索链 | ✅ 完成 | 07-25 | 07-25 | 2 个闭环全部完成，Phase 2 完结 |
 | 3 | 超图引擎 | ✅ 完成 | 07-28 | 07-31 | 超边抽取 633 条，超图检索通道可用 |
 | 4 | 多路融合与答案增强 | ✅ 完成 | 07-31 | 08-01 | 6 个闭环全部完成，多源融合 + references 推送跑通 |

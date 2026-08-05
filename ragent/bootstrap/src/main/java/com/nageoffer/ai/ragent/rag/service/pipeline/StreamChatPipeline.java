@@ -443,6 +443,8 @@ public class StreamChatPipeline {
         if (chunk.getScore() != null) extra.put("score", (double) chunk.getScore());
         Object matchCount = meta.get("matchCount");
         if (matchCount instanceof Number) extra.put("matchCount", matchCount);
+        String sourceId = ReferenceSourceIdResolver.resolve(chunk, meta);
+        if (sourceId != null && !sourceId.isBlank()) extra.put("sourceId", sourceId);
         return extra;
     }
 
