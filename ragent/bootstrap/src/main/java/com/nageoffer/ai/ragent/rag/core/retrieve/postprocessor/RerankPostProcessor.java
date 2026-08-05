@@ -64,10 +64,16 @@ public class RerankPostProcessor implements SearchResultPostProcessor {
             return chunks;
         }
 
-        return rerankService.rerank(
-                context.getMainQuestion(),
-                chunks,
-                context.getTopK()
-        );
+        try {
+            return rerankService.rerank(
+                    context.getMainQuestion(),
+                    chunks,
+                    context.getTopK()
+            );
+        } catch (RuntimeException ex) {
+            int fallbackSize = Math.min(Math.max(context.getTopK(), 0), chunks.size());
+            log.warn("Rerank failed; return {} pre-ranked chunks instead", fallbackSize, ex);
+            return List.copyOf(chunks.subList(0, fallbackSize));
+        }
     }
 }
