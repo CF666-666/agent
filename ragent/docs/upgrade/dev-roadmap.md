@@ -209,6 +209,25 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 
 ---
 
+## Phase 2A：超边入库与生命周期一致性（08-04 至 08-05）
+
+### 闭环目标
+
+将已有超图能力接入可配置 ETL 流水线，并保证重入库、删除、重启恢复和提取失败时的超边状态一致。
+
+| # | 闭环 | 关键产出 | 优先级 | 状态 |
+|:--:|------|----------|:--:|:--:|
+| 2A.1 | 节点入库 | `hyperedge_extract` 节点、chunk/page/version 证据与 `chunker -> hyperedge_extract -> indexer` 路由测试 | P0 | ✅ |
+| 2A.2 | 文档替换持久化 | `HyperEdgeDocumentStore` seam、PostgreSQL 文档级替换及内存索引同步 | P0 | ✅ |
+| 2A.3 | 启动恢复 | 持久化存储为空时保持空状态；仅存储不可用时回退 JSONL | P0 | ✅ |
+| 2A.4 | 失败原子性 | LLM/JSON 错误使整文档失败；仅完整 `[]` 是合法空抽取，非对象数组元素拒绝写入 | P0 | ✅ |
+| 2A.5 | 生命周期标识 | `HyperEdgeDocumentIdentity` 统一 Pipeline 入库与知识文档删除的归属键 | P0 | ✅ |
+| 2A.6 | 编排输出扩展 | `NodeOutputProjector` seam 承载 hyperedge 输出投影，避免扩展 Pipeline 核心 `switch` | P1 | ✅ |
+
+**Phase 2A 验收**：超边不会因无效 LLM 输出、空状态重启或文档删除而复活或被误清空；相关单元、路由与持久化替换回归可独立运行。
+
+---
+
 ## Phase 4：多路融合与答案增强（Week 5，3-5 天）
 
 ### 依赖分析
