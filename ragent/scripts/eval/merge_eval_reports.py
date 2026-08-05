@@ -68,9 +68,12 @@ def merge_documents(documents: list[dict], report_paths: list[Path]) -> dict:
         raise ValueError("reports use different retrieval options")
 
     results = [result for document in documents for result in document.get("results", [])]
-    queries = [result.get("query") for result in results]
-    if len(queries) != len(set(queries)):
-        raise ValueError("reports contain duplicate queries")
+    case_ids = [result.get("case_id") for result in results]
+    if any(case_ids):
+        if not all(case_ids):
+            raise ValueError("reports mix results with and without case_id")
+        if len(case_ids) != len(set(case_ids)):
+            raise ValueError("reports contain duplicate evaluation cases")
     return {
         "schema_version": REPORT_SCHEMA_VERSION,
         "mode": documents[0]["mode"],

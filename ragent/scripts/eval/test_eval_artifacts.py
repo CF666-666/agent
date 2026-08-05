@@ -82,6 +82,14 @@ class EvaluationArtifactsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "empty"):
             retrieval_eval.select_evaluation_items(items, "relation", offset=3, limit=1)
 
+    def test_evaluation_case_id_distinguishes_labeled_cases_with_same_query(self):
+        base = {"scene": "image", "query": "same query", "golden_answer": "answer"}
+
+        self.assertNotEqual(
+            retrieval_eval.evaluation_case_id({**base, "golden_source_ids": ["image-a"]}),
+            retrieval_eval.evaluation_case_id({**base, "golden_source_ids": ["image-b"]}),
+        )
+
     def test_report_merger_rejects_mismatched_retrieval_options(self):
         base = {
             "schema_version": 2,
@@ -128,10 +136,10 @@ class EvaluationArtifactsTest(unittest.TestCase):
                                   "enableImage": False, "enableHyperGraph": True,
                                   "enableFusion": True},
             "summary": {},
-            "results": [{"query": "same query"}],
+            "results": [{"case_id": "same-case", "query": "same query"}],
         }
 
-        with self.assertRaisesRegex(ValueError, "duplicate queries"):
+        with self.assertRaisesRegex(ValueError, "duplicate evaluation cases"):
             merge_eval_reports.merge_documents([document, document], [Path("one.json"), Path("two.json")])
 
 

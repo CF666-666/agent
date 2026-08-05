@@ -119,6 +119,12 @@ def expected_reference_types(expected_channels):
     return {mapping[channel] for channel in expected_channels if channel in mapping}
 
 
+def evaluation_case_id(item: dict) -> str:
+    """Return a stable identity for one labeled evaluation case."""
+    payload = json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def source_id_hit(references, golden_source_ids):
     golden_ids = {str(value) for value in (golden_source_ids or [])}
     if not golden_ids:
@@ -249,6 +255,7 @@ def main():
             refs, golden, it.get("expected_channels", []), it.get("golden_source_ids", [])) if ok else (
                 {k: False for k in TOPK}, 0.0, False, False)
         results.append({
+            "case_id": evaluation_case_id(it),
             "query": query, "scene": it.get("scene", ""), "ok": ok,
             "num_refs": len(refs), "hit": hits, "mrr": mrr,
             "channel_hit": channel_hit,
