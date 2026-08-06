@@ -55,10 +55,11 @@ public class RAGChatController {
                            @RequestParam(required = false, defaultValue = "true") Boolean enableRewrite,
                            @RequestParam(required = false, defaultValue = "true") Boolean enableImage,
                            @RequestParam(required = false, defaultValue = "true") Boolean enableHyperGraph,
-                           @RequestParam(required = false, defaultValue = "true") Boolean enableFusion) {
+                           @RequestParam(required = false, defaultValue = "true") Boolean enableFusion,
+                           @RequestParam(required = false, defaultValue = "false") Boolean retrievalOnly) {
         SseEmitter emitter = new SseEmitter(ragDefaultProperties.getSseTimeoutMs());
         RetrievalOptions options = RetrievalOptions.from(
-                enableRewrite, enableImage, enableHyperGraph, enableFusion);
+                enableRewrite, enableImage, enableHyperGraph, enableFusion, retrievalOnly);
         ragChatService.streamChat(question, conversationId, deepThinking, options, emitter);
         return emitter;
     }

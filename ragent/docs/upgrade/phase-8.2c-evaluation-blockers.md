@@ -123,3 +123,21 @@
 
 - `IntentResolverTest` 新增“分类执行器拒绝提交”回归用例；连同图像通道预算、Rerank 降级、请求开关和超图路径的 12 项定向测试均通过。
 - 重启干净的隔离实例后，B 组 offset 0--4 在 12 秒预算内全部收到 10 条 `references`，`no_retrieval=0`；报告为 `scripts/eval/report/industrial_eval_v2_B_intent-budget_00.json`。该报告仅为分批验证，尚未并入正式全量结果。
+
+## 2026-08-06：检索专用评测模式隔离
+
+### 根因
+
+- 评测脚本此前在收到 `references` 后断开 SSE，但服务端仍按正常对话流程写入用户消息。首次会话写入会同步调用 `ConversationServiceImpl.generateTitleFromQuestion()`，从而在检索开始前触发外部回答模型。
+- 本地百炼账号返回 `Arrearage` 后模型路由仍会尝试降级，导致该额外调用污染首字与检索延迟；这不属于待评测的检索通道。
+
+### 修复与验证
+
+- `/rag/v3/chat` 增加默认关闭的 `retrievalOnly` 参数。开启时跳过会话记忆加载与写入，检索引用投影后仅发送 SSE `[DONE]`，不调用回答模型、不持久化空助手消息或生成标题。
+- `StreamChatPipelineTest` 覆盖“有引用”和“空检索”两条路径，断言两者均不会调用记忆服务或 `LLMService`。
+- 隔离实例上的 B 组图像样本已完成 HTTP 探针：单条请求 5.1 秒内返回 10 条引用；offset 5--9 的 5 条小批量全部返回引用，`no_retrieval=0`，报告为 `scripts/eval/report/industrial_eval_v2_B_retrieval-only_05_09.json`。
+
+### 后续约束
+
+- 正式 A/B/C/D 检索基线必须使用 `--retrieval-only`，并在报告的 `retrieval_options.retrievalOnly=true` 中保留可核验标记。
+- 以上探针仅证明评测链路隔离和 B 组小批量稳定性；完整 25 条 B 组及 A/C/D 全量结果完成前，不得更新对外指标。

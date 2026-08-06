@@ -38,12 +38,12 @@ class RAGChatControllerTest {
         RAGChatController controller = new RAGChatController(chatService, properties());
 
         controller.chat("设备图纸中的阀门位置", "conversation-1", false,
-                true, false, false, false);
+                true, false, false, false, true);
 
         ArgumentCaptor<RetrievalOptions> optionsCaptor = ArgumentCaptor.forClass(RetrievalOptions.class);
         verify(chatService).streamChat(eq("设备图纸中的阀门位置"), eq("conversation-1"), eq(false),
                 optionsCaptor.capture(), any());
-        assertEquals(new RetrievalOptions(true, false, false, false), optionsCaptor.getValue());
+        assertEquals(new RetrievalOptions(true, false, false, false, true), optionsCaptor.getValue());
     }
 
     @Test
@@ -51,7 +51,7 @@ class RAGChatControllerTest {
         RAGChatService chatService = mock(RAGChatService.class);
         RAGChatController controller = new RAGChatController(chatService, properties());
 
-        controller.chat("设备故障原因", null, false, null, null, null, null);
+        controller.chat("设备故障原因", null, false, null, null, null, null, null);
 
         ArgumentCaptor<RetrievalOptions> optionsCaptor = ArgumentCaptor.forClass(RetrievalOptions.class);
         verify(chatService).streamChat(eq("设备故障原因"), eq(null), eq(false),

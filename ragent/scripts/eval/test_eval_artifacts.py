@@ -63,7 +63,7 @@ class EvaluationArtifactsTest(unittest.TestCase):
         self.assertEqual("scripts/eval/datasets/industrial_eval_v2.jsonl", descriptor["path"])
         self.assertEqual(
             {"label": "C-hypergraph", "enableRewrite": False, "enableImage": False,
-             "enableHyperGraph": True, "enableFusion": False},
+             "enableHyperGraph": True, "enableFusion": False, "retrievalOnly": False},
             options,
         )
         self.assertEqual({"label": "local-isolated", "request_timeout_seconds": 12}, runtime)

@@ -96,7 +96,11 @@ public class StreamChatPipeline {
      * 执行流式对话管道
      */
     public void execute(StreamChatContext ctx) {
-        loadMemory(ctx);
+        if (ctx.getRetrievalOptions().retrievalOnly()) {
+            ctx.setHistory(List.of());
+        } else {
+            loadMemory(ctx);
+        }
         rewriteQuery(ctx);
         resolveIntents(ctx);
 
@@ -108,6 +112,10 @@ public class StreamChatPipeline {
         }
 
         RetrievalContext retrievalCtx = retrieve(ctx);
+        if (ctx.getRetrievalOptions().retrievalOnly()) {
+            streamRagResponse(ctx, retrievalCtx);
+            return;
+        }
         if (handleEmptyRetrieval(ctx, retrievalCtx)) {
             return;
         }
@@ -236,6 +244,11 @@ public class StreamChatPipeline {
         StreamCallback callback = ctx.getCallback();
         if (!references.isEmpty()) {
             callback.onReferences(toJson(references));
+        }
+
+        if (ctx.getRetrievalOptions().retrievalOnly()) {
+            callback.onRetrievalComplete();
+            return;
         }
 
         StreamCancellationHandle handle = streamLLMResponse(

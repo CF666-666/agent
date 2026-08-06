@@ -49,6 +49,7 @@ def stream_refs(base: str, token: str, question: str,
                 enable_image: bool = True,
                 enable_hypergraph: bool = True,
                 enable_fusion: bool = True,
+                retrieval_only: bool = False,
                 timeout: int = 60):
     """
     流式调用 SSE,读取到 references 事件(检索结果)即断开。
@@ -58,7 +59,8 @@ def stream_refs(base: str, token: str, question: str,
            + f"&enableRewrite={str(enable_rewrite).lower()}"
            + f"&enableImage={str(enable_image).lower()}"
            + f"&enableHyperGraph={str(enable_hypergraph).lower()}"
-           + f"&enableFusion={str(enable_fusion).lower()}")
+           + f"&enableFusion={str(enable_fusion).lower()}"
+           + f"&retrievalOnly={str(retrieval_only).lower()}")
     references = []
     current_event = ""
     try:
@@ -195,13 +197,15 @@ def retrieval_options(enable_rewrite: bool,
                       enable_image: bool,
                       enable_hypergraph: bool,
                       enable_fusion: bool,
-                      label: str) -> dict:
+                      label: str,
+                      retrieval_only: bool = False) -> dict:
     return {
         "label": label,
         "enableRewrite": enable_rewrite,
         "enableImage": enable_image,
         "enableHyperGraph": enable_hypergraph,
         "enableFusion": enable_fusion,
+        "retrievalOnly": retrieval_only,
     }
 
 
@@ -238,6 +242,8 @@ def main():
                         help="关闭超图通道")
     parser.add_argument("--disable-fusion", action="store_true", default=False,
                         help="关闭多源融合")
+    parser.add_argument("--retrieval-only", action="store_true", default=False,
+                        help="收到 references 后完成 SSE，不调用回答模型；用于隔离检索评测")
     parser.add_argument("--request-timeout", type=int, default=10,
                         help="单条 SSE 检索请求超时秒数(无 references 时快速判定 no_retrieval)")
     args = parser.parse_args()
@@ -259,6 +265,7 @@ def main():
         refs, ok = stream_refs(args.base_url, token, query,
                                enable_rewrite, enable_image,
                                enable_hypergraph, enable_fusion,
+                               retrieval_only=args.retrieval_only,
                                timeout=args.request_timeout)
         hits, mrr, channel_hit, source_hit = metrics(
             refs, golden, it.get("expected_channels", []), it.get("golden_source_ids", [])) if ok else (
@@ -313,7 +320,8 @@ def main():
         "mode": mode,
         "dataset": describe_dataset(args.dataset),
         "retrieval_options": retrieval_options(
-            enable_rewrite, enable_image, enable_hypergraph, enable_fusion, args.label),
+            enable_rewrite, enable_image, enable_hypergraph, enable_fusion,
+            args.label, args.retrieval_only),
         "runtime": runtime_metadata(args.runtime_label, args.request_timeout),
         "evaluation_slice": {
             "scenes": args.scenes,

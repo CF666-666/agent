@@ -22,23 +22,26 @@ public record RetrievalOptions(
         boolean enableRewrite,
         boolean enableImage,
         boolean enableHyperGraph,
-        boolean enableFusion
+        boolean enableFusion,
+        boolean retrievalOnly
 ) {
 
     public static RetrievalOptions defaults() {
-        return new RetrievalOptions(true, true, true, true);
+        return new RetrievalOptions(true, true, true, true, false);
     }
 
     /** 缺失 HTTP 参数时沿用历史行为：默认开启。 */
     public static RetrievalOptions from(Boolean enableRewrite,
                                         Boolean enableImage,
                                         Boolean enableHyperGraph,
-                                        Boolean enableFusion) {
+                                        Boolean enableFusion,
+                                        Boolean retrievalOnly) {
         return new RetrievalOptions(
                 enabledOrDefault(enableRewrite),
                 enabledOrDefault(enableImage),
                 enabledOrDefault(enableHyperGraph),
-                enabledOrDefault(enableFusion)
+                enabledOrDefault(enableFusion),
+                Boolean.TRUE.equals(retrievalOnly)
         );
     }
 

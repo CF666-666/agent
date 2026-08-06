@@ -72,6 +72,16 @@ public interface StreamCallback {
     void onComplete();
 
     /**
+     * Marks a retrieval-only response as complete.
+     * <p>
+     * Implementations may bypass answer persistence because this mode emits
+     * evidence for offline evaluation rather than a user-facing assistant reply.
+     */
+    default void onRetrievalComplete() {
+        onComplete();
+    }
+
+    /**
      * 检索引用回调（Phase 4 扩展）
      * <p>
      * 接收已序列化的 JSON 数组字符串（List&lt;Reference&gt;），由实现类推送到 SSE references 事件。

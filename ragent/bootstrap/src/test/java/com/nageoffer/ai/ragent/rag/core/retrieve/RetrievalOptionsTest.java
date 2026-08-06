@@ -46,7 +46,7 @@ class RetrievalOptionsTest {
 
     @Test
     void missingHttpValuesKeepHistoricalDefault() {
-        RetrievalOptions options = RetrievalOptions.from(null, null, null, null);
+        RetrievalOptions options = RetrievalOptions.from(null, null, null, null, null);
 
         assertTrue(options.enableRewrite());
         assertTrue(options.enableImage());
@@ -56,9 +56,9 @@ class RetrievalOptionsTest {
 
     @Test
     void channelAndFusionSwitchesAreAppliedFromSearchContext() {
-        SearchContext imageDisabled = context(new RetrievalOptions(true, false, true, true));
-        SearchContext hyperGraphDisabled = context(new RetrievalOptions(true, true, false, true));
-        SearchContext fusionDisabled = context(new RetrievalOptions(true, true, true, false));
+        SearchContext imageDisabled = context(new RetrievalOptions(true, false, true, true, false));
+        SearchContext hyperGraphDisabled = context(new RetrievalOptions(true, true, false, true, false));
+        SearchContext fusionDisabled = context(new RetrievalOptions(true, true, true, false, false));
 
         ImageSearchChannel imageChannel = new ImageSearchChannel(
                 mock(com.nageoffer.ai.ragent.rag.core.retrieve.RetrieverService.class),
