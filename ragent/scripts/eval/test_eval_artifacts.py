@@ -92,6 +92,18 @@ class EvaluationArtifactsTest(unittest.TestCase):
             retrieval_eval.evaluation_case_id({**base, "golden_source_ids": ["image-b"]}),
         )
 
+    def test_latency_summary_uses_nearest_rank_and_ignores_missing_values(self):
+        results = [{"latency_ms": 100}, {"latency_ms": 200}, {"latency_ms": 900}, {}]
+
+        self.assertEqual(
+            {"p50_ms": 200, "p95_ms": 900, "max_ms": 900},
+            retrieval_eval.latency_summary(results),
+        )
+        self.assertEqual(
+            {"p50_ms": 200, "p95_ms": 900, "max_ms": 900},
+            merge_eval_reports.latency_summary(results),
+        )
+
     def test_report_merger_rejects_mismatched_retrieval_options(self):
         base = {
             "schema_version": 2,

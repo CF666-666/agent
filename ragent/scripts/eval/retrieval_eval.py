@@ -19,6 +19,7 @@ import hashlib
 import json
 import re
 import sys
+import time
 from difflib import SequenceMatcher
 from pathlib import Path
 from collections import defaultdict
@@ -53,7 +54,8 @@ def stream_refs(base: str, token: str, question: str,
                 timeout: int = 60):
     """
     流式调用 SSE,读取到 references 事件(检索结果)即断开。
-    返回 (references, ok) ;ok=False 表示未获取到检索结果(弱检索/未检索到)。
+    返回 (references, status, latency_ms)。status 将客户端超时与检索空结果分开，
+    避免把运行时故障误记为检索质量问题。
     """
     url = (f"{base}/rag/v3/chat?question=" + urllib.parse.quote(question)
            + f"&enableRewrite={str(enable_rewrite).lower()}"
@@ -63,6 +65,8 @@ def stream_refs(base: str, token: str, question: str,
            + f"&retrievalOnly={str(retrieval_only).lower()}")
     references = []
     current_event = ""
+    started_at = time.monotonic()
+    status = "empty_references"
     try:
         with requests.get(url, headers={"Authorization": token}, timeout=timeout, stream=True) as resp:
             resp.raise_for_status()
@@ -78,18 +82,46 @@ def stream_refs(base: str, token: str, question: str,
                 if payload == "[DONE]":
                     break
                 if current_event == "reject":
-                    return references, False
+                    return references, "rejected", elapsed_millis(started_at)
                 if current_event == "references":
                     try:
                         refs = json.loads(payload)
                         if isinstance(refs, list):
                             references.extend(refs)
+                            status = "received" if references else "empty_references"
+                        else:
+                            status = "invalid_references"
                     except Exception:
-                        pass
+                        status = "invalid_references"
                     break  # 检索结果已拿到,断开,无需等 LLM 生成
+    except requests.Timeout as e:
+        status = "timeout"
+        print(f"    [warn] 请求超时: {e}", file=sys.stderr)
     except requests.RequestException as e:
+        status = "request_error"
         print(f"    [warn] 请求异常: {e}", file=sys.stderr)
-    return references, bool(references)
+    return references, status, elapsed_millis(started_at)
+
+
+def elapsed_millis(started_at: float) -> int:
+    return round((time.monotonic() - started_at) * 1000)
+
+
+def latency_summary(results: list[dict]) -> dict:
+    values = sorted(int(result["latency_ms"]) for result in results
+                    if result.get("latency_ms") is not None)
+    if not values:
+        return {}
+
+    def nearest_rank(percentile: float) -> int:
+        rank = max(1, int(len(values) * percentile + 0.999999))
+        return values[min(rank - 1, len(values) - 1)]
+
+    return {
+        "p50_ms": nearest_rank(0.50),
+        "p95_ms": nearest_rank(0.95),
+        "max_ms": values[-1],
+    }
 
 
 REMOVE_CHARS = " \t\r\n\u3000，。！？、；：\"'（）[]{}《》.,;:!?<>/\\|_—-"
@@ -262,22 +294,26 @@ def main():
     results = []
     for idx, it in enumerate(items, 1):
         query, golden = it["query"], it["golden_answer"]
-        refs, ok = stream_refs(args.base_url, token, query,
-                               enable_rewrite, enable_image,
-                               enable_hypergraph, enable_fusion,
-                               retrieval_only=args.retrieval_only,
-                               timeout=args.request_timeout)
+        refs, retrieval_status, latency_ms = stream_refs(
+            args.base_url, token, query,
+            enable_rewrite, enable_image,
+            enable_hypergraph, enable_fusion,
+            retrieval_only=args.retrieval_only,
+            timeout=args.request_timeout)
+        ok = retrieval_status == "received"
         hits, mrr, channel_hit, source_hit = metrics(
             refs, golden, it.get("expected_channels", []), it.get("golden_source_ids", [])) if ok else (
                 {k: False for k in TOPK}, 0.0, False, False)
         results.append({
             "case_id": evaluation_case_id(it),
             "query": query, "scene": it.get("scene", ""), "ok": ok,
+            "retrieval_status": retrieval_status, "latency_ms": latency_ms,
             "num_refs": len(refs), "hit": hits, "mrr": mrr,
             "channel_hit": channel_hit,
             "source_id_hit": source_hit,
         })
-        detail = f"{idx}/{len(items)} [{it.get('scene','')}] hit@1={hits[1]} mrr={mrr:.3f} refs={len(refs)}"
+        detail = (f"{idx}/{len(items)} [{it.get('scene','')}] hit@1={hits[1]} "
+                  f"mrr={mrr:.3f} refs={len(refs)} latency={latency_ms}ms status={retrieval_status}")
         print("  " + detail)
         if not ok:
             print(f"    !!! 未检索到有效内容: {query}")
@@ -299,6 +335,11 @@ def main():
         "mrr": round(mrr_agg, 4),
         "expected_channel_hit_rate": round(channel_hit_rate, 4),
         "source_id_hit_rate": round(source_id_hit_rate, 4),
+        "latency": latency_summary(results),
+        "retrieval_status_counts": {
+            status: sum(1 for result in results if result["retrieval_status"] == status)
+            for status in sorted({result["retrieval_status"] for result in results})
+        },
         "by_scene": {
             scene: {
                 "count": len(lst),
@@ -308,6 +349,7 @@ def main():
                     sum(1 for r in lst if r["channel_hit"]) / len(lst), 4),
                 "source_id_hit_rate": round(
                     sum(1 for r in lst if r["source_id_hit"]) / len(lst), 4),
+                "latency": latency_summary(lst),
             }
             for scene, lst in sorted(by_scene.items())
         },

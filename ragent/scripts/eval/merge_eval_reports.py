@@ -31,6 +31,11 @@ def summarize(results: list[dict]) -> dict:
         "mrr": round(sum(float(item.get("mrr", 0.0)) for item in results) / total, 4) if total else 0.0,
         "expected_channel_hit_rate": ratio(results, lambda item: item.get("channel_hit", False)),
         "source_id_hit_rate": ratio(results, lambda item: item.get("source_id_hit", False)),
+        "latency": latency_summary(results),
+        "retrieval_status_counts": {
+            status: sum(1 for item in results if item.get("retrieval_status") == status)
+            for status in sorted({item.get("retrieval_status") for item in results if item.get("retrieval_status")})
+        },
         "by_scene": {
             scene: {
                 "count": len(items),
@@ -41,9 +46,27 @@ def summarize(results: list[dict]) -> dict:
                 "mrr": round(sum(float(item.get("mrr", 0.0)) for item in items) / len(items), 4),
                 "expected_channel_hit_rate": ratio(items, lambda item: item.get("channel_hit", False)),
                 "source_id_hit_rate": ratio(items, lambda item: item.get("source_id_hit", False)),
+                "latency": latency_summary(items),
             }
             for scene, items in sorted(by_scene.items())
         },
+    }
+
+
+def latency_summary(results: list[dict]) -> dict:
+    values = sorted(int(result["latency_ms"]) for result in results
+                    if result.get("latency_ms") is not None)
+    if not values:
+        return {}
+
+    def nearest_rank(percentile: float) -> int:
+        rank = max(1, int(len(values) * percentile + 0.999999))
+        return values[min(rank - 1, len(values) - 1)]
+
+    return {
+        "p50_ms": nearest_rank(0.50),
+        "p95_ms": nearest_rank(0.95),
+        "max_ms": values[-1],
     }
 
 
