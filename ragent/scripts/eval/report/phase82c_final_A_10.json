@@ -1,0 +1,236 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "A-text-baseline",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": false,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "fact,colloquial",
+    "offset": 10,
+    "limit": 10,
+    "count": 10
+  },
+  "summary": {
+    "total": 10,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 265,
+      "p95_ms": 2672,
+      "max_ms": 2672
+    },
+    "retrieval_status_counts": {
+      "received": 10
+    },
+    "by_scene": {
+      "fact": {
+        "count": 10,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 265,
+          "p95_ms": 2672,
+          "max_ms": 2672
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "e3272d5ff298538f78f179028ab6194b7530c2284c2d7736fd552ade73231597",
+      "query": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2234,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b5ae11c9105bb3588b4968bbc78f5705311ad27466f6c5a841f8e9324a1193aa",
+      "query": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 297,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "873a7c5dd09355676a8efb3c28a66358e7caebbf4520eb430a795810d538acdf",
+      "query": "反应过程中如何控制升温速率？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2297,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "816d37bfa0f303fc238e6fa59f9168cba8c3a48f3ae7e2891057f950528342c0",
+      "query": "高炉休风复风时如何控制风量恢复节奏？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1e0f633f7ab486a6a43c02cf654530bf0327f198f995cec7c58447170c3aa01d",
+      "query": "冷轧机工作辊的日常维护要点有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 250,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "bd0364a7d1b8441be73cb894832e93c4a54a109c649ef5c2e51ef765544acc02",
+      "query": "冷却塔风机振动异常增大，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 281,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e4a7f0d03faf6181c2e17385e9fc4de97eea6d5458ed9d687989f25a4f6215ee",
+      "query": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 235,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b4bc21e7ddf1462d49d4fe323420913a59b7ae3380c8fd961cebd3c5e994f8f1",
+      "query": "精馏塔出现液泛现象如何诊断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 265,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "c95376ae5aedd603b8276f8512e062ee54e6a2f890005535ad50d287fc6b6852",
+      "query": "脱硫塔启动前应执行哪些关键操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 250,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "850fb7d32faa4cd45da2aee7bb3c4e2108c20eeb704bd3b2f2372dcc18b4bc53",
+      "query": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 235,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

@@ -1,0 +1,236 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "A-text-baseline",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": false,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "fact,colloquial",
+    "offset": 0,
+    "limit": 10,
+    "count": 10
+  },
+  "summary": {
+    "total": 10,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 250,
+      "p95_ms": 1547,
+      "max_ms": 1547
+    },
+    "retrieval_status_counts": {
+      "received": 10
+    },
+    "by_scene": {
+      "fact": {
+        "count": 10,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 250,
+          "p95_ms": 1547,
+          "max_ms": 1547
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "8bb3c0716361c4bbb1ce69e58477ffb6461377c7c807cb13874c12b6f37e0312",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 344,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0b2b36937ffbc9a9612100dac2a64f8f2a939cbc2edd891643e1bac98adae690",
+      "query": "液压系统应如何进行定期保养？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 234,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0ea584f3d1f391990303fc6dde07ea36ffd4dc57e19825aafa342e86ab39a69e",
+      "query": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 250,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "88f28f7d58429cbf9b3598c27d837cc5d770fb3b201c4d3aed3b6cdc9b443611",
+      "query": "转炉兑铁前必须完成哪些安全确认步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 219,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "998535743288986d91e116e8d6f44886f3ad4a03cb9c04ffceac2d7f11e32790",
+      "query": "热轧机换辊操作的标准流程是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 594,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "84010fef94448cc365ff89d2cce7556b2835df31f72ae44225d5b880c506b32d",
+      "query": "操作人员进入反应釜内部检修有何安全要求？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1547,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1f64e719c0e128563feb5177999034b6d89c6a91ecea214616d07f35370b9d88",
+      "query": "泵在低流量下长时间运行有何风险？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 250,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "85390c62b0b643ed22c49951632fe76e09c8bcef8117be09e3b97ed55d366da9",
+      "query": "进入焦炉地下室进行检修时，必须遵守哪些安全规范？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 250,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "f1e1b5d54a0c977786d48ed896b49d34c3288eeb1b9a86192498206805a8a4b6",
+      "query": "裂解炉正常运行时如何调节负荷？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 219,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e3575588fb13048ce83d1251ed14af9620640354613a8d8919fc8e78b9bbfe71",
+      "query": "烧结机头尾密封装置的日常维护要点是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 297,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

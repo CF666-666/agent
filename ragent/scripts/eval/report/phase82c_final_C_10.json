@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "C-hypergraph-channel",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "relation",
+    "offset": 10,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.2,
+      "@3": 0.2,
+      "@5": 0.2
+    },
+    "mrr": 0.2,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 2781,
+      "p95_ms": 5796,
+      "max_ms": 5796
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "relation": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.2,
+          "@3": 0.2,
+          "@5": 0.2
+        },
+        "mrr": 0.2,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 2781,
+          "p95_ms": 5796,
+          "max_ms": 5796
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "ea9075b8eed31f9eca0b40a164fb20c5a29db135ada7d2d2156c3fdfe513195f",
+      "query": "在开机前下，烧结机的台车轨道状态、台车栏板紧固螺栓扭矩异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5796,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "454ba89bd969dfbfc6210ea37f66714cd787a11a37e85e43cd6227575944d48b",
+      "query": "在长期低负荷运行（＜60%额定流量）下，冷却塔的布水均匀性异常，与布水不均有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5110,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "d97cb6bdc00fc2f4f4f222caa9becac1166e190c9a3058261474a45dea6181df",
+      "query": "在当前工况下，脱硫塔的浆液pH值异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1578,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e41ded6febd41313f5efbc7e44370f01ae5a216980671913ed80b3155f26b2fe",
+      "query": "在当前工况下，锅炉的主蒸汽压力波动异常，与波动超过±0.5MPa有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2781,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "853d59309c95c49773112c530a293eb889ced351d8de40cb0e674021fd2354a0",
+      "query": "在当前工况下，结晶器冷却系统的过滤器精度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1422,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

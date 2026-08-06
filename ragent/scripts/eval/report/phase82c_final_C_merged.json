@@ -1,0 +1,524 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "C-hypergraph-channel",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "summary": {
+    "total": 25,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.36,
+      "@3": 0.36,
+      "@5": 0.52
+    },
+    "mrr": 0.398,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.08,
+    "latency": {
+      "p50_ms": 2312,
+      "p95_ms": 5796,
+      "max_ms": 10391
+    },
+    "retrieval_status_counts": {
+      "received": 25
+    },
+    "by_scene": {
+      "relation": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 0.36,
+          "@3": 0.36,
+          "@5": 0.52
+        },
+        "mrr": 0.398,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.08,
+        "latency": {
+          "p50_ms": 2312,
+          "p95_ms": 5796,
+          "max_ms": 10391
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "4ec0aff5480eb7d7464b1f0a43b7f5e84b076e31d3a6585934ca6858fbc1fc5f",
+      "query": "在当前工况下，氧化风机的润滑油位异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1453,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.2,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "fa6b3e489fc52388556753399a8c755684c890a2a358042e3ad9929349c5752d",
+      "query": "在当前工况下，发电机的电压差≤±5%（如400V±20V）、频率差≤±0.2Hz、相位差≤±5°、相序一致异常，与非同期并列导致冲击电流达额定电流6~8倍（如2000kW机组产生约17kA短路电流）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3547,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "7c283c3a3f806a1bb13dc19476ea9f73257e0948bf4a54b2f343ec1477b27287",
+      "query": "在正常运行下，锅炉的汽包水位异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1437,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "398b8bd8ca518897520c9fb51bbd0528bc09522b893480049e7dcb05abcec19a",
+      "query": "在当前工况下，烧结机减速机的润滑油（ISO VG 320）异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2859,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "767c5cb14d6e066062b1d1c6398a21c6f5cfa9f580ca643374038a59ed3a8b62",
+      "query": "在当前工况下，搅拌电机的三相电流平衡异常，与跳闸有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1782,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "ff17a3e709187ab2f30ea218fd35d0ea24b419c3cd3c147ff145c72be6320641",
+      "query": "在当前工况下，泵的密封泄漏量异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2312,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "05a6fb9fdf544915df56eafabc6b0c4e6f4e87e8eb1f36c8b73c01603ba31126",
+      "query": "在当前工况下，热轧机齿轮箱润滑系统的润滑油异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1797,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0afb3a4c010cb3ffe065193b3e426accdf1cb94fa48190cde776a1a84a76c8b7",
+      "query": "在动火作业下，高炉的O₂含量、CO浓度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1922,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "a954f9e0bbef158f61f38995975fb940b99edb39aa534df6937714270504ea56",
+      "query": "在机组负荷≥20%下，高压加热器的水侧压力高于给水压力0.5MPa以上异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5391,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "d5038c2ade77b5e2992a9275a6ba8374ec2cd96fa9a6f4f6976ff271db94e02e",
+      "query": "在低流量下长时间运行下，离心泵的流量低于最小连续稳定流量（通常为额定流量的30%）异常，与液体在泵内循环升温，介质温度升高20–50℃，引发汽化有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5344,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "ea9075b8eed31f9eca0b40a164fb20c5a29db135ada7d2d2156c3fdfe513195f",
+      "query": "在开机前下，烧结机的台车轨道状态、台车栏板紧固螺栓扭矩异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5796,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "454ba89bd969dfbfc6210ea37f66714cd787a11a37e85e43cd6227575944d48b",
+      "query": "在长期低负荷运行（＜60%额定流量）下，冷却塔的布水均匀性异常，与布水不均有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5110,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "d97cb6bdc00fc2f4f4f222caa9becac1166e190c9a3058261474a45dea6181df",
+      "query": "在当前工况下，脱硫塔的浆液pH值异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1578,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e41ded6febd41313f5efbc7e44370f01ae5a216980671913ed80b3155f26b2fe",
+      "query": "在当前工况下，锅炉的主蒸汽压力波动异常，与波动超过±0.5MPa有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2781,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "853d59309c95c49773112c530a293eb889ced351d8de40cb0e674021fd2354a0",
+      "query": "在当前工况下，结晶器冷却系统的过滤器精度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1422,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "4d0da66e2cba19a14b5da6305d7cbeeff8a38e97700b61f1e3d89bbc5404def5",
+      "query": "在转速降至1200rpm下，汽轮机的顶轴油系统异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 10391,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "75cce9dc6b94a39e928fafbe73b63114acee7d5c590db2afd67326635aafa017",
+      "query": "在拉速波动伴随铸坯鼓肚下，扇形段的对弧精度异常，与超差（>0.3mm/m）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4015,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "00427b13bcdeda2d7a4cb747981b1156de2d83324bdd67cf1ef67b52933a4883",
+      "query": "在当前工况下，轧机的换辊小车运行速度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1875,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "115d30aa27936ee1cc141de9d99e576764c88ef808813152fe84611e7a574997",
+      "query": "在开机前下，烧结机的连锁保护系统异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1469,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1685251d14fc9324de79818c66aa5e109e3a3161f7c9f2afadce335d0de8ffcb",
+      "query": "在当前工况下，精馏塔的塔压差异常，与急剧上升有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2438,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cdaf625f7560f1de611f98b37e3ff5271a888644588e53184e21b9fb63acc06b",
+      "query": "在运行监视阶段下，高压加热器的危急疏水异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1375,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "3bcf437061bfdb12d4cd067837180f12d15784aae88b48f733b6b73ab8117dc2",
+      "query": "在当前工况下，连铸机的旋转部件防护罩状态异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5375,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "eb511ff6bd575a6eeb2630755f8d9f64b66d558e7a4cf00e8db8ced12d49c756",
+      "query": "在开车时下，精馏塔的升温速率异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1437,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "5ce67c97ccfed70cc559f982683dd7edde004a5f56d108aba9fd06ab167eb9d7",
+      "query": "在整个卸料过程下，卸料区域的静电接地电阻异常，与电阻超标有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "5cdf83e8e43444e96dcdc67a6140ec5d0eb734d91e14d23075427e527faa28d3",
+      "query": "在当前工况下，张力辊的表面状态异常，与凹坑或粘附异物有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5406,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ],
+  "batch_reports": [
+    "scripts\\eval\\report\\phase82c_final_C_00.json",
+    "scripts\\eval\\report\\phase82c_final_C_05.json",
+    "scripts\\eval\\report\\phase82c_final_C_10.json",
+    "scripts\\eval\\report\\phase82c_final_C_15.json",
+    "scripts\\eval\\report\\phase82c_final_C_20.json"
+  ],
+  "batch_slices": [
+    {
+      "scenes": "relation",
+      "offset": 0,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 5,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 10,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 15,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 20,
+      "limit": 5,
+      "count": 5
+    }
+  ]
+}

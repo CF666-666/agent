@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "C-hypergraph-channel",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "relation",
+    "offset": 20,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.4,
+      "@3": 0.4,
+      "@5": 0.8
+    },
+    "mrr": 0.5,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 1672,
+      "p95_ms": 5406,
+      "max_ms": 5406
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "relation": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.4,
+          "@3": 0.4,
+          "@5": 0.8
+        },
+        "mrr": 0.5,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 1672,
+          "p95_ms": 5406,
+          "max_ms": 5406
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "cdaf625f7560f1de611f98b37e3ff5271a888644588e53184e21b9fb63acc06b",
+      "query": "在运行监视阶段下，高压加热器的危急疏水异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1375,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "3bcf437061bfdb12d4cd067837180f12d15784aae88b48f733b6b73ab8117dc2",
+      "query": "在当前工况下，连铸机的旋转部件防护罩状态异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5375,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "eb511ff6bd575a6eeb2630755f8d9f64b66d558e7a4cf00e8db8ced12d49c756",
+      "query": "在开车时下，精馏塔的升温速率异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1437,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "5ce67c97ccfed70cc559f982683dd7edde004a5f56d108aba9fd06ab167eb9d7",
+      "query": "在整个卸料过程下，卸料区域的静电接地电阻异常，与电阻超标有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "5cdf83e8e43444e96dcdc67a6140ec5d0eb734d91e14d23075427e527faa28d3",
+      "query": "在当前工况下，张力辊的表面状态异常，与凹坑或粘附异物有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5406,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

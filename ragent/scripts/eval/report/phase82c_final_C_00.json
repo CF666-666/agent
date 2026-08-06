@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "C-hypergraph-channel",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "relation",
+    "offset": 0,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.6,
+      "@3": 0.6,
+      "@5": 0.8
+    },
+    "mrr": 0.64,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 1782,
+      "p95_ms": 3547,
+      "max_ms": 3547
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "relation": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.6,
+          "@3": 0.6,
+          "@5": 0.8
+        },
+        "mrr": 0.64,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 1782,
+          "p95_ms": 3547,
+          "max_ms": 3547
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "4ec0aff5480eb7d7464b1f0a43b7f5e84b076e31d3a6585934ca6858fbc1fc5f",
+      "query": "在当前工况下，氧化风机的润滑油位异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1453,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.2,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "fa6b3e489fc52388556753399a8c755684c890a2a358042e3ad9929349c5752d",
+      "query": "在当前工况下，发电机的电压差≤±5%（如400V±20V）、频率差≤±0.2Hz、相位差≤±5°、相序一致异常，与非同期并列导致冲击电流达额定电流6~8倍（如2000kW机组产生约17kA短路电流）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3547,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "7c283c3a3f806a1bb13dc19476ea9f73257e0948bf4a54b2f343ec1477b27287",
+      "query": "在正常运行下，锅炉的汽包水位异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1437,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "398b8bd8ca518897520c9fb51bbd0528bc09522b893480049e7dcb05abcec19a",
+      "query": "在当前工况下，烧结机减速机的润滑油（ISO VG 320）异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2859,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "767c5cb14d6e066062b1d1c6398a21c6f5cfa9f580ca643374038a59ed3a8b62",
+      "query": "在当前工况下，搅拌电机的三相电流平衡异常，与跳闸有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1782,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

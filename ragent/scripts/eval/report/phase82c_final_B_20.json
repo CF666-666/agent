@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "B-image-channel",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": false,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "image",
+    "offset": 20,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.0,
+      "@3": 0.8,
+      "@5": 0.8
+    },
+    "mrr": 0.4,
+    "expected_channel_hit_rate": 0.8,
+    "source_id_hit_rate": 0.8,
+    "latency": {
+      "p50_ms": 313,
+      "p95_ms": 4157,
+      "max_ms": 4157
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "image": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.0,
+          "@3": 0.8,
+          "@5": 0.8
+        },
+        "mrr": 0.4,
+        "expected_channel_hit_rate": 0.8,
+        "source_id_hit_rate": 0.8,
+        "latency": {
+          "p50_ms": 313,
+          "p95_ms": 4157,
+          "max_ms": 4157
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "17cfafc4f68298f8ea45c4e1e1884806d79b8ef3088e79aa958a6d61a827ff84",
+      "query": "请判断这张工业图像对应的设备或场景：图中为钢铁厂轧钢车间，可见多台大型轧机（编号1-6），设备主体为绿色，配黄色安全护栏",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4157,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "fc286f39a4050151c34a2f25fa29dab20698c10eb56c25374e6e4098b035e180",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为大型钢铁厂航拍视图，可见高炉、焦化装置及连铸生产线",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1578,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "612bacbf9d3cf4127c11521d6902b118f8a3af0ded9bc613bfeb43966f9a7321",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图片展示了一个大型钢铁厂内部，主要设备为桥式起重机，用于吊运钢卷",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 250,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "93be7db46553a405bea5f119f5743039bb8f97fe5cdd59badb91ba3d0fb7c32d",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为大型石化或化工厂，主要设备包括多座高耸的塔器（如精馏塔、反应塔），塔体呈银灰色，部分带有红白相间警示色带",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 250,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "bdef8efb1c9c07b1c13bb29c1517c349bba4a7659e4f12665073ee7568577cd2",
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 313,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    }
+  ]
+}
