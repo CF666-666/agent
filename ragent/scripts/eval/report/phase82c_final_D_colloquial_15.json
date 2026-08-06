@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "colloquial",
+    "offset": 15,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.4,
+      "@3": 0.4,
+      "@5": 0.6
+    },
+    "mrr": 0.44,
+    "expected_channel_hit_rate": 0.6,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 3062,
+      "p95_ms": 4969,
+      "max_ms": 4969
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "colloquial": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.4,
+          "@3": 0.4,
+          "@5": 0.6
+        },
+        "mrr": 0.44,
+        "expected_channel_hit_rate": 0.6,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 3062,
+          "p95_ms": 4969,
+          "max_ms": 4969
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "e961a59793bece31d2c016245d3dbe9138243f21184903dc8c96809ec48e59db",
+      "query": "师傅现场问：进入汽轮机本体区域进行检修作业，必须遵守哪些安全隔离措施？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4969,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.2,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cf0e9c8034e1d9ea10bfdb0be9360f6a39a26145a45afb95b9466ddee32ae476",
+      "query": "用大白话说，进入脱硫塔内部检修需遵守哪些安全规范？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3062,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "2dd09c7c1671a9b67e7f77e1152a7ae232a8721835b9aba80f3ad2fea0249b27",
+      "query": "我只知道这个设备出了问题，帮我查一下：汽轮机调速系统（DEH）定期维护应包含哪些关键项目？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1609,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "3d995cf3e6605c8bf665fd734044f1aac0e34d9dd45cda553b3e2bc1f374a50d",
+      "query": "现场比较急，想确认一下：泵出口压力突然下降，但电机电流正常，如何排查？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4172,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "6d8be50222dfad555aad0c9d29b9046ba5bfa0d8aaeef1a04ae848c9fbacc8ba",
+      "query": "把这个工业问题按排查步骤讲清楚：储罐液位计显示异常波动，可能是什么原因？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1500,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

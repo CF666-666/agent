@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "image",
+    "offset": 0,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.0,
+      "@3": 0.4,
+      "@5": 0.8
+    },
+    "mrr": 0.3333,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 1.0,
+    "latency": {
+      "p50_ms": 1875,
+      "p95_ms": 6218,
+      "max_ms": 6218
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "image": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.0,
+          "@3": 0.4,
+          "@5": 0.8
+        },
+        "mrr": 0.3333,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 1.0,
+        "latency": {
+          "p50_ms": 1875,
+          "p95_ms": 6218,
+          "max_ms": 6218
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "1317853e2ef875e17ca1ec3a7eb0b9e40f6599720a545f1ae98ebe87e8e4c6b0",
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6218,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "d130e28a7ee08d6c59c2bad267d3ec158483e7eceb962120b8d232ba690db4cd",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为陕煤集团冷却塔，属大型工业循环水冷却设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2266,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "385ee5a2165d16f1022515ffdca9dcbfe201bfacf4880f3fce7dea69ec8e54d3",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图中为大型化工厂，可见多台塔器、换热器及管道系统",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1875,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "af1b3eec891ba91ba06773e6113ca014b8f3a9a685ee5558f54f12f713f01411",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为冶金或铸造车间场景，两名工人穿着防护服操作设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1625,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "6e10e8fab246e623854f03e8764dce04a16695bc395d178fae110a220fbc286d",
+      "query": "请判断这张工业图像对应的设备或场景：图中为冶金车间高温作业场景，设备为连铸机或钢水处理装置",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true
+    }
+  ]
+}

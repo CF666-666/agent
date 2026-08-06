@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "colloquial",
+    "offset": 5,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.8,
+      "@3": 0.8,
+      "@5": 0.8
+    },
+    "mrr": 0.8,
+    "expected_channel_hit_rate": 0.6,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 1891,
+      "p95_ms": 9391,
+      "max_ms": 9391
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "colloquial": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.8,
+          "@3": 0.8,
+          "@5": 0.8
+        },
+        "mrr": 0.8,
+        "expected_channel_hit_rate": 0.6,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 1891,
+          "p95_ms": 9391,
+          "max_ms": 9391
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "9891a750e5ecf762290fa591a0c45943db1efefabe565c13dd1c7b597e1c7026",
+      "query": "师傅现场问：如何防止连铸机液压系统引发的安全事故？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 9391,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "39887a2e5ef696ac035869e736f875a45f26f01fdbd85aa004a75d0a3598ff63",
+      "query": "用大白话说，凝汽器真空度骤降（如从-92kPa降至-80kPa以下），应排查哪些环节？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1797,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "d25803e7c8fecfe54a3c2b435bce4f7fbf6e875ef081cf57e5c1cea53076b9bb",
+      "query": "我只知道这个设备出了问题，帮我查一下：发电机定子绕组的日常维护保养项目有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1891,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "64bbebbda45bc62df4b1f88a1fcb0e682ef300f9840ec9a3bf2c472ba1aa9d39",
+      "query": "现场比较急，想确认一下：精馏塔检修前为何必须进行氮气置换？具体标准是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5640,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "bd39d56e67cc511847d2dfd71aaf2a96799cc09e72b53bac2ccb37a8aea336ce",
+      "query": "把这个工业问题按排查步骤讲清楚：汽轮机运行中振动突然增大至0.08mm以上，可能原因有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "colloquial",
+    "offset": 20,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.2,
+      "@3": 0.2,
+      "@5": 0.2
+    },
+    "mrr": 0.22,
+    "expected_channel_hit_rate": 0.2,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 3609,
+      "p95_ms": 11437,
+      "max_ms": 11437
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "colloquial": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.2,
+          "@3": 0.2,
+          "@5": 0.2
+        },
+        "mrr": 0.22,
+        "expected_channel_hit_rate": 0.2,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 3609,
+          "p95_ms": 11437,
+          "max_ms": 11437
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "9d33def3f28a3bd3ce681f215b4d4b5bf121eff221c6fea89e85fe3f6015f5de",
+      "query": "师傅现场问：脱硫区域动火作业有哪些特殊安全要求？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2094,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0d957a43df716f24ede7d096b14e2862a19ad3621c1ed7a36fa3db3bf2ca6a4c",
+      "query": "用大白话说，脱硫塔停运时的标准操作流程是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 11437,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.1,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "c8ced427fecb55ec036513a89983562467afd7e9141cf31fc440494bfd89eef3",
+      "query": "我只知道这个设备出了问题，帮我查一下：储罐投用前应执行哪些关键操作步骤？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4000,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "66b4d83653244fe5b105b11c245e747f8b0f26f74aeef01f7f39ab67195f9c03",
+      "query": "现场比较急，想确认一下：压缩机切换备用机的操作要点有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1813,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b88f2ef11bb2c564a4a1e00a6726f004ab21025ee76a95fc4d195e51378cd179",
+      "query": "把这个工业问题按排查步骤讲清楚：反应釜压力突然下降，如何快速诊断？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3609,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    }
+  ]
+}

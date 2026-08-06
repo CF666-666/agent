@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "fact",
+    "offset": 15,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.2,
+      "@3": 0.2,
+      "@5": 0.2
+    },
+    "mrr": 0.2333,
+    "expected_channel_hit_rate": 0.4,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 6266,
+      "p95_ms": 18187,
+      "max_ms": 18187
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "fact": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.2,
+          "@3": 0.2,
+          "@5": 0.2
+        },
+        "mrr": 0.2333,
+        "expected_channel_hit_rate": 0.4,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 6266,
+          "p95_ms": 18187,
+          "max_ms": 18187
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "bd0364a7d1b8441be73cb894832e93c4a54a109c649ef5c2e51ef765544acc02",
+      "query": "冷却塔风机振动异常增大，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 8594,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e4a7f0d03faf6181c2e17385e9fc4de97eea6d5458ed9d687989f25a4f6215ee",
+      "query": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6266,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b4bc21e7ddf1462d49d4fe323420913a59b7ae3380c8fd961cebd3c5e994f8f1",
+      "query": "精馏塔出现液泛现象如何诊断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 18187,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "c95376ae5aedd603b8276f8512e062ee54e6a2f890005535ad50d287fc6b6852",
+      "query": "脱硫塔启动前应执行哪些关键操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1984,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "850fb7d32faa4cd45da2aee7bb3c4e2108c20eeb704bd3b2f2372dcc18b4bc53",
+      "query": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2907,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    }
+  ]
+}

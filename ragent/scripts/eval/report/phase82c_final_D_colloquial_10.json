@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "colloquial",
+    "offset": 10,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.2,
+      "@3": 0.6,
+      "@5": 0.6
+    },
+    "mrr": 0.3533,
+    "expected_channel_hit_rate": 0.8,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 4172,
+      "p95_ms": 4813,
+      "max_ms": 4813
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "colloquial": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.2,
+          "@3": 0.6,
+          "@5": 0.6
+        },
+        "mrr": 0.3533,
+        "expected_channel_hit_rate": 0.8,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 4172,
+          "p95_ms": 4813,
+          "max_ms": 4813
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "b8a8db88964146c3e8c614b1b15f8914438df2f423165e93049968771053d549",
+      "query": "师傅现场问：储罐内部阴极保护系统如何维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4172,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "8507e7a31f3b81c19d7af603135fc00fb302d09ec81addaedae5345f62ba55bf",
+      "query": "用大白话说，热轧机齿轮箱润滑系统应如何维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2703,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cb3191cc3d29650359a250340edc36ab1fd969a0786d73eeb211556f49cf55e0",
+      "query": "我只知道这个设备出了问题，帮我查一下：冷却塔填料应如何进行定期维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4750,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0b83e26f5b4343f1157c022c16e030d4531fa6e55cd639d3b69ee1343f88fc15",
+      "query": "现场比较急，想确认一下：脱硫塔内出现严重结垢堵塞，如何判断与处理？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3782,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.1,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "f85abc64cc09b577e8df2bd10b903ad53e43f3ec031d373b0959a73810548dfd",
+      "query": "把这个工业问题按排查步骤讲清楚：连铸机在非计划停浇后重新启动的操作要点有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4813,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

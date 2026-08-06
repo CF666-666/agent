@@ -1,0 +1,1952 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "summary": {
+    "total": 100,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.34,
+      "@3": 0.51,
+      "@5": 0.59
+    },
+    "mrr": 0.4493,
+    "expected_channel_hit_rate": 0.76,
+    "source_id_hit_rate": 0.25,
+    "latency": {
+      "p50_ms": 3406,
+      "p95_ms": 13234,
+      "max_ms": 18187
+    },
+    "retrieval_status_counts": {
+      "received": 100
+    },
+    "by_scene": {
+      "colloquial": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 0.44,
+          "@3": 0.52,
+          "@5": 0.56
+        },
+        "mrr": 0.4827,
+        "expected_channel_hit_rate": 0.56,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 3062,
+          "p95_ms": 9391,
+          "max_ms": 11437
+        }
+      },
+      "fact": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 0.52,
+          "@3": 0.52,
+          "@5": 0.52
+        },
+        "mrr": 0.5267,
+        "expected_channel_hit_rate": 0.56,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 3047,
+          "p95_ms": 18015,
+          "max_ms": 18187
+        }
+      },
+      "image": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 0.04,
+          "@3": 0.64,
+          "@5": 0.8
+        },
+        "mrr": 0.3933,
+        "expected_channel_hit_rate": 0.96,
+        "source_id_hit_rate": 0.96,
+        "latency": {
+          "p50_ms": 4406,
+          "p95_ms": 13281,
+          "max_ms": 16125
+        }
+      },
+      "relation": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 0.36,
+          "@3": 0.36,
+          "@5": 0.48
+        },
+        "mrr": 0.3947,
+        "expected_channel_hit_rate": 0.96,
+        "source_id_hit_rate": 0.04,
+        "latency": {
+          "p50_ms": 3313,
+          "p95_ms": 8547,
+          "max_ms": 10343
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "8bb3c0716361c4bbb1ce69e58477ffb6461377c7c807cb13874c12b6f37e0312",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 7734,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0b2b36937ffbc9a9612100dac2a64f8f2a939cbc2edd891643e1bac98adae690",
+      "query": "液压系统应如何进行定期保养？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4157,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0ea584f3d1f391990303fc6dde07ea36ffd4dc57e19825aafa342e86ab39a69e",
+      "query": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1469,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "88f28f7d58429cbf9b3598c27d837cc5d770fb3b201c4d3aed3b6cdc9b443611",
+      "query": "转炉兑铁前必须完成哪些安全确认步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1609,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "998535743288986d91e116e8d6f44886f3ad4a03cb9c04ffceac2d7f11e32790",
+      "query": "热轧机换辊操作的标准流程是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1657,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "84010fef94448cc365ff89d2cce7556b2835df31f72ae44225d5b880c506b32d",
+      "query": "操作人员进入反应釜内部检修有何安全要求？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1172,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1f64e719c0e128563feb5177999034b6d89c6a91ecea214616d07f35370b9d88",
+      "query": "泵在低流量下长时间运行有何风险？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 18015,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "85390c62b0b643ed22c49951632fe76e09c8bcef8117be09e3b97ed55d366da9",
+      "query": "进入焦炉地下室进行检修时，必须遵守哪些安全规范？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1687,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "f1e1b5d54a0c977786d48ed896b49d34c3288eeb1b9a86192498206805a8a4b6",
+      "query": "裂解炉正常运行时如何调节负荷？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1453,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e3575588fb13048ce83d1251ed14af9620640354613a8d8919fc8e78b9bbfe71",
+      "query": "烧结机头尾密封装置的日常维护要点是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4391,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e3272d5ff298538f78f179028ab6194b7530c2284c2d7736fd552ade73231597",
+      "query": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2062,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b5ae11c9105bb3588b4968bbc78f5705311ad27466f6c5a841f8e9324a1193aa",
+      "query": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1172,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "873a7c5dd09355676a8efb3c28a66358e7caebbf4520eb430a795810d538acdf",
+      "query": "反应过程中如何控制升温速率？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1344,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "816d37bfa0f303fc238e6fa59f9168cba8c3a48f3ae7e2891057f950528342c0",
+      "query": "高炉休风复风时如何控制风量恢复节奏？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 7016,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1e0f633f7ab486a6a43c02cf654530bf0327f198f995cec7c58447170c3aa01d",
+      "query": "冷轧机工作辊的日常维护要点有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1765,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "bd0364a7d1b8441be73cb894832e93c4a54a109c649ef5c2e51ef765544acc02",
+      "query": "冷却塔风机振动异常增大，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 8594,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e4a7f0d03faf6181c2e17385e9fc4de97eea6d5458ed9d687989f25a4f6215ee",
+      "query": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6266,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b4bc21e7ddf1462d49d4fe323420913a59b7ae3380c8fd961cebd3c5e994f8f1",
+      "query": "精馏塔出现液泛现象如何诊断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 18187,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "c95376ae5aedd603b8276f8512e062ee54e6a2f890005535ad50d287fc6b6852",
+      "query": "脱硫塔启动前应执行哪些关键操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1984,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "850fb7d32faa4cd45da2aee7bb3c4e2108c20eeb704bd3b2f2372dcc18b4bc53",
+      "query": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2907,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "5aab2d989c2134d336d77b4f9ef2f77d4efc15582fc5eb7401a94a97676e2d25",
+      "query": "离心式压缩机出现喘振现象如何判断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3047,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cb6a02e37ababf27fa3e4ddd53bcc0004fb44fcd35e4492da10d299fd7468bd5",
+      "query": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5594,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "80783d70d306193672f6116ce3edae70a703d8617d9295296d65b960c6ec1eed",
+      "query": "变压器停运超过7天重新投运前需做哪些检查？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3406,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0c4c28c9c40e59d2764d42261dd0270996c5ea1eab958eed3b7c4298c62d46bc",
+      "query": "启动发电机前必须执行哪些操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 16625,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1f894fa75f7bbc71b8fb759f48c5f74fa2258caf59f812075d911ecb20420748",
+      "query": "精馏塔区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3578,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "bbd2ace40caa0681068e80d22097ded6435bf9f2ca086d44e02b006ca696f1c1",
+      "query": "师傅现场问：冷轧机主电机电流异常升高，如何快速判断故障源？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6219,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "d05b9196403a0ce56d058c96967a739f2dcf6a9f7a0b18f7542ca9da1507f497",
+      "query": "用大白话说，在开关柜附近作业时应遵守哪些安全规范？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2609,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "ba11fd475299e4d273cc5331f857ece41f89de3140c7f373283a8a79ae288e79",
+      "query": "我只知道这个设备出了问题，帮我查一下：高炉开炉送风操作的关键步骤和参数是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1500,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "611824156685737b1eb41bd8a7219bd35542a7791e02df8883c8cd1d81e3800c",
+      "query": "现场比较急，想确认一下：结晶器冷却系统应如何进行周期性保养？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3031,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "40d861b7c92cd9489348be952a2525a4cb72150505c8a1354694089962e077cd",
+      "query": "把这个工业问题按排查步骤讲清楚：裂解炉运行中炉管出现局部过热（热点）如何判断与处理？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "9891a750e5ecf762290fa591a0c45943db1efefabe565c13dd1c7b597e1c7026",
+      "query": "师傅现场问：如何防止连铸机液压系统引发的安全事故？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 9391,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "39887a2e5ef696ac035869e736f875a45f26f01fdbd85aa004a75d0a3598ff63",
+      "query": "用大白话说，凝汽器真空度骤降（如从-92kPa降至-80kPa以下），应排查哪些环节？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1797,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "d25803e7c8fecfe54a3c2b435bce4f7fbf6e875ef081cf57e5c1cea53076b9bb",
+      "query": "我只知道这个设备出了问题，帮我查一下：发电机定子绕组的日常维护保养项目有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1891,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "64bbebbda45bc62df4b1f88a1fcb0e682ef300f9840ec9a3bf2c472ba1aa9d39",
+      "query": "现场比较急，想确认一下：精馏塔检修前为何必须进行氮气置换？具体标准是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5640,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "bd39d56e67cc511847d2dfd71aaf2a96799cc09e72b53bac2ccb37a8aea336ce",
+      "query": "把这个工业问题按排查步骤讲清楚：汽轮机运行中振动突然增大至0.08mm以上，可能原因有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b8a8db88964146c3e8c614b1b15f8914438df2f423165e93049968771053d549",
+      "query": "师傅现场问：储罐内部阴极保护系统如何维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4172,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "8507e7a31f3b81c19d7af603135fc00fb302d09ec81addaedae5345f62ba55bf",
+      "query": "用大白话说，热轧机齿轮箱润滑系统应如何维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2703,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cb3191cc3d29650359a250340edc36ab1fd969a0786d73eeb211556f49cf55e0",
+      "query": "我只知道这个设备出了问题，帮我查一下：冷却塔填料应如何进行定期维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4750,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0b83e26f5b4343f1157c022c16e030d4531fa6e55cd639d3b69ee1343f88fc15",
+      "query": "现场比较急，想确认一下：脱硫塔内出现严重结垢堵塞，如何判断与处理？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3782,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.1,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "f85abc64cc09b577e8df2bd10b903ad53e43f3ec031d373b0959a73810548dfd",
+      "query": "把这个工业问题按排查步骤讲清楚：连铸机在非计划停浇后重新启动的操作要点有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4813,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e961a59793bece31d2c016245d3dbe9138243f21184903dc8c96809ec48e59db",
+      "query": "师傅现场问：进入汽轮机本体区域进行检修作业，必须遵守哪些安全隔离措施？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4969,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.2,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cf0e9c8034e1d9ea10bfdb0be9360f6a39a26145a45afb95b9466ddee32ae476",
+      "query": "用大白话说，进入脱硫塔内部检修需遵守哪些安全规范？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3062,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "2dd09c7c1671a9b67e7f77e1152a7ae232a8721835b9aba80f3ad2fea0249b27",
+      "query": "我只知道这个设备出了问题，帮我查一下：汽轮机调速系统（DEH）定期维护应包含哪些关键项目？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1609,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "3d995cf3e6605c8bf665fd734044f1aac0e34d9dd45cda553b3e2bc1f374a50d",
+      "query": "现场比较急，想确认一下：泵出口压力突然下降，但电机电流正常，如何排查？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4172,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "6d8be50222dfad555aad0c9d29b9046ba5bfa0d8aaeef1a04ae848c9fbacc8ba",
+      "query": "把这个工业问题按排查步骤讲清楚：储罐液位计显示异常波动，可能是什么原因？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1500,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "9d33def3f28a3bd3ce681f215b4d4b5bf121eff221c6fea89e85fe3f6015f5de",
+      "query": "师傅现场问：脱硫区域动火作业有哪些特殊安全要求？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2094,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0d957a43df716f24ede7d096b14e2862a19ad3621c1ed7a36fa3db3bf2ca6a4c",
+      "query": "用大白话说，脱硫塔停运时的标准操作流程是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 11437,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.1,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "c8ced427fecb55ec036513a89983562467afd7e9141cf31fc440494bfd89eef3",
+      "query": "我只知道这个设备出了问题，帮我查一下：储罐投用前应执行哪些关键操作步骤？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4000,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "66b4d83653244fe5b105b11c245e747f8b0f26f74aeef01f7f39ab67195f9c03",
+      "query": "现场比较急，想确认一下：压缩机切换备用机的操作要点有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1813,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b88f2ef11bb2c564a4a1e00a6726f004ab21025ee76a95fc4d195e51378cd179",
+      "query": "把这个工业问题按排查步骤讲清楚：反应釜压力突然下降，如何快速诊断？",
+      "scene": "colloquial",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3609,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1317853e2ef875e17ca1ec3a7eb0b9e40f6599720a545f1ae98ebe87e8e4c6b0",
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6218,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "d130e28a7ee08d6c59c2bad267d3ec158483e7eceb962120b8d232ba690db4cd",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为陕煤集团冷却塔，属大型工业循环水冷却设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2266,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "385ee5a2165d16f1022515ffdca9dcbfe201bfacf4880f3fce7dea69ec8e54d3",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图中为大型化工厂，可见多台塔器、换热器及管道系统",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1875,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "af1b3eec891ba91ba06773e6113ca014b8f3a9a685ee5558f54f12f713f01411",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为冶金或铸造车间场景，两名工人穿着防护服操作设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1625,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "6e10e8fab246e623854f03e8764dce04a16695bc395d178fae110a220fbc286d",
+      "query": "请判断这张工业图像对应的设备或场景：图中为冶金车间高温作业场景，设备为连铸机或钢水处理装置",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "c56679dd5af8a529cbfcfcca4ed46a9c453dac338488faf92ef30d789fd4b172",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为现代化自动化生产线，主要设备为多工位装配机，型号未标示",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1969,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "d0ab4321f11c182c53ed5185efdce61db3c930da4196af99e40a306bd501d946",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：该图为大型工业轧机生产线俯视图，核心为两台大型金属卷材（钢卷）在输送线上排列，上下对称布置",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5906,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "15080db73238649abce890068b3628480a60ec0168d0f1ead7007c2521dfc4e4",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图片展示了一个大型工业厂房内部，主要设备为桥式起重机（行车），其结构包括横跨厂房的主梁、吊钩和滑轮组",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 8016,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "10d07cea1847bf1e1ab8a2adbb1c9d52a2efdeedac20cd0e4c666d5bcf2798ea",
+      "query": "请判断这张工业图像对应的设备或场景：图中为钢铁厂轧钢车间，可见多台大型轧机（编号1-6），设备主体为绿色，配黄色安全护栏",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4406,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "8b8b942f7fb1952528cd9bd303e99c83b8a4312790799d2103741f3909af883d",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为大型钢铁厂航拍视图，可见高炉、焦化装置及连铸生产线",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1688,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "599d72ca6b94af15b0686c4c8512a8a1c75de58bd6fe8ef63867c07d9d515f3f",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图片展示了一个大型钢铁厂内部，主要设备为桥式起重机，用于吊运钢卷",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5484,
+      "num_refs": 5,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "f12afeb5880d8589ac8d0d91bb389b25d8478e3ea615b86285fa45735926ece4",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为大型石化或化工厂，主要设备包括多座高耸的塔器（如精馏塔、反应塔），塔体呈银灰色，部分带有红白相间警示色带",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4907,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "6c214cca265d5d1e8aa3c657c8e3e6680b7188436e5f0912d1972b1f726cc974",
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3703,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "3bdc73ad4dad9f3703c0690f6949853060ee538506a428547b84b8c41499cc78",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为陕煤集团冷却塔，属大型工业循环水冷却设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1500,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "28b197f031c481ef2bbaf771df7bbb865026e4ba7cd4eaf4765252f5d8d68d5e",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图中为大型化工厂，可见多台塔器、换热器及管道系统",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6953,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "76351a4895d41d038ca81efcb51b9f3baad4b3715d2fb1eb5c83c17d75825abc",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为冶金或铸造车间场景，两名工人穿着防护服操作设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4469,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "9c273c291946f12cb33d1215afc53f614bc0a7e937f218d7d0568ee27acdb7ae",
+      "query": "请判断这张工业图像对应的设备或场景：图中为冶金车间高温作业场景，设备为连铸机或钢水处理装置",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 16125,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "65f871c92d9b6d942bbd9356e8bdfaffaa8aae04ddfd7f49fab88819e18d77d6",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为现代化自动化生产线，主要设备为多工位装配机，型号未标示",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 13281,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "705183c961eb1dd5de7c945cfc7b377a0aaab95c2a889dbce7a3a1d7603bd6ab",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：该图为大型工业轧机生产线俯视图，核心为两台大型金属卷材（钢卷）在输送线上排列，上下对称布置",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4078,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "744f4771519959d29c8520be0a846b85ddf135ab002d1e300226ec3ea5b30257",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图片展示了一个大型工业厂房内部，主要设备为桥式起重机（行车），其结构包括横跨厂房的主梁、吊钩和滑轮组",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 8828,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "17cfafc4f68298f8ea45c4e1e1884806d79b8ef3088e79aa958a6d61a827ff84",
+      "query": "请判断这张工业图像对应的设备或场景：图中为钢铁厂轧钢车间，可见多台大型轧机（编号1-6），设备主体为绿色，配黄色安全护栏",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 10657,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "fc286f39a4050151c34a2f25fa29dab20698c10eb56c25374e6e4098b035e180",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为大型钢铁厂航拍视图，可见高炉、焦化装置及连铸生产线",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1875,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "612bacbf9d3cf4127c11521d6902b118f8a3af0ded9bc613bfeb43966f9a7321",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图片展示了一个大型钢铁厂内部，主要设备为桥式起重机，用于吊运钢卷",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1500,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "93be7db46553a405bea5f119f5743039bb8f97fe5cdd59badb91ba3d0fb7c32d",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为大型石化或化工厂，主要设备包括多座高耸的塔器（如精馏塔、反应塔），塔体呈银灰色，部分带有红白相间警示色带",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 13234,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "bdef8efb1c9c07b1c13bb29c1517c349bba4a7659e4f12665073ee7568577cd2",
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1906,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "4ec0aff5480eb7d7464b1f0a43b7f5e84b076e31d3a6585934ca6858fbc1fc5f",
+      "query": "在当前工况下，氧化风机的润滑油位异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3063,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.2,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "fa6b3e489fc52388556753399a8c755684c890a2a358042e3ad9929349c5752d",
+      "query": "在当前工况下，发电机的电压差≤±5%（如400V±20V）、频率差≤±0.2Hz、相位差≤±5°、相序一致异常，与非同期并列导致冲击电流达额定电流6~8倍（如2000kW机组产生约17kA短路电流）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 10343,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "7c283c3a3f806a1bb13dc19476ea9f73257e0948bf4a54b2f343ec1477b27287",
+      "query": "在正常运行下，锅炉的汽包水位异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4500,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "398b8bd8ca518897520c9fb51bbd0528bc09522b893480049e7dcb05abcec19a",
+      "query": "在当前工况下，烧结机减速机的润滑油（ISO VG 320）异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2969,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "767c5cb14d6e066062b1d1c6398a21c6f5cfa9f580ca643374038a59ed3a8b62",
+      "query": "在当前工况下，搅拌电机的三相电流平衡异常，与跳闸有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2391,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "ff17a3e709187ab2f30ea218fd35d0ea24b419c3cd3c147ff145c72be6320641",
+      "query": "在当前工况下，泵的密封泄漏量异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6125,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "05a6fb9fdf544915df56eafabc6b0c4e6f4e87e8eb1f36c8b73c01603ba31126",
+      "query": "在当前工况下，热轧机齿轮箱润滑系统的润滑油异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2312,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0afb3a4c010cb3ffe065193b3e426accdf1cb94fa48190cde776a1a84a76c8b7",
+      "query": "在动火作业下，高炉的O₂含量、CO浓度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5203,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "a954f9e0bbef158f61f38995975fb940b99edb39aa534df6937714270504ea56",
+      "query": "在机组负荷≥20%下，高压加热器的水侧压力高于给水压力0.5MPa以上异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2703,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "d5038c2ade77b5e2992a9275a6ba8374ec2cd96fa9a6f4f6976ff271db94e02e",
+      "query": "在低流量下长时间运行下，离心泵的流量低于最小连续稳定流量（通常为额定流量的30%）异常，与液体在泵内循环升温，介质温度升高20–50℃，引发汽化有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2954,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "ea9075b8eed31f9eca0b40a164fb20c5a29db135ada7d2d2156c3fdfe513195f",
+      "query": "在开机前下，烧结机的台车轨道状态、台车栏板紧固螺栓扭矩异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5125,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "454ba89bd969dfbfc6210ea37f66714cd787a11a37e85e43cd6227575944d48b",
+      "query": "在长期低负荷运行（＜60%额定流量）下，冷却塔的布水均匀性异常，与布水不均有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4328,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "d97cb6bdc00fc2f4f4f222caa9becac1166e190c9a3058261474a45dea6181df",
+      "query": "在当前工况下，脱硫塔的浆液pH值异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1562,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "e41ded6febd41313f5efbc7e44370f01ae5a216980671913ed80b3155f26b2fe",
+      "query": "在当前工况下，锅炉的主蒸汽压力波动异常，与波动超过±0.5MPa有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5016,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "853d59309c95c49773112c530a293eb889ced351d8de40cb0e674021fd2354a0",
+      "query": "在当前工况下，结晶器冷却系统的过滤器精度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3313,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "4d0da66e2cba19a14b5da6305d7cbeeff8a38e97700b61f1e3d89bbc5404def5",
+      "query": "在转速降至1200rpm下，汽轮机的顶轴油系统异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1968,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "75cce9dc6b94a39e928fafbe73b63114acee7d5c590db2afd67326635aafa017",
+      "query": "在拉速波动伴随铸坯鼓肚下，扇形段的对弧精度异常，与超差（>0.3mm/m）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2344,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.16666666666666666,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "00427b13bcdeda2d7a4cb747981b1156de2d83324bdd67cf1ef67b52933a4883",
+      "query": "在当前工况下，轧机的换辊小车运行速度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2234,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "115d30aa27936ee1cc141de9d99e576764c88ef808813152fe84611e7a574997",
+      "query": "在开机前下，烧结机的连锁保护系统异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 6750,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1685251d14fc9324de79818c66aa5e109e3a3161f7c9f2afadce335d0de8ffcb",
+      "query": "在当前工况下，精馏塔的塔压差异常，与急剧上升有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3500,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cdaf625f7560f1de611f98b37e3ff5271a888644588e53184e21b9fb63acc06b",
+      "query": "在运行监视阶段下，高压加热器的危急疏水异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 4906,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "3bcf437061bfdb12d4cd067837180f12d15784aae88b48f733b6b73ab8117dc2",
+      "query": "在当前工况下，连铸机的旋转部件防护罩状态异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 8547,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "eb511ff6bd575a6eeb2630755f8d9f64b66d558e7a4cf00e8db8ced12d49c756",
+      "query": "在开车时下，精馏塔的升温速率异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5828,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "5ce67c97ccfed70cc559f982683dd7edde004a5f56d108aba9fd06ab167eb9d7",
+      "query": "在整个卸料过程下，卸料区域的静电接地电阻异常，与电阻超标有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1453,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "5cdf83e8e43444e96dcdc67a6140ec5d0eb734d91e14d23075427e527faa28d3",
+      "query": "在当前工况下，张力辊的表面状态异常，与凹坑或粘附异物有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ],
+  "batch_reports": [
+    "scripts\\eval\\report\\phase82c_final_D_fact_00.json",
+    "scripts\\eval\\report\\phase82c_final_D_fact_05.json",
+    "scripts\\eval\\report\\phase82c_final_D_fact_10.json",
+    "scripts\\eval\\report\\phase82c_final_D_fact_15.json",
+    "scripts\\eval\\report\\phase82c_final_D_fact_20.json",
+    "scripts\\eval\\report\\phase82c_final_D_colloquial_00.json",
+    "scripts\\eval\\report\\phase82c_final_D_colloquial_05.json",
+    "scripts\\eval\\report\\phase82c_final_D_colloquial_10.json",
+    "scripts\\eval\\report\\phase82c_final_D_colloquial_15.json",
+    "scripts\\eval\\report\\phase82c_final_D_colloquial_20.json",
+    "scripts\\eval\\report\\phase82c_final_D_image_00.json",
+    "scripts\\eval\\report\\phase82c_final_D_image_05.json",
+    "scripts\\eval\\report\\phase82c_final_D_image_10.json",
+    "scripts\\eval\\report\\phase82c_final_D_image_15.json",
+    "scripts\\eval\\report\\phase82c_final_D_image_20.json",
+    "scripts\\eval\\report\\phase82c_final_D_relation_00.json",
+    "scripts\\eval\\report\\phase82c_final_D_relation_05.json",
+    "scripts\\eval\\report\\phase82c_final_D_relation_10.json",
+    "scripts\\eval\\report\\phase82c_final_D_relation_15.json",
+    "scripts\\eval\\report\\phase82c_final_D_relation_20.json"
+  ],
+  "batch_slices": [
+    {
+      "scenes": "fact",
+      "offset": 0,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "fact",
+      "offset": 5,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "fact",
+      "offset": 10,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "fact",
+      "offset": 15,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "fact",
+      "offset": 20,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "colloquial",
+      "offset": 0,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "colloquial",
+      "offset": 5,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "colloquial",
+      "offset": 10,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "colloquial",
+      "offset": 15,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "colloquial",
+      "offset": 20,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 0,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 5,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 10,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 15,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 20,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 0,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 5,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 10,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 15,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "relation",
+      "offset": 20,
+      "limit": 5,
+      "count": 5
+    }
+  ]
+}

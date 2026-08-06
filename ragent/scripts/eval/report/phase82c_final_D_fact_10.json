@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "fact",
+    "offset": 10,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.6,
+      "@3": 0.6,
+      "@5": 0.6
+    },
+    "mrr": 0.6,
+    "expected_channel_hit_rate": 0.6,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 1765,
+      "p95_ms": 7016,
+      "max_ms": 7016
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "fact": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.6,
+          "@3": 0.6,
+          "@5": 0.6
+        },
+        "mrr": 0.6,
+        "expected_channel_hit_rate": 0.6,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 1765,
+          "p95_ms": 7016,
+          "max_ms": 7016
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "e3272d5ff298538f78f179028ab6194b7530c2284c2d7736fd552ade73231597",
+      "query": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2062,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "b5ae11c9105bb3588b4968bbc78f5705311ad27466f6c5a841f8e9324a1193aa",
+      "query": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1172,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "873a7c5dd09355676a8efb3c28a66358e7caebbf4520eb430a795810d538acdf",
+      "query": "反应过程中如何控制升温速率？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1344,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "816d37bfa0f303fc238e6fa59f9168cba8c3a48f3ae7e2891057f950528342c0",
+      "query": "高炉休风复风时如何控制风量恢复节奏？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 7016,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1e0f633f7ab486a6a43c02cf654530bf0327f198f995cec7c58447170c3aa01d",
+      "query": "冷轧机工作辊的日常维护要点有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1765,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    }
+  ]
+}

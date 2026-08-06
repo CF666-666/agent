@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-no-rewrite",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "fact",
+    "offset": 20,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.8,
+      "@3": 0.8,
+      "@5": 0.8
+    },
+    "mrr": 0.8,
+    "expected_channel_hit_rate": 0.8,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 3578,
+      "p95_ms": 16625,
+      "max_ms": 16625
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "fact": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.8,
+          "@3": 0.8,
+          "@5": 0.8
+        },
+        "mrr": 0.8,
+        "expected_channel_hit_rate": 0.8,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 3578,
+          "p95_ms": 16625,
+          "max_ms": 16625
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "5aab2d989c2134d336d77b4f9ef2f77d4efc15582fc5eb7401a94a97676e2d25",
+      "query": "离心式压缩机出现喘振现象如何判断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3047,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "cb6a02e37ababf27fa3e4ddd53bcc0004fb44fcd35e4492da10d299fd7468bd5",
+      "query": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 5594,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "80783d70d306193672f6116ce3edae70a703d8617d9295296d65b960c6ec1eed",
+      "query": "变压器停运超过7天重新投运前需做哪些检查？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3406,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0c4c28c9c40e59d2764d42261dd0270996c5ea1eab958eed3b7c4298c62d46bc",
+      "query": "启动发电机前必须执行哪些操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 16625,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "1f894fa75f7bbc71b8fb759f48c5f74fa2258caf59f812075d911ecb20420748",
+      "query": "精馏塔区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3578,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    }
+  ]
+}
