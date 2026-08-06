@@ -17,8 +17,11 @@
 
 package com.nageoffer.ai.ragent.rag.config;
 
+import com.nageoffer.ai.ragent.infra.embedding.OllamaEmbeddingClient;
+import com.nageoffer.ai.ragent.infra.embedding.SiliconFlowEmbeddingClient;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,5 +36,27 @@ class HttpClientConfigTest {
         assertThat(client.readTimeoutMillis()).isEqualTo(3000);
         assertThat(client.callTimeoutMillis()).isEqualTo(3000);
         assertThat(client.retryOnConnectionFailure()).isFalse();
+    }
+
+    @Test
+    void shouldBoundEmbeddingCallByConfiguredBudget() {
+        OkHttpClient client = new HttpClientConfig().embeddingHttpClient(5000);
+
+        assertThat(client.connectTimeoutMillis()).isEqualTo(5000);
+        assertThat(client.writeTimeoutMillis()).isEqualTo(5000);
+        assertThat(client.readTimeoutMillis()).isEqualTo(5000);
+        assertThat(client.callTimeoutMillis()).isEqualTo(5000);
+        assertThat(client.retryOnConnectionFailure()).isFalse();
+    }
+
+    @Test
+    void shouldInjectDedicatedEmbeddingClientIntoEveryEmbeddingAdapter() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.register(HttpClientConfig.class, SiliconFlowEmbeddingClient.class, OllamaEmbeddingClient.class);
+            context.refresh();
+
+            assertThat(context.getBean(SiliconFlowEmbeddingClient.class)).isNotNull();
+            assertThat(context.getBean(OllamaEmbeddingClient.class)).isNotNull();
+        }
     }
 }

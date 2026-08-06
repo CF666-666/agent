@@ -176,3 +176,11 @@
 - D 全链路融合（100 条）：`Hit@1/3/5=34%/51%/59%`、`MRR=0.4493`、期望通道命中率 `76%`、`P50=3406ms`、`P95=13234ms`，全部为 `received`。分场景的 `Hit@5` 分别为事实 `52%`、口语 `56%`、图纸 `80%`、关系 `48%`。
 - D 的图纸场景期望通道/来源 ID 命中率均为 `96%`，但 `Hit@1=4%`：图像候选已可用，当前多源融合和精排仍不能稳定将其推至首位。关系场景期望超图通道命中率 `96%`，而 `Hit@5=48%`，也印证关系路径对齐仍是后续重点。
 - 原始批次及合并报告为 `scripts/eval/report/phase82c_final_{A,B,C,D}_*.json`。四组都使用 `retrievalOnly=true`、`enableRewrite=false` 和 `runtime.label=seeded-hyperedges-rate-limit-disabled`；它们是检索/融合基线，不能替代正常回答质量或查询重写 A/B 的结论。
+
+## 2026-08-06：嵌入依赖预算隔离（P0 已修复，待全量回归）
+
+- 根因：`SiliconFlowEmbeddingClient` 和 `OllamaEmbeddingClient` 复用通用 `syncHttpClient`，其 `callTimeout=45s` 且允许连接重试；单次嵌入长尾可以超过 SSE 客户端的检索预算。
+- 修复：新增具名 `embeddingHttpClient`，由 `rag.embedding.timeout-millis`（默认 `5000ms`）统一约束 connect/write/read/call 四项超时，并禁用连接重试；两个 provider adapter 显式注入该 client，避免依赖参数名注入。
+- 回归：`HttpClientConfigTest` 覆盖预算与重试策略，并以 Spring context 验证两个 adapter 都可通过 `embeddingHttpClient` seam 注入（3 项通过）。
+- HTTP 探针：历史长尾的文本单通道样本在 `retrievalOnly=true`、`enableRewrite=false`、图像/超图关闭、12 秒客户端预算下，于 `1359ms` 收到 10 条 references。原始探针为 `scripts/eval/report/phase82d_embedding_budget_probe.json`，仅作运行时证据，不替换 A/B/C/D 基线。
+- 后续：仍需在相同 20 秒预算下重跑足量 A/B/C/D，才可宣称 P95 的改善或将该结果用于简历指标。

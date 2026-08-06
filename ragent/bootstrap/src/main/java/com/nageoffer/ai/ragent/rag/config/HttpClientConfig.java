@@ -77,4 +77,22 @@ public class HttpClientConfig {
                 .retryOnConnectionFailure(false)
                 .build();
     }
+
+    /**
+     * Embedding is a synchronous dependency of both indexing and retrieval.
+     * Its provider call must not inherit the general-purpose client's 45-second
+     * budget, otherwise a single slow embedding can outlive the SSE request.
+     */
+    @Bean
+    @Qualifier("embeddingHttpClient")
+    public OkHttpClient embeddingHttpClient(@Value("${rag.embedding.timeout-millis:5000}") long timeoutMillis) {
+        Duration timeout = Duration.ofMillis(Math.max(1, timeoutMillis));
+        return new OkHttpClient.Builder()
+                .connectTimeout(timeout)
+                .writeTimeout(timeout)
+                .readTimeout(timeout)
+                .callTimeout(timeout)
+                .retryOnConnectionFailure(false)
+                .build();
+    }
 }
