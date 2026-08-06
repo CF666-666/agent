@@ -40,12 +40,12 @@ class HttpClientConfigTest {
 
     @Test
     void shouldBoundEmbeddingCallByConfiguredBudget() {
-        OkHttpClient client = new HttpClientConfig().embeddingHttpClient(5000);
+        OkHttpClient client = new HttpClientConfig().embeddingHttpClient(10000);
 
-        assertThat(client.connectTimeoutMillis()).isEqualTo(5000);
-        assertThat(client.writeTimeoutMillis()).isEqualTo(5000);
-        assertThat(client.readTimeoutMillis()).isEqualTo(5000);
-        assertThat(client.callTimeoutMillis()).isEqualTo(5000);
+        assertThat(client.connectTimeoutMillis()).isEqualTo(10000);
+        assertThat(client.writeTimeoutMillis()).isEqualTo(10000);
+        assertThat(client.readTimeoutMillis()).isEqualTo(10000);
+        assertThat(client.callTimeoutMillis()).isEqualTo(10000);
         assertThat(client.retryOnConnectionFailure()).isFalse();
     }
 
@@ -57,6 +57,8 @@ class HttpClientConfigTest {
 
             assertThat(context.getBean(SiliconFlowEmbeddingClient.class)).isNotNull();
             assertThat(context.getBean(OllamaEmbeddingClient.class)).isNotNull();
+            assertThat(context.getBean("embeddingHttpClient", OkHttpClient.class).callTimeoutMillis())
+                    .isEqualTo(10000);
         }
     }
 }

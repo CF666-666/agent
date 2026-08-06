@@ -85,7 +85,7 @@ public class HttpClientConfig {
      */
     @Bean
     @Qualifier("embeddingHttpClient")
-    public OkHttpClient embeddingHttpClient(@Value("${rag.embedding.timeout-millis:5000}") long timeoutMillis) {
+    public OkHttpClient embeddingHttpClient(@Value("${rag.embedding.timeout-millis:10000}") long timeoutMillis) {
         Duration timeout = Duration.ofMillis(Math.max(1, timeoutMillis));
         return new OkHttpClient.Builder()
                 .connectTimeout(timeout)

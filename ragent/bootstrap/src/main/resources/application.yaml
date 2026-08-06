@@ -164,7 +164,7 @@ ai:
 
   embedding:
     # 单个远程嵌入调用的总预算；超时后由模型路由按候选顺序降级。
-    timeout-millis: 5000
+    timeout-millis: 10000
     default-model: qwen-emb-8b
     candidates:
       - id: qwen-emb-8b

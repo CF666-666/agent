@@ -346,6 +346,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 8.2-B | 固定 100 条分层评测集、报告配置/数据集指纹及合并一致性校验 | `industrial_eval_v2` + 离线回归 | 1h | ✅ |
 | 8.2-C | 在隔离服务以 `retrievalOnly` 重跑四组通道 A/B/C/D，提交 schema v2 原始报告与限制性结论 | `scripts/eval/report/phase82c_final_{A,B,C,D}_*.json` | 1h | ✅ |
 | 8.2-D | 嵌入外部依赖预算隔离：独立 HTTP client、无重试、配置/注入/HTTP 探针回归 | `embeddingHttpClient` + `HttpClientConfigTest` | 1h | ✅ |
+| 8.2-E | 嵌入预算校准：由 5 秒调至 10 秒，保留总预算和无重试 | `rag.embedding.timeout-millis` + 回归 | 0.5h | ✅ |
 | 8.3 | RAGAS 生成质量评测：接入 ragas 库（faithfulness / answer_relevancy / context_precision / context_recall） | `scripts/eval/ragas_eval.py` | 3h | ✅ |
 | 8.4 | 评测报告：自动汇总输出 JSON/MD 对比报告，沉淀为文档 | `docs/evaluation-report.md` | 1h | ✅ |
 | 8.5 | 简历数据校准：用真实评测结果替换简历第 2/3/4 条中的指标数字 | `docs/resume-project.md` | 1h | ✅ |
@@ -394,6 +395,7 @@ Week 8 ──┘  Phase 8（RAGAS 端到端评测体系）
 | 8.2-B | 可复现分层评测工件 | ✅ 完成 | 08-05 | 08-05 | 固定种子生成 100 条 `fact/colloquial/image/relation` 样本；报告固化数据集 SHA-256、四类开关和标签，合并时拒绝混合配置 |
 | 8.2-C | 隔离服务 A/B/C/D 重跑 | ✅ 完成 | 08-06 | 08-06 | 已完成 `retrievalOnly`、报告级 `latency_ms`/状态/P50/P95、Rerank 3s 预算及意图分类隔离；A/B/C/D 原始与合并报告均已重跑。D 全链路 100 条：Hit@1/3/5=34%/51%/59%、MRR=0.4493、P50/P95=3406/13234ms、100% received；图像/关系候选可达但融合排序和关系路径对齐仍待后续优化 |
 | 8.2-D | 嵌入依赖预算隔离 | ✅ 完成 | 08-06 | 08-06 | SiliconFlow/Ollama 不再复用 45s 同步 client；`rag.embedding.timeout-millis=5000` 约束单 provider 总预算且禁重试。配置/注入回归 3 项通过，历史长尾样本在 12s HTTP 预算内 1359ms 返回 10 条引用；尚未用其外推 P95 改善 |
+| 8.2-E | 嵌入预算校准 | ✅ 完成 | 08-06 | 08-06 | 冷启动双通道检索证实 5s 会导致 embedding 候选耗尽，故默认调至 10s；仍为独立总预算且禁重试。默认值通过 Spring 注入回归锁定，完整 P95 待重跑 |
 | 2 | 图像检索链 | ✅ 完成 | 07-25 | 07-25 | 2 个闭环全部完成，Phase 2 完结 |
 | 3 | 超图引擎 | ✅ 完成 | 07-28 | 07-31 | 超边抽取 633 条，超图检索通道可用 |
 | 4 | 多路融合与答案增强 | ✅ 完成 | 07-31 | 08-01 | 6 个闭环全部完成，多源融合 + references 推送跑通 |

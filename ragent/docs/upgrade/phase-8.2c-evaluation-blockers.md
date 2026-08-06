@@ -184,3 +184,10 @@
 - 回归：`HttpClientConfigTest` 覆盖预算与重试策略，并以 Spring context 验证两个 adapter 都可通过 `embeddingHttpClient` seam 注入（3 项通过）。
 - HTTP 探针：历史长尾的文本单通道样本在 `retrievalOnly=true`、`enableRewrite=false`、图像/超图关闭、12 秒客户端预算下，于 `1359ms` 收到 10 条 references。原始探针为 `scripts/eval/report/phase82d_embedding_budget_probe.json`，仅作运行时证据，不替换 A/B/C/D 基线。
 - 后续：仍需在相同 20 秒预算下重跑足量 A/B/C/D，才可宣称 P95 的改善或将该结果用于简历指标。
+
+## 2026-08-06：嵌入预算校准（8.2-E，已完成）
+
+- 复现：在冷启动的图像+超图并行检索中，`5000ms` 单 provider 预算会使 SiliconFlow embedding 超时，随后本地 Ollama 不可用，导致候选耗尽并输出 `empty_references`。这说明 5 秒虽可约束长尾，却不足以覆盖当前多模态运行时的正常波动。
+- 调整：默认 `rag.embedding.timeout-millis` 调整为 `10000ms`，仍保留独立 client、四项总预算和禁重试策略，避免回退到原 `45s` 通用客户端。
+- 回归：Spring 注入测试同时断言默认 client 的 `callTimeout=10000ms`，确保配置默认值与两个 provider adapter 的实际注入一致。
+- 边界：10 秒只是在可用性和尾延迟之间的当前折中；完整 P95 需在该配置稳定后重跑，不能用本次小批探针替代。
