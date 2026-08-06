@@ -199,3 +199,10 @@
 - 回归：`NoopRerankClientTest` 覆盖“query 对齐候选覆盖更高先验的无关候选”及同分稳定顺序（2 项通过）；`RerankPostProcessorTest` 的远程重排异常回退行为也保持通过（2 项）。
 - 运行时证据：10 秒 embedding 预算下，日志确认实际走过远程 Rerank 失败到本地 fallback；图纸首批 5 条探针均为 `received`，Hit@1/3/5=80%/80%/80%，MRR=0.80，P50/P95=2828/5875ms。原始报告为 `scripts/eval/report/phase82f_local_rerank_image_00_10s.json`（单条探针为 `phase82f_local_rerank_image_10s_probe.json`）。
 - 边界：历史 8.2-C D 的同类首批结果运行于不同配置，不能与此报告构成严格 A/B，也不能据此写入简历效果数字；待固定 10 秒 embedding 预算后完成同样本、同服务参数的完整重跑。
+
+## 2026-08-06：评测冷启动预热（8.2-G，已完成）
+
+- 复现：10 秒 embedding 预算和本地 Rerank fallback 生效后，隔离服务的首个事实样本仍在 `20s` 客户端预算内读取超时；随即对相同样本的热态单条探针于 `1641ms` 收到 10 条引用。这是冷启动依赖初始化长尾，不能被计入语义召回失败。
+- 调整：`retrieval_eval.py` 新增 `--warmup-count`。Runner 在正式样本开始前按当前筛选集前缀发送未计分请求，并在报告 `warmup` 中保留 case、状态、引用数和延迟；`summary` 与 `results` 只统计正式请求，避免隐式剔除或污染指标。
+- 回归：`test_retrieval_eval.py` 覆盖预热前缀、输入不变和负数按零处理（2 项通过），另通过 `py_compile`。运行时以 `--warmup-count 1` 预热后，事实首批 5 条全部 `received`，Hit@1/3/5=100%/100%/100%，原始报告为 `scripts/eval/report/phase82g_D_fact_00_warm.json`。
+- 后续：完整 D 重跑必须固定该参数、服务参数和 runtime label；预热记录只用于解释运行时状态，不能用于计算召回或延迟分位数。

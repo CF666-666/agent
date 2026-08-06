@@ -23,6 +23,7 @@ import time
 from difflib import SequenceMatcher
 from pathlib import Path
 from collections import defaultdict
+from typing import Callable
 
 import requests
 import urllib.parse
@@ -248,6 +249,21 @@ def runtime_metadata(label: str, request_timeout_seconds: int) -> dict:
     }
 
 
+def run_warmups(items: list[dict], count: int,
+                retrieve: Callable[[str], tuple[list[dict], str, int]]) -> list[dict]:
+    """Issue unscored requests so cold dependencies do not distort measured cases."""
+    warmup_results = []
+    for item in items[:max(0, count)]:
+        references, status, latency_ms = retrieve(item["query"])
+        warmup_results.append({
+            "case_id": evaluation_case_id(item),
+            "retrieval_status": status,
+            "latency_ms": latency_ms,
+            "num_refs": len(references),
+        })
+    return warmup_results
+
+
 def main():
     parser = argparse.ArgumentParser(description="检索指标 Runner")
     parser.add_argument("--base-url", default="http://localhost:9090/api/ragent")
@@ -278,6 +294,8 @@ def main():
                         help="收到 references 后完成 SSE，不调用回答模型；用于隔离检索评测")
     parser.add_argument("--request-timeout", type=int, default=10,
                         help="单条 SSE 检索请求超时秒数(无 references 时快速判定 no_retrieval)")
+    parser.add_argument("--warmup-count", type=int, default=0,
+                        help="Unscored warmup requests before measured cases.")
     args = parser.parse_args()
     enable_rewrite = not args.disable_rewrite
     enable_image = not args.disable_image
@@ -291,15 +309,23 @@ def main():
     mode = "rewrite-on" if enable_rewrite else "rewrite-off"
     print(f"[retrieval_eval] 评测集 {len(items)} 条 | 查询重写: {'开启' if enable_rewrite else '关闭'}")
 
-    results = []
-    for idx, it in enumerate(items, 1):
-        query, golden = it["query"], it["golden_answer"]
-        refs, retrieval_status, latency_ms = stream_refs(
+    def retrieve(query: str):
+        return stream_refs(
             args.base_url, token, query,
             enable_rewrite, enable_image,
             enable_hypergraph, enable_fusion,
             retrieval_only=args.retrieval_only,
             timeout=args.request_timeout)
+
+    warmup_results = run_warmups(items, args.warmup_count, retrieve)
+    for index, result in enumerate(warmup_results, 1):
+        print(f"  warmup {index}/{len(warmup_results)} status={result['retrieval_status']} "
+              f"refs={result['num_refs']} latency={result['latency_ms']}ms")
+
+    results = []
+    for idx, it in enumerate(items, 1):
+        query, golden = it["query"], it["golden_answer"]
+        refs, retrieval_status, latency_ms = retrieve(query)
         ok = retrieval_status == "received"
         hits, mrr, channel_hit, source_hit = metrics(
             refs, golden, it.get("expected_channels", []), it.get("golden_source_ids", [])) if ok else (
@@ -370,6 +396,11 @@ def main():
             "offset": args.offset,
             "limit": args.limit,
             "count": len(results),
+        },
+        "warmup": {
+            "requested_count": args.warmup_count,
+            "executed_count": len(warmup_results),
+            "results": warmup_results,
         },
         "summary": summary,
         "results": results,

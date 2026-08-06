@@ -1,0 +1,163 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-10s-local-lexical",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled-10s-local-lexical",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "fact",
+    "offset": 0,
+    "limit": 5,
+    "count": 5
+  },
+  "warmup": {
+    "requested_count": 1,
+    "executed_count": 1,
+    "results": [
+      {
+        "case_id": "8bb3c0716361c4bbb1ce69e58477ffb6461377c7c807cb13874c12b6f37e0312",
+        "retrieval_status": "received",
+        "latency_ms": 2063,
+        "num_refs": 10
+      }
+    ]
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 3062,
+      "p95_ms": 7844,
+      "max_ms": 7844
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "fact": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 3062,
+          "p95_ms": 7844,
+          "max_ms": 7844
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "8bb3c0716361c4bbb1ce69e58477ffb6461377c7c807cb13874c12b6f37e0312",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2172,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0b2b36937ffbc9a9612100dac2a64f8f2a939cbc2edd891643e1bac98adae690",
+      "query": "液压系统应如何进行定期保养？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3062,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0ea584f3d1f391990303fc6dde07ea36ffd4dc57e19825aafa342e86ab39a69e",
+      "query": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2906,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "88f28f7d58429cbf9b3598c27d837cc5d770fb3b201c4d3aed3b6cdc9b443611",
+      "query": "转炉兑铁前必须完成哪些安全确认步骤？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 7844,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "998535743288986d91e116e8d6f44886f3ad4a03cb9c04ffceac2d7f11e32790",
+      "query": "热轧机换辊操作的标准流程是什么？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 7141,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}
