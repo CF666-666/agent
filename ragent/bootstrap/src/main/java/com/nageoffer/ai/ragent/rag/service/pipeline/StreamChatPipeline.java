@@ -102,6 +102,14 @@ public class StreamChatPipeline {
             loadMemory(ctx);
         }
         rewriteQuery(ctx);
+        if (ctx.getRetrievalOptions().retrievalOnly()) {
+            ctx.setSubIntents(List.of(new SubQuestionIntent(
+                    ctx.getRewriteResult().rewrittenQuestion(),
+                    List.of()
+            )));
+            streamRagResponse(ctx, retrieve(ctx));
+            return;
+        }
         resolveIntents(ctx);
 
         if (handleGuidance(ctx)) {
@@ -112,10 +120,6 @@ public class StreamChatPipeline {
         }
 
         RetrievalContext retrievalCtx = retrieve(ctx);
-        if (ctx.getRetrievalOptions().retrievalOnly()) {
-            streamRagResponse(ctx, retrievalCtx);
-            return;
-        }
         if (handleEmptyRetrieval(ctx, retrievalCtx)) {
             return;
         }
@@ -236,8 +240,6 @@ public class StreamChatPipeline {
 
     private void streamRagResponse(StreamChatContext ctx, RetrievalContext retrievalCtx) {
         // 聚合所有意图用于 prompt 规划
-        IntentGroup mergedGroup = intentResolver.mergeIntentGroup(ctx.getSubIntents());
-
         // Phase 4/6: 检索来源在 LLM 流开始前发送
         // 保证取消/中断场景下引用也已到达（挂在 onComplete 会在取消时丢失）
         List<Reference> references = buildReferences(retrievalCtx);
@@ -251,6 +253,7 @@ public class StreamChatPipeline {
             return;
         }
 
+        IntentGroup mergedGroup = intentResolver.mergeIntentGroup(ctx.getSubIntents());
         StreamCancellationHandle handle = streamLLMResponse(
                 ctx.getRewriteResult(),
                 retrievalCtx,

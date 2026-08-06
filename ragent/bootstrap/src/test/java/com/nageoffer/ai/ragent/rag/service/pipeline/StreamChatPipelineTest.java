@@ -85,6 +85,7 @@ class StreamChatPipelineTest {
         verify(callback).onRetrievalComplete();
         verifyNoInteractions(llmService);
         verifyNoInteractions(memoryService);
+        verifyNoInteractions(intentResolver, guidanceService);
     }
 
     @Test
@@ -118,5 +119,6 @@ class StreamChatPipelineTest {
         verify(callback, never()).onReferences(any());
         verifyNoInteractions(llmService);
         verifyNoInteractions(memoryService);
+        verifyNoInteractions(intentResolver, guidanceService);
     }
 }
