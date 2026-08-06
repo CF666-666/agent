@@ -23,10 +23,17 @@ import com.nageoffer.ai.ragent.infra.model.ModelTarget;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * The configured "noop" provider is the final model-routing fallback. It
+ * intentionally avoids another remote call, but still applies a deterministic
+ * local lexical rerank so a failed external model does not merely truncate
+ * source-fusion order.
+ */
 @Service
 public class NoopRerankClient implements RerankClient {
+
+    private final LocalLexicalReranker localReranker = new LocalLexicalReranker();
 
     @Override
     public String provider() {
@@ -35,14 +42,6 @@ public class NoopRerankClient implements RerankClient {
 
     @Override
     public List<RetrievedChunk> rerank(String query, List<RetrievedChunk> candidates, int topN, ModelTarget target) {
-        if (candidates == null || candidates.isEmpty()) {
-            return List.of();
-        }
-        if (topN <= 0 || candidates.size() <= topN) {
-            return candidates;
-        }
-        return candidates.stream()
-                .limit(topN)
-                .collect(Collectors.toList());
+        return localReranker.rerank(query, candidates, topN);
     }
 }

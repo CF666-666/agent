@@ -191,3 +191,11 @@
 - 调整：默认 `rag.embedding.timeout-millis` 调整为 `10000ms`，仍保留独立 client、四项总预算和禁重试策略，避免回退到原 `45s` 通用客户端。
 - 回归：Spring 注入测试同时断言默认 client 的 `callTimeout=10000ms`，确保配置默认值与两个 provider adapter 的实际注入一致。
 - 边界：10 秒只是在可用性和尾延迟之间的当前折中；完整 P95 需在该配置稳定后重跑，不能用本次小批探针替代。
+
+## 2026-08-06：本地词法 Rerank 降级（8.2-F，已完成）
+
+- 根因：运行时日志确认 BaiLian Rerank 返回 HTTP 400（`Arrearage`），模型路由会降级到 `rerank-noop`。原实现只按融合后的既有顺序截断，外部 Rerank 故障时无法利用 query 对候选重新排序。
+- 调整：最终 fallback 改为确定性的本地词法重排。它将 query 和候选文本归一化为 Unicode 字母/数字 bigram，使用 Dice 相似度并保留小比例的既有融合分；相同分数按原顺序稳定排序。输出复制候选并标记 `rerankMode=local_lexical_fallback`，以便诊断引用来源。
+- 回归：`NoopRerankClientTest` 覆盖“query 对齐候选覆盖更高先验的无关候选”及同分稳定顺序（2 项通过）；`RerankPostProcessorTest` 的远程重排异常回退行为也保持通过（2 项）。
+- 运行时证据：10 秒 embedding 预算下，日志确认实际走过远程 Rerank 失败到本地 fallback；图纸首批 5 条探针均为 `received`，Hit@1/3/5=80%/80%/80%，MRR=0.80，P50/P95=2828/5875ms。原始报告为 `scripts/eval/report/phase82f_local_rerank_image_00_10s.json`（单条探针为 `phase82f_local_rerank_image_10s_probe.json`）。
+- 边界：历史 8.2-C D 的同类首批结果运行于不同配置，不能与此报告构成严格 A/B，也不能据此写入简历效果数字；待固定 10 秒 embedding 预算后完成同样本、同服务参数的完整重跑。
