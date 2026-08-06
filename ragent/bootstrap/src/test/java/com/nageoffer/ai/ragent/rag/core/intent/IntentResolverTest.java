@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -59,5 +60,21 @@ class IntentResolverTest {
             assertThat(intent.nodeScores()).isEmpty();
         });
         assertThat(elapsedMillis).isLessThan(3_000);
+    }
+
+    @Test
+    void shouldDegradeToEmptyIntentWhenClassifierExecutorRejectsSubmission() {
+        IntentClassifier classifier = mock(IntentClassifier.class);
+        IntentResolver resolver = new IntentResolver(
+                classifier,
+                command -> {
+                    throw new RejectedExecutionException("intent classifier is saturated");
+                },
+                100);
+
+        List<SubQuestionIntent> result = resolver.resolve(
+                new RewriteResult("机械臂操作钢卷", List.of("机械臂操作钢卷")));
+
+        assertThat(result).singleElement().satisfies(intent -> assertThat(intent.nodeScores()).isEmpty());
     }
 }

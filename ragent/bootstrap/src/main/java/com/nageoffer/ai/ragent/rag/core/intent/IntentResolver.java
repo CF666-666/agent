@@ -35,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
@@ -67,22 +68,31 @@ public class IntentResolver {
                 ? rewriteResult.subQuestions()
                 : List.of(rewriteResult.rewrittenQuestion());
         List<CompletableFuture<SubQuestionIntent>> tasks = subQuestions.stream()
-                .map(q -> CompletableFuture.supplyAsync(
-                        () -> {
-                            try {
-                                return new SubQuestionIntent(q, classifyIntents(q));
-                            } catch (Exception e) {
-                                log.error("子问题意图分类失败，降级为空意图，question：{}", q, e);
-                                return new SubQuestionIntent(q, List.of());
-                            }
-                        },
-                        intentClassifyExecutor
-                ))
+                .map(this::submitClassification)
                 .toList();
         List<SubQuestionIntent> subIntents = IntStream.range(0, tasks.size())
                 .mapToObj(index -> awaitClassification(tasks.get(index), subQuestions.get(index)))
                 .toList();
         return capTotalIntents(subIntents);
+    }
+
+    private CompletableFuture<SubQuestionIntent> submitClassification(String question) {
+        try {
+            return CompletableFuture.supplyAsync(
+                    () -> {
+                        try {
+                            return new SubQuestionIntent(question, classifyIntents(question));
+                        } catch (Exception e) {
+                            log.error("子问题意图分类失败，降级为空意图，question：{}", question, e);
+                            return new SubQuestionIntent(question, List.of());
+                        }
+                    },
+                    intentClassifyExecutor
+            );
+        } catch (RejectedExecutionException ex) {
+            log.warn("Intent classification executor saturated; use global retrieval, question={}", question);
+            return CompletableFuture.completedFuture(new SubQuestionIntent(question, List.of()));
+        }
     }
 
     private SubQuestionIntent awaitClassification(CompletableFuture<SubQuestionIntent> task, String question) {

@@ -110,3 +110,16 @@
 
 - 重启隔离评测实例，重跑 B 组 25 条，确认慢图像通道不再导致 `references` 缺失，并记录 `timedOut` 降级比例。
 - 图像通道超时后的结果质量不能计入图像 Recall@K；该指标须在图像后端长尾收敛后另行优化和重跑。
+
+## 2026-08-06：分类线程池饱和绕过超时预算
+
+### 根因与修复
+
+- B 组首批第 5 条仍超时时，日志显示请求进入聊天服务后约 11 秒才到达 `IntentResolver` 的 2000ms 超时日志；图像检索和向量检索本身均在约 1 秒内完成。
+- 原因是分类线程池使用 `SynchronousQueue + CallerRunsPolicy`。池饱和时，`CompletableFuture.supplyAsync` 在 `chat_entry_executor` 同步执行外部分类调用，因而无法进入 `task.get(timeout)` 的预算保护。
+- 分类池现改用 `AbortPolicy`；`IntentResolver` 捕获 `RejectedExecutionException` 后立即返回空意图，使请求安全降级到全局向量检索。
+
+### 验证
+
+- `IntentResolverTest` 新增“分类执行器拒绝提交”回归用例；连同图像通道预算、Rerank 降级、请求开关和超图路径的 12 项定向测试均通过。
+- 重启干净的隔离实例后，B 组 offset 0--4 在 12 秒预算内全部收到 10 条 `references`，`no_retrieval=0`；报告为 `scripts/eval/report/industrial_eval_v2_B_intent-budget_00.json`。该报告仅为分批验证，尚未并入正式全量结果。

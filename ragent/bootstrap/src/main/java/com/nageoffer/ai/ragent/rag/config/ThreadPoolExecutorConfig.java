@@ -130,7 +130,7 @@ public class ThreadPoolExecutorConfig {
                 ThreadFactoryBuilder.create()
                         .setNamePrefix("intent_classify_executor_")
                         .build(),
-                new ThreadPoolExecutor.CallerRunsPolicy()
+                new ThreadPoolExecutor.AbortPolicy()
         );
         return TtlExecutors.getTtlExecutor(executor);
     }
