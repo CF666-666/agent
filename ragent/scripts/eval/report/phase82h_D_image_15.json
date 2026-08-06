@@ -1,0 +1,163 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-10s-local-lexical",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled-10s-local-lexical",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "image",
+    "offset": 15,
+    "limit": 5,
+    "count": 5
+  },
+  "warmup": {
+    "requested_count": 1,
+    "executed_count": 1,
+    "results": [
+      {
+        "case_id": "76351a4895d41d038ca81efcb51b9f3baad4b3715d2fb1eb5c83c17d75825abc",
+        "retrieval_status": "received",
+        "latency_ms": 2812,
+        "num_refs": 10
+      }
+    ]
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 1.0,
+    "latency": {
+      "p50_ms": 1703,
+      "p95_ms": 2141,
+      "max_ms": 2141
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "image": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 1.0,
+        "latency": {
+          "p50_ms": 1703,
+          "p95_ms": 2141,
+          "max_ms": 2141
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "76351a4895d41d038ca81efcb51b9f3baad4b3715d2fb1eb5c83c17d75825abc",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为冶金或铸造车间场景，两名工人穿着防护服操作设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1985,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "9c273c291946f12cb33d1215afc53f614bc0a7e937f218d7d0568ee27acdb7ae",
+      "query": "请判断这张工业图像对应的设备或场景：图中为冶金车间高温作业场景，设备为连铸机或钢水处理装置",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1593,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "65f871c92d9b6d942bbd9356e8bdfaffaa8aae04ddfd7f49fab88819e18d77d6",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为现代化自动化生产线，主要设备为多工位装配机，型号未标示",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1703,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "705183c961eb1dd5de7c945cfc7b377a0aaab95c2a889dbce7a3a1d7603bd6ab",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：该图为大型工业轧机生产线俯视图，核心为两台大型金属卷材（钢卷）在输送线上排列，上下对称布置",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2141,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "744f4771519959d29c8520be0a846b85ddf135ab002d1e300226ec3ea5b30257",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图片展示了一个大型工业厂房内部，主要设备为桥式起重机（行车），其结构包括横跨厂房的主梁、吊钩和滑轮组",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1672,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    }
+  ]
+}

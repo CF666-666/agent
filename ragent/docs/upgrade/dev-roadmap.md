@@ -349,6 +349,7 @@ curl -X POST "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-gen
 | 8.2-E | 嵌入预算校准：由 5 秒调至 10 秒，保留总预算和无重试 | `rag.embedding.timeout-millis` + 回归 | 0.5h | ✅ |
 | 8.2-F | 云端 Rerank 不可用时的本地词法降级，避免直接截断多源融合顺序 | `LocalLexicalReranker` + 回归/图纸探针 | 1h | ✅ |
 | 8.2-G | 评测 Runner 冷启动预热：预热结果单独记录且不参与正式计分 | `--warmup-count` + 单测/事实探针 | 0.5h | ✅ |
+| 8.2-H | 固定 10 秒预算、本地 Rerank fallback 与预热策略后重跑全链路 D 组 | `phase82h_D_*.json` + 合并报告 | 2h | ✅ |
 | 8.3 | RAGAS 生成质量评测：接入 ragas 库（faithfulness / answer_relevancy / context_precision / context_recall） | `scripts/eval/ragas_eval.py` | 3h | ✅ |
 | 8.4 | 评测报告：自动汇总输出 JSON/MD 对比报告，沉淀为文档 | `docs/evaluation-report.md` | 1h | ✅ |
 | 8.5 | 简历数据校准：用真实评测结果替换简历第 2/3/4 条中的指标数字 | `docs/resume-project.md` | 1h | ✅ |
@@ -400,6 +401,7 @@ Week 8 ──┘  Phase 8（RAGAS 端到端评测体系）
 | 8.2-E | 嵌入预算校准 | ✅ 完成 | 08-06 | 08-06 | 冷启动双通道检索证实 5s 会导致 embedding 候选耗尽，故默认调至 10s；仍为独立总预算且禁重试。默认值通过 Spring 注入回归锁定，完整 P95 待重跑 |
 | 8.2-F | 本地词法 Rerank 降级 | ✅ 完成 | 08-06 | 08-06 | BaiLian Rerank 因欠费返回 400 后，最终 noop 候选改为本地确定性词法重排；单元回归 2 项通过，图纸 5 条探针全部 received、H@1=80%。该探针与历史 D 运行配置不同，不能据此宣称严格 A/B 提升 |
 | 8.2-G | 评测冷启动预热 | ✅ 完成 | 08-06 | 08-06 | 首条冷启动请求可超过 20s、热态同题 1.64s；Runner 支持未计分预热并把预热状态写入报告。回归 2 项通过，事实 5 条预热后全部 received、H@1/3/5=100% |
+| 8.2-H | D 全链路受控复测 | ✅ 完成 | 08-06 | 08-06 | 100 条均 received；Hit@1/3/5=79%/81%/81%、MRR=0.7994、P50/P95=2406/10078ms。事实/口语/图纸/关系 Hit@1=80%/96%/92%/48%；运行条件与 8.2-C 不同，不作为单变量提升声明 |
 | 2 | 图像检索链 | ✅ 完成 | 07-25 | 07-25 | 2 个闭环全部完成，Phase 2 完结 |
 | 3 | 超图引擎 | ✅ 完成 | 07-28 | 07-31 | 超边抽取 633 条，超图检索通道可用 |
 | 4 | 多路融合与答案增强 | ✅ 完成 | 07-31 | 08-01 | 6 个闭环全部完成，多源融合 + references 推送跑通 |

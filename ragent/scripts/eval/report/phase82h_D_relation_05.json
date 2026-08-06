@@ -1,0 +1,163 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-10s-local-lexical",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled-10s-local-lexical",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "relation",
+    "offset": 5,
+    "limit": 5,
+    "count": 5
+  },
+  "warmup": {
+    "requested_count": 1,
+    "executed_count": 1,
+    "results": [
+      {
+        "case_id": "ff17a3e709187ab2f30ea218fd35d0ea24b419c3cd3c147ff145c72be6320641",
+        "retrieval_status": "received",
+        "latency_ms": 1640,
+        "num_refs": 10
+      }
+    ]
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.4,
+      "@3": 0.4,
+      "@5": 0.4
+    },
+    "mrr": 0.4,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.2,
+    "latency": {
+      "p50_ms": 2703,
+      "p95_ms": 3437,
+      "max_ms": 3437
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "relation": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.4,
+          "@3": 0.4,
+          "@5": 0.4
+        },
+        "mrr": 0.4,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.2,
+        "latency": {
+          "p50_ms": 2703,
+          "p95_ms": 3437,
+          "max_ms": 3437
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "ff17a3e709187ab2f30ea218fd35d0ea24b419c3cd3c147ff145c72be6320641",
+      "query": "在当前工况下，泵的密封泄漏量异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1406,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "05a6fb9fdf544915df56eafabc6b0c4e6f4e87e8eb1f36c8b73c01603ba31126",
+      "query": "在当前工况下，热轧机齿轮箱润滑系统的润滑油异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3313,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "0afb3a4c010cb3ffe065193b3e426accdf1cb94fa48190cde776a1a84a76c8b7",
+      "query": "在动火作业下，高炉的O₂含量、CO浓度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2047,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "a954f9e0bbef158f61f38995975fb940b99edb39aa534df6937714270504ea56",
+      "query": "在机组负荷≥20%下，高压加热器的水侧压力高于给水压力0.5MPa以上异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 2703,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "d5038c2ade77b5e2992a9275a6ba8374ec2cd96fa9a6f4f6976ff271db94e02e",
+      "query": "在低流量下长时间运行下，离心泵的流量低于最小连续稳定流量（通常为额定流量的30%）异常，与液体在泵内循环升温，介质温度升高20–50℃，引发汽化有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3437,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

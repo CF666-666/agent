@@ -206,3 +206,10 @@
 - 调整：`retrieval_eval.py` 新增 `--warmup-count`。Runner 在正式样本开始前按当前筛选集前缀发送未计分请求，并在报告 `warmup` 中保留 case、状态、引用数和延迟；`summary` 与 `results` 只统计正式请求，避免隐式剔除或污染指标。
 - 回归：`test_retrieval_eval.py` 覆盖预热前缀、输入不变和负数按零处理（2 项通过），另通过 `py_compile`。运行时以 `--warmup-count 1` 预热后，事实首批 5 条全部 `received`，Hit@1/3/5=100%/100%/100%，原始报告为 `scripts/eval/report/phase82g_D_fact_00_warm.json`。
 - 后续：完整 D 重跑必须固定该参数、服务参数和 runtime label；预热记录只用于解释运行时状态，不能用于计算召回或延迟分位数。
+
+## 2026-08-06：D 全链路受控复测（8.2-H，已完成）
+
+- 范围：固定 `industrial_eval_v2` 的事实、口语、图纸和关系四类各 25 条；`retrievalOnly=true`、关闭重写、图像/超图/融合开启、10 秒 embedding 预算、本地词法 Rerank fallback、每个分片预热 1 条。
+- 结果：100/100 正式样本均收到引用；Hit@1/3/5=79%/81%/81%，MRR=0.7994，期望通道命中率=94%，P50/P95=2406/10078ms。场景 Hit@1 为事实 80%、口语 96%、图纸 92%、关系 48%。
+- 工件：原始分片与 `scripts/eval/report/phase82h_D_merged.json` 已保留；合并器已校验数据集、运行标签、检索开关和 case 去重。
+- 边界：该复测同时包含预算、fallback 与预热三类变化，不能与 8.2-C 旧运行条件构成单变量 A/B。它说明当前版本能够稳定返回证据，但关系路径质量仍需在实体归一化和有限多跳阶段解决。

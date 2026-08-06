@@ -111,3 +111,19 @@ scripts/eval/
 | RAGAS 忠诚度 faithfulness | 0.9101 | 12 条 | ✅ |
 | RAGAS 上下文精准 context_precision | 0.8629 | 12 条 | ✅ |
 | RAGAS 上下文召回 context_recall | 0.9167 | 12 条 | ✅ |
+
+## 7. 2026-08-06：8.2-H 全链路受控复测
+
+运行条件：固定 100 条 `industrial_eval_v2`，`retrievalOnly=true`、关闭 query rewrite、图像/超图/融合开启、embedding 总预算 10 秒、本地词法 Rerank fallback、每个分片正式计分前预热 1 条。预热记录不计入指标。
+
+| 指标 | 全量 100 条 |
+|---|---:|
+| Hit Rate@1/3/5 | 79% / 81% / 81% |
+| MRR | 0.7994 |
+| 期望通道命中率 | 94% |
+| P50 / P95 | 2406ms / 10078ms |
+| 收到引用 | 100 / 100 |
+
+分场景 Hit@1：事实 80%、口语 96%、图纸 92%、关系 48%。图像语义候选已稳定可达，但关系路径与实体对齐仍是主要短板。原始分片及合并报告见 `scripts/eval/report/phase82h_D_*.json`。
+
+该结果与 8.2-C 历史 D 基线的运行配置不同（嵌入预算、fallback、预热策略），用于当前版本的真实能力刻画，不能单独归因于某一项改动或作为严格 A/B 提升百分比写入简历。

@@ -1,0 +1,163 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-10s-local-lexical",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled-10s-local-lexical",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "image",
+    "offset": 10,
+    "limit": 5,
+    "count": 5
+  },
+  "warmup": {
+    "requested_count": 1,
+    "executed_count": 1,
+    "results": [
+      {
+        "case_id": "599d72ca6b94af15b0686c4c8512a8a1c75de58bd6fe8ef63867c07d9d515f3f",
+        "retrieval_status": "received",
+        "latency_ms": 3063,
+        "num_refs": 10
+      }
+    ]
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.8,
+      "@3": 0.8,
+      "@5": 0.8
+    },
+    "mrr": 0.8,
+    "expected_channel_hit_rate": 0.8,
+    "source_id_hit_rate": 0.8,
+    "latency": {
+      "p50_ms": 1906,
+      "p95_ms": 3110,
+      "max_ms": 3110
+    },
+    "retrieval_status_counts": {
+      "received": 5
+    },
+    "by_scene": {
+      "image": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.8,
+          "@3": 0.8,
+          "@5": 0.8
+        },
+        "mrr": 0.8,
+        "expected_channel_hit_rate": 0.8,
+        "source_id_hit_rate": 0.8,
+        "latency": {
+          "p50_ms": 1906,
+          "p95_ms": 3110,
+          "max_ms": 3110
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "599d72ca6b94af15b0686c4c8512a8a1c75de58bd6fe8ef63867c07d9d515f3f",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图片展示了一个大型钢铁厂内部，主要设备为桥式起重机，用于吊运钢卷",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3062,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "case_id": "f12afeb5880d8589ac8d0d91bb389b25d8478e3ea615b86285fa45735926ece4",
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为大型石化或化工厂，主要设备包括多座高耸的塔器（如精馏塔、反应塔），塔体呈银灰色，部分带有红白相间警示色带",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1781,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "6c214cca265d5d1e8aa3c657c8e3e6680b7188436e5f0912d1972b1f726cc974",
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 3110,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "3bdc73ad4dad9f3703c0690f6949853060ee538506a428547b84b8c41499cc78",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为陕煤集团冷却塔，属大型工业循环水冷却设备",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1610,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "case_id": "28b197f031c481ef2bbaf771df7bbb865026e4ba7cd4eaf4765252f5d8d68d5e",
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图中为大型化工厂，可见多台塔器、换热器及管道系统",
+      "scene": "image",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1906,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    }
+  ]
+}
