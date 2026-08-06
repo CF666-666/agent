@@ -23,8 +23,8 @@ import com.nageoffer.ai.ragent.rag.dto.IntentGroup;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
 import com.nageoffer.ai.ragent.framework.trace.RagTraceNode;
 import com.nageoffer.ai.ragent.rag.core.rewrite.RewriteResult;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
 
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.INTENT_MIN_SCORE;
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.MAX_INTENT_COUNT;
@@ -41,13 +45,21 @@ import static com.nageoffer.ai.ragent.rag.enums.IntentKind.SYSTEM;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class IntentResolver {
 
     @Qualifier("defaultIntentClassifier")
     private final IntentClassifier intentClassifier;
     @Qualifier("intentClassifyThreadPoolExecutor")
     private final Executor intentClassifyExecutor;
+    private final long classifyTimeoutMillis;
+
+    public IntentResolver(@Qualifier("defaultIntentClassifier") IntentClassifier intentClassifier,
+                          @Qualifier("intentClassifyThreadPoolExecutor") Executor intentClassifyExecutor,
+                          @Value("${rag.intent-resolve.timeout-millis:2000}") long classifyTimeoutMillis) {
+        this.intentClassifier = intentClassifier;
+        this.intentClassifyExecutor = intentClassifyExecutor;
+        this.classifyTimeoutMillis = classifyTimeoutMillis;
+    }
 
     @RagTraceNode(name = "intent-resolve", type = "INTENT")
     public List<SubQuestionIntent> resolve(RewriteResult rewriteResult) {
@@ -67,10 +79,26 @@ public class IntentResolver {
                         intentClassifyExecutor
                 ))
                 .toList();
-        List<SubQuestionIntent> subIntents = tasks.stream()
-                .map(CompletableFuture::join)
+        List<SubQuestionIntent> subIntents = IntStream.range(0, tasks.size())
+                .mapToObj(index -> awaitClassification(tasks.get(index), subQuestions.get(index)))
                 .toList();
         return capTotalIntents(subIntents);
+    }
+
+    private SubQuestionIntent awaitClassification(CompletableFuture<SubQuestionIntent> task, String question) {
+        try {
+            return task.get(classifyTimeoutMillis, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException ex) {
+            task.cancel(true);
+            log.warn("Intent classification timed out after {} ms; use global retrieval, question={}",
+                    classifyTimeoutMillis, question);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            log.warn("Intent classification interrupted; use global retrieval, question={}", question, ex);
+        } catch (ExecutionException ex) {
+            log.warn("Intent classification failed; use global retrieval, question={}", question, ex.getCause());
+        }
+        return new SubQuestionIntent(question, List.of());
     }
 
     public IntentGroup mergeIntentGroup(List<SubQuestionIntent> subIntents) {

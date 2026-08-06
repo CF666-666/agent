@@ -56,6 +56,9 @@ rag:
     max-history-messages: 4
     max-history-chars: 500
 
+  intent-resolve:
+    timeout-millis: 2000
+
   rate-limit:
     global:
       enabled: true
