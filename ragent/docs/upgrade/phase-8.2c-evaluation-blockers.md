@@ -91,3 +91,22 @@
 3. 隔离运行时重跑 B 与 C，确认图像和超图通道独立可用。
 4. 重跑 A 与 D，合并四组 schema v2 报告。
 5. 更新 `docs/evaluation-report.md`、路线图和简历数字；仅使用重跑后的真实数据。
+
+## 2026-08-06：图像通道长尾的二次定位与修复
+
+### 已确认根因
+
+- `image_debug_fixed_probe.json` 证明意图分类超时降级后，固定图像样本可以在 12 秒内返回 10 条 `references`；这只排除了检索前的分类长尾。
+- 后续 B 组分批运行仍有图像样本在客户端 12 秒内未收到 `references`。服务端日志显示文本向量通道约 2.5 秒完成，而 `ImageSearchChannel` 单次执行约 11.2 秒；SSE 引用投影发生在图像通道结束之后，因此客户端已先超时。
+
+### 修复
+
+- `SearchChannel` 新增默认的通道执行预算扩展点；默认不设时限，避免改变既有文本和超图通道的语义。
+- `ImageSearchChannel` 读取 `rag.search.channels.image-semantic.timeout-millis`，默认 3000ms。
+- `MultiChannelRetrievalEngine` 对设置预算的通道使用 `completeOnTimeout` 返回带 `timedOut=true` 的空结果；已完成的文本/超图结果继续进入后处理和 SSE 引用投影。
+- 单元回归 `MultiChannelRetrievalEngineTest` 用 50ms 慢图像通道和即时文本通道复现原问题：修复前约 1034ms 失败，修复后约 76ms 返回文本证据。
+
+### 仍待完成的验证
+
+- 重启隔离评测实例，重跑 B 组 25 条，确认慢图像通道不再导致 `references` 缺失，并记录 `timedOut` 降级比例。
+- 图像通道超时后的结果质量不能计入图像 Recall@K；该指标须在图像后端长尾收敛后另行优化和重跑。

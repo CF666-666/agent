@@ -102,6 +102,8 @@ rag:
       intent-directed:
         min-intent-score: 0.4
         top-k-multiplier: 2
+      image-semantic:
+        timeout-millis: 3000
 
   trace:
     enabled: true

@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.multimodal.retrieval.image;
 
 import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
+import com.nageoffer.ai.ragent.rag.config.SearchChannelProperties;
 import com.nageoffer.ai.ragent.rag.core.retrieve.RetrieveRequest;
 import com.nageoffer.ai.ragent.rag.core.retrieve.RetrieverService;
 import com.nageoffer.ai.ragent.rag.core.retrieve.channel.SearchChannel;
@@ -52,6 +53,7 @@ public class ImageSearchChannel implements SearchChannel {
     private static final String SOURCE = SearchChannelType.IMAGE_SEMANTIC.name();
 
     private final RetrieverService retrieverService;
+    private final SearchChannelProperties searchChannelProperties;
 
     @Override
     public String getName() {
@@ -107,6 +109,11 @@ public class ImageSearchChannel implements SearchChannel {
                 .chunks(chunks)
                 .latencyMs(latency)
                 .build();
+    }
+
+    @Override
+    public long getExecutionTimeoutMillis() {
+        return Math.max(0L, searchChannelProperties.getChannels().getImageSemantic().getTimeoutMillis());
     }
 
     @Override

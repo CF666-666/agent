@@ -49,6 +49,11 @@ public class SearchChannelProperties {
          * 意图定向检索配置
          */
         private IntentDirected intentDirected = new IntentDirected();
+
+        /**
+         * 图像语义检索配置。
+         */
+        private ImageSemantic imageSemantic = new ImageSemantic();
     }
 
     @Data
@@ -102,5 +107,15 @@ public class SearchChannelProperties {
          * TopK 倍数
          */
         private int topKMultiplier = 2;
+    }
+
+    @Data
+    public static class ImageSemantic {
+
+        /**
+         * 图像检索允许占用主检索链路的最长时间。
+         * 超时后仅降级图像通道，保留文本和关系通道的结果。
+         */
+        private long timeoutMillis = 3000L;
     }
 }

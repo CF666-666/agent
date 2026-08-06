@@ -57,6 +57,16 @@ public interface SearchChannel {
     SearchChannelResult search(SearchContext context);
 
     /**
+     * 通道执行的最大等待时间（毫秒）。
+     *
+     * <p>返回非正数表示不设置通道级超时。超时仅降级该通道，
+     * 不应阻塞其他已完成通道的结果进入后处理链。</p>
+     */
+    default long getExecutionTimeoutMillis() {
+        return 0L;
+    }
+
+    /**
      * 通道类型
      */
     SearchChannelType getType();

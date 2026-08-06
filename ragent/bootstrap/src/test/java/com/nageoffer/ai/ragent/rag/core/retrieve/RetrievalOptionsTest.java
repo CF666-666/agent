@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.rag.core.retrieve;
 
 import com.nageoffer.ai.ragent.multimodal.retrieval.image.ImageSearchChannel;
+import com.nageoffer.ai.ragent.rag.config.SearchChannelProperties;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityExtractor;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
 import com.nageoffer.ai.ragent.rag.core.retrieve.channel.HyperGraphSearchChannel;
@@ -59,7 +60,9 @@ class RetrievalOptionsTest {
         SearchContext hyperGraphDisabled = context(new RetrievalOptions(true, true, false, true));
         SearchContext fusionDisabled = context(new RetrievalOptions(true, true, true, false));
 
-        ImageSearchChannel imageChannel = new ImageSearchChannel(mock(com.nageoffer.ai.ragent.rag.core.retrieve.RetrieverService.class));
+        ImageSearchChannel imageChannel = new ImageSearchChannel(
+                mock(com.nageoffer.ai.ragent.rag.core.retrieve.RetrieverService.class),
+                new SearchChannelProperties());
         HyperGraphSearchChannel hyperGraphChannel = new HyperGraphSearchChannel(
                 mock(IndustrialHyperGraph.class), mock(EntityExtractor.class));
         MultiSourceFusionProcessor fusionProcessor = new MultiSourceFusionProcessor(new FusionProperties());

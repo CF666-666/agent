@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -104,18 +105,7 @@ public class MultiChannelRetrievalEngine {
                 enabledChannels.stream().map(SearchChannel::getName).toList());
 
         List<CompletableFuture<SearchChannelResult>> futures = enabledChannels.stream()
-                .map(channel -> CompletableFuture.supplyAsync(
-                        () -> {
-                            try {
-                                log.info("执行检索通道：{}", channel.getName());
-                                return channel.search(context);
-                            } catch (Exception e) {
-                                log.error("检索通道 {} 执行失败", channel.getName(), e);
-                                return emptyResult(channel);
-                            }
-                        },
-                        ragRetrievalExecutor
-                ))
+                .map(channel -> executeChannel(channel, context))
                 .toList();
 
         // 等待所有通道完成并统计
@@ -140,6 +130,10 @@ public class MultiChannelRetrievalEngine {
                         chunkCount,
                         result.getLatencyMs()
                 );
+            } else if (Boolean.TRUE.equals(result.getMetadata().get("timedOut"))) {
+                failureCount++;
+                log.warn("通道 {} 超过 {}ms 执行预算，已降级为无结果",
+                        result.getChannelName(), result.getMetadata().get("timeoutMillis"));
             } else {
                 failureCount++;
                 log.warn("通道 {} 完成但无结果 - 耗时：{}ms",
@@ -153,6 +147,26 @@ public class MultiChannelRetrievalEngine {
                 enabledChannels.size(), successCount, failureCount, totalChunks);
 
         return results;
+    }
+
+    private CompletableFuture<SearchChannelResult> executeChannel(SearchChannel channel, SearchContext context) {
+        CompletableFuture<SearchChannelResult> future = CompletableFuture.supplyAsync(
+                () -> {
+                    try {
+                        log.info("执行检索通道：{}", channel.getName());
+                        return channel.search(context);
+                    } catch (Exception e) {
+                        log.error("检索通道 {} 执行失败", channel.getName(), e);
+                        return emptyResult(channel);
+                    }
+                },
+                ragRetrievalExecutor
+        );
+        long timeoutMillis = channel.getExecutionTimeoutMillis();
+        if (timeoutMillis <= 0L) {
+            return future;
+        }
+        return future.completeOnTimeout(timeoutResult(channel, timeoutMillis), timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -210,6 +224,16 @@ public class MultiChannelRetrievalEngine {
                 .channelType(channel.getType())
                 .channelName(channel.getName())
                 .chunks(List.of())
+                .build();
+    }
+
+    private SearchChannelResult timeoutResult(SearchChannel channel, long timeoutMillis) {
+        return SearchChannelResult.builder()
+                .channelType(channel.getType())
+                .channelName(channel.getName())
+                .chunks(List.of())
+                .latencyMs(timeoutMillis)
+                .metadata(java.util.Map.of("timedOut", true, "timeoutMillis", timeoutMillis))
                 .build();
     }
 
