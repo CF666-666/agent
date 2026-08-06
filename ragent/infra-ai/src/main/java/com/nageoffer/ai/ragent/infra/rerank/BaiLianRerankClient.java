@@ -53,7 +53,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BaiLianRerankClient implements RerankClient {
 
-    @Qualifier("syncHttpClient")
+    @Qualifier("rerankHttpClient")
     private final OkHttpClient httpClient;
 
     @Override

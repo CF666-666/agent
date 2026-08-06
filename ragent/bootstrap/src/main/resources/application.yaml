@@ -105,6 +105,9 @@ rag:
       image-semantic:
         timeout-millis: 3000
 
+  rerank:
+    timeout-millis: 3000
+
   trace:
     enabled: true
     max-error-length: 1000

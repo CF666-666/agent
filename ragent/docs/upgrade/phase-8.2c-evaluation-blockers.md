@@ -157,3 +157,8 @@
 ### 后续修复方向
 
 - 定位 `EmbeddingService.embed()` 的外部调用长尾及已取消意图任务的资源占用，补齐可取消/有界超时的检索依赖策略；修复后以原始性能预算重跑 A/B/C/D。
+
+### 已完成的局部收敛
+
+- Rerank 改用独立的 `rerankHttpClient`，`rag.rerank.timeout-millis` 默认 3000ms，禁用连接重试；失败仍由现有模型路由降级到 noop Rerank，或者由 `RerankPostProcessor` 返回预排序 Top-K。
+- 配置单测验证 connect/write/read/call 四项预算均受该值约束。重启后的问题样本 HTTP 探针为 11390ms、成功返回 10 条引用；相对修复前的 41453ms 已明显收敛，但单样本不能代替 P95，且向量嵌入仍是主要剩余长尾。

@@ -18,6 +18,8 @@
 package com.nageoffer.ai.ragent.rag.config;
 
 import okhttp3.OkHttpClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -56,6 +58,23 @@ public class HttpClientConfig {
                 .readTimeout(Duration.ofSeconds(30))
                 .callTimeout(Duration.ofSeconds(45))
                 .retryOnConnectionFailure(true)
+                .build();
+    }
+
+    /**
+     * Rerank is an optional post-processor: it must degrade to the pre-ranked
+     * candidates instead of consuming the whole retrieval response budget.
+     */
+    @Bean
+    @Qualifier("rerankHttpClient")
+    public OkHttpClient rerankHttpClient(@Value("${rag.rerank.timeout-millis:3000}") long timeoutMillis) {
+        Duration timeout = Duration.ofMillis(Math.max(1, timeoutMillis));
+        return new OkHttpClient.Builder()
+                .connectTimeout(timeout)
+                .writeTimeout(timeout)
+                .readTimeout(timeout)
+                .callTimeout(timeout)
+                .retryOnConnectionFailure(false)
                 .build();
     }
 }
