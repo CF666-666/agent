@@ -461,8 +461,8 @@ Ragent 支持两种启动方式：**一键容器化启动**（推荐，零依赖
 整个系统（PostgreSQL / Redis / RocketMQ / Milvus / 后端 / 前端）全部容器化，一条命令拉起：
 
 ```bash
-# 1. 进入仓库根目录（含 docker-compose.yml）
-cd <repo-root>
+# 1. 进入工作区根目录（同时包含 docker-compose.yml 和 ragent/）
+cd <workspace-root>
 
 # 2. 配置环境变量（.env，至少需要 LLM API Key）
 cp .env.example .env
@@ -474,6 +474,8 @@ docker compose up -d --build
 # 4. 等待各服务健康检查通过后，访问前端
 #    前端: http://localhost:5177   账号: admin / admin
 ```
+
+Windows 用户也可以直接双击工作区根目录的 `start-ragent.bat`。脚本会优先读取 Windows 用户环境变量中的 `BAILIAN_API_KEY` 与 `SILICONFLOW_API_KEY`，仅在未设置时回退读取 `.env`。
 
 > [!TIP]
 > 数据库初始化、Milvus 集合创建、演示数据入库（FAQ 210 条 / 图纸 12 张 / 超边 633 条）均由编排自动完成，无需手动干预。详细步骤见 [部署指南](docs/deployment.md)。

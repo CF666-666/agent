@@ -30,58 +30,51 @@ if errorlevel 1 (
     echo [OK] Docker 已就绪
 )
 
-rem ========== 2. 检查 .env 是否存在 ==========
-if not exist ".env" (
+rem ========== 2. 优先使用 Windows 用户环境变量，其次读取 .env ==========
+set "has_bailian_key="
+set "has_siliconflow_key="
+if defined BAILIAN_API_KEY set "has_bailian_key=1"
+if defined SILICONFLOW_API_KEY set "has_siliconflow_key=1"
+
+if not defined has_bailian_key if exist ".env" (
+    findstr /b "BAILIAN_API_KEY=." ".env" >nul 2>&1 && set "has_bailian_key=1"
+)
+if not defined has_siliconflow_key if exist ".env" (
+    findstr /b "SILICONFLOW_API_KEY=." ".env" >nul 2>&1 && set "has_siliconflow_key=1"
+)
+
+if not defined has_bailian_key (
     echo.
-    echo [!] 未找到 .env 环境变量文件
-    echo     正在从 .env.example 复制模板并打开编辑...
-    copy /y ".env.example" ".env" >nul
-    start notepad ".env"
-    echo.
-    echo     请填写 BAILIAN_API_KEY 后保存，再重新双击本脚本启动。
-    echo.
+    echo [!] 未检测到 BAILIAN_API_KEY。
+    echo     请在 Windows 用户变量中设置，或在 .env 中填写后重试。
+    if not exist ".env" if exist ".env.example" copy /y ".env.example" ".env" >nul
+    if exist ".env" start notepad ".env"
     pause
     exit /b 1
 )
 
-rem ========== 3. 检查 API Key 是否填写 ==========
-findstr /b "BAILIAN_API_KEY=." ".env" >nul 2>&1
-if errorlevel 1 (
-    echo.
-    echo [!] .env 中的 BAILIAN_API_KEY 尚未填写
-    echo     正在打开 .env，请填写后保存，再重新双击本脚本启动。
-    echo.
-    start notepad ".env"
-    pause
-    exit /b 1
-)
-
-echo [1/3] 检查应用镜像...
-docker image inspect ragent-backend >nul 2>&1
-if errorlevel 1 (
-    echo [2/3] 首次构建镜像（约 5-15 分钟，请耐心等待）...
-    docker compose build
-    if errorlevel 1 (
-        echo.
-        echo [错误] 镜像构建失败，请查看上方日志。
-        pause
-        exit /b 1
-    )
+if defined BAILIAN_API_KEY (
+    echo [OK] 已读取 Windows 用户变量 BAILIAN_API_KEY。
 ) else (
-    echo [2/3] 镜像已存在，跳过构建...
+    echo [OK] 已读取 .env 中的 BAILIAN_API_KEY。
+)
+if defined has_siliconflow_key (
+    echo [OK] 已检测到 SILICONFLOW_API_KEY。
+) else (
+    echo [!] 未检测到 SILICONFLOW_API_KEY，将按应用配置尝试本地 Embedding 降级。
 )
 
-echo [3/3] 启动全部服务（中间件 + 后端 + 前端）...
-docker compose up -d
+echo [1/2] 构建并启动全部服务（首次约需 5-15 分钟）...
+docker compose up -d --build
 if errorlevel 1 (
     echo.
-    echo [错误] 服务启动失败，请查看上方日志。
+    echo [错误] 服务构建或启动失败，请查看上方日志。
     pause
     exit /b 1
 )
 
+echo [2/2] 等待后端服务就绪...
 echo.
-echo     等待后端服务就绪...
 :wait_health
 timeout /t 5 /nobreak >nul
 set health=starting
