@@ -1,95 +1,118 @@
 @echo off
-chcp 65001 >nul
-setlocal enabledelayedexpansion
-title Ragent 一键启动
+setlocal EnableExtensions EnableDelayedExpansion
+title Ragent Startup
 
 cd /d "%~dp0"
 
 echo ============================================
-echo    Ragent 智研中枢系统 - 一键启动
+echo Ragent one-click startup
 echo ============================================
 echo.
 
-rem ========== 1. 检查 Docker 是否运行 ==========
+rem Check Docker CLI and Docker daemon.
+where docker >nul 2>&1
+if errorlevel 1 (
+    echo [ERROR] Docker CLI was not found.
+    echo Install Docker Desktop and run this script again.
+    pause
+    exit /b 1
+)
+
 docker info >nul 2>&1
 if errorlevel 1 (
-    echo [!] Docker 未运行，正在启动 Docker Desktop...
-    if exist "C:\Program Files\Docker\Docker\Docker Desktop.exe" (
+    echo Docker is not ready. Trying to start Docker Desktop...
+    if exist "%ProgramFiles%\Docker\Docker\Docker Desktop.exe" (
+        start "" "%ProgramFiles%\Docker\Docker\Docker Desktop.exe"
+    ) else if exist "C:\Program Files\Docker\Docker\Docker Desktop.exe" (
         start "" "C:\Program Files\Docker\Docker\Docker Desktop.exe"
     ) else (
-        echo     未找到 Docker Desktop，请手动启动后重新运行本脚本。
-        echo.
+        echo [ERROR] Docker Desktop was not found.
         pause
         exit /b 1
     )
-    echo     等待 Docker 就绪（首次启动可能需要 1-2 分钟）...
-    :wait_docker
+
+    echo Waiting for Docker Desktop...
+    set /a docker_wait=0
+:wait_docker
     timeout /t 5 /nobreak >nul
     docker info >nul 2>&1
-    if errorlevel 1 goto wait_docker
-    echo [OK] Docker 已就绪
+    if not errorlevel 1 goto docker_ready
+    set /a docker_wait+=1
+    if !docker_wait! GEQ 36 (
+        echo [ERROR] Docker Desktop did not become ready within 3 minutes.
+        pause
+        exit /b 1
+    )
+    goto wait_docker
 )
 
-rem ========== 2. 优先使用 Windows 用户环境变量，其次读取 .env ==========
-set "has_bailian_key="
-set "has_siliconflow_key="
-if defined BAILIAN_API_KEY set "has_bailian_key=1"
-if defined SILICONFLOW_API_KEY set "has_siliconflow_key=1"
+:docker_ready
+echo [OK] Docker is ready.
 
-if not defined has_bailian_key if exist ".env" (
-    findstr /b "BAILIAN_API_KEY=." ".env" >nul 2>&1 && set "has_bailian_key=1"
-)
-if not defined has_siliconflow_key if exist ".env" (
-    findstr /b "SILICONFLOW_API_KEY=." ".env" >nul 2>&1 && set "has_siliconflow_key=1"
-)
-
-if not defined has_bailian_key (
-    echo.
-    echo [!] 未检测到 BAILIAN_API_KEY。
-    echo     请在 Windows 用户变量中设置，或在 .env 中填写后重试。
-    if not exist ".env" if exist ".env.example" copy /y ".env.example" ".env" >nul
-    if exist ".env" start notepad ".env"
-    pause
-    exit /b 1
-)
-
+rem Compose reads inherited system/user environment variables automatically.
+rem .env is only a fallback for BAILIAN_API_KEY.
 if defined BAILIAN_API_KEY (
-    echo [OK] 已读取 Windows 用户变量 BAILIAN_API_KEY。
+    echo [OK] BAILIAN_API_KEY detected from the process environment.
+) else if exist ".env" (
+    findstr /b "BAILIAN_API_KEY=." ".env" >nul 2>&1
+    if not errorlevel 1 (
+        echo [OK] BAILIAN_API_KEY detected in .env.
+    ) else (
+        goto missing_key
+    )
 ) else (
-    echo [OK] 已读取 .env 中的 BAILIAN_API_KEY。
-)
-if defined has_siliconflow_key (
-    echo [OK] 已检测到 SILICONFLOW_API_KEY。
-) else (
-    echo [!] 未检测到 SILICONFLOW_API_KEY，将按应用配置尝试本地 Embedding 降级。
+    goto missing_key
 )
 
-echo [1/2] 构建并启动全部服务（首次约需 5-15 分钟）...
+if defined SILICONFLOW_API_KEY (
+    echo [OK] SILICONFLOW_API_KEY detected from the process environment.
+) else if exist ".env" (
+    findstr /b "SILICONFLOW_API_KEY=." ".env" >nul 2>&1
+    if errorlevel 1 echo [WARN] SILICONFLOW_API_KEY is not set; embedding fallback may be used.
+) else (
+    echo [WARN] SILICONFLOW_API_KEY is not set; embedding fallback may be used.
+)
+
+echo.
+echo Building and starting all services. The first build may take 5-15 minutes.
 docker compose up -d --build
 if errorlevel 1 (
-    echo.
-    echo [错误] 服务构建或启动失败，请查看上方日志。
+    echo [ERROR] Docker Compose failed. Check the output above.
     pause
     exit /b 1
 )
 
-echo [2/2] 等待后端服务就绪...
-echo.
+echo Waiting for the backend health check...
+set /a health_wait=0
 :wait_health
 timeout /t 5 /nobreak >nul
-set health=starting
-for /f "usebackq tokens=*" %%s in (`docker inspect -f "{{.State.Health.Status}}" ragent-backend 2^>nul`) do set health=%%s
-if not "!health!"=="healthy" goto wait_health
+set "health=starting"
+for /f "usebackq tokens=*" %%s in (`docker inspect -f "{{.State.Health.Status}}" ragent-backend 2^>nul`) do set "health=%%s"
+if /i "!health!"=="healthy" goto startup_done
+set /a health_wait+=1
+if !health_wait! GEQ 60 (
+    echo [WARN] Backend is not healthy after 5 minutes.
+    docker compose ps
+    echo Use "docker compose logs -f backend" for details.
+    pause
+    exit /b 1
+)
+goto wait_health
 
+:startup_done
 echo.
 echo ============================================
-echo    启动完成！
-echo.
-echo    前端地址: http://localhost:5177
-echo    默认账号: admin / admin
+echo Ragent is ready.
+echo Frontend: http://localhost:5177
+echo Login:    admin / admin
 echo ============================================
-echo.
 start "" "http://localhost:5177"
-echo 服务已在后台运行，按任意键关闭本窗口。
-pause >nul
-endlocal
+pause
+exit /b 0
+
+:missing_key
+echo [ERROR] BAILIAN_API_KEY was not found.
+echo Set it as a Windows system/user environment variable, then reopen this script.
+echo Or create .env next to docker-compose.yml and add BAILIAN_API_KEY=...
+pause
+exit /b 1
