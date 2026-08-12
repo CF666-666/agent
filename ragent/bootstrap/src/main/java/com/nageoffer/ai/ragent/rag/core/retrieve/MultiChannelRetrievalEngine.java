@@ -26,6 +26,8 @@ import com.nageoffer.ai.ragent.rag.core.retrieve.channel.SearchContext;
 import com.nageoffer.ai.ragent.rag.core.retrieve.postprocessor.SearchResultPostProcessor;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalChannelStatus;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalExecutionResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,7 +37,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -55,7 +59,7 @@ public class MultiChannelRetrievalEngine {
     private final List<SearchChannel> searchChannels;
     private final List<SearchResultPostProcessor> postProcessors;
     @Qualifier("ragRetrievalThreadPoolExecutor")
-    private final Executor ragRetrievalExecutor;
+    private final ExecutorService ragRetrievalExecutor;
 
     /**
      * 执行多通道检索（仅 KB 场景）
@@ -73,18 +77,30 @@ public class MultiChannelRetrievalEngine {
     public List<RetrievedChunk> retrieveKnowledgeChannels(List<SubQuestionIntent> subIntents,
                                                           int topK,
                                                           RetrievalOptions retrievalOptions) {
+        return retrieveKnowledgeChannels(subIntents, topK, retrievalOptions,
+                RetrievalExecutionContext.unbounded()).chunks();
+    }
+
+    @RagTraceNode(name = "multi-channel-retrieval", type = "RETRIEVE_CHANNEL")
+    public RetrievalExecutionResult retrieveKnowledgeChannels(List<SubQuestionIntent> subIntents,
+                                                               int topK,
+                                                               RetrievalOptions retrievalOptions,
+                                                               RetrievalExecutionContext executionContext) {
         // 构建检索上下文
         SearchContext context = buildSearchContext(subIntents, topK,
-                retrievalOptions == null ? RetrievalOptions.defaults() : retrievalOptions);
+                retrievalOptions == null ? RetrievalOptions.defaults() : retrievalOptions,
+                executionContext == null ? RetrievalExecutionContext.unbounded() : executionContext);
 
         // 【阶段1：多通道并行检索】
         List<SearchChannelResult> channelResults = executeSearchChannels(context);
         if (CollUtil.isEmpty(channelResults)) {
-            return List.of();
+            return new RetrievalExecutionResult(List.of(), List.of());
         }
 
         // 【阶段2：后置处理器链】
-        return executePostProcessors(channelResults, context);
+        return new RetrievalExecutionResult(
+                executePostProcessors(channelResults, context),
+                channelResults.stream().map(result -> toStatus(context, result)).toList());
     }
 
     /**
@@ -104,7 +120,7 @@ public class MultiChannelRetrievalEngine {
         log.info("启用的检索通道：{}",
                 enabledChannels.stream().map(SearchChannel::getName).toList());
 
-        List<CompletableFuture<SearchChannelResult>> futures = enabledChannels.stream()
+        List<ChannelExecution> futures = enabledChannels.stream()
                 .map(channel -> executeChannel(channel, context))
                 .toList();
 
@@ -114,7 +130,7 @@ public class MultiChannelRetrievalEngine {
         int totalChunks = 0;
 
         List<SearchChannelResult> results = futures.stream()
-                .map(CompletableFuture::join)
+                .map(ChannelExecution::await)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -149,24 +165,59 @@ public class MultiChannelRetrievalEngine {
         return results;
     }
 
-    private CompletableFuture<SearchChannelResult> executeChannel(SearchChannel channel, SearchContext context) {
-        CompletableFuture<SearchChannelResult> future = CompletableFuture.supplyAsync(
+    private ChannelExecution executeChannel(SearchChannel channel, SearchContext context) {
+        RetrievalExecutionContext channelExecution = context.getExecutionContext().fork();
+        long submittedAtNanos = System.nanoTime();
+        long budgetMillis = initialBudgetMillis(channel, channelExecution);
+        SearchContext channelContext = SearchContext.builder()
+                .originalQuestion(context.getOriginalQuestion())
+                .rewrittenQuestion(context.getRewrittenQuestion())
+                .subQuestions(context.getSubQuestions())
+                .intents(context.getIntents())
+                .topK(context.getTopK())
+                .retrievalOptions(context.getRetrievalOptions())
+                .metadata(context.getMetadata())
+                .executionContext(channelExecution)
+                .build();
+        FutureTask<SearchChannelResult> task = new FutureTask<>(
                 () -> {
                     try {
                         log.info("执行检索通道：{}", channel.getName());
-                        return channel.search(context);
+                        return channel.search(channelContext);
+                    } catch (java.util.concurrent.CancellationException exception) {
+                        throw exception;
                     } catch (Exception e) {
                         log.error("检索通道 {} 执行失败", channel.getName(), e);
-                        return emptyResult(channel);
+                        return emptyResult(channel, 0L);
                     }
-                },
-                ragRetrievalExecutor
+                }
         );
-        long timeoutMillis = channel.getExecutionTimeoutMillis();
-        if (timeoutMillis <= 0L) {
-            return future;
+        channelExecution.register(task);
+        scheduleBudgetExpiry(task, channelExecution, budgetMillis);
+        ragRetrievalExecutor.execute(task);
+        return new ChannelExecution(channel, task, channelExecution, submittedAtNanos, budgetMillis);
+    }
+
+    private void scheduleBudgetExpiry(FutureTask<SearchChannelResult> task,
+                                      RetrievalExecutionContext executionContext,
+                                      long budgetMillis) {
+        if (budgetMillis == Long.MAX_VALUE) {
+            return;
         }
-        return future.completeOnTimeout(timeoutResult(channel, timeoutMillis), timeoutMillis, TimeUnit.MILLISECONDS);
+        CompletableFuture.delayedExecutor(budgetMillis, TimeUnit.MILLISECONDS).execute(() -> {
+            if (!task.isDone()) {
+                executionContext.timeout();
+            }
+        });
+    }
+
+    private long initialBudgetMillis(SearchChannel channel, RetrievalExecutionContext executionContext) {
+        long requestRemaining = executionContext.remainingMillis();
+        long channelBudget = channel.getExecutionTimeoutMillis();
+        if (channelBudget <= 0L) {
+            return requestRemaining;
+        }
+        return Math.min(channelBudget, requestRemaining);
     }
 
     /**
@@ -219,22 +270,108 @@ public class MultiChannelRetrievalEngine {
         return chunks;
     }
 
-    private SearchChannelResult emptyResult(SearchChannel channel) {
+    private SearchChannelResult emptyResult(SearchChannel channel, long elapsedMillis) {
         return SearchChannelResult.builder()
                 .channelType(channel.getType())
                 .channelName(channel.getName())
                 .chunks(List.of())
+                .latencyMs(elapsedMillis)
+                .metadata(java.util.Map.of("status", "FAILED"))
                 .build();
     }
 
-    private SearchChannelResult timeoutResult(SearchChannel channel, long timeoutMillis) {
+    private SearchChannelResult cancelledResult(SearchChannel channel, long budgetMillis, long elapsedMillis) {
         return SearchChannelResult.builder()
                 .channelType(channel.getType())
                 .channelName(channel.getName())
                 .chunks(List.of())
-                .latencyMs(timeoutMillis)
-                .metadata(java.util.Map.of("timedOut", true, "timeoutMillis", timeoutMillis))
+                .latencyMs(elapsedMillis)
+                .metadata(java.util.Map.of("status", "CANCELLED", "cancelled", true,
+                        "budgetMillis", budgetMillis))
                 .build();
+    }
+
+    private RetrievalChannelStatus toStatus(SearchContext context, SearchChannelResult result) {
+        java.util.Map<String, Object> metadata = result.getMetadata() == null ? java.util.Map.of() : result.getMetadata();
+        String status = String.valueOf(metadata.getOrDefault("status", "COMPLETED"));
+        boolean timedOut = Boolean.TRUE.equals(metadata.get("timedOut"));
+        boolean cancelled = Boolean.TRUE.equals(metadata.get("cancelled"));
+        long budgetMillis = ((Number) metadata.getOrDefault("budgetMillis", 0L)).longValue();
+        return new RetrievalChannelStatus(
+                context.getMainQuestion(), result.getChannelName(), status, timedOut, cancelled,
+                budgetMillis, result.getLatencyMs());
+    }
+
+    private SearchChannelResult timeoutResult(SearchChannel channel, long budgetMillis, long elapsedMillis) {
+        return SearchChannelResult.builder()
+                .channelType(channel.getType())
+                .channelName(channel.getName())
+                .chunks(List.of())
+                .latencyMs(elapsedMillis)
+                .metadata(java.util.Map.of("timedOut", true, "cancelled", true,
+                        "status", "TIMED_OUT", "timeoutMillis", budgetMillis,
+                        "budgetMillis", budgetMillis))
+                .build();
+    }
+
+    private final class ChannelExecution {
+        private final SearchChannel channel;
+        private final FutureTask<SearchChannelResult> task;
+        private final RetrievalExecutionContext executionContext;
+        private final long submittedAtNanos;
+        private final long budgetMillis;
+
+        private ChannelExecution(SearchChannel channel,
+                                 FutureTask<SearchChannelResult> task,
+                                 RetrievalExecutionContext executionContext,
+                                 long submittedAtNanos,
+                                 long budgetMillis) {
+            this.channel = channel;
+            this.task = task;
+            this.executionContext = executionContext;
+            this.submittedAtNanos = submittedAtNanos;
+            this.budgetMillis = budgetMillis;
+        }
+
+        private SearchChannelResult await() {
+            long timeoutMillis = effectiveTimeoutMillis();
+            if (timeoutMillis <= 0L) {
+                executionContext.timeout();
+                return timeoutResult(channel, budgetMillis, elapsedMillis());
+            }
+            try {
+                return task.get(timeoutMillis, TimeUnit.MILLISECONDS);
+            } catch (java.util.concurrent.TimeoutException ignored) {
+                executionContext.timeout();
+                return timeoutResult(channel, budgetMillis, elapsedMillis());
+            } catch (java.util.concurrent.CancellationException ignored) {
+                if (executionContext.state() == RetrievalExecutionContext.State.TIMED_OUT) {
+                    return timeoutResult(channel, budgetMillis, elapsedMillis());
+                }
+                return cancelledResult(channel, budgetMillis, elapsedMillis());
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+                executionContext.cancel();
+                return emptyResult(channel, elapsedMillis());
+            } catch (ExecutionException exception) {
+                return emptyResult(channel, elapsedMillis());
+            } finally {
+                executionContext.unregister(task);
+                executionContext.close();
+            }
+        }
+
+        private long effectiveTimeoutMillis() {
+            long remaining = executionContext.remainingMillis();
+            if (budgetMillis == Long.MAX_VALUE) {
+                return remaining;
+            }
+            return Math.min(Math.max(0L, budgetMillis - elapsedMillis()), remaining);
+        }
+
+        private long elapsedMillis() {
+            return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - submittedAtNanos);
+        }
     }
 
     /**
@@ -242,7 +379,8 @@ public class MultiChannelRetrievalEngine {
      */
     private SearchContext buildSearchContext(List<SubQuestionIntent> subIntents,
                                              int topK,
-                                             RetrievalOptions retrievalOptions) {
+                                             RetrievalOptions retrievalOptions,
+                                             RetrievalExecutionContext executionContext) {
         String question = CollUtil.isEmpty(subIntents) ? "" : subIntents.get(0).subQuestion();
 
         return SearchContext.builder()
@@ -251,6 +389,7 @@ public class MultiChannelRetrievalEngine {
                 .intents(subIntents)
                 .topK(topK)
                 .retrievalOptions(retrievalOptions)
+                .executionContext(executionContext)
                 .build();
     }
 }

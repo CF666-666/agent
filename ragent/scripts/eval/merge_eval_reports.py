@@ -14,6 +14,8 @@ REPORT_SCHEMA_VERSION = 3
 
 def summarize(results: list[dict]) -> dict:
     total = len(results)
+    quality_results = [item for item in results if item.get("ok")]
+    quality_total = len(quality_results)
     by_scene = defaultdict(list)
     for result in results:
         by_scene[result.get("scene", "")].append(result)
@@ -23,14 +25,15 @@ def summarize(results: list[dict]) -> dict:
 
     return {
         "total": total,
-        "no_retrieval": sum(1 for item in results if not item.get("ok")),
+        "quality_sample_count": quality_total,
+        "excluded_execution_count": total - quality_total,
         "hit_rate": {
-            f"@{k}": ratio(results, lambda item, k=k: item.get("hit", {}).get(str(k), False))
+            f"@{k}": ratio(quality_results, lambda item, k=k: item.get("hit", {}).get(str(k), False))
             for k in TOPK
         },
-        "mrr": round(sum(float(item.get("mrr", 0.0)) for item in results) / total, 4) if total else 0.0,
-        "expected_channel_hit_rate": ratio(results, lambda item: item.get("channel_hit", False)),
-        "source_id_hit_rate": ratio(results, lambda item: item.get("source_id_hit", False)),
+        "mrr": round(sum(float(item.get("mrr", 0.0)) for item in quality_results) / quality_total, 4) if quality_total else 0.0,
+        "expected_channel_hit_rate": ratio(quality_results, lambda item: item.get("channel_hit", False)),
+        "source_id_hit_rate": ratio(quality_results, lambda item: item.get("source_id_hit", False)),
         "latency": latency_summary(results),
         "retrieval_status_counts": {
             status: sum(1 for item in results if item.get("retrieval_status") == status)
@@ -39,13 +42,14 @@ def summarize(results: list[dict]) -> dict:
         "by_scene": {
             scene: {
                 "count": len(items),
+                "quality_sample_count": sum(1 for item in items if item.get("ok")),
                 "hit_rate": {
-                    f"@{k}": ratio(items, lambda item, k=k: item.get("hit", {}).get(str(k), False))
+                    f"@{k}": ratio([item for item in items if item.get("ok")], lambda item, k=k: item.get("hit", {}).get(str(k), False))
                     for k in TOPK
                 },
-                "mrr": round(sum(float(item.get("mrr", 0.0)) for item in items) / len(items), 4),
-                "expected_channel_hit_rate": ratio(items, lambda item: item.get("channel_hit", False)),
-                "source_id_hit_rate": ratio(items, lambda item: item.get("source_id_hit", False)),
+                "mrr": round(sum(float(item.get("mrr", 0.0)) for item in items if item.get("ok")) / max(1, sum(1 for item in items if item.get("ok"))), 4),
+                "expected_channel_hit_rate": ratio([item for item in items if item.get("ok")], lambda item: item.get("channel_hit", False)),
+                "source_id_hit_rate": ratio([item for item in items if item.get("ok")], lambda item: item.get("source_id_hit", False)),
                 "latency": latency_summary(items),
             }
             for scene, items in sorted(by_scene.items())

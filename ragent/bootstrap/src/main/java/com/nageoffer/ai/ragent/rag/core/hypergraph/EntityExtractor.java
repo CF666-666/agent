@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import com.nageoffer.ai.ragent.framework.convention.ChatMessage;
 import com.nageoffer.ai.ragent.framework.convention.ChatRequest;
 import com.nageoffer.ai.ragent.infra.chat.LLMService;
+import com.nageoffer.ai.ragent.infra.chat.CancellableChatCall;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -108,8 +110,18 @@ public class EntityExtractor {
      * @return 去重的实体值集合，query 为空时返回空集合
      */
     public Set<String> extractFromQuery(String query) {
+        return extractFromQuery(query, RetrievalExecutionContext.unbounded());
+    }
+
+    public Set<String> extractFromQuery(String query, RetrievalExecutionContext executionContext) {
         if (query == null || query.isBlank()) {
             return Collections.emptySet();
+        }
+
+        RetrievalExecutionContext actualContext = executionContext == null
+                ? RetrievalExecutionContext.unbounded() : executionContext;
+        if (!actualContext.isActive()) {
+            throw new java.util.concurrent.CancellationException("retrieval execution is no longer active");
         }
 
         try {
@@ -122,9 +134,19 @@ public class EntityExtractor {
                     .maxTokens(256)
                     .build();
 
-            String response = llmService.chat(request);
+            CancellableChatCall call = llmService.startChat(request);
+            actualContext.register(call);
+            String response;
+            try {
+                response = call.execute();
+            } finally {
+                actualContext.unregister(call);
+            }
             return parseJsonArray(response);
         } catch (Exception e) {
+            if (!actualContext.isActive()) {
+                throw new java.util.concurrent.CancellationException("entity extraction was cancelled");
+            }
             log.warn("LLM 实体抽取失败，降级为正则提取。query: {}", query, e);
             return regexFallback(query);
         }

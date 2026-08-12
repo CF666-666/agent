@@ -44,6 +44,10 @@ public interface ChatClient {
      */
     String chat(ChatRequest request, ModelTarget target);
 
+    default CancellableChatCall startChat(ChatRequest request, ModelTarget target) {
+        return CancellableChatCall.from(() -> chat(request, target));
+    }
+
     /**
      * 流式聊天方法
      * 以流式方式接收模型响应，适用于实时展示场景

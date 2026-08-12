@@ -25,6 +25,7 @@ import com.nageoffer.ai.ragent.infra.chat.StreamCallback;
 import com.nageoffer.ai.ragent.rag.aop.ChatRateLimit;
 import com.nageoffer.ai.ragent.rag.service.RAGChatService;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import com.nageoffer.ai.ragent.rag.service.handler.StreamCallbackFactory;
 import com.nageoffer.ai.ragent.rag.service.handler.StreamTaskManager;
 import com.nageoffer.ai.ragent.rag.service.pipeline.StreamChatContext;
@@ -50,6 +51,14 @@ public class RAGChatServiceImpl implements RAGChatService {
     @ChatRateLimit
     public void streamChat(String question, String conversationId, Boolean deepThinking,
                            RetrievalOptions options, SseEmitter emitter) {
+        streamChat(question, conversationId, deepThinking, options, emitter,
+                RetrievalExecutionContext.unbounded());
+    }
+
+    @Override
+    public void streamChat(String question, String conversationId, Boolean deepThinking,
+                           RetrievalOptions options, SseEmitter emitter,
+                           RetrievalExecutionContext executionContext) {
         RetrievalOptions actualOptions = options == null ? RetrievalOptions.defaults() : options;
         String actualConversationId = StrUtil.isBlank(conversationId) ? IdUtil.getSnowflakeNextIdStr() : conversationId;
         String taskId = StrUtil.isBlank(RagTraceContext.getTaskId())
@@ -60,6 +69,10 @@ public class RAGChatServiceImpl implements RAGChatService {
         boolean thinkingEnabled = Boolean.TRUE.equals(deepThinking);
 
         StreamCallback callback = callbackFactory.createChatEventHandler(emitter, actualConversationId, taskId);
+        taskManager.bindRetrievalExecution(taskId, executionContext);
+        emitter.onCompletion(() -> taskManager.cancelIfActive(taskId));
+        emitter.onTimeout(() -> taskManager.cancelIfActive(taskId));
+        emitter.onError(error -> taskManager.cancelIfActive(taskId));
 
         StreamChatContext ctx = StreamChatContext.builder()
                 .question(question)
@@ -69,6 +82,7 @@ public class RAGChatServiceImpl implements RAGChatService {
                 .userId(UserContext.getUserId())
                 .callback(callback)
                 .retrievalOptions(actualOptions)
+                .retrievalExecutionContext(executionContext)
                 .build();
 
         try {

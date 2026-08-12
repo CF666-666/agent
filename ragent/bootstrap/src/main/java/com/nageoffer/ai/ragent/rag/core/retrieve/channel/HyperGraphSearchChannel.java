@@ -22,8 +22,9 @@ import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityExtractor;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph.RelationPath;
-import lombok.RequiredArgsConstructor;
+import com.nageoffer.ai.ragent.rag.config.SearchChannelProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -59,7 +60,6 @@ import java.util.StringJoiner;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class HyperGraphSearchChannel implements SearchChannel {
 
     private static final String CHANNEL_NAME = "超图N元关系检索";
@@ -68,6 +68,20 @@ public class HyperGraphSearchChannel implements SearchChannel {
 
     private final IndustrialHyperGraph hyperGraph;
     private final EntityExtractor entityExtractor;
+    private final SearchChannelProperties properties;
+
+    @Autowired
+    public HyperGraphSearchChannel(IndustrialHyperGraph hyperGraph,
+                                   EntityExtractor entityExtractor,
+                                   SearchChannelProperties properties) {
+        this.hyperGraph = hyperGraph;
+        this.entityExtractor = entityExtractor;
+        this.properties = properties;
+    }
+
+    public HyperGraphSearchChannel(IndustrialHyperGraph hyperGraph, EntityExtractor entityExtractor) {
+        this(hyperGraph, entityExtractor, new SearchChannelProperties());
+    }
 
     @Override
     public String getName() {
@@ -97,7 +111,9 @@ public class HyperGraphSearchChannel implements SearchChannel {
             log.info("{} 检索开始: query={}, topK={}", CHANNEL_NAME, query, TOP_K);
 
             // Step 1: 实体抽取
-            Set<String> entities = entityExtractor.extractFromQuery(query);
+            Set<String> entities = context.getExecutionContext().isUnbounded()
+                    ? entityExtractor.extractFromQuery(query)
+                    : entityExtractor.extractFromQuery(query, context.getExecutionContext());
             log.debug("实体抽取完成: query={}, entities={}", query, entities);
 
             if (entities.isEmpty()) {
@@ -152,6 +168,8 @@ public class HyperGraphSearchChannel implements SearchChannel {
                     .chunks(chunks)
                     .latencyMs(latency)
                     .build();
+        } catch (java.util.concurrent.CancellationException exception) {
+            throw exception;
         } catch (Exception e) {
             long latency = System.currentTimeMillis() - start;
             log.error("{} 检索异常，返回空结果。query={}, 耗时={}ms", CHANNEL_NAME, query, latency, e);
@@ -167,6 +185,11 @@ public class HyperGraphSearchChannel implements SearchChannel {
     @Override
     public SearchChannelType getType() {
         return SearchChannelType.HYPERGRAPH;
+    }
+
+    @Override
+    public long getExecutionTimeoutMillis() {
+        return properties.getChannels().getHyperGraph().getTimeoutMillis();
     }
 
     /**

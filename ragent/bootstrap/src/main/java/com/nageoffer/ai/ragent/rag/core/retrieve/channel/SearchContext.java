@@ -19,6 +19,7 @@ package com.nageoffer.ai.ragent.rag.core.retrieve.channel;
 
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import lombok.Builder;
 import lombok.Data;
 
@@ -63,6 +64,10 @@ public class SearchContext {
     /** 请求级检索能力开关。 */
     @Builder.Default
     private RetrievalOptions retrievalOptions = RetrievalOptions.defaults();
+
+    /** Shared request deadline; channel executions receive isolated children. */
+    @Builder.Default
+    private RetrievalExecutionContext executionContext = RetrievalExecutionContext.unbounded();
 
     /**
      * 扩展元数据

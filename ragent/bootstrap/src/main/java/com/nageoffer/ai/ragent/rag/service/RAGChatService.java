@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.rag.service;
 
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 /**
@@ -37,6 +38,12 @@ public interface RAGChatService {
      */
     void streamChat(String question, String conversationId, Boolean deepThinking,
                     RetrievalOptions options, SseEmitter emitter);
+
+    default void streamChat(String question, String conversationId, Boolean deepThinking,
+                            RetrievalOptions options, SseEmitter emitter,
+                            RetrievalExecutionContext executionContext) {
+        streamChat(question, conversationId, deepThinking, options, emitter);
+    }
 
     /**
      * 停止指定任务 ID 的流式会话

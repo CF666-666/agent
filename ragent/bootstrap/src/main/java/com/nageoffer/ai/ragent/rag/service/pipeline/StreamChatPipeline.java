@@ -101,16 +101,34 @@ public class StreamChatPipeline {
         } else {
             loadMemory(ctx);
         }
-        rewriteQuery(ctx);
+        try {
+            rewriteQuery(ctx);
+        } catch (java.util.concurrent.CancellationException exception) {
+            stopWhenRetrievalDeadlineElapsed(ctx);
+            return;
+        }
+        if (stopWhenRetrievalDeadlineElapsed(ctx)) {
+            return;
+        }
         if (ctx.getRetrievalOptions().retrievalOnly()) {
             ctx.setSubIntents(List.of(new SubQuestionIntent(
                     ctx.getRewriteResult().rewrittenQuestion(),
                     List.of()
             )));
-            streamRagResponse(ctx, retrieve(ctx));
+            RetrievalContext retrievalCtx = retrieve(ctx);
+            emitRetrievalStatus(ctx, retrievalCtx);
+            streamRagResponse(ctx, retrievalCtx);
             return;
         }
-        resolveIntents(ctx);
+        try {
+            resolveIntents(ctx);
+        } catch (java.util.concurrent.CancellationException exception) {
+            stopWhenRetrievalDeadlineElapsed(ctx);
+            return;
+        }
+        if (stopWhenRetrievalDeadlineElapsed(ctx)) {
+            return;
+        }
 
         if (handleGuidance(ctx)) {
             return;
@@ -120,6 +138,7 @@ public class StreamChatPipeline {
         }
 
         RetrievalContext retrievalCtx = retrieve(ctx);
+        emitRetrievalStatus(ctx, retrievalCtx);
         if (handleEmptyRetrieval(ctx, retrievalCtx)) {
             return;
         }
@@ -141,7 +160,8 @@ public class StreamChatPipeline {
     private void rewriteQuery(StreamChatContext ctx) {
         RewriteResult rewriteResult;
         if (ctx.getRetrievalOptions().enableRewrite()) {
-            rewriteResult = queryRewriteService.rewriteWithSplit(ctx.getQuestion(), ctx.getHistory());
+            rewriteResult = queryRewriteService.rewriteWithSplit(ctx.getQuestion(), ctx.getHistory(),
+                    ctx.getRetrievalExecutionContext());
         } else {
             // 评测模式：跳过查询重写，直接使用原始问题（用于 A/B 对比重写对检索的增益）
             rewriteResult = new RewriteResult(ctx.getQuestion(), List.of(ctx.getQuestion()));
@@ -150,8 +170,18 @@ public class StreamChatPipeline {
     }
 
     private void resolveIntents(StreamChatContext ctx) {
-        List<SubQuestionIntent> subIntents = intentResolver.resolve(ctx.getRewriteResult());
+        List<SubQuestionIntent> subIntents = intentResolver.resolve(ctx.getRewriteResult(),
+                ctx.getRetrievalExecutionContext());
         ctx.setSubIntents(subIntents);
+    }
+
+    private boolean stopWhenRetrievalDeadlineElapsed(StreamChatContext ctx) {
+        if (ctx.getRetrievalExecutionContext().isActive()) {
+            return false;
+        }
+        emitRetrievalStatus(ctx, RetrievalContext.builder().intentChunks(Map.of()).build());
+        ctx.getCallback().onRetrievalComplete();
+        return true;
     }
 
     private boolean handleGuidance(StreamChatContext ctx) {
@@ -192,7 +222,11 @@ public class StreamChatPipeline {
     }
 
     private RetrievalContext retrieve(StreamChatContext ctx) {
-        return retrievalEngine.retrieve(ctx.getSubIntents(), DEFAULT_TOP_K, ctx.getRetrievalOptions());
+        if (ctx.getRetrievalExecutionContext().isUnbounded()) {
+            return retrievalEngine.retrieve(ctx.getSubIntents(), DEFAULT_TOP_K, ctx.getRetrievalOptions());
+        }
+        return retrievalEngine.retrieve(ctx.getSubIntents(), DEFAULT_TOP_K,
+                ctx.getRetrievalOptions(), ctx.getRetrievalExecutionContext());
     }
 
     private boolean handleEmptyRetrieval(StreamChatContext ctx, RetrievalContext retrievalCtx) {
@@ -263,6 +297,10 @@ public class StreamChatPipeline {
                 callback
         );
         taskManager.bindHandle(ctx.getTaskId(), handle);
+    }
+
+    private void emitRetrievalStatus(StreamChatContext ctx, RetrievalContext retrievalCtx) {
+        ctx.getCallback().onRetrievalStatus(toJson(retrievalStatus(retrievalCtx, ctx.getRetrievalExecutionContext())));
     }
 
     // ==================== LLM 响应 ====================
@@ -474,5 +512,28 @@ public class StreamChatPipeline {
             log.error("序列化 references 失败", e);
             return "[]";
         }
+    }
+
+    private Map<String, Object> retrievalStatus(RetrievalContext context,
+                                                 com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext executionContext) {
+        List<com.nageoffer.ai.ragent.rag.dto.RetrievalChannelStatus> channels =
+                context.getChannelStatuses() == null ? List.of() : context.getChannelStatuses();
+        boolean timedOut = executionContext.state()
+                == com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext.State.TIMED_OUT;
+        boolean cancelled = executionContext.state()
+                == com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext.State.CANCELLED;
+        long elapsedMillis = channels.stream()
+                .mapToLong(com.nageoffer.ai.ragent.rag.dto.RetrievalChannelStatus::elapsedMillis)
+                .max().orElse(0L);
+        long budgetMillis = channels.stream()
+                .mapToLong(com.nageoffer.ai.ragent.rag.dto.RetrievalChannelStatus::budgetMillis)
+                .max().orElse(0L);
+        return Map.of(
+                "timedOut", timedOut,
+                "cancelled", cancelled,
+                "budgetMillis", budgetMillis,
+                "elapsedMillis", elapsedMillis,
+                "channels", channels
+        );
     }
 }

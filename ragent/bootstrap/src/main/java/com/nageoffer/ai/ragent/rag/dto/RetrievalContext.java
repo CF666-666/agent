@@ -47,6 +47,9 @@ public class RetrievalContext {
      */
     private Map<String, List<RetrievedChunk>> intentChunks;
 
+    /** Per-channel execution facts used by SSE and offline evaluation. */
+    private List<RetrievalChannelStatus> channelStatuses;
+
     /**
      * 是否存在 MCP 上下文
      */

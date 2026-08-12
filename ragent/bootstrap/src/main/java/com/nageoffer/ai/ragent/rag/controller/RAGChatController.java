@@ -22,6 +22,7 @@ import com.nageoffer.ai.ragent.framework.idempotent.IdempotentSubmit;
 import com.nageoffer.ai.ragent.framework.web.Results;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import com.nageoffer.ai.ragent.rag.service.RAGChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +61,9 @@ public class RAGChatController {
         SseEmitter emitter = new SseEmitter(ragDefaultProperties.getSseTimeoutMs());
         RetrievalOptions options = RetrievalOptions.from(
                 enableRewrite, enableImage, enableHyperGraph, enableFusion, retrievalOnly);
-        ragChatService.streamChat(question, conversationId, deepThinking, options, emitter);
+        RetrievalExecutionContext executionContext = RetrievalExecutionContext.withBudgetMillis(
+                ragDefaultProperties.getRetrievalTimeoutMs());
+        ragChatService.streamChat(question, conversationId, deepThinking, options, emitter, executionContext);
         return emitter;
     }
 

@@ -24,6 +24,7 @@ import com.nageoffer.ai.ragent.rag.enums.SSEEventType;
 import com.nageoffer.ai.ragent.rag.dto.CompletionPayload;
 import com.nageoffer.ai.ragent.framework.web.SseEmitterSender;
 import com.nageoffer.ai.ragent.infra.chat.StreamCancellationHandle;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.SneakyThrows;
@@ -95,6 +96,20 @@ public class StreamTaskManager {
         }
     }
 
+    public void bindRetrievalExecution(String taskId, RetrievalExecutionContext executionContext) {
+        StreamTaskInfo taskInfo = getOrCreate(taskId);
+        taskInfo.retrievalExecutionContext = executionContext;
+        if (taskInfo.cancelled.get() && executionContext != null) {
+            executionContext.cancel();
+        }
+    }
+
+    public void cancelIfActive(String taskId) {
+        if (tasks.getIfPresent(taskId) != null) {
+            cancel(taskId);
+        }
+    }
+
     public boolean isCancelled(String taskId) {
         StreamTaskInfo info = tasks.getIfPresent(taskId);
         return info != null && info.cancelled.get();
@@ -142,6 +157,9 @@ public class StreamTaskManager {
         if (taskInfo.handle != null) {
             taskInfo.handle.cancel();
         }
+        if (taskInfo.retrievalExecutionContext != null) {
+            taskInfo.retrievalExecutionContext.cancel();
+        }
 
         // 在取消时执行回调，保存已累积的内容
         if (taskInfo.sender != null) {
@@ -177,6 +195,7 @@ public class StreamTaskManager {
     private static final class StreamTaskInfo {
         private final AtomicBoolean cancelled = new AtomicBoolean(false);
         private volatile StreamCancellationHandle handle;
+        private volatile RetrievalExecutionContext retrievalExecutionContext;
         private volatile SseEmitterSender sender;
         private volatile Supplier<CompletionPayload> onCancelSupplier;
     }

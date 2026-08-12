@@ -76,4 +76,7 @@ public class RAGDefaultProperties {
      * 兜底防止 SSE 连接泄漏，超时后自动关闭连接。默认 5 分钟
      */
     private Long sseTimeoutMs = 5 * 60 * 1000L;
+
+    /** Whole-request retrieval budget, started when the HTTP request is accepted. */
+    private Long retrievalTimeoutMs = 18_000L;
 }

@@ -85,6 +85,11 @@ public interface LLMService {
      */
     String chat(ChatRequest request);
 
+    /** Starts a synchronous chat call that can be cancelled while its transport is in flight. */
+    default CancellableChatCall startChat(ChatRequest request) {
+        return CancellableChatCall.from(() -> chat(request));
+    }
+
     /**
      * 同步调用（指定模型）
      * <p>

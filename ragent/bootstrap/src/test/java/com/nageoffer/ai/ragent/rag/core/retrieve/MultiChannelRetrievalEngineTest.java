@@ -26,12 +26,78 @@ import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MultiChannelRetrievalEngineTest {
+
+    @Test
+    void shouldCancelExpiredChannelAndReleaseWorkerForNextRequest() throws Exception {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            CountDownLatch interrupted = new CountDownLatch(1);
+            AtomicBoolean firstInvocation = new AtomicBoolean(true);
+            SearchChannel blockingChannel = new SearchChannel() {
+                @Override
+                public String getName() {
+                    return "hypergraph";
+                }
+
+                @Override
+                public int getPriority() {
+                    return 30;
+                }
+
+                @Override
+                public boolean isEnabled(SearchContext context) {
+                    return true;
+                }
+
+                @Override
+                public SearchChannelResult search(SearchContext context) {
+                    if (firstInvocation.compareAndSet(true, false)) {
+                        try {
+                            Thread.sleep(10_000L);
+                        } catch (InterruptedException exception) {
+                            interrupted.countDown();
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                    return result(getName(), getType(), List.of());
+                }
+
+                @Override
+                public long getExecutionTimeoutMillis() {
+                    return 50L;
+                }
+
+                @Override
+                public SearchChannelType getType() {
+                    return SearchChannelType.HYPERGRAPH;
+                }
+            };
+            MultiChannelRetrievalEngine engine = new MultiChannelRetrievalEngine(
+                    List.of(blockingChannel), List.of(), executor);
+
+            engine.retrieveKnowledgeChannels(List.of(intent("first")), 5, RetrievalOptions.defaults());
+
+            assertThat(interrupted.await(1, TimeUnit.SECONDS)).isTrue();
+
+            long startedAt = System.nanoTime();
+            engine.retrieveKnowledgeChannels(List.of(intent("second")), 5, RetrievalOptions.defaults());
+            long elapsedMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt);
+
+            assertThat(elapsedMillis).isLessThan(500L);
+        } finally {
+            executor.shutdownNow();
+        }
+    }
 
     @Test
     void shouldReturnCompletedChannelsWhenImageChannelExceedsItsBudget() {
@@ -92,6 +158,53 @@ class MultiChannelRetrievalEngineTest {
         }
     }
 
+    @Test
+    void shouldApplyChannelBudgetWhileTaskWaitsInQueue() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            AtomicInteger queuedChannelCalls = new AtomicInteger();
+            SearchChannel slowFirstChannel = new SearchChannel() {
+                @Override public String getName() { return "text"; }
+                @Override public int getPriority() { return 10; }
+                @Override public boolean isEnabled(SearchContext context) { return true; }
+                @Override public SearchChannelResult search(SearchContext context) {
+                    try {
+                        Thread.sleep(150L);
+                    } catch (InterruptedException exception) {
+                        Thread.currentThread().interrupt();
+                    }
+                    return result(getName(), getType(), List.of());
+                }
+                @Override public SearchChannelType getType() { return SearchChannelType.VECTOR_GLOBAL; }
+            };
+            SearchChannel queuedHyperGraph = new SearchChannel() {
+                @Override public String getName() { return "hypergraph"; }
+                @Override public int getPriority() { return 30; }
+                @Override public boolean isEnabled(SearchContext context) { return true; }
+                @Override public SearchChannelResult search(SearchContext context) {
+                    queuedChannelCalls.incrementAndGet();
+                    return result(getName(), getType(), List.of());
+                }
+                @Override public long getExecutionTimeoutMillis() { return 50L; }
+                @Override public SearchChannelType getType() { return SearchChannelType.HYPERGRAPH; }
+            };
+            MultiChannelRetrievalEngine engine = new MultiChannelRetrievalEngine(
+                    List.of(slowFirstChannel, queuedHyperGraph), List.of(), executor);
+
+            var result = engine.retrieveKnowledgeChannels(List.of(intent("queued")), 5,
+                    RetrievalOptions.defaults(), RetrievalExecutionContext.withBudgetMillis(1_000L));
+
+            assertThat(queuedChannelCalls.get()).isZero();
+            assertThat(result.channels()).anySatisfy(status -> {
+                assertThat(status.channel()).isEqualTo("hypergraph");
+                assertThat(status.status()).isEqualTo("TIMED_OUT");
+                assertThat(status.timedOut()).isTrue();
+            });
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+
     private static SearchChannel channel(String name,
                                          SearchChannelType type,
                                          long timeoutMillis,
@@ -127,6 +240,10 @@ class MultiChannelRetrievalEngineTest {
                 return type;
             }
         };
+    }
+
+    private static com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent intent(String question) {
+        return new com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent(question, List.of());
     }
 
     private static SearchChannelResult result(String name,

@@ -22,8 +22,9 @@ import com.alibaba.ttl.threadpool.TtlExecutors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -82,7 +83,7 @@ public class ThreadPoolExecutorConfig {
      * RAG 检索线程池（用于通道级别的并行）
      */
     @Bean
-    public Executor ragRetrievalThreadPoolExecutor() {
+    public ExecutorService ragRetrievalThreadPoolExecutor() {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(
                 CPU_COUNT,
                 CPU_COUNT << 1,
@@ -94,7 +95,7 @@ public class ThreadPoolExecutorConfig {
                         .build(),
                 new ThreadPoolExecutor.CallerRunsPolicy()
         );
-        return TtlExecutors.getTtlExecutor(executor);
+        return TtlExecutors.getTtlExecutorService(executor);
     }
 
     /**

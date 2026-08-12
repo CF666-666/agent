@@ -58,7 +58,10 @@ public enum SSEEventType {
     /**
      * 检索引用事件（Phase 4 扩展）
      */
-    REFERENCES("references");
+    REFERENCES("references"),
+
+    /** Retrieval execution evidence, emitted before references. */
+    RETRIEVAL_STATUS("retrieval_status");
 
     private final String value;
 

@@ -54,6 +54,8 @@ public class SearchChannelProperties {
          * 图像语义检索配置。
          */
         private ImageSemantic imageSemantic = new ImageSemantic();
+
+        private HyperGraph hyperGraph = new HyperGraph();
     }
 
     @Data
@@ -117,5 +119,11 @@ public class SearchChannelProperties {
          * 超时后仅降级图像通道，保留文本和关系通道的结果。
          */
         private long timeoutMillis = 3000L;
+    }
+
+    @Data
+    public static class HyperGraph {
+        /** Short independent budget for query-time entity extraction and path lookup. */
+        private long timeoutMillis = 7000L;
     }
 }

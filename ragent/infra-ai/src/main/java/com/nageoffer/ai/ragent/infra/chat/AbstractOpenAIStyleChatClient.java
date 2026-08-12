@@ -93,6 +93,11 @@ public abstract class AbstractOpenAIStyleChatClient implements ChatClient {
     // ==================== 模板方法：同步调用 ====================
 
     protected String doChat(ChatRequest request, ModelTarget target) {
+        return startChat(request, target).execute();
+    }
+
+    @Override
+    public CancellableChatCall startChat(ChatRequest request, ModelTarget target) {
         AIModelProperties.ProviderConfig provider = HttpResponseHelper.requireProvider(target, provider());
         if (requiresApiKey()) {
             HttpResponseHelper.requireApiKey(provider, provider());
@@ -103,8 +108,23 @@ public abstract class AbstractOpenAIStyleChatClient implements ChatClient {
                 .post(RequestBody.create(reqBody.toString(), HttpMediaTypes.JSON))
                 .build();
 
+        Call call = syncHttpClient.newCall(requestHttp);
+        return new CancellableChatCall() {
+            @Override
+            public String execute() {
+                return executeSyncCall(call);
+            }
+
+            @Override
+            public void cancel() {
+                call.cancel();
+            }
+        };
+    }
+
+    private String executeSyncCall(Call call) {
         JsonObject respJson;
-        try (Response response = syncHttpClient.newCall(requestHttp).execute()) {
+        try (Response response = call.execute()) {
             if (!response.isSuccessful()) {
                 String body = HttpResponseHelper.readBody(response.body());
                 log.warn("{} 同步请求失败: status={}, body={}", provider(), response.code(), body);

@@ -162,6 +162,14 @@ public class StreamChatEventHandler implements StreamCallback {
     }
 
     @Override
+    public void onRetrievalStatus(String statusJson) {
+        if (taskManager.isCancelled(taskId)) {
+            return;
+        }
+        sender.sendRawJsonEvent(SSEEventType.RETRIEVAL_STATUS.value(), statusJson);
+    }
+
+    @Override
     public void onComplete() {
         if (taskManager.isCancelled(taskId)) {
             return;

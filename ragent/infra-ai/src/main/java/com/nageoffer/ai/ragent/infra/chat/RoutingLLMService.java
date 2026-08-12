@@ -34,6 +34,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -80,6 +83,50 @@ public class RoutingLLMService implements LLMService {
                 target -> clientsByProvider.get(target.candidate().getProvider()),
                 (client, target) -> client.chat(request, target)
         );
+    }
+
+    @Override
+    public CancellableChatCall startChat(ChatRequest request) {
+        AtomicBoolean cancelled = new AtomicBoolean(false);
+        AtomicReference<CancellableChatCall> active = new AtomicReference<>();
+        return new CancellableChatCall() {
+            @Override
+            public String execute() {
+                List<ModelTarget> targets = selector.selectChatCandidates(Boolean.TRUE.equals(request.getThinking()));
+                Throwable last = null;
+                for (ModelTarget target : targets) {
+                    if (cancelled.get()) throw new CancellationException("chat request cancelled");
+                    ChatClient client = resolveClient(target, ModelCapability.CHAT.getDisplayName());
+                    if (client == null || !healthStore.allowCall(target.id())) continue;
+                    CancellableChatCall call = client.startChat(request, target);
+                    active.set(call);
+                    try {
+                        String response = call.execute();
+                        healthStore.markSuccess(target.id());
+                        return response;
+                    } catch (CancellationException exception) {
+                        throw exception;
+                    } catch (Exception exception) {
+                        if (cancelled.get()) throw new CancellationException("chat request cancelled");
+                        last = exception;
+                        healthStore.markFailure(target.id());
+                        log.warn("{} model failed, fallback to next. modelId={}, provider={}",
+                                ModelCapability.CHAT.getDisplayName(), target.id(), target.candidate().getProvider(), exception);
+                    } finally {
+                        active.compareAndSet(call, null);
+                    }
+                }
+                throw new RemoteException("All chat model candidates failed: "
+                        + (last == null ? "unknown" : last.getMessage()), last, BaseErrorCode.REMOTE_ERROR);
+            }
+
+            @Override
+            public void cancel() {
+                cancelled.set(true);
+                CancellableChatCall call = active.get();
+                if (call != null) call.cancel();
+            }
+        };
     }
 
     @Override

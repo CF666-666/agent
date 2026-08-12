@@ -21,6 +21,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.nageoffer.ai.ragent.rag.dto.KbResult;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalContext;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalExecutionResult;
+import com.nageoffer.ai.ragent.rag.dto.RetrievalChannelStatus;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import com.nageoffer.ai.ragent.framework.convention.RetrievedChunk;
@@ -48,6 +50,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.DEFAULT_TOP_K;
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.MULTI_CHANNEL_KEY;
@@ -82,6 +86,14 @@ public class RetrievalEngine {
     public RetrievalContext retrieve(List<SubQuestionIntent> subIntents,
                                      int topK,
                                      RetrievalOptions retrievalOptions) {
+        return retrieve(subIntents, topK, retrievalOptions, RetrievalExecutionContext.unbounded());
+    }
+
+    @RagTraceNode(name = "retrieval-engine", type = "RETRIEVE")
+    public RetrievalContext retrieve(List<SubQuestionIntent> subIntents,
+                                     int topK,
+                                     RetrievalOptions retrievalOptions,
+                                     RetrievalExecutionContext executionContext) {
         if (CollUtil.isEmpty(subIntents)) {
             return RetrievalContext.builder()
                     .intentChunks(Map.of())
@@ -93,30 +105,35 @@ public class RetrievalEngine {
                 : retrievalOptions;
 
         int finalTopK = topK > 0 ? topK : DEFAULT_TOP_K;
-        List<CompletableFuture<SubQuestionContext>> tasks = subIntents.stream()
-                .map(si -> CompletableFuture.supplyAsync(
+        List<FutureTask<SubQuestionContext>> tasks = subIntents.stream()
+                .map(si -> new FutureTask<>(
                         () -> {
                             try {
                                 return buildSubQuestionContext(
                                         si,
                                         resolveSubQuestionTopK(si, finalTopK),
-                                        actualOptions
+                                        actualOptions,
+                                        executionContext
                                 );
                             } catch (Exception e) {
                                 log.error("子问题上下文构建失败，降级为空上下文，question：{}", si.subQuestion(), e);
-                                return new SubQuestionContext(si.subQuestion(), "", "", Map.of());
+                                return new SubQuestionContext(si.subQuestion(), "", "", Map.of(), List.of());
                             }
-                        },
-                        ragContextExecutor
+                        }
                 ))
+                .peek(task -> {
+                    executionContext.register(task);
+                    ragContextExecutor.execute(task);
+                })
                 .toList();
         List<SubQuestionContext> contexts = tasks.stream()
-                .map(CompletableFuture::join)
+                .map(task -> awaitSubQuestion(task, executionContext))
                 .toList();
 
         StringBuilder kbBuilder = new StringBuilder();
         StringBuilder mcpBuilder = new StringBuilder();
         Map<String, List<RetrievedChunk>> mergedIntentChunks = new HashMap<>();
+        List<RetrievalChannelStatus> channelStatuses = new java.util.ArrayList<>();
 
         for (SubQuestionContext context : contexts) {
             if (StrUtil.isNotBlank(context.kbContext())) {
@@ -128,28 +145,62 @@ public class RetrievalEngine {
             if (CollUtil.isNotEmpty(context.intentChunks())) {
                 mergedIntentChunks.putAll(context.intentChunks());
             }
+            channelStatuses.addAll(context.channelStatuses());
         }
 
         return RetrievalContext.builder()
                 .mcpContext(mcpBuilder.toString().trim())
                 .kbContext(kbBuilder.toString().trim())
                 .intentChunks(mergedIntentChunks)
+                .channelStatuses(channelStatuses)
                 .build();
+    }
+
+    private SubQuestionContext awaitSubQuestion(FutureTask<SubQuestionContext> task,
+                                                 RetrievalExecutionContext executionContext) {
+        try {
+            if (executionContext.isUnbounded()) {
+                return task.get();
+            }
+            long remainingMillis = executionContext.remainingMillis();
+            if (remainingMillis <= 0L) {
+                executionContext.timeout();
+                return new SubQuestionContext("", "", "", Map.of(), List.of());
+            }
+            return task.get(remainingMillis, TimeUnit.MILLISECONDS);
+        } catch (java.util.concurrent.TimeoutException exception) {
+            executionContext.timeout();
+            return new SubQuestionContext("", "", "", Map.of(), List.of());
+        } catch (java.util.concurrent.CancellationException exception) {
+            return new SubQuestionContext("", "", "", Map.of(), List.of());
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            executionContext.cancel();
+            return new SubQuestionContext("", "", "", Map.of(), List.of());
+        } catch (java.util.concurrent.ExecutionException exception) {
+            return new SubQuestionContext("", "", "", Map.of(), List.of());
+        } finally {
+            executionContext.unregister(task);
+        }
     }
 
     private SubQuestionContext buildSubQuestionContext(SubQuestionIntent intent,
                                                        int topK,
-                                                       RetrievalOptions retrievalOptions) {
+                                                       RetrievalOptions retrievalOptions,
+                                                       RetrievalExecutionContext executionContext) {
         List<NodeScore> kbIntents = NodeScoreFilters.kb(intent.nodeScores());
         List<NodeScore> mcpIntents = NodeScoreFilters.mcp(intent.nodeScores());
 
-        KbResult kbResult = retrieveAndRerank(intent, kbIntents, topK, retrievalOptions);
+        RetrievalExecutionResult executionResult = retrieveKnowledgeChannels(
+                intent, topK, retrievalOptions, executionContext.fork());
+        KbResult kbResult = toKbResult(kbIntents, topK, executionResult.chunks());
 
         String mcpContext = CollUtil.isNotEmpty(mcpIntents)
-                ? executeMcpAndMerge(intent.subQuestion(), mcpIntents)
+                ? executeMcpAndMerge(intent.subQuestion(), mcpIntents, executionContext)
                 : "";
 
-        return new SubQuestionContext(intent.subQuestion(), kbResult.groupedContext(), mcpContext, kbResult.intentChunks());
+        return new SubQuestionContext(intent.subQuestion(), kbResult.groupedContext(), mcpContext,
+                kbResult.intentChunks(), executionResult.channels());
     }
 
     /**
@@ -173,12 +224,14 @@ public class RetrievalEngine {
                 .append(context).append("\n\n");
     }
 
-    private String executeMcpAndMerge(String question, List<NodeScore> mcpIntents) {
+    private String executeMcpAndMerge(String question,
+                                      List<NodeScore> mcpIntents,
+                                      RetrievalExecutionContext executionContext) {
         if (CollUtil.isEmpty(mcpIntents)) {
             return "";
         }
 
-        List<MCPResponse> responses = executeMcpTools(question, mcpIntents);
+        List<MCPResponse> responses = executeMcpTools(question, mcpIntents, executionContext);
         if (responses.isEmpty() || responses.stream().noneMatch(MCPResponse::isSuccess)) {
             return "";
         }
@@ -186,14 +239,17 @@ public class RetrievalEngine {
         return contextFormatter.formatMcpContext(responses, mcpIntents);
     }
 
-    private KbResult retrieveAndRerank(SubQuestionIntent intent,
-                                       List<NodeScore> kbIntents,
-                                       int topK,
-                                       RetrievalOptions retrievalOptions) {
+    private RetrievalExecutionResult retrieveKnowledgeChannels(SubQuestionIntent intent,
+                                                                int topK,
+                                                                RetrievalOptions retrievalOptions,
+                                                                RetrievalExecutionContext executionContext) {
         // 使用多通道检索引擎（是否启用全局检索由置信度阈值决定）
         List<SubQuestionIntent> subIntents = List.of(intent);
-        List<RetrievedChunk> chunks = multiChannelRetrievalEngine.retrieveKnowledgeChannels(
-                subIntents, topK, retrievalOptions);
+        return multiChannelRetrievalEngine.retrieveKnowledgeChannels(
+                subIntents, topK, retrievalOptions, executionContext);
+    }
+
+    private KbResult toKbResult(List<NodeScore> kbIntents, int topK, List<RetrievedChunk> chunks) {
 
         if (CollUtil.isEmpty(chunks)) {
             return KbResult.empty();
@@ -219,9 +275,15 @@ public class RetrievalEngine {
         return new KbResult(groupedContext, intentChunks);
     }
 
-    private List<MCPResponse> executeMcpTools(String question, List<NodeScore> mcpIntentScores) {
+    private List<MCPResponse> executeMcpTools(String question,
+                                              List<NodeScore> mcpIntentScores,
+                                              RetrievalExecutionContext executionContext) {
         if (CollUtil.isEmpty(mcpIntentScores)) {
             return List.of();
+        }
+
+        if (!executionContext.isUnbounded()) {
+            return executeTrackedMcpTools(question, mcpIntentScores, executionContext);
         }
 
         List<CompletableFuture<MCPResponse>> futures = mcpIntentScores.stream()
@@ -238,12 +300,90 @@ public class RetrievalEngine {
                         },
                         mcpBatchExecutor
                 ))
+                .peek(executionContext::register)
                 .toList();
 
         return futures.stream()
-                .map(CompletableFuture::join)
+                .map(task -> awaitMcpTask(task, executionContext))
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    private List<MCPResponse> executeTrackedMcpTools(String question,
+                                                      List<NodeScore> mcpIntentScores,
+                                                      RetrievalExecutionContext executionContext) {
+        List<FutureTask<MCPResponse>> tasks = mcpIntentScores.stream()
+                .map(nodeScore -> createTrackedMcpTask(question, nodeScore, executionContext))
+                .toList();
+
+        return tasks.stream()
+                .map(task -> awaitTrackedMcpTask(task, executionContext))
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    private FutureTask<MCPResponse> createTrackedMcpTask(String question,
+                                                          NodeScore nodeScore,
+                                                          RetrievalExecutionContext executionContext) {
+        FutureTask<MCPResponse> task = new FutureTask<>(() -> {
+            try {
+                MCPRequest request = buildMcpRequest(question, nodeScore.getNode());
+                return request == null ? null : executeSingleMcpTool(request);
+            } catch (Exception exception) {
+                String toolId = nodeScore.getNode().getMcpToolId();
+                log.error("MCP tool invocation failed, toolId: {}", toolId, exception);
+                return MCPResponse.error(toolId, "EXECUTION_ERROR", "tool invocation failed: " + exception.getMessage());
+            }
+        });
+        executionContext.register(task);
+        mcpBatchExecutor.execute(task);
+        return task;
+    }
+
+    private MCPResponse awaitTrackedMcpTask(FutureTask<MCPResponse> task,
+                                            RetrievalExecutionContext executionContext) {
+        try {
+            long remainingMillis = executionContext.remainingMillis();
+            if (remainingMillis <= 0) {
+                executionContext.timeout();
+                return null;
+            }
+            return task.get(remainingMillis, TimeUnit.MILLISECONDS);
+        } catch (java.util.concurrent.TimeoutException exception) {
+            executionContext.timeout();
+            return null;
+        } catch (java.util.concurrent.CancellationException exception) {
+            return null;
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            executionContext.cancel();
+            return null;
+        } catch (java.util.concurrent.ExecutionException exception) {
+            return null;
+        } finally {
+            executionContext.unregister(task);
+        }
+    }
+
+    private MCPResponse awaitMcpTask(CompletableFuture<MCPResponse> task,
+                                     RetrievalExecutionContext executionContext) {
+        try {
+            return executionContext.isUnbounded() ? task.join()
+                    : task.get(executionContext.remainingMillis(), TimeUnit.MILLISECONDS);
+        } catch (java.util.concurrent.TimeoutException exception) {
+            executionContext.timeout();
+            return null;
+        } catch (java.util.concurrent.CancellationException exception) {
+            return null;
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            executionContext.cancel();
+            return null;
+        } catch (java.util.concurrent.ExecutionException exception) {
+            return null;
+        } finally {
+            executionContext.unregister(task);
+        }
     }
 
     private MCPResponse executeSingleMcpTool(MCPRequest request) {
@@ -285,6 +425,7 @@ public class RetrievalEngine {
     private record SubQuestionContext(String question,
                                       String kbContext,
                                       String mcpContext,
-                                      Map<String, List<RetrievedChunk>> intentChunks) {
+                                      Map<String, List<RetrievedChunk>> intentChunks,
+                                      List<RetrievalChannelStatus> channelStatuses) {
     }
 }

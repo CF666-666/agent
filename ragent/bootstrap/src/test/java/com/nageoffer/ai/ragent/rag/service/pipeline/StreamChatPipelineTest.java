@@ -40,6 +40,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.never;
@@ -83,6 +84,10 @@ class StreamChatPipelineTest {
 
         verify(callback).onReferences(any());
         verify(callback).onRetrievalComplete();
+        org.mockito.InOrder order = inOrder(callback);
+        order.verify(callback).onRetrievalStatus(any());
+        order.verify(callback).onReferences(any());
+        order.verify(callback).onRetrievalComplete();
         verifyNoInteractions(llmService);
         verifyNoInteractions(memoryService);
         verifyNoInteractions(intentResolver, guidanceService);
@@ -116,6 +121,7 @@ class StreamChatPipelineTest {
                 .build());
 
         verify(callback).onRetrievalComplete();
+        verify(callback).onRetrievalStatus(any());
         verify(callback, never()).onReferences(any());
         verifyNoInteractions(llmService);
         verifyNoInteractions(memoryService);

@@ -22,6 +22,7 @@ import com.nageoffer.ai.ragent.infra.chat.StreamCallback;
 import com.nageoffer.ai.ragent.rag.core.rewrite.RewriteResult;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,9 @@ public class StreamChatContext {
      */
     @Builder.Default
     private final RetrievalOptions retrievalOptions = RetrievalOptions.defaults();
+
+    @Builder.Default
+    private final RetrievalExecutionContext retrievalExecutionContext = RetrievalExecutionContext.unbounded();
 
     // ==================== 管道中填充的中间状态 ====================
 

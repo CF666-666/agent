@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.rag.core.rewrite;
 
 import com.nageoffer.ai.ragent.framework.convention.ChatMessage;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 
 import java.util.List;
 
@@ -49,5 +50,14 @@ public interface QueryRewriteService {
      */
     default RewriteResult rewriteWithSplit(String userQuestion, List<ChatMessage> history) {
         return rewriteWithSplit(userQuestion);
+    }
+
+    default RewriteResult rewriteWithSplit(String userQuestion,
+                                           List<ChatMessage> history,
+                                           RetrievalExecutionContext executionContext) {
+        if (executionContext != null && !executionContext.isActive()) {
+            throw new java.util.concurrent.CancellationException("retrieval deadline elapsed before rewrite");
+        }
+        return rewriteWithSplit(userQuestion, history);
     }
 }

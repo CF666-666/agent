@@ -95,6 +95,10 @@ public interface StreamCallback {
     default void onReferences(String referencesJson) {
     }
 
+    /** Emits retrieval execution status without changing the references contract. */
+    default void onRetrievalStatus(String statusJson) {
+    }
+
     /**
      * 流式推送过程中出现异常
      * <p>

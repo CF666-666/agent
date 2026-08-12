@@ -23,6 +23,7 @@ import com.nageoffer.ai.ragent.rag.dto.IntentGroup;
 import com.nageoffer.ai.ragent.rag.dto.SubQuestionIntent;
 import com.nageoffer.ai.ragent.framework.trace.RagTraceNode;
 import com.nageoffer.ai.ragent.rag.core.rewrite.RewriteResult;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
@@ -64,14 +66,20 @@ public class IntentResolver {
 
     @RagTraceNode(name = "intent-resolve", type = "INTENT")
     public List<SubQuestionIntent> resolve(RewriteResult rewriteResult) {
+        return resolve(rewriteResult, RetrievalExecutionContext.unbounded());
+    }
+
+    @RagTraceNode(name = "intent-resolve", type = "INTENT")
+    public List<SubQuestionIntent> resolve(RewriteResult rewriteResult,
+                                           RetrievalExecutionContext executionContext) {
         List<String> subQuestions = CollUtil.isNotEmpty(rewriteResult.subQuestions())
                 ? rewriteResult.subQuestions()
                 : List.of(rewriteResult.rewrittenQuestion());
-        List<CompletableFuture<SubQuestionIntent>> tasks = subQuestions.stream()
-                .map(this::submitClassification)
+        List<FutureTask<SubQuestionIntent>> tasks = subQuestions.stream()
+                .map(question -> submitClassification(question, executionContext))
                 .toList();
         List<SubQuestionIntent> subIntents = IntStream.range(0, tasks.size())
-                .mapToObj(index -> awaitClassification(tasks.get(index), subQuestions.get(index)))
+                .mapToObj(index -> awaitClassification(tasks.get(index), subQuestions.get(index), executionContext))
                 .toList();
         return capTotalIntents(subIntents);
     }
@@ -95,13 +103,72 @@ public class IntentResolver {
         }
     }
 
-    private SubQuestionIntent awaitClassification(CompletableFuture<SubQuestionIntent> task, String question) {
+    private FutureTask<SubQuestionIntent> submitClassification(String question,
+                                                               RetrievalExecutionContext executionContext) {
+        FutureTask<SubQuestionIntent> task = new FutureTask<>(() -> {
+            try {
+                return new SubQuestionIntent(question, classifyIntents(question));
+            } catch (Exception exception) {
+                return new SubQuestionIntent(question, List.of());
+            }
+        });
+        executionContext.register(task);
         try {
-            return task.get(classifyTimeoutMillis, TimeUnit.MILLISECONDS);
+            intentClassifyExecutor.execute(task);
+        } catch (RejectedExecutionException exception) {
+            executionContext.unregister(task);
+            task.run();
+        }
+        return task;
+    }
+
+    private SubQuestionIntent awaitClassification(FutureTask<SubQuestionIntent> task,
+                                                  String question,
+                                                  RetrievalExecutionContext executionContext) {
+        try {
+            long timeoutMillis = executionContext.isUnbounded()
+                    ? classifyTimeoutMillis
+                    : Math.min(classifyTimeoutMillis, executionContext.remainingMillis());
+            if (timeoutMillis <= 0L) {
+                executionContext.timeout();
+                return new SubQuestionIntent(question, List.of());
+            }
+            return task.get(timeoutMillis, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException exception) {
+            task.cancel(true);
+            if (!executionContext.isUnbounded() && executionContext.remainingMillis() <= 0L) {
+                executionContext.timeout();
+            }
+            return new SubQuestionIntent(question, List.of());
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            executionContext.cancel();
+            return new SubQuestionIntent(question, List.of());
+        } catch (ExecutionException | java.util.concurrent.CancellationException exception) {
+            return new SubQuestionIntent(question, List.of());
+        } finally {
+            executionContext.unregister(task);
+        }
+    }
+
+    private SubQuestionIntent awaitClassification(CompletableFuture<SubQuestionIntent> task,
+                                                  String question,
+                                                  RetrievalExecutionContext executionContext) {
+        try {
+            long timeoutMillis = executionContext.isUnbounded()
+                    ? classifyTimeoutMillis
+                    : Math.min(classifyTimeoutMillis, executionContext.remainingMillis());
+            if (timeoutMillis <= 0L) {
+                executionContext.timeout();
+                return new SubQuestionIntent(question, List.of());
+            }
+            return task.get(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (TimeoutException ex) {
             task.cancel(true);
-            log.warn("Intent classification timed out after {} ms; use global retrieval, question={}",
-                    classifyTimeoutMillis, question);
+            if (!executionContext.isUnbounded() && executionContext.remainingMillis() <= 0L) {
+                executionContext.timeout();
+            }
+            log.warn("Intent classification timed out; use global retrieval, question={}", question);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
             log.warn("Intent classification interrupted; use global retrieval, question={}", question, ex);

@@ -74,7 +74,8 @@ def stream_refs(base: str, token: str, question: str,
     references = []
     current_event = ""
     started_at = time.monotonic()
-    status = "empty_references"
+    status = "missing_retrieval_status"
+    execution = None
     try:
         with requests.get(url, headers={"Authorization": token}, timeout=timeout, stream=True) as resp:
             resp.raise_for_status()
@@ -90,17 +91,24 @@ def stream_refs(base: str, token: str, question: str,
                 if payload == "[DONE]":
                     break
                 if current_event == "reject":
-                    return references, "rejected", elapsed_millis(started_at)
+                    return references, "rejected", elapsed_millis(started_at), execution
+                if current_event == "retrieval_status":
+                    try:
+                        execution = json.loads(payload)
+                    except Exception:
+                        return references, "invalid_retrieval_status", elapsed_millis(started_at), None
+                    continue
                 if current_event == "references":
                     try:
                         refs = json.loads(payload)
                         if isinstance(refs, list):
                             references.extend(refs)
-                            status = "received" if references else "empty_references"
+                            status = "received"
                         else:
                             status = "invalid_references"
                     except Exception:
                         status = "invalid_references"
+                    status = execution_status(execution, status)
                     break  # 检索结果已拿到,断开,无需等 LLM 生成
     except requests.Timeout as e:
         status = "timeout"
@@ -108,11 +116,25 @@ def stream_refs(base: str, token: str, question: str,
     except requests.RequestException as e:
         status = "request_error"
         print(f"    [warn] 请求异常: {e}", file=sys.stderr)
-    return references, status, elapsed_millis(started_at)
+    return references, execution_status(execution, status), elapsed_millis(started_at), execution
 
 
 def elapsed_millis(started_at: float) -> int:
     return round((time.monotonic() - started_at) * 1000)
+
+
+def execution_status(execution: dict | None, fallback: str) -> str:
+    """Classify execution independently from the number of references."""
+    if execution is None:
+        return fallback
+    if execution.get("timedOut"):
+        return "timed_out"
+    if execution.get("cancelled"):
+        return "cancelled"
+    channels = execution.get("channels") or []
+    if any(channel.get("status") == "FAILED" for channel in channels if isinstance(channel, dict)):
+        return "failed"
+    return "received"
 
 
 def latency_summary(results: list[dict]) -> dict:
@@ -252,16 +274,17 @@ def runtime_metadata(label: str, request_timeout_seconds: int) -> dict:
 
 
 def run_warmups(items: list[dict], count: int,
-                retrieve: Callable[[str], tuple[list[dict], str, int]]) -> list[dict]:
+                retrieve: Callable[[str], tuple]) -> list[dict]:
     """Issue unscored requests so cold dependencies do not distort measured cases."""
     warmup_results = []
     for item in items[:max(0, count)]:
-        references, status, latency_ms = retrieve(item["query"])
+        references, status, latency_ms, execution = retrieve(item["query"])
         warmup_results.append({
             "case_id": evaluation_case_id(item),
             "retrieval_status": status,
             "latency_ms": latency_ms,
             "num_refs": len(references),
+            "execution": execution,
         })
     return warmup_results
 
@@ -331,7 +354,7 @@ def main():
     results = []
     for idx, it in enumerate(items, 1):
         query, golden = it["query"], it["golden_answer"]
-        refs, retrieval_status, latency_ms = retrieve(query)
+        refs, retrieval_status, latency_ms, execution = retrieve(query)
         ok = retrieval_status == "received"
         hits, mrr, channel_hit, source_hit = metrics(
             refs, golden, it.get("expected_channels", []), it.get("golden_source_ids", [])) if ok else (
@@ -343,6 +366,7 @@ def main():
             "num_refs": len(refs), "hit": hits, "mrr": mrr,
             "channel_hit": channel_hit,
             "source_id_hit": source_hit,
+            "execution": execution,
         })
         detail = (f"{idx}/{len(items)} [{it.get('scene','')}] hit@1={hits[1]} "
                   f"mrr={mrr:.3f} refs={len(refs)} latency={latency_ms}ms status={retrieval_status}")
@@ -352,17 +376,19 @@ def main():
 
     # ---- 汇总 ----
     total = len(results)
-    hit_agg = {k: sum(1 for r in results if r["hit"][k]) / total for k in TOPK}
-    mrr_agg = sum(r["mrr"] for r in results) / total
-    no_retrieval = sum(1 for r in results if not r["ok"])
+    quality_results = [result for result in results if result["ok"]]
+    quality_total = len(quality_results)
+    hit_agg = {k: sum(1 for r in quality_results if r["hit"][k]) / quality_total if quality_total else 0.0 for k in TOPK}
+    mrr_agg = sum(r["mrr"] for r in quality_results) / quality_total if quality_total else 0.0
+    no_retrieval = total - quality_total
     by_scene = defaultdict(list)
     for r in results:
         by_scene[r["scene"]].append(r)
 
-    channel_hit_rate = sum(1 for r in results if r["channel_hit"]) / total if total else 0.0
-    source_id_hit_rate = sum(1 for r in results if r["source_id_hit"]) / total if total else 0.0
+    channel_hit_rate = sum(1 for r in quality_results if r["channel_hit"]) / quality_total if quality_total else 0.0
+    source_id_hit_rate = sum(1 for r in quality_results if r["source_id_hit"]) / quality_total if quality_total else 0.0
     summary = {
-        "total": total, "no_retrieval": no_retrieval,
+        "total": total, "quality_sample_count": quality_total, "excluded_execution_count": no_retrieval,
         "hit_rate": {f"@{k}": round(v, 4) for k, v in hit_agg.items()},
         "mrr": round(mrr_agg, 4),
         "expected_channel_hit_rate": round(channel_hit_rate, 4),
@@ -375,8 +401,9 @@ def main():
         "by_scene": {
             scene: {
                 "count": len(lst),
-                "hit_rate": {f"@{k}": round(sum(1 for r in lst if r["hit"][k]) / len(lst), 4) for k in TOPK},
-                "mrr": round(sum(r["mrr"] for r in lst) / len(lst), 4),
+                "quality_sample_count": sum(1 for r in lst if r["ok"]),
+                "hit_rate": {f"@{k}": round(sum(1 for r in lst if r["ok"] and r["hit"][k]) / max(1, sum(1 for r in lst if r["ok"])), 4) for k in TOPK},
+                "mrr": round(sum(r["mrr"] for r in lst if r["ok"]) / max(1, sum(1 for r in lst if r["ok"])), 4),
                 "expected_channel_hit_rate": round(
                     sum(1 for r in lst if r["channel_hit"]) / len(lst), 4),
                 "source_id_hit_rate": round(
