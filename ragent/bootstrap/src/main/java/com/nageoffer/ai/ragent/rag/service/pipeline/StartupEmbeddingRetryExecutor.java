@@ -21,6 +21,7 @@ import com.nageoffer.ai.ragent.infra.embedding.FixedModelEmbeddingExecutor;
 import com.nageoffer.ai.ragent.infra.http.ModelClientErrorType;
 import com.nageoffer.ai.ragent.infra.http.ModelClientException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.InterruptedIOException;
@@ -42,6 +43,7 @@ public class StartupEmbeddingRetryExecutor {
     private final LongConsumer sleeper;
     private final LongSupplier jitterSupplier;
 
+    @Autowired
     public StartupEmbeddingRetryExecutor(FixedModelEmbeddingExecutor embeddingExecutor) {
         this(embeddingExecutor, StartupEmbeddingRetryExecutor::sleep, () -> ThreadLocalRandom.current().nextLong(251));
     }
