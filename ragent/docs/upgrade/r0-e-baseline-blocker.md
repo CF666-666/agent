@@ -14,14 +14,15 @@
 
 此前的启动期 FAQ 重建存在失效风险：单条 embedding 超时会被吞掉，随后仍继续图像入库并错误记录“全量完成”，导致仅有部分 FAQ 的索引被误认为稳定快照。该行为已修复为受控失败闭环：固定 `qwen-emb-8b`、每条最多 3 次远程调用，仅对网络/429/5xx 做退避重试；任何失败或计数不一致都会清理部分 FAQ、跳过图像入库并让启动失败。只有合法 FAQ 输入数、成功 embedding 数和 Milvus 实际记录数一致，且图像入库完成后才记录全量完成。
 
-当前剩余工作是使用修复后的镜像完成一次完整启动，并在确认 FAQ 计数一致后运行四类 schema v3 评测；此前 `50/210`、`100/210` 或其他部分入库记录均不得归档或引用。
+2026-08-12 23:14～23:17 已在修复后的 Docker 镜像上完成一次真实启动验收：期间出现 3 次 10 秒网络超时，均在首次有界重试后由同一 `qwen-emb-8b` 调用恢复；最终日志记录 `input=210, embedded=210, persisted=210`，并完成 12 条图像入库和全量完成记录。该启动已形成稳定索引快照；此前 `50/210`、`100/210` 或其他部分入库记录仍不得归档或引用。
+
+当前剩余工作是基于该稳定索引运行四类 schema v3 评测并归档。
 
 ## 收口条件
 
-1. 以已记录的 SiliconFlow 配置启动服务，等待 `Phase5DataIngestionRunner` 记录全量完成，并确认 FAQ 三方计数一致；
-3. 用 R0-E 固定参数运行 `fact/colloquial/image/relation` 四个 schema v3 原始分片，并由 `merge_eval_reports.py` 合并；
-4. 使用 `archive_baseline.py` 归档到 `scripts/eval/report/baselines/<run-id>/`；
-5. 仅在归档成功后，把该目录及摘要写入路线图和评测报告。
+1. 用 R0-E 固定参数运行 `fact/colloquial/image/relation` 四个 schema v3 原始分片，并由 `merge_eval_reports.py` 合并；
+2. 使用 `archive_baseline.py` 归档到 `scripts/eval/report/baselines/<run-id>/`；
+3. 仅在归档成功后，把该目录及摘要写入路线图和评测报告。
 
 ## 非结论
 
