@@ -154,6 +154,73 @@ def validate_records(records: Iterable[dict[str, Any]], kind: str = "single_turn
     return validated
 
 
+def validate_dataset_split(
+        records: Iterable[dict[str, Any]], expected_split: str,
+        kind: str = "single_turn") -> list[dict[str, Any]]:
+    """Validate one newly authored tuning or frozen dataset.
+
+    Historical v2 data is intentionally accepted by :func:`validate_records`
+    as ``legacy``.  It must not, however, be used for tuning/frozen isolation:
+    otherwise a permissive compatibility path could silently dilute an A/B
+    result.
+    """
+    if expected_split not in {"tuning", "frozen"}:
+        raise ValueError("expected_split must be tuning or frozen")
+    validated = validate_records(records, kind)
+    expected_case_type = "single_turn" if kind == "single_turn" else "conversation"
+    for index, record in enumerate(validated, 1):
+        location = f"record {index} ({record['id']})"
+        if record.get("schema_version") != DATASET_SCHEMA_VERSION:
+            _fail(location, "tuning/frozen records must declare schema_version")
+        if record.get("case_type") != expected_case_type:
+            _fail(location, f"tuning/frozen records must declare case_type {expected_case_type}")
+        if record.get("split") != expected_split:
+            _fail(location, f"split must be {expected_split}")
+    return validated
+
+
+def evidence_keys(record: dict[str, Any]) -> set[str]:
+    """Return canonical source-evidence keys used for split-isolation checks.
+
+    Namespacing keeps identifiers from independent systems from colliding while
+    enforcing the four evidence identities that can leak evaluation knowledge:
+    source IDs, source records, image assets and hyperedges.
+    """
+    provenance = record["provenance"]
+    keys = {f"source_id:{value}" for value in record["golden_source_ids"]}
+    keys.add(
+        "provenance:"
+        f"{provenance['source_file']}#{provenance['source_record_id']}")
+    keys.update(f"image:{value}" for value in record.get("golden_image_paths", []))
+    keys.update(f"hyperedge:{value}" for value in record.get("golden_hyperedge_ids", []))
+    return keys
+
+
+def validate_split_isolation(
+        tuning_records: Iterable[dict[str, Any]], frozen_records: Iterable[dict[str, Any]],
+        kind: str = "single_turn") -> None:
+    """Reject tuning/frozen sets that share a scored source, image or hyperedge."""
+    tuning = validate_dataset_split(tuning_records, "tuning", kind)
+    frozen = validate_dataset_split(frozen_records, "frozen", kind)
+
+    def index_records(records: Iterable[dict[str, Any]]) -> dict[str, list[str]]:
+        indexed: dict[str, list[str]] = {}
+        for record in records:
+            for key in evidence_keys(record):
+                indexed.setdefault(key, []).append(record["id"])
+        return indexed
+
+    tuning_index = index_records(tuning)
+    frozen_index = index_records(frozen)
+    overlaps = sorted(set(tuning_index) & set(frozen_index))
+    if overlaps:
+        details = "; ".join(
+            f"{key} (tuning={tuning_index[key]}, frozen={frozen_index[key]})"
+            for key in overlaps)
+        raise EvaluationContractError(
+            "tuning/frozen evidence leakage detected: " + details)
+
+
 def load_jsonl_dataset(path: Path, kind: str = "single_turn") -> list[dict[str, Any]]:
     """Read and validate a UTF-8 JSONL dataset with line-specific errors."""
     records: list[dict[str, Any]] = []
@@ -178,9 +245,23 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser(description="validate an Ragent evaluation JSONL dataset")
-    parser.add_argument("dataset", type=Path)
+    parser.add_argument("dataset", type=Path, nargs="?")
     parser.add_argument("--kind", choices=("single_turn", "conversation"), default="single_turn")
+    parser.add_argument("--tuning", type=Path, help="new tuning JSONL dataset for isolation validation")
+    parser.add_argument("--frozen", type=Path, help="new frozen JSONL dataset for isolation validation")
     args = parser.parse_args()
+    if args.tuning is not None or args.frozen is not None:
+        if args.dataset is not None or args.tuning is None or args.frozen is None:
+            parser.error("use --tuning and --frozen together, without dataset")
+        tuning = load_jsonl_dataset(args.tuning, args.kind)
+        frozen = load_jsonl_dataset(args.frozen, args.kind)
+        validate_split_isolation(tuning, frozen, args.kind)
+        print(
+            f"valid isolated {args.kind} datasets: "
+            f"{args.tuning} ({len(tuning)} records), {args.frozen} ({len(frozen)} records)")
+        return
+    if args.dataset is None:
+        parser.error("dataset is required unless --tuning and --frozen are provided")
     records = load_jsonl_dataset(args.dataset, args.kind)
     print(f"valid {args.kind} dataset: {args.dataset} ({len(records)} records)")
 

@@ -8,8 +8,10 @@ from pathlib import Path
 
 from evaluation_contract import (
     EvaluationContractError,
+    evidence_keys,
     load_jsonl_dataset,
     validate_conversation_record,
+    validate_split_isolation,
     validate_single_turn_record,
 )
 
@@ -93,6 +95,64 @@ class EvaluationContractTest(unittest.TestCase):
             dataset.write_text('{"id":\n', encoding="utf-8")
             with self.assertRaisesRegex(EvaluationContractError, "broken.jsonl:1: invalid JSON"):
                 load_jsonl_dataset(dataset)
+
+    def test_split_isolation_accepts_disjoint_evidence(self):
+        tuning = single_turn(id="tuning-001", split="tuning")
+        frozen = single_turn(
+            id="frozen-001", split="frozen", golden_source_ids=["manual-002"],
+            provenance={"source_file": "datasets/other.jsonl", "source_record_id": "manual-002"})
+        validate_split_isolation([tuning], [frozen])
+
+    def test_split_isolation_rejects_shared_source_and_provenance(self):
+        tuning = single_turn(id="tuning-001", split="tuning")
+        frozen = single_turn(id="frozen-001", split="frozen")
+        with self.assertRaisesRegex(EvaluationContractError, "source_id:manual-001"):
+            validate_split_isolation([tuning], [frozen])
+
+        frozen = single_turn(
+            id="frozen-002", split="frozen", golden_source_ids=["manual-002"])
+        with self.assertRaisesRegex(EvaluationContractError, "provenance:datasets/manual.jsonl#manual-001"):
+            validate_split_isolation([tuning], [frozen])
+
+    def test_split_isolation_rejects_shared_image_or_hyperedge(self):
+        tuning_image = single_turn(
+            id="tuning-image", split="tuning", scene="image",
+            expected_channels=["IMAGE_SEMANTIC"], golden_image_paths=["images/pump.png"])
+        frozen_image = single_turn(
+            id="frozen-image", split="frozen", scene="image",
+            expected_channels=["IMAGE_SEMANTIC"], golden_source_ids=["manual-002"],
+            provenance={"source_file": "datasets/other.jsonl", "source_record_id": "manual-002"},
+            golden_image_paths=["images/pump.png"])
+        with self.assertRaisesRegex(EvaluationContractError, "image:images/pump.png"):
+            validate_split_isolation([tuning_image], [frozen_image])
+
+        tuning_relation = single_turn(
+            id="tuning-relation", split="tuning", scene="relation",
+            expected_channels=["HYPERGRAPH"], golden_hyperedge_ids=["edge-001"])
+        frozen_relation = single_turn(
+            id="frozen-relation", split="frozen", scene="relation",
+            expected_channels=["HYPERGRAPH"], golden_source_ids=["manual-003"],
+            provenance={"source_file": "datasets/third.jsonl", "source_record_id": "manual-003"},
+            golden_hyperedge_ids=["edge-001"])
+        with self.assertRaisesRegex(EvaluationContractError, "hyperedge:edge-001"):
+            validate_split_isolation([tuning_relation], [frozen_relation])
+
+    def test_split_isolation_rejects_legacy_records_and_exposes_evidence(self):
+        legacy = single_turn(id="legacy-001")
+        legacy.pop("schema_version")
+        legacy.pop("case_type")
+        legacy.pop("split")
+        frozen = single_turn(
+            id="frozen-001", split="frozen", golden_source_ids=["manual-002"],
+            provenance={"source_file": "datasets/other.jsonl", "source_record_id": "manual-002"})
+        with self.assertRaisesRegex(EvaluationContractError, "must declare schema_version"):
+            validate_split_isolation([legacy], [frozen])
+
+        keys = evidence_keys(single_turn(scene="image", expected_channels=["IMAGE_SEMANTIC"],
+                                         golden_image_paths=["images/pump.png"]))
+        self.assertIn("source_id:manual-001", keys)
+        self.assertIn("provenance:datasets/manual.jsonl#manual-001", keys)
+        self.assertIn("image:images/pump.png", keys)
 
 
 if __name__ == "__main__":

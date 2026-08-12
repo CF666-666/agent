@@ -7,6 +7,7 @@
 ```powershell
 python scripts/eval/evaluation_contract.py scripts/eval/datasets/industrial_eval_v2.jsonl
 python scripts/eval/evaluation_contract.py path/to/conversation_eval.jsonl --kind conversation
+python scripts/eval/evaluation_contract.py --tuning path/to/tuning.jsonl --frozen path/to/frozen.jsonl
 ```
 
 ## 单轮样本
@@ -24,6 +25,12 @@ python scripts/eval/evaluation_contract.py path/to/conversation_eval.jsonl --kin
 
 现有 v2 基线未填写的新增字段按兼容模式处理为 `legacy`，以保证历史报告仍可复现；新数据不得继续使用 `legacy`。
 
+## 调优集与冻结集隔离
+
+新的 `tuning`、`frozen` 数据集必须显式声明 `schema_version: 1`、对应的 `case_type` 和 `split`。发布或调优前，使用上述 `--tuning/--frozen` 命令同时校验两份数据；历史 `legacy` 集不得参与该校验。
+
+校验器会拒绝两个集合共享任一可评分证据：`golden_source_ids`、`provenance.source_file + source_record_id`、图像场景的 `golden_image_paths`，以及关系场景的 `golden_hyperedge_ids`。因此同一来源知识、图像素材或超边不会一边用于调参、一边用于宣称最终效果。
+
 ## 多轮样本
 
 多轮样本使用 `case_type: "conversation"` 和 `scene: "colloquial"`，以 `turns` 保存按顺序排列的 user/assistant 消息。`target_turn_index` 必须指向最后一个 user turn；该规则使后续 Runner 不会因为会话追加而评测错目标问题。
@@ -34,4 +41,4 @@ python scripts/eval/evaluation_contract.py path/to/conversation_eval.jsonl --kin
 - 检索 Runner 加载单轮集时强制调用校验；
 - 数据集的 SHA-256、运行配置和报告合并规则仍由现有 Runner 管理；
 - 每份新检索/RAGAS 报告还会记录运行器、数据契约、运行配置档案、应用配置、Git 提交和 Python 版本的无密钥执行指纹；分批检索报告指纹不一致时拒绝合并。历史 schema v2 报告保持只读，新生成的 schema v3 报告不得与其混合；
-- 契约不替代业务真实性审核：图像授权、来源去重和调优/冻结集隔离在 R0-C/R0-D 继续执行。
+- 契约不替代业务真实性审核：图像授权和来源真实性仍需在数据构建时人工审核；调优/冻结集隔离已由 R0-D 的加载前校验强制执行。
