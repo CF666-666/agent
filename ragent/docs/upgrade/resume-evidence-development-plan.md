@@ -345,7 +345,7 @@
 | 阶段 | 状态 | 说明 |
 |---|---|---|
 | 方案讨论 | ✅ 已完成 | 开发范围、评测规模、画布边界和执行顺序已确认 |
-| R0 真实性与评测契约 | 🟡 进行中 | R0-A 已完成：两个顶部栏的 GitHub 展示、Star 数与 API 请求均已移除；后续为评测契约 |
+| R0 真实性与评测契约 | 🟡 进行中 | R0-A/R0-B 已完成：GitHub 展示已移除；单轮、多轮、图像、关系和 RAGAS 数据契约已接入 Runner 并通过回归。后续为配置/模型指纹和数据集隔离 |
 | R1 PDF 智能解析 | ⬜ 未开始 | 依赖 R0 基线 |
 | R2 超图关系质量 | ⬜ 未开始 | 依赖 R0 关系冻结集 |
 | R3 查询鲁棒性 | ⬜ 未开始 | 依赖 R0 多轮 Schema |
@@ -361,6 +361,7 @@
 ## 10. 相关文档
 
 - [evaluation-report.md](../evaluation-report.md)：当前真实评测结果；
+- [evaluation-contract.md](../evaluation-contract.md)：单轮、多轮、图像、关系与 RAGAS 数据字段契约；
 - [resume-project.md](../resume-project.md)：当前简历版本与表述边界；
 - [dev-roadmap.md](dev-roadmap.md)：历史 Phase 0～8 进度；
 - [next-development-plan.md](next-development-plan.md)：上一轮开发主线和既有阶段方案；

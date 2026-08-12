@@ -28,6 +28,8 @@ from typing import Callable
 import requests
 import urllib.parse
 
+from evaluation_contract import load_jsonl_dataset
+
 TOPK = (1, 3, 5)
 REPORT_SCHEMA_VERSION = 2
 
@@ -184,13 +186,8 @@ def metrics(references, golden, expected_channels=None, golden_source_ids=None):
 
 
 def load_dataset(path: Path):
-    items = []
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                items.append(json.loads(line))
-    return items
+    """Load only contract-valid single-turn cases before issuing SSE calls."""
+    return load_jsonl_dataset(path, kind="single_turn")
 
 
 def select_evaluation_items(items, scenes: str, offset: int, limit: int):
