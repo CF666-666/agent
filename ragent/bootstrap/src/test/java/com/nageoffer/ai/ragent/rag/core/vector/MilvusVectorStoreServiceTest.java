@@ -19,6 +19,7 @@ package com.nageoffer.ai.ragent.rag.core.vector;
 
 import com.nageoffer.ai.ragent.core.chunk.VectorChunk;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
+import io.milvus.v2.common.ConsistencyLevel;
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.vector.request.DeleteReq;
 import io.milvus.v2.service.vector.request.QueryReq;
@@ -73,5 +74,7 @@ class MilvusVectorStoreServiceTest {
         verify(milvusClient).query(request.capture());
         org.assertj.core.api.Assertions.assertThat(request.getValue().getFilter())
                 .isEqualTo("metadata[\"doc_id\"] == \"doc-1\"");
+        org.assertj.core.api.Assertions.assertThat(request.getValue().getConsistencyLevel())
+                .isEqualTo(ConsistencyLevel.STRONG);
     }
 }

@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import com.nageoffer.ai.ragent.core.chunk.VectorChunk;
 import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
+import io.milvus.v2.common.ConsistencyLevel;
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.vector.request.DeleteReq;
 import io.milvus.v2.service.vector.request.QueryReq;
@@ -161,6 +162,7 @@ public class MilvusVectorStoreService implements VectorStoreService {
                 .collectionName(collectionName)
                 .filter("metadata[\"doc_id\"] == " + quoteFilterString(docId))
                 .outputFields(List.of("id"))
+                .consistencyLevel(ConsistencyLevel.STRONG)
                 .limit(16_384L)
                 .build());
         return response.getQueryResults() == null ? 0 : response.getQueryResults().size();
