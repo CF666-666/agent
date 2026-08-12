@@ -466,7 +466,7 @@ cd <workspace-root>
 
 # 2. 配置环境变量（.env，至少需要 LLM API Key）
 cp .env.example .env
-# 编辑 .env，填入 BAILIAN_API_KEY / SILICONFLOW_API_KEY
+# 编辑 .env，填入 SILICONFLOW_API_KEY
 
 # 3. 一键启动全部服务（首次需构建镜像，耗时较长）
 docker compose up -d --build
@@ -475,7 +475,7 @@ docker compose up -d --build
 #    前端: http://localhost:5177   账号: admin / admin
 ```
 
-Windows 用户也可以直接双击工作区根目录的 `start-ragent.bat`。脚本会优先读取 Windows 用户环境变量中的 `BAILIAN_API_KEY` 与 `SILICONFLOW_API_KEY`，仅在未设置时回退读取 `.env`。
+Windows 用户也可以直接双击工作区根目录的 `start-ragent.bat`。脚本会优先读取 Windows 系统或用户环境变量中的 `SILICONFLOW_API_KEY`，也会读取可选的 `BAILIAN_API_KEY`；仅在未设置时回退读取 `.env`。
 
 > [!TIP]
 > 数据库初始化、Milvus 集合创建、演示数据入库（FAQ 210 条 / 图纸 12 张 / 超边 633 条）均由编排自动完成，无需手动干预。详细步骤见 [部署指南](docs/deployment.md)。
@@ -500,8 +500,8 @@ npm run dev
 
 | 变量 | 必填 | 说明 |
 | ---- | ---- | ---- |
-| `BAILIAN_API_KEY` | 是 | 阿里云百炼 API Key（Chat / Rerank 模型） |
-| `SILICONFLOW_API_KEY` | 否 | SiliconFlow API Key（多模态 Embedding，缺省时回退 Ollama 本地模型） |
+| `SILICONFLOW_API_KEY` | 是（默认） | SiliconFlow API Key（Chat / Embedding / Rerank / Vision） |
+| `BAILIAN_API_KEY` | 否 | 可选百炼适配器密钥；在 `application.yaml` 启用对应候选后生效 |
 | `OLLAMA_BASE_URL` | 否 | 本地 Ollama 地址，默认 `http://localhost:11434` |
 
 ### 文档导航

@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * <p>
  * 扫描 {@code data/images/drawings/} 目录下的所有图片文件，调用 Qwen-VL 生成工业设备描述，输出 JSONL：
  * <pre>{@code
- * {"image_path":"drawings/steel_blast_furnace_001.jpg","description":"...","category":"industrial_equipment","source_url":"...","license":"CC BY-SA 4.0","generated_by":"qwen-vl-max"}
+ * {"image_path":"drawings/steel_blast_furnace_001.jpg","description":"...","category":"industrial_equipment","source_url":"...","license":"CC BY-SA 4.0","generated_by":"Qwen/Qwen3-VL-32B-Instruct"}
  * }</pre>
  * <p>
  * 复用闭环 5.1 成熟模式：临时文件 + 原子重命名 + 3 次重试 + AtomicInteger 追踪数据丢失。
@@ -141,7 +141,7 @@ public class Phase5ImageDescriber implements CommandLineRunner {
             currentBatch++;
             log.info("  [{}/{}] 处理 {}", currentBatch, totalBatches, imageFile.getFileName());
 
-            String description = callQwenVLWithRetry(imageFile, dataLossBatches);
+            ImageDescription description = callQwenVLWithRetry(imageFile, dataLossBatches);
             if (description == null) {
                 continue;
             }
@@ -151,11 +151,11 @@ public class Phase5ImageDescriber implements CommandLineRunner {
 
             JsonObject out = new JsonObject();
             out.addProperty("image_path", relPath);
-            out.addProperty("description", description);
+            out.addProperty("description", description.text());
             out.addProperty("category", "industrial_equipment");
             out.addProperty("source_url", meta.sourceUrl());
             out.addProperty("license", meta.license());
-            out.addProperty("generated_by", "qwen-vl-max");
+            out.addProperty("generated_by", description.model());
 
             writer.write(GSON.toJson(out));
             writer.newLine();
@@ -217,13 +217,16 @@ public class Phase5ImageDescriber implements CommandLineRunner {
         static final ImageMetadata EMPTY = new ImageMetadata("", "");
     }
 
-    private String callQwenVLWithRetry(Path imageFile, AtomicInteger dataLossBatches) {
+    private ImageDescription callQwenVLWithRetry(Path imageFile, AtomicInteger dataLossBatches) {
         for (int attempt = 1; attempt <= MAX_RETRIES; attempt++) {
             try {
                 ParseResult result = imageParser.parse(imageFile.toFile(), FileType.IMAGE_DRAWING);
                 String description = result != null ? result.getTextContent() : null;
                 if (description != null && !description.isBlank()) {
-                    return description;
+                    String model = result.getMetadata() != null
+                            ? String.valueOf(result.getMetadata().getOrDefault("model", "Qwen-VL"))
+                            : "Qwen-VL";
+                    return new ImageDescription(description, model);
                 }
                 log.warn("Qwen-VL 返回空描述，{} (尝试 {}/{})",
                         imageFile.getFileName(), attempt, MAX_RETRIES);
@@ -236,5 +239,8 @@ public class Phase5ImageDescriber implements CommandLineRunner {
                 imageFile.getFileName(), MAX_RETRIES);
         dataLossBatches.incrementAndGet();
         return null;
+    }
+
+    private record ImageDescription(String text, String model) {
     }
 }

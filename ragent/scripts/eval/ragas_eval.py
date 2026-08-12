@@ -38,8 +38,8 @@ from runtime_fingerprint import (
     build_execution_fingerprint,
 )
 
-BAILIAN_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 SILICON_BASE = "https://api.siliconflow.cn/v1"
+BAILIAN_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
 
 def login(base: str, username: str, password: str) -> str:
@@ -110,8 +110,8 @@ def main():
     parser.add_argument("--limit", type=int, default=12, help="评测样本数(默认 12)")
     parser.add_argument("--eval-model", default="deepseek-ai/DeepSeek-V3.2",
                         help="RAGAS 打分 LLM 模型(默认 SiliconFlow DeepSeek-V3.2)")
-    parser.add_argument("--eval-provider", choices=["bailian", "siliconflow"], default="siliconflow",
-                        help="打分服务商(默认 siliconflow;bailian 需百炼余额)")
+    parser.add_argument("--eval-provider", choices=["siliconflow", "bailian"], default="siliconflow",
+                        help="Evaluation model provider; siliconflow is the default and bailian remains optional.")
     parser.add_argument("--out", type=Path, default=Path(__file__).parent / "report/ragas_report.json")
     parser.add_argument("--runtime-profile", type=Path, default=DEFAULT_PROFILE,
                         help="Secret-free JSON profile of configured serving models.")
@@ -119,14 +119,14 @@ def main():
                         help="Effective application configuration file to fingerprint.")
     args = parser.parse_args()
 
-    if args.eval_provider == "bailian":
-        api_key = os.environ.get("BAILIAN_API_KEY", "").strip()
-        llm_base, emb_model = BAILIAN_BASE, "text-embedding-v3"
-    else:
+    if args.eval_provider == "siliconflow":
         api_key = os.environ.get("SILICONFLOW_API_KEY", "").strip()
-        llm_base, emb_model = SILICON_BASE, "BAAI/bge-m3"
+        llm_base, emb_model, required_key_name = SILICON_BASE, "Qwen/Qwen3-Embedding-8B", "SILICONFLOW_API_KEY"
+    else:
+        api_key = os.environ.get("BAILIAN_API_KEY", "").strip()
+        llm_base, emb_model, required_key_name = BAILIAN_BASE, "text-embedding-v4", "BAILIAN_API_KEY"
     if not api_key:
-        print(f"[error] 未设置 {args.eval_provider} 对应的 API Key 环境变量", file=sys.stderr)
+        print(f"[error] {required_key_name} is not configured", file=sys.stderr)
         sys.exit(1)
 
     print(f"[ragas_eval] 登录 {args.base_url} ...")

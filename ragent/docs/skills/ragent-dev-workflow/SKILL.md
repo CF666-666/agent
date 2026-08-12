@@ -111,9 +111,8 @@ description: >
 
 - **Embedding**：复用 `RoutingEmbeddingService`（Qwen3-Embedding-8B，1536 维）
 - **Rerank**：复用已有 `RerankPostProcessor`（Qwen3-Reranker，后处理链最后执行）
-- **Qwen-VL API**：独立实现，不走 ChatClient 继承体系。调用
-  `POST https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation`
-  API Key 来自环境变量 `BAILIAN_API_KEY`，OkHttp 客户端复用已有 `syncHttpClient` Bean
+- **Qwen-VL API**：独立实现，不走 ChatClient 继承体系。默认调用 SiliconFlow 的 OpenAI 兼容多模态端点；如在 `application.yaml` 启用百炼视觉候选，则改用 DashScope 原生端点。
+  默认 API Key 来自环境变量 `SILICONFLOW_API_KEY`；启用百炼候选时使用 `BAILIAN_API_KEY`。OkHttp 客户端复用已有 `syncHttpClient` Bean
 - **Milvus**：所有新增 Collection 通过 `MilvusVectorStoreAdmin.ensureVectorSpace()` 创建
 - **检索通道**：实现 `SearchChannel` 接口注册为 Spring Bean 即可自动挂载
 - **ETL 节点**：实现 `IngestionNode` 接口（`getNodeType()` + `execute()`）即可接入 Pipeline

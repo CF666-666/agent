@@ -31,7 +31,7 @@ public interface RerankClient {
     /**
      * 获取Rerank服务提供商名称
      *
-     * @return 提供商标识，如 "bailian"、"jina" 等
+     * @return 提供商标识，如 "siliconflow"、"noop" 等
      */
     String provider();
 

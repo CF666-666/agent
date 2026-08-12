@@ -119,18 +119,23 @@ ai:
       endpoints:
         chat: /v1/chat/completions
         embedding: /v1/embeddings
+    # Optional provider: set BAILIAN_API_KEY and enable one of its candidates
+    # below when a DashScope model is preferred for a specific deployment.
     bailian:
       url: https://dashscope.aliyuncs.com
       api-key: ${BAILIAN_API_KEY:}
       endpoints:
         chat: /compatible-mode/v1/chat/completions
         rerank: /api/v1/services/rerank/text-rerank/text-rerank
+        multimodal: /api/v1/services/aigc/multimodal-generation/generation
     siliconflow:
       url: https://api.siliconflow.cn
       api-key: ${SILICONFLOW_API_KEY:}
       endpoints:
         chat: /v1/chat/completions
         embedding: /v1/embeddings
+        rerank: /v1/rerank
+        multimodal: /v1/chat/completions
 
   selection:
     failure-threshold: 2
@@ -140,23 +145,25 @@ ai:
     message-chunk-size: 1
 
   chat:
-    default-model: qwen3-max
-    deep-thinking-model: qwen3-max
+    default-model: qwen3-32b
+    deep-thinking-model: qwen3-32b
     candidates:
-      - id: qwen-plus
-        provider: bailian
-        model: qwen-plus-latest
+      - id: qwen3-32b
+        provider: siliconflow
+        model: Qwen/Qwen3-32B
+        supports-thinking: true
         priority: 1
-      - id: qwen3-max
+      - id: qwen3-max-bailian
         provider: bailian
         model: qwen3-max
         supports-thinking: true
-        priority: 3
+        priority: 10
+        enabled: false
       - id: deepseek-v3.2
         provider: siliconflow
         model: deepseek-ai/DeepSeek-V3.2
         supports-thinking: true
-        priority: 0
+        priority: 2
       - id: qwen3-local
         provider: ollama
         model: qwen3:8b-fp16
@@ -179,16 +186,36 @@ ai:
         priority: 2
 
   rerank:
-    default-model: qwen3-rerank
+    default-model: qwen3-reranker-8b
     candidates:
-      - id: qwen3-rerank
+      - id: qwen3-reranker-8b
+        provider: siliconflow
+        model: Qwen/Qwen3-Reranker-8B
+        priority: 1
+      - id: qwen3-rerank-bailian
         provider: bailian
         model: qwen3-rerank
-        priority: 1
+        priority: 10
+        enabled: false
       - id: rerank-noop
         provider: noop
         model: noop
         priority: 100
+
+  # Change default-model and enable the matching candidate to switch vision
+  # providers. The parser selects the corresponding request/response protocol.
+  vision:
+    default-model: qwen3-vl-32b
+    candidates:
+      - id: qwen3-vl-32b
+        provider: siliconflow
+        model: Qwen/Qwen3-VL-32B-Instruct
+        priority: 1
+      - id: qwen-vl-max-bailian
+        provider: bailian
+        model: qwen-vl-max
+        priority: 10
+        enabled: false
 
 rustfs:
   url: http://localhost:9000

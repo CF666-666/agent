@@ -21,7 +21,7 @@
 | 多模态 | Apache Tika、PDFBox、Tesseract OCR、Qwen-VL 图像语义解析 |
 | 图推理 | JGraphT、自研超边模型(设备/工况/参数/故障/SOP) |
 | 中间件 | PostgreSQL、Redis(Redisson)、RocketMQ、RustFS(S3) |
-| AI 模型 | 百炼 qwen3-max、Qwen3-Embedding-8B、qwen3-rerank(多供应商路由 + 降级) |
+| AI 模型 | SiliconFlow Qwen3-32B、Qwen3-Embedding-8B、Qwen3-Reranker-8B（统一云端路由 + 本地降级） |
 | 前端 | React 18、TypeScript、Vite、Tailwind、Radix UI、Zustand、SSE |
 | 工程 | Maven 多模块、Spotless、Docker Compose 一键部署 |
 

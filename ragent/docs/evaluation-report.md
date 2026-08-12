@@ -75,7 +75,7 @@ scripts/eval/
 └── report/                 # 评测报告 JSON
 ```
 
-依赖:Python 3.11 venv(`scripts/eval/.venv`)+ `pip install ragas "langchain-community<0.4"`;需宿主机环境变量 `BAILIAN_API_KEY` / `SILICONFLOW_API_KEY`。
+依赖:Python 3.11 venv(`scripts/eval/.venv`)+ `pip install ragas "langchain-community<0.4"`;默认需宿主机环境变量 `SILICONFLOW_API_KEY`，显式传入 `--eval-provider bailian` 时改用 `BAILIAN_API_KEY`。
 
 ## 6. 已知局限与测评集改进方向(迭代 TODO)
 

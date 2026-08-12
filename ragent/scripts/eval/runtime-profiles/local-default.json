@@ -3,9 +3,9 @@
   "name": "local-ragent-default",
   "configured_models": {
     "chat": {
-      "model_id": "qwen3-max",
-      "provider": "bailian",
-      "model": "qwen3-max"
+      "model_id": "qwen3-32b",
+      "provider": "siliconflow",
+      "model": "Qwen/Qwen3-32B"
     },
     "embedding": {
       "model_id": "qwen-emb-8b",
@@ -13,9 +13,9 @@
       "model": "Qwen/Qwen3-Embedding-8B"
     },
     "rerank": {
-      "model_id": "qwen3-rerank",
-      "provider": "bailian",
-      "model": "qwen3-rerank"
+      "model_id": "qwen3-reranker-8b",
+      "provider": "siliconflow",
+      "model": "Qwen/Qwen3-Reranker-8B"
     }
   },
   "notes": [

@@ -20,10 +20,9 @@ cd <repo-root>
 
 # 2. 配置 LLM API Key(可选,但问答功能需要)
 #    直接在环境变量中设置,或在项目根目录创建 .env:
-#     BAILIAN_API_KEY=sk-xxxx
 #     SILICONFLOW_API_KEY=sk-xxxx
-$env:BAILIAN_API_KEY="sk-xxxx"     # Windows PowerShell
-# export BAILIAN_API_KEY="sk-xxxx" # Linux/macOS
+$env:SILICONFLOW_API_KEY="sk-xxxx" # Windows PowerShell
+# export SILICONFLOW_API_KEY="sk-xxxx" # Linux/macOS
 
 # 3. 一键构建并启动全部服务(首次构建耗时 5~15 分钟)
 docker compose up -d --build
@@ -78,8 +77,8 @@ docker compose up -d --build backend frontend   # 仅重建并重启应用服务
 
 | 变量 | 必填 | 默认 | 说明 |
 |------|:--:|------|------|
-| `BAILIAN_API_KEY` | 是(问答) | 空 | 阿里云百炼 API Key(Chat/Rerank) |
-| `SILICONFLOW_API_KEY` | 否 | 空 | SiliconFlow API Key(Embedding,缺省回退 Ollama) |
+| `SILICONFLOW_API_KEY` | 是(默认) | 空 | SiliconFlow API Key(Chat/Embedding/Rerank/Vision) |
+| `BAILIAN_API_KEY` | 否 | 空 | 可选百炼 Chat/Rerank/Vision 适配器密钥；默认候选关闭 |
 | `OLLAMA_BASE_URL` | 否 | `http://localhost:11434` | 本地 Ollama 地址(容器外时需调整) |
 
 > 容器内如需使用本地 Ollama 模型,需要额外配置 `extra_hosts` 或宿主机地址,生产演示建议直接使用云厂商 API Key。

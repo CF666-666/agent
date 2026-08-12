@@ -22,7 +22,7 @@ flowchart TB
     subgraph AI基础设施["AI 基础设施 (infra-ai)"]
         ROUTER[模型路由<br/>百炼/SiliconFlow/Ollama]
         EMB[Embedding<br/>Qwen3-Embedding-8B]
-        RERANK[Rerank<br/>qwen3-rerank]
+        RERANK[Rerank<br/>Qwen3-Reranker-8B]
         VL[多模态<br/>Qwen-VL 图像理解]
     end
 

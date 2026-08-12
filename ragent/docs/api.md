@@ -236,9 +236,10 @@ Accept: text/event-stream
 
 | 能力 | 默认模型 | 候选 |
 |------|----------|------|
-| Chat | `qwen3-max` | `qwen-plus`(百炼) / `qwen3-max`(百炼,思考) / `glm-4.7`(SiliconFlow,思考) / `qwen3-local`(Ollama) |
+| Chat | `qwen3-32b` | `Qwen/Qwen3-32B`(SiliconFlow,思考) / `deepseek-ai/DeepSeek-V3.2`(SiliconFlow,思考) / `qwen3-local`(Ollama)；可配置启用 `qwen3-max-bailian` |
 | Embedding | `qwen-emb-8b` | `Qwen/Qwen3-Embedding-8B`(SiliconFlow, 4096 维) / `qwen3-embedding:8b-fp16`(Ollama) |
-| Rerank | `qwen3-rerank` | `qwen3-rerank`(百炼) / `rerank-noop`(兜底) |
+| Rerank | `qwen3-reranker-8b` | `Qwen/Qwen3-Reranker-8B`(SiliconFlow) / `rerank-noop`(本地词法兜底)；可配置启用 `qwen3-rerank-bailian` |
+| Vision | `qwen3-vl-32b` | `Qwen/Qwen3-VL-32B-Instruct`(SiliconFlow)；可配置启用 `qwen-vl-max-bailian` |
 
 故障切换:`ai.selection.failure-threshold=2`,`open-duration-ms=30000`。
 

@@ -76,7 +76,7 @@ class EvaluationArtifactsTest(unittest.TestCase):
 
         self.assertEqual(1, fingerprint["fingerprint_version"])
         self.assertEqual(64, len(fingerprint["sha256"]))
-        self.assertEqual("qwen3-max", fingerprint["runtime_profile"]["configured_models"]["chat"]["model_id"])
+        self.assertEqual("qwen3-32b", fingerprint["runtime_profile"]["configured_models"]["chat"]["model_id"])
         self.assertEqual("Qwen/Qwen3-Embedding-8B",
                          fingerprint["runtime_profile"]["configured_models"]["embedding"]["model"])
         self.assertNotIn("api-key", json.dumps(fingerprint, ensure_ascii=False).lower())

@@ -44,7 +44,12 @@ public enum ModelCapability {
      * 重排序能力
      * 对搜索结果进行重新排序，提高相关性
      */
-    RERANK("Rerank");
+    RERANK("Rerank"),
+
+    /**
+     * 多模态视觉理解能力。
+     */
+    MULTIMODAL("Multimodal");
 
     /**
      * 能力的显示名称
