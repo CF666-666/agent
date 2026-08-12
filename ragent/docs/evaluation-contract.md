@@ -42,3 +42,17 @@ python scripts/eval/evaluation_contract.py --tuning path/to/tuning.jsonl --froze
 - 数据集的 SHA-256、运行配置和报告合并规则仍由现有 Runner 管理；
 - 每份新检索/RAGAS 报告还会记录运行器、数据契约、运行配置档案、应用配置、Git 提交和 Python 版本的无密钥执行指纹；分批检索报告指纹不一致时拒绝合并。历史 schema v2 报告保持只读，新生成的 schema v3 报告不得与其混合；
 - 契约不替代业务真实性审核：图像授权和来源真实性仍需在数据构建时人工审核；调优/冻结集隔离已由 R0-D 的加载前校验强制执行。
+
+## 受控基线归档
+
+基线必须由 schema v3 的场景分批报告和对应合并报告构成。`scripts/eval/archive_baseline.py` 会重新计算合并结果，拒绝手工改写的汇总，并一并归档原始报告、合并报告、无密钥复跑命令、后端容器镜像 ID 与执行指纹。它不会读取、展示或写入任何 API Key。
+
+示例：
+
+```powershell
+python scripts/eval/archive_baseline.py `
+  --raw scripts/eval/report/baselines/<run>/raw_fact.json scripts/eval/report/baselines/<run>/raw_colloquial.json scripts/eval/report/baselines/<run>/raw_image.json scripts/eval/report/baselines/<run>/raw_relation.json `
+  --merged scripts/eval/report/baselines/<run>/merged.json `
+  --out-dir scripts/eval/report/baselines/<run>/archive `
+  --backend-image sha256:<immutable-image-id>
+```
