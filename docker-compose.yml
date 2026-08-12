@@ -202,6 +202,9 @@ services:
       RUSTFS_URL: http://rustfs:9000
       # 首次启动自动将演示数据（FAQ 210 条 / 图纸 12 张 / 超边 633 条）入库（幂等：先清空再全量写入）
       PHASE5_INGEST: "true"
+      # Production default keeps queue limiting on. Controlled retrieval evaluation
+      # can set RAG_RATE_LIMIT_GLOBAL_ENABLED=false to remove queue effects.
+      RAG_RATE_LIMIT_GLOBAL_ENABLED: ${RAG_RATE_LIMIT_GLOBAL_ENABLED:-true}
       # LLM API Key（可空，缺省时仅登录/管理功能可用）
       SILICONFLOW_API_KEY: ${SILICONFLOW_API_KEY:-}
       BAILIAN_API_KEY: ${BAILIAN_API_KEY:-}
