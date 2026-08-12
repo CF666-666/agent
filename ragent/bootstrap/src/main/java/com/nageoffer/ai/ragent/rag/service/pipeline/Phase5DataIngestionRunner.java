@@ -27,6 +27,7 @@ import com.nageoffer.ai.ragent.rag.core.vector.VectorSpaceSpec;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorStoreAdmin;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorStoreService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -70,6 +71,7 @@ public class Phase5DataIngestionRunner implements CommandLineRunner {
     private final Path faqFile;
     private final Path descriptionFile;
 
+    @Autowired
     public Phase5DataIngestionRunner(VectorStoreService vectorStoreService,
                                      VectorStoreAdmin vectorStoreAdmin,
                                      ImageIngestionService imageIngestionService,
