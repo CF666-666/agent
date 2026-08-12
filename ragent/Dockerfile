@@ -7,6 +7,22 @@
 FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /build
 
+# Maven Central may be intermittently unavailable from the Docker network.
+# Use the public Aliyun mirror by default; override MAVEN_MIRROR_URL at build time
+# if an internal repository is required.
+ARG MAVEN_MIRROR_URL=https://maven.aliyun.com/repository/public
+RUN mkdir -p /root/.m2 \
+    && printf '%s\n' \
+    '<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">' \
+    '  <mirrors>' \
+    '    <mirror>' \
+    '      <id>build-mirror</id>' \
+    "      <url>${MAVEN_MIRROR_URL}</url>" \
+    '      <mirrorOf>central</mirrorOf>' \
+    '    </mirror>' \
+    '  </mirrors>' \
+    '</settings>' > /root/.m2/settings.xml
+
 # 先复制 pom 与模块骨架，利用 Maven 依赖缓存
 COPY pom.xml .
 COPY lombok.config .

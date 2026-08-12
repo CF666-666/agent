@@ -35,6 +35,8 @@ docker compose ps
 #    默认账号: admin / admin
 ```
 
+> 容器构建默认使用阿里云 Maven 公共镜像，避免 Docker 网络到 Maven Central 的 TLS 握手失败。若企业环境需要私服，可在 `.env` 设置 `MAVEN_MIRROR_URL` 后重新构建。
+
 启动后前端会自动代理 `/api` 到后端容器,图纸/头像等静态资源由后端 `/files/**` 提供。
 
 ## 3. 常用运维命令
