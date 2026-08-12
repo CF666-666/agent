@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "B-image-channel",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": false,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled",
+    "request_timeout_seconds": 20
+  },
+  "evaluation_slice": {
+    "scenes": "image",
+    "offset": 5,
+    "limit": 1,
+    "count": 1
+  },
+  "summary": {
+    "total": 1,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 0.5,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 1.0,
+    "by_scene": {
+      "image": {
+        "count": 1,
+        "hit_rate": {
+          "@1": 0.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 0.5,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 1.0
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "c56679dd5af8a529cbfcfcca4ed46a9c453dac338488faf92ef30d789fd4b172",
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为现代化自动化生产线，主要设备为多工位装配机，型号未标示",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    }
+  ]
+}

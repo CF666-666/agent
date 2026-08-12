@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "C-hypergraph-channel",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": true,
+    "enableFusion": true
+  },
+  "evaluation_slice": {
+    "scenes": "relation",
+    "offset": 0,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 2,
+    "hit_rate": {
+      "@1": 0.4,
+      "@3": 0.6,
+      "@5": 0.6
+    },
+    "mrr": 0.5,
+    "expected_channel_hit_rate": 0.6,
+    "source_id_hit_rate": 0.2,
+    "by_scene": {
+      "relation": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.4,
+          "@3": 0.6,
+          "@5": 0.6
+        },
+        "mrr": 0.5,
+        "expected_channel_hit_rate": 0.6,
+        "source_id_hit_rate": 0.2
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "在当前工况下，氧化风机的润滑油位异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，发电机的电压差≤±5%（如400V±20V）、频率差≤±0.2Hz、相位差≤±5°、相序一致异常，与非同期并列导致冲击电流达额定电流6~8倍（如2000kW机组产生约17kA短路电流）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "在正常运行下，锅炉的汽包水位异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "在当前工况下，烧结机减速机的润滑油（ISO VG 320）异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "在当前工况下，搅拌电机的三相电流平衡异常，与跳闸有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

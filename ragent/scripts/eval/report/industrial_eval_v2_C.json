@@ -1,0 +1,380 @@
+{
+  "mode": "rewrite-off",
+  "summary": {
+    "total": 25,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.76,
+      "@3": 0.96,
+      "@5": 0.96
+    },
+    "mrr": 0.86,
+    "expected_channel_hit_rate": 0.96,
+    "source_id_hit_rate": 0.92,
+    "by_scene": {
+      "relation": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 0.76,
+          "@3": 0.96,
+          "@5": 0.96
+        },
+        "mrr": 0.86,
+        "expected_channel_hit_rate": 0.96,
+        "source_id_hit_rate": 0.92
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "在当前工况下，氧化风机的润滑油位异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，发电机的电压差≤±5%（如400V±20V）、频率差≤±0.2Hz、相位差≤±5°、相序一致异常，与非同期并列导致冲击电流达额定电流6~8倍（如2000kW机组产生约17kA短路电流）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "在正常运行下，锅炉的汽包水位异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，烧结机减速机的润滑油（ISO VG 320）异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，搅拌电机的三相电流平衡异常，与跳闸有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，泵的密封泄漏量异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，热轧机齿轮箱润滑系统的润滑油异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "在动火作业下，高炉的O₂含量、CO浓度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在机组负荷≥20%下，高压加热器的水侧压力高于给水压力0.5MPa以上异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在低流量下长时间运行下，离心泵的流量低于最小连续稳定流量（通常为额定流量的30%）异常，与液体在泵内循环升温，介质温度升高20–50℃，引发汽化有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在开机前下，烧结机的台车轨道状态、台车栏板紧固螺栓扭矩异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在长期低负荷运行（＜60%额定流量）下，冷却塔的布水均匀性异常，与布水不均有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，脱硫塔的浆液pH值异常，与异常波动有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，锅炉的主蒸汽压力波动异常，与波动超过±0.5MPa有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，结晶器冷却系统的过滤器精度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在转速降至1200rpm下，汽轮机的顶轴油系统异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在拉速波动伴随铸坯鼓肚下，扇形段的对弧精度异常，与超差（>0.3mm/m）有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，轧机的换辊小车运行速度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在开机前下，烧结机的连锁保护系统异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，精馏塔的塔压差异常，与急剧上升有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在运行监视阶段下，高压加热器的危急疏水异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，连铸机的旋转部件防护罩状态异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在开车时下，精馏塔的升温速率异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在整个卸料过程下，卸料区域的静电接地电阻异常，与电阻超标有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在当前工况下，张力辊的表面状态异常，与凹坑或粘附异物有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    }
+  ]
+}

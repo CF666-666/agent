@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "D-full-chain-10s-local-lexical-warm-probe",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "seeded-hyperedges-rate-limit-disabled-10s-local-lexical",
+    "request_timeout_seconds": 30
+  },
+  "evaluation_slice": {
+    "scenes": "fact",
+    "offset": 0,
+    "limit": 1,
+    "count": 1
+  },
+  "summary": {
+    "total": 1,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 1641,
+      "p95_ms": 1641,
+      "max_ms": 1641
+    },
+    "retrieval_status_counts": {
+      "received": 1
+    },
+    "by_scene": {
+      "fact": {
+        "count": 1,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 1641,
+          "p95_ms": 1641,
+          "max_ms": 1641
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "8bb3c0716361c4bbb1ce69e58477ffb6461377c7c807cb13874c12b6f37e0312",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "retrieval_status": "received",
+      "latency_ms": 1641,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

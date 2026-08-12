@@ -1,0 +1,380 @@
+{
+  "mode": "rewrite-off",
+  "summary": {
+    "total": 25,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "by_scene": {
+      "fact": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "液压系统应如何进行定期保养？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "转炉兑铁前必须完成哪些安全确认步骤？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "热轧机换辊操作的标准流程是什么？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "操作人员进入反应釜内部检修有何安全要求？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "泵在低流量下长时间运行有何风险？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "进入焦炉地下室进行检修时，必须遵守哪些安全规范？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "裂解炉正常运行时如何调节负荷？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "烧结机头尾密封装置的日常维护要点是什么？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "反应过程中如何控制升温速率？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "高炉休风复风时如何控制风量恢复节奏？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "冷轧机工作辊的日常维护要点有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "冷却塔风机振动异常增大，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "精馏塔出现液泛现象如何诊断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "脱硫塔启动前应执行哪些关键操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "离心式压缩机出现喘振现象如何判断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "变压器停运超过7天重新投运前需做哪些检查？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "启动发电机前必须执行哪些操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "精馏塔区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

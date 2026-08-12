@@ -1,0 +1,380 @@
+{
+  "mode": "rewrite-off",
+  "summary": {
+    "total": 25,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 1.0,
+      "@3": 1.0,
+      "@5": 1.0
+    },
+    "mrr": 1.0,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.0,
+    "by_scene": {
+      "colloquial": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "师傅现场问：冷轧机主电机电流异常升高，如何快速判断故障源？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "用大白话说，在开关柜附近作业时应遵守哪些安全规范？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "我只知道这个设备出了问题，帮我查一下：高炉开炉送风操作的关键步骤和参数是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "现场比较急，想确认一下：结晶器冷却系统应如何进行周期性保养？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "把这个工业问题按排查步骤讲清楚：裂解炉运行中炉管出现局部过热（热点）如何判断与处理？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "师傅现场问：如何防止连铸机液压系统引发的安全事故？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "用大白话说，凝汽器真空度骤降（如从-92kPa降至-80kPa以下），应排查哪些环节？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "我只知道这个设备出了问题，帮我查一下：发电机定子绕组的日常维护保养项目有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "现场比较急，想确认一下：精馏塔检修前为何必须进行氮气置换？具体标准是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "把这个工业问题按排查步骤讲清楚：汽轮机运行中振动突然增大至0.08mm以上，可能原因有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "师傅现场问：储罐内部阴极保护系统如何维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "用大白话说，热轧机齿轮箱润滑系统应如何维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "我只知道这个设备出了问题，帮我查一下：冷却塔填料应如何进行定期维护？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "现场比较急，想确认一下：脱硫塔内出现严重结垢堵塞，如何判断与处理？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "把这个工业问题按排查步骤讲清楚：连铸机在非计划停浇后重新启动的操作要点有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "师傅现场问：进入汽轮机本体区域进行检修作业，必须遵守哪些安全隔离措施？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "用大白话说，进入脱硫塔内部检修需遵守哪些安全规范？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "我只知道这个设备出了问题，帮我查一下：汽轮机调速系统（DEH）定期维护应包含哪些关键项目？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "现场比较急，想确认一下：泵出口压力突然下降，但电机电流正常，如何排查？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "把这个工业问题按排查步骤讲清楚：储罐液位计显示异常波动，可能是什么原因？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "师傅现场问：脱硫区域动火作业有哪些特殊安全要求？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "用大白话说，脱硫塔停运时的标准操作流程是什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "我只知道这个设备出了问题，帮我查一下：储罐投用前应执行哪些关键操作步骤？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "现场比较急，想确认一下：压缩机切换备用机的操作要点有哪些？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "把这个工业问题按排查步骤讲清楚：反应釜压力突然下降，如何快速诊断？",
+      "scene": "colloquial",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

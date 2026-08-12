@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "C-hypergraph-channel",
+    "enableRewrite": false,
+    "enableImage": false,
+    "enableHyperGraph": true,
+    "enableFusion": true
+  },
+  "evaluation_slice": {
+    "scenes": "relation",
+    "offset": 5,
+    "limit": 5,
+    "count": 5
+  },
+  "summary": {
+    "total": 5,
+    "no_retrieval": 0,
+    "hit_rate": {
+      "@1": 0.4,
+      "@3": 0.4,
+      "@5": 0.4
+    },
+    "mrr": 0.4,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.2,
+    "by_scene": {
+      "relation": {
+        "count": 5,
+        "hit_rate": {
+          "@1": 0.4,
+          "@3": 0.4,
+          "@5": 0.4
+        },
+        "mrr": 0.4,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.2
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "在当前工况下，泵的密封泄漏量异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "在当前工况下，热轧机齿轮箱润滑系统的润滑油异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "在动火作业下，高炉的O₂含量、CO浓度异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    },
+    {
+      "query": "在机组负荷≥20%下，高压加热器的水侧压力高于给水压力0.5MPa以上异常，与对应故障有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "在低流量下长时间运行下，离心泵的流量低于最小连续稳定流量（通常为额定流量的30%）异常，与液体在泵内循环升温，介质温度升高20–50℃，引发汽化有什么关系，应该如何判断？",
+      "scene": "relation",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false
+    }
+  ]
+}

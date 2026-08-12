@@ -1,0 +1,431 @@
+{
+  "schema_version": 2,
+  "mode": "rewrite-off",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "B-image-channel",
+    "enableRewrite": false,
+    "enableImage": true,
+    "enableHyperGraph": false,
+    "enableFusion": true
+  },
+  "summary": {
+    "total": 25,
+    "no_retrieval": 6,
+    "hit_rate": {
+      "@1": 0.64,
+      "@3": 0.76,
+      "@5": 0.76
+    },
+    "mrr": 0.6933,
+    "expected_channel_hit_rate": 0.76,
+    "source_id_hit_rate": 0.76,
+    "by_scene": {
+      "image": {
+        "count": 25,
+        "hit_rate": {
+          "@1": 0.64,
+          "@3": 0.76,
+          "@5": 0.76
+        },
+        "mrr": 0.6933,
+        "expected_channel_hit_rate": 0.76,
+        "source_id_hit_rate": 0.76
+      }
+    }
+  },
+  "results": [
+    {
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为陕煤集团冷却塔，属大型工业循环水冷却设备",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图中为大型化工厂，可见多台塔器、换热器及管道系统",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为冶金或铸造车间场景，两名工人穿着防护服操作设备",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "请判断这张工业图像对应的设备或场景：图中为冶金车间高温作业场景，设备为连铸机或钢水处理装置",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为现代化自动化生产线，主要设备为多工位装配机，型号未标示",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：该图为大型工业轧机生产线俯视图，核心为两台大型金属卷材（钢卷）在输送线上排列，上下对称布置",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图片展示了一个大型工业厂房内部，主要设备为桥式起重机（行车），其结构包括横跨厂房的主梁、吊钩和滑轮组",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "请判断这张工业图像对应的设备或场景：图中为钢铁厂轧钢车间，可见多台大型轧机（编号1-6），设备主体为绿色，配黄色安全护栏",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为大型钢铁厂航拍视图，可见高炉、焦化装置及连铸生产线",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图片展示了一个大型钢铁厂内部，主要设备为桥式起重机，用于吊运钢卷",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为大型石化或化工厂，主要设备包括多座高耸的塔器（如精馏塔、反应塔），塔体呈银灰色，部分带有红白相间警示色带",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为陕煤集团冷却塔，属大型工业循环水冷却设备",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图中为大型化工厂，可见多台塔器、换热器及管道系统",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为冶金或铸造车间场景，两名工人穿着防护服操作设备",
+      "scene": "image",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "请判断这张工业图像对应的设备或场景：图中为冶金车间高温作业场景，设备为连铸机或钢水处理装置",
+      "scene": "image",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为现代化自动化生产线，主要设备为多工位装配机，型号未标示",
+      "scene": "image",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：该图为大型工业轧机生产线俯视图，核心为两台大型金属卷材（钢卷）在输送线上排列，上下对称布置",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图片展示了一个大型工业厂房内部，主要设备为桥式起重机（行车），其结构包括横跨厂房的主梁、吊钩和滑轮组",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "请判断这张工业图像对应的设备或场景：图中为钢铁厂轧钢车间，可见多台大型轧机（编号1-6），设备主体为绿色，配黄色安全护栏",
+      "scene": "image",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "从图像语义看，下面这个工业现场属于什么设备或工艺：图中为大型钢铁厂航拍视图，可见高炉、焦化装置及连铸生产线",
+      "scene": "image",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    },
+    {
+      "query": "检索与该图纸或现场相关的设备说明，图像线索是：图片展示了一个大型钢铁厂内部，主要设备为桥式起重机，用于吊运钢卷",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "该图像最可能涉及哪类设备与作业环境？线索：图中为大型石化或化工厂，主要设备包括多座高耸的塔器（如精馏塔、反应塔），塔体呈银灰色，部分带有红白相间警示色带",
+      "scene": "image",
+      "ok": true,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true
+    },
+    {
+      "query": "请判断这张工业图像对应的设备或场景：图中为工业厂房内的一台自动化机械臂，正在操作大型金属卷材",
+      "scene": "image",
+      "ok": false,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false
+    }
+  ],
+  "batch_reports": [
+    "scripts\\eval\\report\\industrial_eval_v2_B_seeded_00.json",
+    "scripts\\eval\\report\\industrial_eval_v2_B_seeded_05.json",
+    "scripts\\eval\\report\\industrial_eval_v2_B_seeded_10.json",
+    "scripts\\eval\\report\\industrial_eval_v2_B_seeded_15.json",
+    "scripts\\eval\\report\\industrial_eval_v2_B_seeded_20.json"
+  ],
+  "batch_slices": [
+    {
+      "scenes": "image",
+      "offset": 0,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 5,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 10,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 15,
+      "limit": 5,
+      "count": 5
+    },
+    {
+      "scenes": "image",
+      "offset": 20,
+      "limit": 5,
+      "count": 5
+    }
+  ]
+}
