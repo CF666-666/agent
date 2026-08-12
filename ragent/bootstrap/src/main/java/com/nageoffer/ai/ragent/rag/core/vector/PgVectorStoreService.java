@@ -92,6 +92,15 @@ public class PgVectorStoreService implements VectorStoreService {
     }
 
     @Override
+    public long countDocumentChunks(String collectionName, String docId) {
+        // noinspection SqlDialectInspection,SqlNoDataSourceInspection
+        Long count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM t_knowledge_vector WHERE metadata->>'collection_name' = ? AND metadata->>'doc_id' = ?",
+                Long.class, collectionName, docId);
+        return count == null ? 0L : count;
+    }
+
+    @Override
     public void clearCollection(String collectionName) {
         // noinspection SqlDialectInspection,SqlNoDataSourceInspection
         int deleted = jdbcTemplate.update(

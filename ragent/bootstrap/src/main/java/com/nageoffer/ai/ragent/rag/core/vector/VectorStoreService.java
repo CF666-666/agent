@@ -59,6 +59,11 @@ public interface VectorStoreService {
     void deleteDocumentVectors(String collectionName, String docId);
 
     /**
+     * Counts the chunks currently persisted for one document.
+     */
+    long countDocumentChunks(String collectionName, String docId);
+
+    /**
      * 清空指定 Collection 的全部向量数据（幂等）
      * <p>
      * 用于全量重建类任务（如 Phase 5 数据入库）：先清空再全量写入，

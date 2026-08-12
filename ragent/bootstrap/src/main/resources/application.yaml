@@ -234,6 +234,12 @@ sa-token:
 app:
   demo-mode: false
 
+phase5:
+  # Phase 5 rebuild is opt-in. Its bounded retry path always uses this exact
+  # configured model and never enters online routing fallback.
+  startup-embedding:
+    model-id: qwen-emb-8b
+
 # --- Phase 4: 多源融合权重配置 ---
 ragent:
   hypergraph:

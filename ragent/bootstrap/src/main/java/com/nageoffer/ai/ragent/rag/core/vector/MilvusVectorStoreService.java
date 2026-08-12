@@ -27,8 +27,10 @@ import com.nageoffer.ai.ragent.framework.exception.ClientException;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.vector.request.DeleteReq;
+import io.milvus.v2.service.vector.request.QueryReq;
 import io.milvus.v2.service.vector.request.UpsertReq;
 import io.milvus.v2.service.vector.response.DeleteResp;
+import io.milvus.v2.service.vector.response.QueryResp;
 import io.milvus.v2.service.vector.response.UpsertResp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -151,6 +153,17 @@ public class MilvusVectorStoreService implements VectorStoreService {
         DeleteResp resp = milvusClient.delete(deleteReq);
         log.info("Milvus 删除指定文档的所有 chunk 向量索引成功, collection={}, docId={}, deleteCnt={}",
                 collectionName, docId, resp.getDeleteCnt());
+    }
+
+    @Override
+    public long countDocumentChunks(String collectionName, String docId) {
+        QueryResp response = milvusClient.query(QueryReq.builder()
+                .collectionName(collectionName)
+                .filter("metadata[\"doc_id\"] == " + quoteFilterString(docId))
+                .outputFields(List.of("id"))
+                .limit(16_384L)
+                .build());
+        return response.getQueryResults() == null ? 0 : response.getQueryResults().size();
     }
 
     private String quoteFilterString(String value) {

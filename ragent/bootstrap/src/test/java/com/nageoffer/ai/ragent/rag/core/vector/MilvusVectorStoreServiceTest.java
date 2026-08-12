@@ -21,8 +21,10 @@ import com.nageoffer.ai.ragent.core.chunk.VectorChunk;
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
 import io.milvus.v2.client.MilvusClientV2;
 import io.milvus.v2.service.vector.request.DeleteReq;
+import io.milvus.v2.service.vector.request.QueryReq;
 import io.milvus.v2.service.vector.request.UpsertReq;
 import io.milvus.v2.service.vector.response.DeleteResp;
+import io.milvus.v2.service.vector.response.QueryResp;
 import io.milvus.v2.service.vector.response.UpsertResp;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -32,6 +34,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class MilvusVectorStoreServiceTest {
@@ -52,5 +55,23 @@ class MilvusVectorStoreServiceTest {
         InOrder order = inOrder(milvusClient);
         order.verify(milvusClient).upsert(any(UpsertReq.class));
         order.verify(milvusClient).delete(any(DeleteReq.class));
+    }
+
+    @Test
+    void shouldCountOnlyChunksForTheRequestedDocument() {
+        MilvusClientV2 milvusClient = mock(MilvusClientV2.class);
+        QueryResp response = mock(QueryResp.class);
+        when(response.getQueryResults()).thenReturn(List.of(mock(QueryResp.QueryResult.class), mock(QueryResp.QueryResult.class)));
+        when(milvusClient.query(any(QueryReq.class))).thenReturn(response);
+        RAGDefaultProperties defaults = new RAGDefaultProperties();
+        MilvusVectorStoreService store = new MilvusVectorStoreService(milvusClient, defaults);
+
+        org.assertj.core.api.Assertions.assertThat(store.countDocumentChunks("industrial_docs", "doc-1"))
+                .isEqualTo(2L);
+
+        org.mockito.ArgumentCaptor<QueryReq> request = org.mockito.ArgumentCaptor.forClass(QueryReq.class);
+        verify(milvusClient).query(request.capture());
+        org.assertj.core.api.Assertions.assertThat(request.getValue().getFilter())
+                .isEqualTo("metadata[\"doc_id\"] == \"doc-1\"");
     }
 }
