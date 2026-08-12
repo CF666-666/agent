@@ -33,4 +33,5 @@ python scripts/eval/evaluation_contract.py path/to/conversation_eval.jsonl --kin
 - JSONL 语法、必填字段、枚举值、场景专属证据和重复 ID 会在本地失败；
 - 检索 Runner 加载单轮集时强制调用校验；
 - 数据集的 SHA-256、运行配置和报告合并规则仍由现有 Runner 管理；
+- 每份新检索/RAGAS 报告还会记录运行器、数据契约、运行配置档案、应用配置、Git 提交和 Python 版本的无密钥执行指纹；分批检索报告指纹不一致时拒绝合并。历史 schema v2 报告保持只读，新生成的 schema v3 报告不得与其混合；
 - 契约不替代业务真实性审核：图像授权、来源去重和调优/冻结集隔离在 R0-C/R0-D 继续执行。

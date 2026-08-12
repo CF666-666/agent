@@ -1,0 +1,25 @@
+{
+  "profile_version": 1,
+  "name": "local-ragent-default",
+  "configured_models": {
+    "chat": {
+      "model_id": "qwen3-max",
+      "provider": "bailian",
+      "model": "qwen3-max"
+    },
+    "embedding": {
+      "model_id": "qwen-emb-8b",
+      "provider": "siliconflow",
+      "model": "Qwen/Qwen3-Embedding-8B"
+    },
+    "rerank": {
+      "model_id": "qwen3-rerank",
+      "provider": "bailian",
+      "model": "qwen3-rerank"
+    }
+  },
+  "notes": [
+    "Records configured candidates only; provider fallback observed during one request is reported separately when available.",
+    "Do not add endpoints, credentials, API keys, usernames, or passwords to this profile."
+  ]
+}

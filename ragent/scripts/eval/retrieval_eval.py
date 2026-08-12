@@ -29,9 +29,14 @@ import requests
 import urllib.parse
 
 from evaluation_contract import load_jsonl_dataset
+from runtime_fingerprint import (
+    DEFAULT_APPLICATION_CONFIG,
+    DEFAULT_PROFILE,
+    build_execution_fingerprint,
+)
 
 TOPK = (1, 3, 5)
-REPORT_SCHEMA_VERSION = 2
+REPORT_SCHEMA_VERSION = 3
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -275,6 +280,10 @@ def main():
     parser.add_argument("--limit", type=int, default=0, help="仅评测前 N 条(调试用,0=全部)")
     parser.add_argument("--runtime-label", default="",
                         help="Explicit runtime label, for example seeded-hyperedges-rate-limit-disabled.")
+    parser.add_argument("--runtime-profile", type=Path, default=DEFAULT_PROFILE,
+                        help="Secret-free JSON profile of configured chat/embedding/rerank models.")
+    parser.add_argument("--application-config", type=Path, default=DEFAULT_APPLICATION_CONFIG,
+                        help="Effective application configuration file to fingerprint.")
     parser.add_argument("--offset", type=int, default=0,
                         help="Start after N scene-filtered samples; use with --limit for batched runs.")
     parser.add_argument("--enable-rewrite", action="store_true", default=True,
@@ -388,6 +397,8 @@ def main():
             enable_rewrite, enable_image, enable_hypergraph, enable_fusion,
             args.label, args.retrieval_only),
         "runtime": runtime_metadata(args.runtime_label, args.request_timeout),
+        "execution_fingerprint": build_execution_fingerprint(
+            Path(__file__), args.runtime_profile, args.application_config),
         "evaluation_slice": {
             "scenes": args.scenes,
             "offset": args.offset,

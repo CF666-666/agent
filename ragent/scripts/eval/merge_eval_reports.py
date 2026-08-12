@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 TOPK = (1, 3, 5)
-REPORT_SCHEMA_VERSION = 2
+REPORT_SCHEMA_VERSION = 3
 
 
 def summarize(results: list[dict]) -> dict:
@@ -94,6 +94,10 @@ def merge_documents(documents: list[dict], report_paths: list[Path]) -> dict:
     if len(runtimes) != 1:
         raise ValueError("reports use different runtimes")
 
+    fingerprints = {json.dumps(document.get("execution_fingerprint"), sort_keys=True) for document in documents}
+    if len(fingerprints) != 1:
+        raise ValueError("reports use different execution fingerprints")
+
     results = [result for document in documents for result in document.get("results", [])]
     case_ids = [result.get("case_id") for result in results]
     if any(case_ids):
@@ -107,6 +111,7 @@ def merge_documents(documents: list[dict], report_paths: list[Path]) -> dict:
         "dataset": documents[0]["dataset"],
         "retrieval_options": documents[0]["retrieval_options"],
         "runtime": documents[0].get("runtime"),
+        "execution_fingerprint": documents[0]["execution_fingerprint"],
         "summary": summarize(results),
         "results": results,
         "batch_reports": [str(path) for path in report_paths],

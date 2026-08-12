@@ -32,6 +32,11 @@ from ragas.metrics import (
     context_recall,
     faithfulness,
 )
+from runtime_fingerprint import (
+    DEFAULT_APPLICATION_CONFIG,
+    DEFAULT_PROFILE,
+    build_execution_fingerprint,
+)
 
 BAILIAN_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 SILICON_BASE = "https://api.siliconflow.cn/v1"
@@ -108,6 +113,10 @@ def main():
     parser.add_argument("--eval-provider", choices=["bailian", "siliconflow"], default="siliconflow",
                         help="打分服务商(默认 siliconflow;bailian 需百炼余额)")
     parser.add_argument("--out", type=Path, default=Path(__file__).parent / "report/ragas_report.json")
+    parser.add_argument("--runtime-profile", type=Path, default=DEFAULT_PROFILE,
+                        help="Secret-free JSON profile of configured serving models.")
+    parser.add_argument("--application-config", type=Path, default=DEFAULT_APPLICATION_CONFIG,
+                        help="Effective application configuration file to fingerprint.")
     args = parser.parse_args()
 
     if args.eval_provider == "bailian":
@@ -173,7 +182,20 @@ def main():
     summary["samples"] = len(samples)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as f:
-        json.dump({"summary": summary, "per_sample": df.to_dict(orient="records")},
+        json.dump({
+            "schema_version": 1,
+            "summary": summary,
+            "execution_fingerprint": build_execution_fingerprint(
+                Path(__file__), args.runtime_profile, args.application_config,
+                extra={
+                    "ragas_evaluator": {
+                        "provider": args.eval_provider,
+                        "model": args.eval_model,
+                        "embedding_model": emb_model,
+                    }
+                }),
+            "per_sample": df.to_dict(orient="records"),
+        },
                   f, ensure_ascii=False, indent=2)
 
     print("\n================ RAGAS 指标汇总 ================")

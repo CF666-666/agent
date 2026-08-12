@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Offline regression tests for reproducible retrieval evaluation artifacts."""
 
+import json
 import random
 import subprocess
 import sys
@@ -14,6 +15,7 @@ sys.path.insert(0, str(SCRIPT_DIR))
 import build_dataset_v2  # noqa: E402
 import merge_eval_reports  # noqa: E402
 import retrieval_eval  # noqa: E402
+import runtime_fingerprint  # noqa: E402
 
 
 class EvaluationArtifactsTest(unittest.TestCase):
@@ -68,6 +70,17 @@ class EvaluationArtifactsTest(unittest.TestCase):
         )
         self.assertEqual({"label": "local-isolated", "request_timeout_seconds": 12}, runtime)
 
+    def test_execution_fingerprint_is_secret_free_and_tracks_configured_models(self):
+        fingerprint = runtime_fingerprint.build_execution_fingerprint(
+            SCRIPT_DIR / "retrieval_eval.py")
+
+        self.assertEqual(1, fingerprint["fingerprint_version"])
+        self.assertEqual(64, len(fingerprint["sha256"]))
+        self.assertEqual("qwen3-max", fingerprint["runtime_profile"]["configured_models"]["chat"]["model_id"])
+        self.assertEqual("Qwen/Qwen3-Embedding-8B",
+                         fingerprint["runtime_profile"]["configured_models"]["embedding"]["model"])
+        self.assertNotIn("api-key", json.dumps(fingerprint, ensure_ascii=False).lower())
+
     def test_evaluation_slice_applies_offset_after_scene_filtering(self):
         items = [
             {"scene": "fact", "query": "fact-1"},
@@ -106,9 +119,10 @@ class EvaluationArtifactsTest(unittest.TestCase):
 
     def test_report_merger_rejects_mismatched_retrieval_options(self):
         base = {
-            "schema_version": 2,
+            "schema_version": 3,
             "mode": "rewrite-off",
             "dataset": {"path": "dataset.jsonl", "sha256": "a" * 64},
+            "execution_fingerprint": {"sha256": "f" * 64},
             "summary": {},
             "results": [],
         }
@@ -125,9 +139,10 @@ class EvaluationArtifactsTest(unittest.TestCase):
 
     def test_report_merger_rejects_mismatched_runtime(self):
         base = {
-            "schema_version": 2,
+            "schema_version": 3,
             "mode": "rewrite-off",
             "dataset": {"path": "dataset.jsonl", "sha256": "a" * 64},
+            "execution_fingerprint": {"sha256": "f" * 64},
             "retrieval_options": {"label": "C", "enableRewrite": False,
                                   "enableImage": False, "enableHyperGraph": True,
                                   "enableFusion": True},
@@ -144,9 +159,10 @@ class EvaluationArtifactsTest(unittest.TestCase):
 
     def test_report_merger_retains_shared_provenance(self):
         document = {
-            "schema_version": 2,
+            "schema_version": 3,
             "mode": "rewrite-off",
             "dataset": {"path": "dataset.jsonl", "sha256": "a" * 64},
+            "execution_fingerprint": {"sha256": "f" * 64},
             "retrieval_options": {"label": "D", "enableRewrite": False,
                                   "enableImage": True, "enableHyperGraph": True, "enableFusion": True},
             "summary": {},
@@ -158,13 +174,15 @@ class EvaluationArtifactsTest(unittest.TestCase):
 
         self.assertEqual(document["dataset"], merged["dataset"])
         self.assertEqual(document["retrieval_options"], merged["retrieval_options"])
+        self.assertEqual(document["execution_fingerprint"], merged["execution_fingerprint"])
         self.assertEqual(1, merged["summary"]["total"])
 
     def test_report_merger_rejects_duplicate_queries(self):
         document = {
-            "schema_version": 2,
+            "schema_version": 3,
             "mode": "rewrite-off",
             "dataset": {"path": "dataset.jsonl", "sha256": "a" * 64},
+            "execution_fingerprint": {"sha256": "f" * 64},
             "retrieval_options": {"label": "C", "enableRewrite": False,
                                   "enableImage": False, "enableHyperGraph": True,
                                   "enableFusion": True},
@@ -174,6 +192,24 @@ class EvaluationArtifactsTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "duplicate evaluation cases"):
             merge_eval_reports.merge_documents([document, document], [Path("one.json"), Path("two.json")])
+
+    def test_report_merger_rejects_mismatched_execution_fingerprint(self):
+        base = {
+            "schema_version": 3,
+            "mode": "rewrite-off",
+            "dataset": {"path": "dataset.jsonl", "sha256": "a" * 64},
+            "retrieval_options": {"label": "D", "enableRewrite": False,
+                                  "enableImage": True, "enableHyperGraph": True,
+                                  "enableFusion": True},
+            "runtime": {"label": "same", "request_timeout_seconds": 12},
+            "summary": {},
+            "results": [],
+        }
+        with self.assertRaisesRegex(ValueError, "different execution fingerprints"):
+            merge_eval_reports.merge_documents(
+                [{**base, "execution_fingerprint": {"sha256": "a" * 64}},
+                 {**base, "execution_fingerprint": {"sha256": "b" * 64}}],
+                [Path("one.json"), Path("two.json")])
 
 
 if __name__ == "__main__":
