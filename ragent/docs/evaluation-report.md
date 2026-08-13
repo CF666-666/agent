@@ -160,3 +160,9 @@ scripts/eval/
 在不查看 frozen 失败详情的前提下，统一实体与查询的 NFKC、大小写、空白和 `µ/μ` 表面形式，并仅依据 tuning 集加入 4 个工业简称；同时修正 Spring Map 中文 key 的配置绑定。20 项 Java 回归通过，独立复审无 P0/P1。
 
 隔离后端仅运行 tuning 25 条，其中 23 条可计分、2 条通道超时。逐超边 Hit@1/5 为 **78.26%/86.96%**，Recall@5 **78.26%**，严格路径 **30.43%**，来源映射 **69.57%**，P50/P95 为 **2.555s/9.730s**。该运行与 R2-B 的样本范围和执行状态不同，只作为调优观察，不构成严格 A/B，不写入简历。归档见 `scripts/eval/report/r2c1_20260813/README.md`。
+
+## 11. 2026-08-13：R2-C2 来源字段可用性契约
+
+关系引用继续输出真实 `hyperEdgeId/sourceDocument/sourceChunkId/sourceChunkIndex/sourcePage/documentVersion`，并为每个字段增加 `AVAILABLE/UNAVAILABLE` 状态；评测按唯一超边汇总 available、unavailable、conflicting，同一超边多值或“有值与缺失并存”均记为冲突。系统不使用 edgeId、数组位置或文档名合成缺失的 chunk/page。
+
+Demo JSONL 审计显示 603/603 条具备 edgeId 与 sourceDocument，603/603 条缺少 chunkId、chunkIndex、page 和 documentVersion。隔离镜像 `7cb1d67` 的 1 条真实 SSE 探针返回 5 个唯一超边：edgeId/document 均 5/5 available，其余四类字段均 5/5 unavailable、0 conflicting，与源数据一致。Java 11 项、Python 49 项测试通过，独立复审无 P0/P1/P2。该探针只验证契约，不作为质量指标。
