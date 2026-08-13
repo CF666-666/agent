@@ -1,0 +1,1292 @@
+{
+  "schema_version": 1,
+  "mode": "live-reproduction",
+  "rewrite_reproducer": {
+    "model": "deepseek-ai/DeepSeek-V3.2",
+    "provider": "siliconflow",
+    "temperature": 0.1,
+    "top_p": 0.3,
+    "max_tokens": 512,
+    "prompt_path": "bootstrap/src/main/resources/prompt/user-question-rewrite.st",
+    "term_mapping_rule_count": 0,
+    "normalize_note": "复现 QueryTermMappingService.normalize 前置步骤；评测环境 t_query_term_mapping enabled=1 共 0 条（已 psql 核验），normalize 为 no-op，跳过与线上等价。若未来启用规则，需先 dump 规则并用 --term-mappings 传入。"
+  },
+  "datasets": {
+    "noise": {
+      "path": "scripts/eval/datasets/industrial_noise_r3.jsonl",
+      "sha256": "6a528739bac25b40c0f4054904074b0a00f840334428907d2073e1a0fa70bf51"
+    },
+    "conversation": {
+      "path": "scripts/eval/datasets/industrial_conversation_r3.jsonl",
+      "sha256": "31795ad968e8b2eb01a735308246132b4fa24695db9082a42a0a7f13db07ddce"
+    }
+  },
+  "summary": {
+    "noise": {
+      "total": 40,
+      "classification_counts": {
+        "correct_completion": 24,
+        "ineffective_rewrite": 16,
+        "wrong_entity_injection": 0,
+        "should_clarify_but_didnt": 0
+      },
+      "reproduction_ok": 40,
+      "reproduction_failed": 0,
+      "should_clarify_cases": 0,
+      "should_clarify_note": "当前数据集每个 case 历史信息充分（唯一 golden），无历史歧义场景，该类别为 0，不虚构样本。"
+    },
+    "conversation": {
+      "total": 20,
+      "classification_counts": {
+        "correct_completion": 20,
+        "ineffective_rewrite": 0,
+        "wrong_entity_injection": 0,
+        "should_clarify_but_didnt": 0
+      },
+      "reproduction_ok": 20,
+      "reproduction_failed": 0,
+      "should_clarify_cases": 0,
+      "should_clarify_note": "当前数据集每个 case 历史信息充分（唯一 golden），无历史歧义场景，该类别为 0，不虚构样本。"
+    }
+  },
+  "noise_cases": [
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "冷却壁",
+        "高炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-001",
+      "split": "tuning",
+      "noise_type": "typo_homophone",
+      "original_query": "高炉冷确壁漏水咋诊断？",
+      "canonical": "高炉冷却壁出现漏水故障如何诊断？",
+      "rewritten_query": "高炉冷却壁漏水诊断",
+      "sub_questions": [
+        "高炉冷却壁漏水诊断"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "转炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-002",
+      "split": "tuning",
+      "noise_type": "typo_homophone",
+      "original_query": "转炉顷动系统又响又振，怎么查？",
+      "canonical": "转炉倾动系统出现异响和振动，应如何排查？",
+      "rewritten_query": "转炉顷动系统响振排查方法",
+      "sub_questions": [
+        "转炉顷动系统响振排查方法"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "连铸"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-003",
+      "split": "tuning",
+      "noise_type": "typo_homophone",
+      "original_query": "连铸拉数突然不稳，先排查哪？",
+      "canonical": "连铸过程中拉速突然波动，如何快速诊断故障源？",
+      "rewritten_query": "连铸拉数突然不稳排查",
+      "sub_questions": [
+        "连铸拉数突然不稳排查"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-tuning-004",
+      "split": "tuning",
+      "noise_type": "typo_homophone",
+      "original_query": "热扎机液压压力老跳，咋排查？",
+      "canonical": "热轧机液压系统压力波动大，如何排查？",
+      "rewritten_query": "热扎机液压压力老跳排查",
+      "sub_questions": [
+        "热扎机液压压力老跳排查"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "主抽风机",
+        "烧结机"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-005",
+      "split": "tuning",
+      "noise_type": "typo_homophone",
+      "original_query": "烧结机主抽风机震动超标啥原因？",
+      "canonical": "烧结机主抽风机振动超标的可能原因有哪些？",
+      "rewritten_query": "烧结机主抽风机震动超标原因",
+      "sub_questions": [
+        "烧结机主抽风机震动超标原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "无钟",
+        "炉顶",
+        "高炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-006",
+      "split": "tuning",
+      "noise_type": "alias_synonym",
+      "original_query": "高炉无钟炉顶上料要守哪些规程？",
+      "canonical": "高炉炉顶装料设备（如料车或无钟）操作有哪些关键规范？",
+      "rewritten_query": "高炉无钟炉顶上料规程",
+      "sub_questions": [
+        "高炉无钟炉顶上料规程"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "转炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-007",
+      "split": "tuning",
+      "noise_type": "alias_synonym",
+      "original_query": "转炉吹氧时枪位和供氧怎么控？",
+      "canonical": "转炉吹炼过程中氧枪操作有哪些关键规程？",
+      "rewritten_query": "转炉吹氧时枪位和供氧控制",
+      "sub_questions": [
+        "转炉吹氧时枪位和供氧控制"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "扇形段",
+        "连铸"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-008",
+      "split": "tuning",
+      "noise_type": "alias_synonym",
+      "original_query": "连铸扇形段辊列平时保养啥？",
+      "canonical": "连铸机扇形段辊组的日常维护保养内容有哪些？",
+      "rewritten_query": "连铸扇形段辊列平时保养",
+      "sub_questions": [
+        "连铸扇形段辊列平时保养"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "齿轮箱"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-009",
+      "split": "tuning",
+      "noise_type": "alias_synonym",
+      "original_query": "热轧主减速箱的油路平时怎么养护？",
+      "canonical": "热轧机齿轮箱润滑系统应如何维护？",
+      "rewritten_query": "热轧主减速箱的油路养护",
+      "sub_questions": [
+        "热轧主减速箱的油路养护"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "四大车",
+        "焦炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-010",
+      "split": "tuning",
+      "noise_type": "alias_synonym",
+      "original_query": "焦炉四大车联动作业要满足哪些联锁？",
+      "canonical": "焦炉四大车（装煤车、推焦车、拦焦车、熄焦车）联合作业时的安全联锁要求是什么？",
+      "rewritten_query": "焦炉四大车联动作业联锁",
+      "sub_questions": [
+        "焦炉四大车联动作业联锁"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "高炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-011",
+      "split": "tuning",
+      "noise_type": "unit_format",
+      "original_query": "高炉复风从三四成往上加时，多久加一次、每次加多少？",
+      "canonical": "高炉休风复风时如何控制风量恢复节奏？",
+      "rewritten_query": "高炉复风从三四成往上加时多久加一次每次加多少",
+      "sub_questions": [
+        "高炉复风从三四成往上加时多久加一次每次加多少"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "炉衬",
+        "转炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-012",
+      "split": "tuning",
+      "noise_type": "unit_format",
+      "original_query": "转炉炉衬掉到多厚、温度高到多少就得停炉补？",
+      "canonical": "转炉炉衬异常剥落如何判断是否需停炉修补？",
+      "rewritten_query": "转炉炉衬掉到多厚、温度高到多少就得停炉补",
+      "sub_questions": [
+        "转炉炉衬掉到多厚、温度高到多少就得停炉补"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "轧辊"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-013",
+      "split": "tuning",
+      "noise_type": "unit_format",
+      "original_query": "轧辊裂纹一圈圈出现，裂多深多长要换辊？",
+      "canonical": "轧辊表面出现周期性裂纹，如何判断是否需更换？",
+      "rewritten_query": "轧辊裂纹一圈圈出现，裂多深多长要换辊",
+      "sub_questions": [
+        "轧辊裂纹一圈圈出现，裂多深多长要换辊"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "烧结"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-014",
+      "split": "tuning",
+      "noise_type": "unit_format",
+      "original_query": "烧结终温上下窜五十来度，查哪些参数？",
+      "canonical": "烧结终点温度异常波动如何诊断？",
+      "rewritten_query": "烧结终温上下窜五十来度查哪些参数",
+      "sub_questions": [
+        "烧结终温上下窜五十来度查哪些参数"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "炉缸"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-015",
+      "split": "tuning",
+      "noise_type": "unit_format",
+      "original_query": "炉缸侧壁到三百度、相邻点差五十多度，算侵蚀严重吗？",
+      "canonical": "高炉炉缸侧壁温度异常升高如何判断是否为侵蚀严重？",
+      "rewritten_query": "炉缸侧壁到三百度、相邻点差五十多度，算侵蚀严重吗？",
+      "sub_questions": [
+        "炉缸侧壁到三百度、相邻点差五十多度，算侵蚀严重吗？"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-tuning-016",
+      "split": "tuning",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "烘炉好了准备送风，先开多少，后面怎么加？",
+      "canonical": "高炉开炉送风操作的关键步骤和参数是什么？",
+      "rewritten_query": "烘炉送风先开多少，后面怎么加",
+      "sub_questions": [
+        "烘炉送风先开多少，后面怎么加"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-tuning-017",
+      "split": "tuning",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "要兑铁了，炉前这几项先确认啥？",
+      "canonical": "转炉兑铁前必须完成哪些安全确认步骤？",
+      "rewritten_query": "兑铁前炉前需要确认的事项",
+      "sub_questions": [
+        "兑铁前炉前需要确认的事项"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "结晶器"
+      ],
+      "reason": "",
+      "id": "r3-noise-tuning-018",
+      "split": "tuning",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "结晶器要换，先停哪些、装完查什么？",
+      "canonical": "更换结晶器时的操作流程和注意事项是什么？",
+      "rewritten_query": "结晶器更换 先停哪些 装完查什么",
+      "sub_questions": [
+        "结晶器更换先停哪些",
+        "结晶器更换装完查什么"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-tuning-019",
+      "split": "tuning",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "卡住了，人过去处理前必须先做啥？",
+      "canonical": "处理卡钢事故时的安全操作要点是什么？",
+      "rewritten_query": "卡住了，人过去处理前必须先做啥",
+      "sub_questions": [
+        "卡住了，人过去处理前必须先做啥"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-tuning-020",
+      "split": "tuning",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "推着越来越费劲，先看炉墙还是机械？",
+      "canonical": "焦炉推焦过程中阻力异常增大，如何判断故障源？",
+      "rewritten_query": "推着越来越费劲，先看炉墙还是机械",
+      "sub_questions": [
+        "推着越来越费劲，先看炉墙还是机械"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-001",
+      "split": "frozen",
+      "noise_type": "typo_homophone",
+      "original_query": "气轮机振动突然过0.08毫米，可能哪坏了？",
+      "canonical": "汽轮机运行中振动突然增大至0.08mm以上，可能原因有哪些？",
+      "rewritten_query": "气轮机振动突然过0.08毫米可能的原因",
+      "sub_questions": [
+        "气轮机振动突然过0.08毫米可能的原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "发电机"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-002",
+      "split": "frozen",
+      "noise_type": "typo_homophone",
+      "original_query": "发电机轴成温度过95度怎么处置？",
+      "canonical": "发电机轴承温度异常升高至95℃以上应如何处理？",
+      "rewritten_query": "发电机轴成温度过95度处置",
+      "sub_questions": [
+        "发电机轴成温度过95度处置"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "锅炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-003",
+      "split": "frozen",
+      "noise_type": "typo_homophone",
+      "original_query": "锅炉主蒸气压力上下超0.5MPa咋处理？",
+      "canonical": "锅炉主蒸汽压力波动超过±0.5MPa，应如何处理？",
+      "rewritten_query": "锅炉主蒸气压力上下超0.5MPa处理",
+      "sub_questions": [
+        "锅炉主蒸气压力上下超0.5MPa处理"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "变压器",
+        "差动保护"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-004",
+      "split": "frozen",
+      "noise_type": "typo_homophone",
+      "original_query": "变压器差洞保护跳了怎么查？",
+      "canonical": "变压器差动保护动作跳闸后应如何排查故障？",
+      "rewritten_query": "变压器差动保护跳闸怎么查",
+      "sub_questions": [
+        "变压器差动保护跳闸怎么查"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-005",
+      "split": "frozen",
+      "noise_type": "typo_homophone",
+      "original_query": "脱流塔出口二氧化硫突然高了先查啥？",
+      "canonical": "脱硫塔出口SO₂浓度突然升高，如何快速诊断？",
+      "rewritten_query": "脱流塔出口二氧化硫突然高了先查什么",
+      "sub_questions": [
+        "脱流塔出口二氧化硫突然高了先查什么"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-006",
+      "split": "frozen",
+      "noise_type": "alias_synonym",
+      "original_query": "汽机DEH定检都做哪些项目？",
+      "canonical": "汽轮机调速系统（DEH）定期维护应包含哪些关键项目？",
+      "rewritten_query": "汽机DEH定检项目",
+      "sub_questions": [
+        "汽机DEH定检项目"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "发电机"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-007",
+      "split": "frozen",
+      "noise_type": "alias_synonym",
+      "original_query": "发电机定子线圈日常保养查什么？",
+      "canonical": "发电机定子绕组的日常维护保养项目有哪些？",
+      "rewritten_query": "发电机定子线圈日常保养检查内容",
+      "sub_questions": [
+        "发电机定子线圈日常保养检查内容"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "水冷壁",
+        "过热器",
+        "锅炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-008",
+      "split": "frozen",
+      "noise_type": "alias_synonym",
+      "original_query": "锅炉水冷壁和过热器多久吹一次灰，参数怎么定？",
+      "canonical": "锅炉受热面吹灰频次和参数如何设定？",
+      "rewritten_query": "锅炉水冷壁和过热器吹灰周期和参数设定",
+      "sub_questions": [
+        "锅炉水冷壁和过热器吹灰周期和参数设定"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "变压器"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-009",
+      "split": "frozen",
+      "noise_type": "alias_synonym",
+      "original_query": "主变投运前要走哪些步骤？",
+      "canonical": "变压器投入运行前应执行哪些操作步骤？",
+      "rewritten_query": "主变投运前的步骤",
+      "sub_questions": [
+        "主变投运前的步骤"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-010",
+      "split": "frozen",
+      "noise_type": "alias_synonym",
+      "original_query": "脱硫循泵机封漏了怎么处理，之后咋防？",
+      "canonical": "脱硫塔循环泵机械密封泄漏如何处理与预防？",
+      "rewritten_query": "脱硫循泵机封漏了处理方法和预防措施",
+      "sub_questions": [
+        "脱硫循泵机封漏了处理方法和预防措施"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-011",
+      "split": "frozen",
+      "noise_type": "unit_format",
+      "original_query": "汽机正胀差超过三点五毫米该怎么控？",
+      "canonical": "汽轮机启动过程中出现胀差异常（正胀差＞+3.5mm），如何处理？",
+      "rewritten_query": "汽机正胀差超过三点五毫米控制方法",
+      "sub_questions": [
+        "汽机正胀差超过三点五毫米控制方法"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-012",
+      "split": "frozen",
+      "noise_type": "unit_format",
+      "original_query": "发电频率在五十赫兹上下晃半个点，怎么查？",
+      "canonical": "发电机输出频率不稳定（偏离50Hz±0.5Hz）如何诊断？",
+      "rewritten_query": "发电频率在五十赫兹上下晃半个点，怎么查",
+      "sub_questions": [
+        "发电频率在五十赫兹上下晃半个点，怎么查"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "锅炉"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-013",
+      "split": "frozen",
+      "noise_type": "unit_format",
+      "original_query": "锅炉烟温一下到一百八十多度，先排哪几处？",
+      "canonical": "锅炉排烟温度突然升高至180℃以上，如何诊断？",
+      "rewritten_query": "锅炉烟温一下到一百八十多度，先排哪几处",
+      "sub_questions": [
+        "锅炉烟温一下到一百八十多度，先排哪几处"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "变压器"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-014",
+      "split": "frozen",
+      "noise_type": "unit_format",
+      "original_query": "主变油温95度往上走，一般是什么原因？",
+      "canonical": "变压器运行中油温异常升高至95℃以上，可能原因有哪些？",
+      "rewritten_query": "主变油温95度往上走的原因",
+      "sub_questions": [
+        "主变油温95度往上走的原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "冷却塔"
+      ],
+      "reason": "",
+      "id": "r3-noise-frozen-015",
+      "split": "frozen",
+      "noise_type": "unit_format",
+      "original_query": "冷却塔出水一直三十五度以上，按啥顺序查？",
+      "canonical": "冷却塔出水温度持续高于设计值（如＞35℃），如何排查？",
+      "rewritten_query": "冷却塔出水一直三十五度以上 按什么顺序查",
+      "sub_questions": [
+        "冷却塔出水一直三十五度以上 按什么顺序查"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-016",
+      "split": "frozen",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "冷态准备冲转了，哪些数没到位不能开？",
+      "canonical": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+      "rewritten_query": "冷态准备冲转 哪些数没到位不能开",
+      "sub_questions": [
+        "冷态准备冲转 哪些数没到位不能开"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-017",
+      "split": "frozen",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "准备起机，前面的电气检查按啥顺序？",
+      "canonical": "启动发电机前必须执行哪些操作步骤？",
+      "rewritten_query": "准备起机前面的电气检查顺序",
+      "sub_questions": [
+        "准备起机前面的电气检查顺序"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-018",
+      "split": "frozen",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "要正常停了，先减负荷还是先停燃料？",
+      "canonical": "锅炉正常停炉操作的关键步骤是什么？",
+      "rewritten_query": "正常停炉时先减负荷还是先停燃料",
+      "sub_questions": [
+        "正常停炉时先减负荷还是先停燃料"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-019",
+      "split": "frozen",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "柜子要从运行转检修，手车、接地刀先动哪个？",
+      "canonical": "开关柜从运行状态转为检修状态的标准操作步骤是什么？",
+      "rewritten_query": "柜子从运行转检修 手车 接地刀 先动哪个",
+      "sub_questions": [
+        "柜子从运行转检修 手车 接地刀 先动哪个"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "ineffective_rewrite",
+      "injected_entities": [],
+      "covered_entities": [],
+      "reason": "no_golden_entity_covered",
+      "id": "r3-noise-frozen-020",
+      "split": "frozen",
+      "noise_type": "ellipsis_word_order",
+      "original_query": "这个风机电机老跳，电气还是机械问题？",
+      "canonical": "冷却塔电机频繁跳闸，可能是什么问题？",
+      "rewritten_query": "风机电机老跳是电气问题还是机械问题",
+      "sub_questions": [
+        "风机电机老跳是电气问题还是机械问题"
+      ],
+      "reproduction_ok": true
+    }
+  ],
+  "conversation_cases": [
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "炉缸",
+        "高炉"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-001",
+      "split": "tuning",
+      "conversation_type": "ellipsis",
+      "original_query": "到什么程度算侵蚀严重？",
+      "canonical": "高炉炉缸侧壁温度异常升高如何判断是否为侵蚀严重？",
+      "history": [
+        {
+          "role": "user",
+          "content": "高炉炉缸最近侧壁温度一直升。"
+        },
+        {
+          "role": "user",
+          "content": "相邻测点温差也在变大。"
+        }
+      ],
+      "rewritten_query": "高炉炉缸侧壁温度升高和相邻测点温差变大到什么程度算侵蚀严重",
+      "sub_questions": [
+        "高炉炉缸侧壁温度升高和相邻测点温差变大到什么程度算侵蚀严重"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "氧枪",
+        "转炉"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-002",
+      "split": "tuning",
+      "conversation_type": "ellipsis",
+      "original_query": "一般是什么原因，怎么诊断？",
+      "canonical": "转炉氧枪频繁漏水可能是什么原因？如何诊断？",
+      "history": [
+        {
+          "role": "user",
+          "content": "转炉氧枪这两天频繁漏水。"
+        }
+      ],
+      "rewritten_query": "转炉氧枪漏水的原因和诊断方法",
+      "sub_questions": [
+        "转炉氧枪漏水的原因和诊断方法"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "结晶器",
+        "连铸"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-003",
+      "split": "tuning",
+      "conversation_type": "ellipsis",
+      "original_query": "可能原因有哪些？",
+      "canonical": "连铸机结晶器振动异常导致铸坯表面振痕过深，可能原因有哪些？",
+      "history": [
+        {
+          "role": "user",
+          "content": "连铸坯表面振痕突然变深了。"
+        },
+        {
+          "role": "user",
+          "content": "结晶器振动也不太正常。"
+        }
+      ],
+      "rewritten_query": "连铸坯表面振痕突然变深 结晶器振动不正常 可能原因",
+      "sub_questions": [
+        "连铸坯表面振痕突然变深 结晶器振动不正常 可能原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "主电机",
+        "冷轧机"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-004",
+      "split": "tuning",
+      "conversation_type": "ellipsis",
+      "original_query": "怎么快速判断故障源？",
+      "canonical": "冷轧机主电机电流异常升高，如何快速判断故障源？",
+      "history": [
+        {
+          "role": "user",
+          "content": "冷轧机主电机电流在往上升。"
+        },
+        {
+          "role": "user",
+          "content": "负荷也有波动。"
+        }
+      ],
+      "rewritten_query": "冷轧机主电机电流上升 负荷波动 快速判断故障源",
+      "sub_questions": [
+        "冷轧机主电机电流上升 负荷波动 快速判断故障源"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "台车",
+        "烧结机"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-005",
+      "split": "tuning",
+      "conversation_type": "ellipsis",
+      "original_query": "常见原因和处理办法呢？",
+      "canonical": "烧结机台车轮卡死的常见原因及处理方法是什么？",
+      "history": [
+        {
+          "role": "user",
+          "content": "烧结机有个台车轮卡死了。"
+        }
+      ],
+      "rewritten_query": "烧结机台车轮卡死的常见原因和处理办法",
+      "sub_questions": [
+        "烧结机台车轮卡死的常见原因和处理办法"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "高炉"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-006",
+      "split": "tuning",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "它平时维护要重点看哪些？",
+      "canonical": "高炉冷却系统日常维护要点有哪些？",
+      "history": [
+        {
+          "role": "user",
+          "content": "高炉冷却系统最近温差有点大。"
+        },
+        {
+          "role": "user",
+          "content": "回水温度也有变化。"
+        }
+      ],
+      "rewritten_query": "高炉冷却系统平时维护要重点看哪些",
+      "sub_questions": [
+        "高炉冷却系统平时维护要重点看哪些"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "托圈",
+        "转炉"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-007",
+      "split": "tuning",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "这个系统日常怎么维护？",
+      "canonical": "转炉托圈冷却系统如何进行日常维护？",
+      "history": [
+        {
+          "role": "user",
+          "content": "转炉托圈冷却系统运行时间挺长了。"
+        }
+      ],
+      "rewritten_query": "转炉托圈冷却系统日常维护",
+      "sub_questions": [
+        "转炉托圈冷却系统日常维护"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "结晶器"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-008",
+      "split": "tuning",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "它的周期性项目有哪些？",
+      "canonical": "结晶器冷却系统应如何进行周期性保养？",
+      "history": [
+        {
+          "role": "user",
+          "content": "连铸机结晶器冷却系统准备做保养。"
+        }
+      ],
+      "rewritten_query": "连铸机结晶器冷却系统的周期性项目",
+      "sub_questions": [
+        "连铸机结晶器冷却系统的周期性项目"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "支撑辊",
+        "轧机",
+        "轴承"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-009",
+      "split": "tuning",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "这个部件多久保养，要求是什么？",
+      "canonical": "轧机支撑辊轴承的定期保养要求是什么？",
+      "history": [
+        {
+          "role": "user",
+          "content": "热轧机支撑辊轴承要安排定保。"
+        }
+      ],
+      "rewritten_query": "热轧机支撑辊轴承的保养周期和保养要求",
+      "sub_questions": [
+        "热轧机支撑辊轴承的保养周期和保养要求"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "炉门框",
+        "焦炉"
+      ],
+      "reason": "",
+      "id": "r3-conversation-tuning-010",
+      "split": "tuning",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "它们日常维护有哪些要点？",
+      "canonical": "焦炉炉门框和炉门的日常维护要点有哪些？",
+      "history": [
+        {
+          "role": "user",
+          "content": "焦炉炉门框和炉门最近密封不太好。"
+        },
+        {
+          "role": "user",
+          "content": "先说说可能影响。"
+        }
+      ],
+      "rewritten_query": "焦炉炉门框和炉门日常维护要点",
+      "sub_questions": [
+        "焦炉炉门框和炉门日常维护要点"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "凝汽器"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-001",
+      "split": "frozen",
+      "conversation_type": "ellipsis",
+      "original_query": "应该排查哪些环节？",
+      "canonical": "凝汽器真空度骤降（如从-92kPa降至-80kPa以下），应排查哪些环节？",
+      "history": [
+        {
+          "role": "user",
+          "content": "凝汽器真空从负九十二掉到负八十以下了。"
+        },
+        {
+          "role": "user",
+          "content": "下降速度还很快。"
+        }
+      ],
+      "rewritten_query": "凝汽器真空从负九十二掉到负八十以下，下降速度很快，应该排查哪些环节",
+      "sub_questions": [
+        "凝汽器真空从负九十二掉到负八十以下，下降速度很快，应该排查哪些环节"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "发电机"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-002",
+      "split": "frozen",
+      "conversation_type": "ellipsis",
+      "original_query": "可能有哪些原因？",
+      "canonical": "发电机运行中出现电压波动超过±5%的原因可能有哪些？",
+      "history": [
+        {
+          "role": "user",
+          "content": "发电机电压波动已经超过正负百分之五。"
+        }
+      ],
+      "rewritten_query": "发电机电压波动超过正负百分之五的原因",
+      "sub_questions": [
+        "发电机电压波动超过正负百分之五的原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "汽包",
+        "锅炉"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-003",
+      "split": "frozen",
+      "conversation_type": "ellipsis",
+      "original_query": "一般是什么原因？",
+      "canonical": "锅炉运行中出现汽包水位异常波动，可能的原因有哪些？",
+      "history": [
+        {
+          "role": "user",
+          "content": "锅炉汽包水位来回波动。"
+        },
+        {
+          "role": "user",
+          "content": "给水流量看着也不稳。"
+        }
+      ],
+      "rewritten_query": "锅炉汽包水位来回波动的原因",
+      "sub_questions": [
+        "锅炉汽包水位来回波动的原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "开关柜",
+        "断路器"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-004",
+      "split": "frozen",
+      "conversation_type": "ellipsis",
+      "original_query": "可能原因有哪些？",
+      "canonical": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "history": [
+        {
+          "role": "user",
+          "content": "高压开关柜里的断路器最近老跳。"
+        },
+        {
+          "role": "user",
+          "content": "保护信号也反复出现。"
+        }
+      ],
+      "rewritten_query": "高压开关柜断路器频繁跳闸 保护信号反复出现 可能原因",
+      "sub_questions": [
+        "高压开关柜断路器频繁跳闸 保护信号反复出现 可能原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "冷却塔",
+        "风机"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-005",
+      "split": "frozen",
+      "conversation_type": "ellipsis",
+      "original_query": "通常从哪几方面找原因？",
+      "canonical": "冷却塔风机振动异常增大，可能原因有哪些？",
+      "history": [
+        {
+          "role": "user",
+          "content": "冷却塔风机振动越来越大。"
+        }
+      ],
+      "rewritten_query": "冷却塔风机振动越来越大的原因",
+      "sub_questions": [
+        "冷却塔风机振动越来越大的原因"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "推力轴承",
+        "汽轮机"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-006",
+      "split": "frozen",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "它的间隙怎么检查和调整？",
+      "canonical": "汽轮机大修期间，如何检查和调整推力轴承间隙？",
+      "history": [
+        {
+          "role": "user",
+          "content": "汽轮机大修要检查推力轴承。"
+        },
+        {
+          "role": "user",
+          "content": "现在准备测轴向间隙。"
+        }
+      ],
+      "rewritten_query": "汽轮机推力轴承轴向间隙的检查和调整",
+      "sub_questions": [
+        "汽轮机推力轴承轴向间隙的检查和调整"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "励磁系统",
+        "发电机",
+        "碳刷"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-007",
+      "split": "frozen",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "这个部件多久换，安装有什么要求？",
+      "canonical": "发电机励磁系统碳刷更换周期和安装要求是什么？",
+      "history": [
+        {
+          "role": "user",
+          "content": "发电机励磁系统的碳刷准备更换。"
+        }
+      ],
+      "rewritten_query": "发电机励磁系统碳刷更换周期和安装要求",
+      "sub_questions": [
+        "发电机励磁系统碳刷更换周期和安装要求"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "锅炉"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-008",
+      "split": "frozen",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "这种情况该采取什么保养措施？",
+      "canonical": "锅炉停用一周以上应采取何种保养措施？",
+      "history": [
+        {
+          "role": "user",
+          "content": "这台锅炉计划停用十天。"
+        }
+      ],
+      "rewritten_query": "锅炉计划停用十天的保养措施",
+      "sub_questions": [
+        "锅炉计划停用十天的保养措施"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "变压器",
+        "油样"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-009",
+      "split": "frozen",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "这个检测周期多久，关键指标看什么？",
+      "canonical": "变压器定期维护中油样检测的周期和关键指标是什么？",
+      "history": [
+        {
+          "role": "user",
+          "content": "主变要做定期维护，包含油样检测。"
+        }
+      ],
+      "rewritten_query": "主变油样检测周期和关键指标",
+      "sub_questions": [
+        "主变油样检测周期多久",
+        "主变油样检测关键指标看什么"
+      ],
+      "reproduction_ok": true
+    },
+    {
+      "classification": "correct_completion",
+      "injected_entities": [],
+      "covered_entities": [
+        "除雾器"
+      ],
+      "reason": "",
+      "id": "r3-conversation-frozen-010",
+      "split": "frozen",
+      "conversation_type": "cross_turn_reference",
+      "original_query": "它定期怎么维护保养？",
+      "canonical": "脱硫塔除雾器应如何进行定期维护保养？",
+      "history": [
+        {
+          "role": "user",
+          "content": "脱硫塔出口压差有变化。"
+        },
+        {
+          "role": "user",
+          "content": "怀疑是除雾器的问题。"
+        }
+      ],
+      "rewritten_query": "除雾器定期维护保养",
+      "sub_questions": [
+        "除雾器定期维护保养"
+      ],
+      "reproduction_ok": true
+    }
+  ]
+}
