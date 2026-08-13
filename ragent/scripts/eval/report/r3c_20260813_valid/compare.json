@@ -1,0 +1,248 @@
+{
+  "comparison_type": "strict_paired_rewrite_ab",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_conversation_r3_frozen.jsonl",
+    "sha256": "25fc72f95033ab32d0645fb4d57b88875ca46fa39861e4e23129d197ab7b9dc1"
+  },
+  "runtime": {
+    "request_timeout_seconds": 90,
+    "warmup_count": 1,
+    "warmup_query": "发电机轴承温度异常升高至95℃以上应如何处理？",
+    "backend_container": "ragent-backend",
+    "backend_image": "sha256:9ddd3438c6f3e2ea33ec6604c5fa9d453218edc74f25c916a327577636a71059"
+  },
+  "execution_fingerprint": {
+    "fingerprint_version": 1,
+    "runner": {
+      "path": "scripts/eval/conversation_eval.py",
+      "sha256": "97b3d1ae65afc5bea1e599223e8c39801b3d0e334e0815c5934da0e07f7aad8b"
+    },
+    "evaluation_contract": {
+      "path": "scripts/eval/evaluation_contract.py",
+      "sha256": "546b1186c1514fecc5e9b54d576692c937763f34a3ccda6159bc05ab347d571a"
+    },
+    "dependencies": [
+      {
+        "path": "scripts/eval/retrieval_eval.py",
+        "sha256": "e8ffca6b41dcbceff0551bbfdd51df01d62b6bf5be77833de35db07fae83787c"
+      },
+      {
+        "path": "scripts/eval/runtime_fingerprint.py",
+        "sha256": "bb31769c8ef3e74f874d229b88d1403695e3f4e447fd636f39f9ba388829effe"
+      }
+    ],
+    "runtime_profile": {
+      "path": "scripts/eval/runtime-profiles/local-default.json",
+      "sha256": "849ffc178ef791d2dd29dd3d87f7e4d4d4e35bfd0c8155db8862cf5941ddf76b",
+      "name": "local-ragent-default",
+      "configured_models": {
+        "chat": {
+          "model_id": "qwen3-32b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-32B"
+        },
+        "embedding": {
+          "model_id": "qwen-emb-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Embedding-8B"
+        },
+        "rerank": {
+          "model_id": "qwen3-reranker-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Reranker-8B"
+        }
+      }
+    },
+    "application_config": {
+      "path": "bootstrap/src/main/resources/application.yaml",
+      "sha256": "03987fd9338820118d7ce43f0d54e254b191cabbf40ec780bfdf6aa312840baf"
+    },
+    "git": {
+      "revision": "fba39d97c82d29b4a38387fa7f6253e90217e321",
+      "worktree_dirty": true
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.14.2"
+    },
+    "sha256": "dae6c30f9f3ba27fdab28f1fb644f51e8bb1bb40751e54c76e5f4ac373199510"
+  },
+  "rewrite_off_summary": {
+    "total": 10,
+    "quality_sample_count": 10,
+    "excluded_execution_count": 0,
+    "hit_rate": {
+      "@1": 0.5,
+      "@3": 0.6,
+      "@5": 0.6
+    },
+    "mrr": 0.5333,
+    "source_id_hit_rate": 0.0,
+    "status_counts": {
+      "received": 10
+    }
+  },
+  "rewrite_on_summary": {
+    "total": 10,
+    "quality_sample_count": 9,
+    "excluded_execution_count": 1,
+    "hit_rate": {
+      "@1": 0.8889,
+      "@3": 0.8889,
+      "@5": 0.8889
+    },
+    "mrr": 0.8889,
+    "source_id_hit_rate": 0.0,
+    "status_counts": {
+      "received": 9,
+      "target_turn_failed": 1
+    }
+  },
+  "paired_quality_sample_count": 9,
+  "execution_success_count": {
+    "rewrite_off": 10,
+    "rewrite_on": 9
+  },
+  "execution_success_rate": {
+    "total": 10,
+    "rewrite_off": 1.0,
+    "rewrite_on": 0.9
+  },
+  "delta": {
+    "hit_at_1_absolute": 0.4444,
+    "mrr_absolute": 0.4074,
+    "mrr_relative": 0.8462
+  },
+  "paired_cases": [
+    {
+      "dataset_id": "r3-conversation-frozen-001",
+      "target_query": "应该排查哪些环节？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "rewrite_on": {
+        "ok": false,
+        "mrr": 0.0
+      },
+      "mrr_delta": -1.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-002",
+      "target_query": "可能有哪些原因？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 0.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 1.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-003",
+      "target_query": "一般是什么原因？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 0.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 1.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-004",
+      "target_query": "可能原因有哪些？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 0.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 1.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-005",
+      "target_query": "通常从哪几方面找原因？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 0.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 1.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-006",
+      "target_query": "它的间隙怎么检查和调整？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 0.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-007",
+      "target_query": "这个部件多久换，安装有什么要求？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 0.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-008",
+      "target_query": "这种情况该采取什么保养措施？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 0.0
+      },
+      "mrr_delta": -1.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-009",
+      "target_query": "这个检测周期多久，关键指标看什么？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 0.0
+    },
+    {
+      "dataset_id": "r3-conversation-frozen-010",
+      "target_query": "它定期怎么维护保养？",
+      "rewrite_off": {
+        "ok": true,
+        "mrr": 0.3333333333333333
+      },
+      "rewrite_on": {
+        "ok": true,
+        "mrr": 1.0
+      },
+      "mrr_delta": 0.6667
+    }
+  ]
+}
