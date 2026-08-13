@@ -497,6 +497,10 @@ public class StreamChatPipeline {
         if (chunk.getScore() != null) extra.put("score", (double) chunk.getScore());
         Object matchCount = meta.get("matchCount");
         if (matchCount instanceof Number) extra.put("matchCount", matchCount);
+        Object relationEvidence = meta.get("relationEvidence");
+        if (relationEvidence instanceof List<?> evidence && !evidence.isEmpty()) {
+            extra.put("relationEvidence", evidence);
+        }
         String sourceId = ReferenceSourceIdResolver.resolve(chunk, meta);
         if (sourceId != null && !sourceId.isBlank()) extra.put("sourceId", sourceId);
         return extra;

@@ -45,8 +45,53 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
+import org.mockito.ArgumentCaptor;
 
 class StreamChatPipelineTest {
+
+    @Test
+    void shouldPreserveStructuredHypergraphEvidenceInReferences() {
+        ConversationMemoryService memoryService = mock(ConversationMemoryService.class);
+        QueryRewriteService rewriteService = mock(QueryRewriteService.class);
+        IntentResolver intentResolver = mock(IntentResolver.class);
+        IntentGuidanceService guidanceService = mock(IntentGuidanceService.class);
+        RetrievalEngine retrievalEngine = mock(RetrievalEngine.class);
+        StreamCallback callback = mock(StreamCallback.class);
+        Map<String, Object> evidence = Map.of(
+                "hyperEdgeId", "edge-1",
+                "sourceDocument", "manual-a",
+                "sourceChunkId", "chunk-7");
+        RetrievedChunk chunk = RetrievedChunk.builder()
+                .id("edge-1")
+                .text("风机在高温下发生振动")
+                .score(0.9F)
+                .metadata(Map.of(
+                        "source", "HYPERGRAPH",
+                        "hyperEdgePath", "风机 → 高温 → 振动",
+                        "relationEvidence", List.of(evidence)))
+                .build();
+        when(retrievalEngine.retrieve(any(), any(Integer.class), any())).thenReturn(
+                RetrievalContext.builder()
+                        .intentChunks(Map.of("relation", List.of(chunk)))
+                        .build());
+        StreamChatPipeline pipeline = new StreamChatPipeline(
+                memoryService, rewriteService, intentResolver, guidanceService, retrievalEngine,
+                mock(LLMService.class), mock(RAGPromptService.class), mock(PromptTemplateLoader.class),
+                mock(StreamTaskManager.class), mock(StaticResourceProperties.class));
+
+        pipeline.execute(StreamChatContext.builder()
+                .question("风机为何振动")
+                .conversationId("eval")
+                .taskId("task-hypergraph")
+                .callback(callback)
+                .retrievalOptions(new RetrievalOptions(false, true, false, true, true))
+                .build());
+
+        ArgumentCaptor<String> references = ArgumentCaptor.forClass(String.class);
+        verify(callback).onReferences(references.capture());
+        org.assertj.core.api.Assertions.assertThat(references.getValue())
+                .contains("relationEvidence", "edge-1", "manual-a", "chunk-7");
+    }
 
     @Test
     void shouldCompleteAfterSendingReferencesWithoutStartingLlmInRetrievalOnlyMode() {

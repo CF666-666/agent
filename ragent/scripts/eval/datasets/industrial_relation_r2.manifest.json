@@ -1,0 +1,17 @@
+{
+  "generator_version": "industrial-relation-r2-template-1",
+  "seed": 20260813,
+  "count": 50,
+  "split_counts": {
+    "tuning": 25,
+    "frozen": 25
+  },
+  "path_counts": {
+    "single_edge": 40,
+    "two_hop": 10
+  },
+  "source_file": "bootstrap/data/hypergraph/hyperedges.jsonl",
+  "source_sha256": "4086f51239303b041cee054a039bac0ae33d0fa2cd13f8ef9b9db6027dc12f1c",
+  "human_evaluation": false,
+  "gold_validation": "hyperedge IDs and source documents derived from source records"
+}

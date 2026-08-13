@@ -100,6 +100,9 @@ def validate_single_turn_record(record: dict[str, Any], location: str = "record"
         _non_empty_string_list(record.get("golden_image_paths"), location, "golden_image_paths")
     if scene == "relation":
         _non_empty_string_list(record.get("golden_hyperedge_ids"), location, "golden_hyperedge_ids")
+        if "golden_source_documents" in record:
+            _non_empty_string_list(
+                record.get("golden_source_documents"), location, "golden_source_documents")
 
 
 def validate_conversation_record(record: dict[str, Any], location: str = "record") -> None:

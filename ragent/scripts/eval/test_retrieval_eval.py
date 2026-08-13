@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from retrieval_eval import execution_status, run_warmups
+from retrieval_eval import execution_status, relation_metrics, run_warmups
 
 
 class WarmupRetrievalTest(unittest.TestCase):
@@ -56,6 +56,55 @@ class WarmupRetrievalTest(unittest.TestCase):
             "channel_degraded",
             execution_status({"channels": [{"status": "DEGRADED"}]}, "received"),
         )
+
+    def test_relation_metrics_rank_hyperedge_evidence_and_validate_source(self):
+        references = [
+            {
+                "type": "HYPERGRAPH",
+                "extra": {
+                    "relationEvidence": [
+                        {"hyperEdgeId": "edge-other", "sourceDocument": "manual-b"}
+                    ]
+                },
+            },
+            {
+                "type": "HYPERGRAPH",
+                "extra": {
+                    "relationEvidence": [
+                        {"hyperEdgeId": "edge-a", "sourceDocument": "manual-a"},
+                        {"hyperEdgeId": "edge-b", "sourceDocument": "manual-a"},
+                    ]
+                },
+            },
+        ]
+
+        result = relation_metrics(
+            references,
+            ["edge-a", "edge-b"],
+            ["manual-a"],
+        )
+
+        self.assertFalse(result["hyperedge_hit"][1])
+        self.assertTrue(result["hyperedge_hit"][3])
+        self.assertEqual(0.0, result["hyperedge_recall"][1])
+        self.assertEqual(1.0, result["hyperedge_recall"][3])
+        self.assertTrue(result["path_hit"])
+        self.assertTrue(result["source_accuracy"])
+
+    def test_relation_metrics_do_not_accept_unrelated_source(self):
+        references = [{
+            "type": "HYPERGRAPH",
+            "extra": {
+                "relationEvidence": [
+                    {"hyperEdgeId": "edge-a", "sourceDocument": "manual-b"}
+                ]
+            },
+        }]
+
+        result = relation_metrics(references, ["edge-a"], ["manual-a"])
+
+        self.assertTrue(result["hyperedge_hit"][1])
+        self.assertFalse(result["source_accuracy"])
 
 
 if __name__ == "__main__":
