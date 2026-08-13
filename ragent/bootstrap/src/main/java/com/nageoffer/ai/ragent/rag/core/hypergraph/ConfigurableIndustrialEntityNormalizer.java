@@ -21,11 +21,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Configuration-backed alias dictionary. Keys are aliases and values are the
@@ -35,6 +38,8 @@ import java.util.Set;
 @ConfigurationProperties(prefix = "ragent.hypergraph.entity-normalization")
 public class ConfigurableIndustrialEntityNormalizer implements IndustrialEntityNormalizer {
 
+    private static final Pattern WHITESPACE = Pattern.compile("\\s+");
+
     private volatile Map<String, String> aliases = Map.of();
 
     public void setAliases(Map<String, String> aliases) {
@@ -42,7 +47,7 @@ public class ConfigurableIndustrialEntityNormalizer implements IndustrialEntityN
         if (aliases != null) {
             aliases.forEach((alias, canonical) -> {
                 if (StringUtils.hasText(alias) && StringUtils.hasText(canonical)) {
-                    normalizedAliases.put(alias.trim(), canonical.trim());
+                    normalizedAliases.put(normalizeSurface(alias), normalizeSurface(canonical));
                 }
             });
         }
@@ -50,12 +55,25 @@ public class ConfigurableIndustrialEntityNormalizer implements IndustrialEntityN
     }
 
     @Override
-    public String normalize(String entity) {
-        if (!StringUtils.hasText(entity)) {
+    public String normalizeSurface(String text) {
+        if (!StringUtils.hasText(text)) {
             return null;
         }
-        String trimmed = entity.trim();
-        return aliases.getOrDefault(trimmed, trimmed);
+        String normalized = Normalizer.normalize(text, Normalizer.Form.NFKC)
+                .toLowerCase(Locale.ROOT)
+                .replace('\u03bc', 'u')
+                .replace('\u00b5', 'u');
+        String surface = WHITESPACE.matcher(normalized.trim()).replaceAll(" ");
+        return StringUtils.hasText(surface) ? surface : null;
+    }
+
+    @Override
+    public String normalize(String entity) {
+        String surface = normalizeSurface(entity);
+        if (surface == null) {
+            return null;
+        }
+        return aliases.getOrDefault(surface, surface);
     }
 
     @Override

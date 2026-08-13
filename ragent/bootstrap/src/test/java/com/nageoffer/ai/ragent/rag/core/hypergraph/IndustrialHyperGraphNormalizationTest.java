@@ -79,6 +79,30 @@ class IndustrialHyperGraphNormalizationTest {
     }
 
     @Test
+    void shouldMatchConfiguredIndustrialAbbreviationsAndNormalizedQuerySurface() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        normalizer.setAliases(Map.of(
+                "氧化风", "氧化风机",
+                "发电机定子", "发电机定子绕组",
+                "浆循泵", "浆液循环泵",
+                "脱硫循环泵", "脱硫塔循环泵"));
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+        graph.addHyperedges(List.of(
+                HyperEdge.builder().equipment("氧化风机").parameter("出口压力 80-100 kPa").build(),
+                HyperEdge.builder().equipment("发电机定子绕组").parameter("绝缘电阻 10 MΩ").build(),
+                HyperEdge.builder().equipment("浆液循环泵").fault("轴承温度高").build(),
+                HyperEdge.builder().equipment("脱硫塔循环泵").fault("密封泄漏").build()));
+
+        assertEquals(Set.of("氧化风机", "出口压力 80-100 kpa"),
+                graph.findMentionedEntities("氧化风的出口压力 ８０-１００ KPA 是否正常"));
+        assertEquals(Set.of("发电机定子绕组", "绝缘电阻 10 mω"),
+                graph.findMentionedEntities("发电机定子的绝缘电阻 10 MΩ"));
+        assertEquals(Set.of("浆液循环泵"), graph.findMentionedEntities("浆循泵怎么处理"));
+        assertEquals(Set.of("脱硫塔循环泵"), graph.findMentionedEntities("脱硫循环泵泄漏"));
+    }
+
+    @Test
     void shouldCancelLocalMatchingEvenWhenMentionSnapshotIsEmpty() {
         ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
         IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,

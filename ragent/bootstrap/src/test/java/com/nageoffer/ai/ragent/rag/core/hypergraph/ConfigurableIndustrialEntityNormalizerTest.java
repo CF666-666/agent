@@ -18,6 +18,11 @@
 package com.nageoffer.ai.ragent.rag.core.hypergraph;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.env.YamlPropertySourceLoader;
+import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.io.ClassPathResource;
 
 import java.util.List;
 import java.util.Map;
@@ -38,5 +43,43 @@ class ConfigurableIndustrialEntityNormalizerTest {
         assertNull(normalizer.normalize("  "));
         assertEquals(Set.of("1号鼓风机", "轴承过热"),
                 normalizer.normalizeAll(List.of("风机1号", "一号风机", "轴承过热")));
+    }
+
+    @Test
+    void shouldNormalizeUnicodeCaseWhitespaceAndUnitVariantsToStableKeys() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+
+        assertEquals("qwen3-embedding 8b", normalizer.normalize(" ＱＷＥＮ３-Embedding   8B "));
+        assertEquals("10uω", normalizer.normalize("１０µΩ"));
+        assertNull(normalizer.normalize("\u00a0"));
+    }
+
+    @Test
+    void shouldApplyAliasesAfterSurfaceNormalization() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        normalizer.setAliases(Map.of(" 发电机定子 ", "发电机定子绕组"));
+
+        assertEquals("发电机定子绕组", normalizer.normalize("发电机定子"));
+        assertEquals(Map.of("发电机定子绕组", "发电机定子绕组", "发电机定子", "发电机定子绕组"),
+                normalizer.mentionForms(List.of("发电机定子绕组")));
+    }
+
+    @Test
+    void shouldBindTuningAliasesFromApplicationYaml() throws Exception {
+        StandardEnvironment environment = new StandardEnvironment();
+        new YamlPropertySourceLoader().load("application", new ClassPathResource("application.yaml"))
+                .forEach(environment.getPropertySources()::addLast);
+        Binder binder = Binder.get(environment);
+        Map<String, String> aliases = binder.bind(
+                        "ragent.hypergraph.entity-normalization.aliases",
+                        Bindable.mapOf(String.class, String.class))
+                .orElseThrow(() -> new AssertionError("entity normalization properties were not bound"));
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        normalizer.setAliases(aliases);
+
+        assertEquals("氧化风机", normalizer.normalize("氧化风"));
+        assertEquals("发电机定子绕组", normalizer.normalize("发电机定子"));
+        assertEquals("浆液循环泵", normalizer.normalize("浆循泵"));
+        assertEquals("脱硫塔循环泵", normalizer.normalize("脱硫循环泵"));
     }
 }

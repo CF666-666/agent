@@ -26,6 +26,11 @@ import java.util.Set;
  */
 public interface IndustrialEntityNormalizer {
 
+    /** Normalizes a query or entity surface without applying an alias mapping. */
+    default String normalizeSurface(String text) {
+        return text == null ? null : text.trim();
+    }
+
     String normalize(String entity);
 
     Set<String> normalizeAll(Collection<String> entities);

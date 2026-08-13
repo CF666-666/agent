@@ -305,10 +305,14 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
             return Set.of();
         }
         ensureActive(active, "local entity matching was cancelled");
+        String normalizedQuery = entityNormalizer.normalizeSurface(query);
+        if (normalizedQuery == null) {
+            return Set.of();
+        }
         Set<String> mentioned = new LinkedHashSet<>();
         for (EntityMention mention : entityMentions) {
             ensureActive(active, "local entity matching was cancelled");
-            if (containsMention(query, mention.text())) {
+            if (containsMention(normalizedQuery, mention.text())) {
                 mentioned.add(mention.canonical());
             }
         }
