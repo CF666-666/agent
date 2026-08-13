@@ -28,6 +28,7 @@ import com.nageoffer.ai.ragent.rag.core.memory.ConversationMemoryService;
 import com.nageoffer.ai.ragent.rag.core.prompt.PromptTemplateLoader;
 import com.nageoffer.ai.ragent.rag.core.prompt.RAGPromptService;
 import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalEngine;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import com.nageoffer.ai.ragent.rag.core.rewrite.QueryRewriteService;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalContext;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
@@ -48,6 +49,108 @@ import static org.mockito.Mockito.when;
 import org.mockito.ArgumentCaptor;
 
 class StreamChatPipelineTest {
+
+    @Test
+    void shouldNotTurnClientCancellationIntoRetrievalTimeoutFallbackAnswer() {
+        ConversationMemoryService memoryService = mock(ConversationMemoryService.class);
+        LLMService llmService = mock(LLMService.class);
+        RetrievalEngine retrievalEngine = mock(RetrievalEngine.class);
+        StreamTaskManager taskManager = mock(StreamTaskManager.class);
+        StreamCallback callback = mock(StreamCallback.class);
+        RetrievalExecutionContext execution = RetrievalExecutionContext.withBudgetMillis(1000);
+        execution.cancel();
+        when(memoryService.loadAndAppend(any(), any(), any())).thenReturn(List.of());
+        StreamChatPipeline pipeline = new StreamChatPipeline(
+                memoryService, mock(QueryRewriteService.class), mock(IntentResolver.class),
+                mock(IntentGuidanceService.class), retrievalEngine, llmService,
+                mock(RAGPromptService.class), mock(PromptTemplateLoader.class), taskManager,
+                mock(StaticResourceProperties.class));
+
+        pipeline.execute(StreamChatContext.builder()
+                .question("pump fault")
+                .conversationId("eval")
+                .taskId("task-cancelled")
+                .callback(callback)
+                .retrievalOptions(new RetrievalOptions(false, true, false, true, false))
+                .retrievalExecutionContext(execution)
+                .build());
+
+        verifyNoInteractions(retrievalEngine, llmService, callback);
+        verify(taskManager).unbindRetrievalExecution("task-cancelled", execution);
+    }
+
+    @Test
+    void shouldDegradeExpiredRetrievalAndStillStartAnswerForFullChat() {
+        ConversationMemoryService memoryService = mock(ConversationMemoryService.class);
+        QueryRewriteService rewriteService = mock(QueryRewriteService.class);
+        IntentResolver intentResolver = mock(IntentResolver.class);
+        IntentGuidanceService guidanceService = mock(IntentGuidanceService.class);
+        RetrievalEngine retrievalEngine = mock(RetrievalEngine.class);
+        LLMService llmService = mock(LLMService.class);
+        StreamTaskManager taskManager = mock(StreamTaskManager.class);
+        StreamCallback callback = mock(StreamCallback.class);
+        RetrievalExecutionContext execution = RetrievalExecutionContext.withBudgetMillis(1000);
+        execution.timeout();
+        when(memoryService.loadAndAppend(any(), any(), any())).thenReturn(List.of());
+        when(llmService.streamChat(any(), any(), any())).thenReturn(() -> { });
+        StreamChatPipeline pipeline = new StreamChatPipeline(
+                memoryService, rewriteService, intentResolver, guidanceService, retrievalEngine, llmService,
+                mock(RAGPromptService.class), mock(PromptTemplateLoader.class), taskManager,
+                mock(StaticResourceProperties.class));
+
+        pipeline.execute(StreamChatContext.builder()
+                .question("pump fault")
+                .conversationId("eval")
+                .taskId("task-timeout")
+                .callback(callback)
+                .retrievalOptions(new RetrievalOptions(false, true, false, true, false))
+                .retrievalExecutionContext(execution)
+                .build());
+
+        verify(callback).onRetrievalStatus(any());
+        verify(callback, never()).onRetrievalComplete();
+        verifyNoInteractions(retrievalEngine);
+        verify(llmService).streamChat(any(), any(), any());
+        verify(taskManager).unbindRetrievalExecution("task-timeout", execution);
+    }
+
+    @Test
+    void shouldDetachRetrievalDeadlineBeforeStartingAnswerStream() {
+        ConversationMemoryService memoryService = mock(ConversationMemoryService.class);
+        QueryRewriteService rewriteService = mock(QueryRewriteService.class);
+        IntentResolver intentResolver = mock(IntentResolver.class);
+        IntentGuidanceService guidanceService = mock(IntentGuidanceService.class);
+        RetrievalEngine retrievalEngine = mock(RetrievalEngine.class);
+        LLMService llmService = mock(LLMService.class);
+        StreamTaskManager taskManager = mock(StreamTaskManager.class);
+        StreamCallback callback = mock(StreamCallback.class);
+        RetrievalExecutionContext execution = RetrievalExecutionContext.withBudgetMillis(5000);
+        when(memoryService.loadAndAppend(any(), any(), any())).thenReturn(List.of());
+        when(intentResolver.resolve(any(), any())).thenReturn(
+                List.of(new SubQuestionIntent("pump", List.of())));
+        when(guidanceService.detectAmbiguity(any(), any())).thenReturn(GuidanceDecision.none());
+        when(retrievalEngine.retrieve(any(), any(Integer.class), any(), any())).thenReturn(
+                RetrievalContext.builder().intentChunks(Map.of()).build());
+        when(llmService.streamChat(any(), any(), any())).thenReturn(() -> { });
+        StreamChatPipeline pipeline = new StreamChatPipeline(
+                memoryService, rewriteService, intentResolver, guidanceService, retrievalEngine, llmService,
+                mock(RAGPromptService.class), mock(PromptTemplateLoader.class), taskManager,
+                mock(StaticResourceProperties.class));
+
+        pipeline.execute(StreamChatContext.builder()
+                .question("pump")
+                .conversationId("eval")
+                .taskId("task-boundary")
+                .callback(callback)
+                .retrievalOptions(new RetrievalOptions(false, true, false, true, false))
+                .retrievalExecutionContext(execution)
+                .build());
+
+        org.mockito.InOrder order = inOrder(taskManager, llmService);
+        order.verify(taskManager).unbindRetrievalExecution("task-boundary", execution);
+        order.verify(llmService).streamChat(any(), any(), any());
+        verify(callback, never()).onRetrievalComplete();
+    }
 
     @Test
     void shouldPreserveStructuredHypergraphEvidenceInReferences() {

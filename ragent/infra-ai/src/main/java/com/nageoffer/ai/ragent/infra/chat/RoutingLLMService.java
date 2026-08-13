@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -145,15 +146,29 @@ public class RoutingLLMService implements LLMService {
     @Override
     @RagTraceNode(name = "llm-stream-routing", type = "LLM_ROUTING")
     public StreamCancellationHandle streamChat(ChatRequest request, StreamCallback callback) {
+        return streamChat(request, callback, ignored -> { });
+    }
+
+    @Override
+    @RagTraceNode(name = "llm-stream-routing", type = "LLM_ROUTING")
+    public StreamCancellationHandle streamChat(ChatRequest request,
+                                               StreamCallback callback,
+                                               Consumer<StreamCancellationHandle> onHandleReady) {
         List<ModelTarget> targets = selector.selectChatCandidates(Boolean.TRUE.equals(request.getThinking()));
         if (CollUtil.isEmpty(targets)) {
             throw new RemoteException(STREAM_NO_PROVIDER_MESSAGE);
         }
 
+        RoutingStreamHandle routingHandle = new RoutingStreamHandle();
+        onHandleReady.accept(routingHandle);
+
         String label = ModelCapability.CHAT.getDisplayName();
         Throwable lastError = null;
 
         for (ModelTarget target : targets) {
+            if (routingHandle.isCancelled()) {
+                throw new CancellationException("stream request cancelled");
+            }
             ChatClient client = resolveClient(target, label);
             if (client == null) {
                 continue;
@@ -163,6 +178,7 @@ public class RoutingLLMService implements LLMService {
             }
 
             ProbeStreamBridge bridge = new ProbeStreamBridge(callback);
+            routingHandle.setCancelSignal(bridge::cancel);
 
             StreamCancellationHandle handle;
             try {
@@ -181,12 +197,18 @@ public class RoutingLLMService implements LLMService {
                         label, target.id(), target.candidate().getProvider());
                 continue;
             }
+            routingHandle.bind(handle);
 
             ProbeStreamBridge.ProbeResult result = awaitFirstPacket(bridge, handle, callback);
 
+            if (routingHandle.isCancelled()) {
+                handle.cancel();
+                throw new CancellationException("stream request cancelled");
+            }
+
             if (result.isSuccess()) {
                 healthStore.markSuccess(target.id());
-                return handle;
+                return routingHandle;
             }
 
             // 失败处理
@@ -198,6 +220,41 @@ public class RoutingLLMService implements LLMService {
 
         // 所有模型都失败了，通知客户端错误
         throw notifyAllFailed(callback, lastError);
+    }
+
+    private static final class RoutingStreamHandle implements StreamCancellationHandle {
+        private final AtomicBoolean cancelled = new AtomicBoolean(false);
+        private final AtomicReference<StreamCancellationHandle> active = new AtomicReference<>();
+        private final AtomicReference<Runnable> cancelSignal = new AtomicReference<>();
+
+        void bind(StreamCancellationHandle handle) {
+            active.set(handle);
+            if (cancelled.get() && handle != null) {
+                handle.cancel();
+            }
+        }
+
+        void setCancelSignal(Runnable signal) {
+            cancelSignal.set(signal);
+            if (cancelled.get() && signal != null) {
+                signal.run();
+            }
+        }
+
+        boolean isCancelled() {
+            return cancelled.get();
+        }
+
+        @Override
+        public void cancel() {
+            if (!cancelled.compareAndSet(false, true)) {
+                return;
+            }
+            Runnable signal = cancelSignal.get();
+            if (signal != null) signal.run();
+            StreamCancellationHandle handle = active.get();
+            if (handle != null) handle.cancel();
+        }
     }
 
     private ChatClient resolveClient(ModelTarget target, String label) {

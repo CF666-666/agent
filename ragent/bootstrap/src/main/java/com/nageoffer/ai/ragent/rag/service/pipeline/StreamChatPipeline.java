@@ -36,6 +36,7 @@ import com.nageoffer.ai.ragent.rag.core.prompt.PromptTemplateLoader;
 import com.nageoffer.ai.ragent.rag.core.prompt.RAGPromptService;
 import com.nageoffer.ai.ragent.rag.config.StaticResourceProperties;
 import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalEngine;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import com.nageoffer.ai.ragent.rag.core.rewrite.QueryRewriteService;
 import com.nageoffer.ai.ragent.rag.core.rewrite.RewriteResult;
 import com.nageoffer.ai.ragent.rag.dto.IntentGroup;
@@ -104,10 +105,10 @@ public class StreamChatPipeline {
         try {
             rewriteQuery(ctx);
         } catch (java.util.concurrent.CancellationException exception) {
-            stopWhenRetrievalDeadlineElapsed(ctx);
+            finishTimedOutRetrieval(ctx);
             return;
         }
-        if (stopWhenRetrievalDeadlineElapsed(ctx)) {
+        if (finishTimedOutRetrieval(ctx)) {
             return;
         }
         if (ctx.getRetrievalOptions().retrievalOnly()) {
@@ -117,16 +118,17 @@ public class StreamChatPipeline {
             )));
             RetrievalContext retrievalCtx = retrieve(ctx);
             emitRetrievalStatus(ctx, retrievalCtx);
+            detachRetrievalExecution(ctx);
             streamRagResponse(ctx, retrievalCtx);
             return;
         }
         try {
             resolveIntents(ctx);
         } catch (java.util.concurrent.CancellationException exception) {
-            stopWhenRetrievalDeadlineElapsed(ctx);
+            finishTimedOutRetrieval(ctx);
             return;
         }
-        if (stopWhenRetrievalDeadlineElapsed(ctx)) {
+        if (finishTimedOutRetrieval(ctx)) {
             return;
         }
 
@@ -139,6 +141,7 @@ public class StreamChatPipeline {
 
         RetrievalContext retrievalCtx = retrieve(ctx);
         emitRetrievalStatus(ctx, retrievalCtx);
+        detachRetrievalExecution(ctx);
         if (handleEmptyRetrieval(ctx, retrievalCtx)) {
             return;
         }
@@ -175,13 +178,29 @@ public class StreamChatPipeline {
         ctx.setSubIntents(subIntents);
     }
 
-    private boolean stopWhenRetrievalDeadlineElapsed(StreamChatContext ctx) {
+    private boolean finishTimedOutRetrieval(StreamChatContext ctx) {
         if (ctx.getRetrievalExecutionContext().isActive()) {
             return false;
         }
+        if (ctx.getRetrievalExecutionContext().state() == RetrievalExecutionContext.State.CANCELLED) {
+            detachRetrievalExecution(ctx);
+            return true;
+        }
         emitRetrievalStatus(ctx, RetrievalContext.builder().intentChunks(Map.of()).build());
-        ctx.getCallback().onRetrievalComplete();
+        detachRetrievalExecution(ctx);
+        if (ctx.getRetrievalOptions().retrievalOnly()) {
+            ctx.getCallback().onRetrievalComplete();
+        } else {
+            StreamCancellationHandle handle = streamSystemResponse(
+                    ctx.getQuestion(), ctx.getHistory(), null, ctx.getCallback(), ctx.getTaskId());
+            taskManager.bindHandle(ctx.getTaskId(), handle);
+        }
         return true;
+    }
+
+    private void detachRetrievalExecution(StreamChatContext ctx) {
+        taskManager.unbindRetrievalExecution(ctx.getTaskId(), ctx.getRetrievalExecutionContext());
+        ctx.getRetrievalExecutionContext().close();
     }
 
     private boolean handleGuidance(StreamChatContext ctx) {
@@ -192,6 +211,7 @@ public class StreamChatPipeline {
         if (!decision.isPrompt()) {
             return false;
         }
+        detachRetrievalExecution(ctx);
         StreamCallback callback = ctx.getCallback();
         callback.onContent(decision.getPrompt());
         callback.onComplete();
@@ -205,6 +225,7 @@ public class StreamChatPipeline {
         if (!allSystemOnly) {
             return false;
         }
+        detachRetrievalExecution(ctx);
         String customPrompt = subIntents.stream()
                 .flatMap(si -> si.nodeScores().stream())
                 .map(ns -> ns.getNode().getPromptTemplate())
@@ -215,7 +236,8 @@ public class StreamChatPipeline {
                 ctx.getRewriteResult().rewrittenQuestion(),
                 ctx.getHistory(),
                 customPrompt,
-                ctx.getCallback()
+                ctx.getCallback(),
+                ctx.getTaskId()
         );
         taskManager.bindHandle(ctx.getTaskId(), handle);
         return true;
@@ -241,7 +263,8 @@ public class StreamChatPipeline {
                 ctx.getRewriteResult().rewrittenQuestion(),
                 ctx.getHistory(),
                 null,
-                ctx.getCallback()
+                ctx.getCallback(),
+                ctx.getTaskId()
         );
         taskManager.bindHandle(ctx.getTaskId(), handle);
         return true;
@@ -294,7 +317,8 @@ public class StreamChatPipeline {
                 mergedGroup,
                 ctx.getHistory(),
                 ctx.isDeepThinking(),
-                callback
+                callback,
+                ctx.getTaskId()
         );
         taskManager.bindHandle(ctx.getTaskId(), handle);
     }
@@ -306,7 +330,8 @@ public class StreamChatPipeline {
     // ==================== LLM 响应 ====================
 
     private StreamCancellationHandle streamSystemResponse(String question, List<ChatMessage> history,
-                                                          String customPrompt, StreamCallback callback) {
+                                                          String customPrompt, StreamCallback callback,
+                                                          String taskId) {
         String systemPrompt = StrUtil.isNotBlank(customPrompt)
                 ? customPrompt
                 : promptTemplateLoader.load(CHAT_SYSTEM_PROMPT_PATH);
@@ -323,12 +348,14 @@ public class StreamChatPipeline {
                 .temperature(0.7D)
                 .thinking(false)
                 .build();
-        return llmService.streamChat(req, callback);
+        return llmService.streamChat(req, callback,
+                handle -> taskManager.bindHandle(taskId, handle));
     }
 
     private StreamCancellationHandle streamLLMResponse(RewriteResult rewriteResult, RetrievalContext ctx,
                                                        IntentGroup intentGroup, List<ChatMessage> history,
-                                                       boolean deepThinking, StreamCallback callback) {
+                                                       boolean deepThinking, StreamCallback callback,
+                                                       String taskId) {
         PromptContext promptContext = PromptContext.builder()
                 .question(rewriteResult.rewrittenQuestion())
                 .mcpContext(ctx.getMcpContext())
@@ -351,7 +378,8 @@ public class StreamChatPipeline {
                 .topP(ctx.hasMcp() ? 0.8D : 1D)
                 .build();
 
-        return llmService.streamChat(chatRequest, callback);
+        return llmService.streamChat(chatRequest, callback,
+                handle -> taskManager.bindHandle(taskId, handle));
     }
 
     // ==================== Phase 4: References 构建 ====================

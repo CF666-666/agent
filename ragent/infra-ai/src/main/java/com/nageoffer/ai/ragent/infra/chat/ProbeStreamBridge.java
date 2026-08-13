@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.CancellationException;
 
 /**
  * 流式首包探测桥接器
@@ -82,6 +83,10 @@ final class ProbeStreamBridge implements StreamCallback {
             commit();
         }
         return result;
+    }
+
+    void cancel() {
+        probe.complete(ProbeResult.error(new CancellationException("stream request cancelled")));
     }
 
     private void commit() {

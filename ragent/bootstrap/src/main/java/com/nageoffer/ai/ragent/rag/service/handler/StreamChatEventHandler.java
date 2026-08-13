@@ -125,53 +125,48 @@ public class StreamChatEventHandler implements StreamCallback {
 
     @Override
     public void onContent(String chunk) {
-        if (taskManager.isCancelled(taskId)) {
-            return;
-        }
         if (StrUtil.isBlank(chunk)) {
             return;
         }
-        if (thinkingStartMs > 0 && thinkingDurationSeconds == 0) {
-            thinkingDurationSeconds = Math.max(1, Math.round((System.currentTimeMillis() - thinkingStartMs) / 1000.0f));
-        }
-        answer.append(chunk);
-        sendChunked(TYPE_RESPONSE, chunk);
+        taskManager.runIfActive(taskId, () -> {
+            if (thinkingStartMs > 0 && thinkingDurationSeconds == 0) {
+                thinkingDurationSeconds = Math.max(1,
+                        Math.round((System.currentTimeMillis() - thinkingStartMs) / 1000.0f));
+            }
+            answer.append(chunk);
+            sendChunked(TYPE_RESPONSE, chunk);
+        });
     }
 
     @Override
     public void onThinking(String chunk) {
-        if (taskManager.isCancelled(taskId)) {
-            return;
-        }
         if (StrUtil.isBlank(chunk)) {
             return;
         }
-        if (thinkingStartMs == 0) {
-            thinkingStartMs = System.currentTimeMillis();
-        }
-        thinking.append(chunk);
-        sendChunked(TYPE_THINK, chunk);
+        taskManager.runIfActive(taskId, () -> {
+            if (thinkingStartMs == 0) {
+                thinkingStartMs = System.currentTimeMillis();
+            }
+            thinking.append(chunk);
+            sendChunked(TYPE_THINK, chunk);
+        });
     }
 
     @Override
     public void onReferences(String referencesJson) {
-        if (taskManager.isCancelled(taskId)) {
-            return;
-        }
-        sender.sendRawJsonEvent(SSEEventType.REFERENCES.value(), referencesJson);
+        taskManager.runIfActive(taskId,
+                () -> sender.sendRawJsonEvent(SSEEventType.REFERENCES.value(), referencesJson));
     }
 
     @Override
     public void onRetrievalStatus(String statusJson) {
-        if (taskManager.isCancelled(taskId)) {
-            return;
-        }
-        sender.sendRawJsonEvent(SSEEventType.RETRIEVAL_STATUS.value(), statusJson);
+        taskManager.runIfActive(taskId,
+                () -> sender.sendRawJsonEvent(SSEEventType.RETRIEVAL_STATUS.value(), statusJson));
     }
 
     @Override
     public void onComplete() {
-        if (taskManager.isCancelled(taskId)) {
+        if (!taskManager.tryComplete(taskId)) {
             return;
         }
         String messageId = null;
@@ -186,26 +181,23 @@ public class StreamChatEventHandler implements StreamCallback {
         String messageIdText = StrUtil.isBlank(messageId) ? null : messageId;
         sender.sendEvent(SSEEventType.FINISH.value(), new CompletionPayload(messageIdText, title));
         sender.sendEvent(SSEEventType.DONE.value(), "[DONE]");
-        taskManager.unregister(taskId);
         sender.complete();
     }
 
     @Override
     public void onRetrievalComplete() {
-        if (taskManager.isCancelled(taskId)) {
+        if (!taskManager.tryComplete(taskId)) {
             return;
         }
         sender.sendEvent(SSEEventType.DONE.value(), "[DONE]");
-        taskManager.unregister(taskId);
         sender.complete();
     }
 
     @Override
     public void onError(Throwable t) {
-        if (taskManager.isCancelled(taskId)) {
+        if (!taskManager.tryComplete(taskId)) {
             return;
         }
-        taskManager.unregister(taskId);
         sender.fail(t);
     }
 

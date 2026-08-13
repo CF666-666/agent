@@ -21,6 +21,7 @@ import com.nageoffer.ai.ragent.framework.convention.ChatMessage;
 import com.nageoffer.ai.ragent.framework.convention.ChatRequest;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 通用大语言模型（LLM）访问接口
@@ -139,4 +140,12 @@ public interface LLMService {
      * @return StreamCancellationHandle 用于取消推理
      */
     StreamCancellationHandle streamChat(ChatRequest request, StreamCallback callback);
+
+    /**
+     * Starts a stream and exposes its cancellation handle as soon as the
+     * transport is created, before a provider's first response packet.
+     */
+    StreamCancellationHandle streamChat(ChatRequest request,
+                                        StreamCallback callback,
+                                        Consumer<StreamCancellationHandle> onHandleReady);
 }

@@ -79,28 +79,60 @@ public class StreamTaskManager {
 
     public void register(String taskId, SseEmitterSender sender, Supplier<CompletionPayload> onCancelSupplier) {
         StreamTaskInfo taskInfo = getOrCreate(taskId);
-        taskInfo.sender = sender;
-        taskInfo.onCancelSupplier = onCancelSupplier;
-        if (isTaskCancelledInRedis(taskId, taskInfo)) {
-            CompletionPayload payload = taskInfo.onCancelSupplier.get();
-            sendCancelAndDone(sender, payload);
-            sender.complete();
+        synchronized (taskInfo) {
+            taskInfo.sender = sender;
+            taskInfo.onCancelSupplier = onCancelSupplier;
+            if (isTaskCancelledInRedis(taskId, taskInfo)) {
+                taskInfo.registered.set(false);
+            }
+            sendCancellationIfReady(taskInfo);
         }
     }
 
     public void bindHandle(String taskId, StreamCancellationHandle handle) {
-        StreamTaskInfo taskInfo = getOrCreate(taskId);
-        taskInfo.handle = handle;
-        if (taskInfo.cancelled.get() && handle != null) {
-            handle.cancel();
+        StreamTaskInfo taskInfo = tasks.getIfPresent(taskId);
+        if (taskInfo == null) {
+            if (handle != null) handle.cancel();
+            return;
+        }
+        synchronized (taskInfo) {
+            if (!taskInfo.registered.get() || tasks.getIfPresent(taskId) != taskInfo) {
+                if (handle != null) handle.cancel();
+                return;
+            }
+            taskInfo.handle = handle;
+            if (taskInfo.cancelled.get() && handle != null) {
+                handle.cancel();
+            }
         }
     }
 
     public void bindRetrievalExecution(String taskId, RetrievalExecutionContext executionContext) {
-        StreamTaskInfo taskInfo = getOrCreate(taskId);
-        taskInfo.retrievalExecutionContext = executionContext;
-        if (taskInfo.cancelled.get() && executionContext != null) {
-            executionContext.cancel();
+        StreamTaskInfo taskInfo = tasks.getIfPresent(taskId);
+        if (taskInfo == null) {
+            if (executionContext != null) executionContext.cancel();
+            return;
+        }
+        synchronized (taskInfo) {
+            if (!taskInfo.registered.get() || tasks.getIfPresent(taskId) != taskInfo) {
+                if (executionContext != null) executionContext.cancel();
+                return;
+            }
+            taskInfo.retrievalExecutionContext = executionContext;
+            if (taskInfo.cancelled.get() && executionContext != null) {
+                executionContext.cancel();
+            }
+        }
+    }
+
+    public void unbindRetrievalExecution(String taskId, RetrievalExecutionContext executionContext) {
+        StreamTaskInfo taskInfo = tasks.getIfPresent(taskId);
+        if (taskInfo != null) {
+            synchronized (taskInfo) {
+                if (taskInfo.retrievalExecutionContext == executionContext) {
+                    taskInfo.retrievalExecutionContext = null;
+                }
+            }
         }
     }
 
@@ -115,7 +147,24 @@ public class StreamTaskManager {
         return info != null && info.cancelled.get();
     }
 
+    public boolean runIfActive(String taskId, Runnable action) {
+        StreamTaskInfo taskInfo = tasks.getIfPresent(taskId);
+        if (taskInfo == null) {
+            return false;
+        }
+        synchronized (taskInfo) {
+            if (!taskInfo.registered.get() || taskInfo.cancelled.get()) {
+                return false;
+            }
+            action.run();
+            return true;
+        }
+    }
+
     public void cancel(String taskId) {
+        // Cancel the local transport synchronously; Redis is only the cross-instance broadcast path.
+        cancelLocal(taskId);
+
         // 先设置 Redis 标记，再发布消息
         RBucket<Boolean> bucket = redissonClient.getBucket(cancelKey(taskId));
         bucket.set(Boolean.TRUE, CANCEL_TTL);
@@ -149,27 +198,67 @@ public class StreamTaskManager {
             return;
         }
 
-        // 使用 CAS 确保只执行一次
-        if (!taskInfo.cancelled.compareAndSet(false, true)) {
-            return;
-        }
-
-        if (taskInfo.handle != null) {
-            taskInfo.handle.cancel();
-        }
-        if (taskInfo.retrievalExecutionContext != null) {
-            taskInfo.retrievalExecutionContext.cancel();
-        }
-
-        // 在取消时执行回调，保存已累积的内容
-        if (taskInfo.sender != null) {
-            CompletionPayload payload = taskInfo.onCancelSupplier.get();
-            sendCancelAndDone(taskInfo.sender, payload);
-            taskInfo.sender.complete();
+        synchronized (taskInfo) {
+            if (taskInfo.registered.compareAndSet(true, false)) {
+                taskInfo.cancelled.set(true);
+            }
+            if (!taskInfo.cancelled.get()) {
+                return;
+            }
+            if (taskInfo.handle != null) {
+                taskInfo.handle.cancel();
+            }
+            if (taskInfo.retrievalExecutionContext != null) {
+                taskInfo.retrievalExecutionContext.cancel();
+            }
+            sendCancellationIfReady(taskInfo);
         }
     }
 
+    private void sendCancellationIfReady(StreamTaskInfo taskInfo) {
+        if (!taskInfo.cancelled.get()
+                || taskInfo.sender == null
+                || taskInfo.onCancelSupplier == null
+                || !taskInfo.cancelEventSent.compareAndSet(false, true)) {
+            return;
+        }
+        CompletionPayload payload = taskInfo.onCancelSupplier.get();
+        sendCancelAndDone(taskInfo.sender, payload);
+        taskInfo.sender.complete();
+    }
+
+    /**
+     * Atomically claims the normal terminal path. A concurrent cancellation
+     * and a normal completion can never both emit terminal SSE events.
+     */
+    public boolean tryComplete(String taskId) {
+        StreamTaskInfo taskInfo = tasks.getIfPresent(taskId);
+        if (taskInfo == null) {
+            return false;
+        }
+        synchronized (taskInfo) {
+            if (!taskInfo.registered.compareAndSet(true, false)) {
+                return false;
+            }
+            tasks.invalidate(taskId);
+        }
+        redissonClient.getBucket(cancelKey(taskId)).deleteAsync();
+        return true;
+    }
+
     public void unregister(String taskId) {
+        StreamTaskInfo taskInfo = tasks.getIfPresent(taskId);
+        if (taskInfo != null) {
+            synchronized (taskInfo) {
+                taskInfo.registered.set(false);
+                if (taskInfo.handle != null) {
+                    taskInfo.handle.cancel();
+                }
+                if (taskInfo.retrievalExecutionContext != null) {
+                    taskInfo.retrievalExecutionContext.cancel();
+                }
+            }
+        }
         // 清理本地缓存
         tasks.invalidate(taskId);
 
@@ -193,7 +282,9 @@ public class StreamTaskManager {
     }
 
     private static final class StreamTaskInfo {
+        private final AtomicBoolean registered = new AtomicBoolean(true);
         private final AtomicBoolean cancelled = new AtomicBoolean(false);
+        private final AtomicBoolean cancelEventSent = new AtomicBoolean(false);
         private volatile StreamCancellationHandle handle;
         private volatile RetrievalExecutionContext retrievalExecutionContext;
         private volatile SseEmitterSender sender;
