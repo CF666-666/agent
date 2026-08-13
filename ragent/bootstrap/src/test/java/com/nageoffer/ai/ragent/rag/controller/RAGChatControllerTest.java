@@ -19,6 +19,7 @@ package com.nageoffer.ai.ragent.rag.controller;
 
 import com.nageoffer.ai.ragent.rag.config.RAGDefaultProperties;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import com.nageoffer.ai.ragent.rag.service.RAGChatService;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -41,9 +42,11 @@ class RAGChatControllerTest {
                 true, false, false, false, true);
 
         ArgumentCaptor<RetrievalOptions> optionsCaptor = ArgumentCaptor.forClass(RetrievalOptions.class);
+        ArgumentCaptor<RetrievalExecutionContext> contextCaptor = ArgumentCaptor.forClass(RetrievalExecutionContext.class);
         verify(chatService).streamChat(eq("设备图纸中的阀门位置"), eq("conversation-1"), eq(false),
-                optionsCaptor.capture(), any());
+                optionsCaptor.capture(), any(), contextCaptor.capture());
         assertEquals(new RetrievalOptions(true, false, false, false, true), optionsCaptor.getValue());
+        assertEquals(18_000L, contextCaptor.getValue().budgetMillis());
     }
 
     @Test
@@ -55,13 +58,14 @@ class RAGChatControllerTest {
 
         ArgumentCaptor<RetrievalOptions> optionsCaptor = ArgumentCaptor.forClass(RetrievalOptions.class);
         verify(chatService).streamChat(eq("设备故障原因"), eq(null), eq(false),
-                optionsCaptor.capture(), any());
+                optionsCaptor.capture(), any(), any(RetrievalExecutionContext.class));
         assertEquals(RetrievalOptions.defaults(), optionsCaptor.getValue());
     }
 
     private RAGDefaultProperties properties() {
         RAGDefaultProperties properties = mock(RAGDefaultProperties.class);
         when(properties.getSseTimeoutMs()).thenReturn(1_000L);
+        when(properties.getRetrievalTimeoutMs()).thenReturn(18_000L);
         return properties;
     }
 }

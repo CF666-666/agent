@@ -525,9 +525,7 @@ public class StreamChatPipeline {
         long elapsedMillis = channels.stream()
                 .mapToLong(com.nageoffer.ai.ragent.rag.dto.RetrievalChannelStatus::elapsedMillis)
                 .max().orElse(0L);
-        long budgetMillis = channels.stream()
-                .mapToLong(com.nageoffer.ai.ragent.rag.dto.RetrievalChannelStatus::budgetMillis)
-                .max().orElse(0L);
+        long budgetMillis = executionContext.budgetMillis();
         return Map.of(
                 "timedOut", timedOut,
                 "cancelled", cancelled,

@@ -60,4 +60,11 @@ public class RAGConfigProperties {
      */
     @Value("${rag.query-rewrite.max-history-chars:500}")
     private Integer queryRewriteMaxHistoryChars;
+
+    /**
+     * Query rewrite is an optional pre-processing stage. Keep it bounded so a
+     * slow model cannot consume the complete request-level retrieval budget.
+     */
+    @Value("${rag.query-rewrite.timeout-millis:4500}")
+    private Long queryRewriteTimeoutMillis;
 }

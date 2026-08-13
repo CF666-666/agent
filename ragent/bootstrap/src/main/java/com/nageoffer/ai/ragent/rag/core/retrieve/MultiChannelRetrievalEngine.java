@@ -337,16 +337,16 @@ public class MultiChannelRetrievalEngine {
             long timeoutMillis = effectiveTimeoutMillis();
             if (timeoutMillis <= 0L) {
                 executionContext.timeout();
-                return timeoutResult(channel, budgetMillis, elapsedMillis());
+                return timeoutResult(channel, budgetMillis, timeoutElapsedMillis());
             }
             try {
                 return task.get(timeoutMillis, TimeUnit.MILLISECONDS);
             } catch (java.util.concurrent.TimeoutException ignored) {
                 executionContext.timeout();
-                return timeoutResult(channel, budgetMillis, elapsedMillis());
+                return timeoutResult(channel, budgetMillis, timeoutElapsedMillis());
             } catch (java.util.concurrent.CancellationException ignored) {
                 if (executionContext.state() == RetrievalExecutionContext.State.TIMED_OUT) {
-                    return timeoutResult(channel, budgetMillis, elapsedMillis());
+                    return timeoutResult(channel, budgetMillis, timeoutElapsedMillis());
                 }
                 return cancelledResult(channel, budgetMillis, elapsedMillis());
             } catch (InterruptedException exception) {
@@ -371,6 +371,13 @@ public class MultiChannelRetrievalEngine {
 
         private long elapsedMillis() {
             return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - submittedAtNanos);
+        }
+
+        private long timeoutElapsedMillis() {
+            if (budgetMillis == Long.MAX_VALUE) {
+                return elapsedMillis();
+            }
+            return Math.min(elapsedMillis(), budgetMillis);
         }
     }
 

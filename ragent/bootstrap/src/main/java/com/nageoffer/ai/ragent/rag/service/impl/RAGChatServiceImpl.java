@@ -48,7 +48,6 @@ public class RAGChatServiceImpl implements RAGChatService {
     private final StreamTaskManager taskManager;
 
     @Override
-    @ChatRateLimit
     public void streamChat(String question, String conversationId, Boolean deepThinking,
                            RetrievalOptions options, SseEmitter emitter) {
         streamChat(question, conversationId, deepThinking, options, emitter,
@@ -56,6 +55,7 @@ public class RAGChatServiceImpl implements RAGChatService {
     }
 
     @Override
+    @ChatRateLimit
     public void streamChat(String question, String conversationId, Boolean deepThinking,
                            RetrievalOptions options, SseEmitter emitter,
                            RetrievalExecutionContext executionContext) {

@@ -199,6 +199,7 @@ class MultiChannelRetrievalEngineTest {
                 assertThat(status.channel()).isEqualTo("hypergraph");
                 assertThat(status.status()).isEqualTo("TIMED_OUT");
                 assertThat(status.timedOut()).isTrue();
+                assertThat(status.elapsedMillis()).isLessThanOrEqualTo(50L);
             });
         } finally {
             executor.shutdownNow();

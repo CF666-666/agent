@@ -99,4 +99,28 @@ class RetrievalExecutionContextTest {
             executor.shutdownNow();
         }
     }
+
+    @Test
+    void shouldTimeOutShortStageBudgetWithoutCancellingParentRequest() throws Exception {
+        RetrievalExecutionContext request = RetrievalExecutionContext.withBudgetMillis(1_000L);
+        RetrievalExecutionContext rewrite = request.forkWithBudgetMillis(30L);
+        AtomicBoolean cancelled = new AtomicBoolean();
+        rewrite.register(new CancellableChatCall() {
+            @Override
+            public String execute() {
+                return "unused";
+            }
+
+            @Override
+            public void cancel() {
+                cancelled.set(true);
+            }
+        });
+
+        TimeUnit.MILLISECONDS.sleep(100L);
+
+        assertThat(rewrite.state()).isEqualTo(RetrievalExecutionContext.State.TIMED_OUT);
+        assertThat(request.state()).isEqualTo(RetrievalExecutionContext.State.ACTIVE);
+        assertThat(cancelled).isTrue();
+    }
 }

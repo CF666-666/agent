@@ -54,6 +54,7 @@ rag:
 
   query-rewrite:
     enabled: true
+    timeout-millis: 4500
     max-history-messages: 4
     max-history-chars: 500
 

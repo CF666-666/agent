@@ -35,14 +35,18 @@ public final class RetrievalExecutionContext {
     public enum State { ACTIVE, TIMED_OUT, CANCELLED }
 
     private final long deadlineNanos;
+    private final long budgetMillis;
     private final RetrievalExecutionContext parent;
     private final Set<RetrievalExecutionContext> children = new CopyOnWriteArraySet<>();
     private final Set<Future<?>> futures = new CopyOnWriteArraySet<>();
     private final Set<CancellableChatCall> calls = new CopyOnWriteArraySet<>();
     private final AtomicReference<State> state = new AtomicReference<>(State.ACTIVE);
 
-    private RetrievalExecutionContext(long deadlineNanos, RetrievalExecutionContext parent) {
+    private RetrievalExecutionContext(long deadlineNanos,
+                                      long budgetMillis,
+                                      RetrievalExecutionContext parent) {
         this.deadlineNanos = deadlineNanos;
+        this.budgetMillis = budgetMillis;
         this.parent = parent;
     }
 
@@ -51,19 +55,38 @@ public final class RetrievalExecutionContext {
             return unbounded();
         }
         RetrievalExecutionContext context = new RetrievalExecutionContext(
-                System.nanoTime() + budgetMillis * 1_000_000L, null);
+                System.nanoTime() + budgetMillis * 1_000_000L, budgetMillis, null);
         CompletableFuture.delayedExecutor(budgetMillis, java.util.concurrent.TimeUnit.MILLISECONDS)
                 .execute(context::timeout);
         return context;
     }
 
     public static RetrievalExecutionContext unbounded() {
-        return new RetrievalExecutionContext(Long.MAX_VALUE, null);
+        return new RetrievalExecutionContext(Long.MAX_VALUE, 0L, null);
     }
 
     public RetrievalExecutionContext fork() {
-        RetrievalExecutionContext child = new RetrievalExecutionContext(deadlineNanos, this);
+        return forkWithBudgetMillis(0L);
+    }
+
+    /**
+     * Creates a child with the same request deadline and, when supplied, a
+     * shorter stage-local budget. The child can never outlive its parent.
+     */
+    public RetrievalExecutionContext forkWithBudgetMillis(long requestedBudgetMillis) {
+        long childDeadlineNanos = deadlineNanos;
+        long childBudgetMillis = budgetMillis;
+        if (requestedBudgetMillis > 0L) {
+            long localDeadlineNanos = System.nanoTime() + requestedBudgetMillis * 1_000_000L;
+            childDeadlineNanos = Math.min(deadlineNanos, localDeadlineNanos);
+            childBudgetMillis = Math.min(requestedBudgetMillis, remainingMillis());
+        }
+        RetrievalExecutionContext child = new RetrievalExecutionContext(childDeadlineNanos, childBudgetMillis, this);
         children.add(child);
+        if (childDeadlineNanos != Long.MAX_VALUE && childDeadlineNanos < deadlineNanos) {
+            CompletableFuture.delayedExecutor(childBudgetMillis, java.util.concurrent.TimeUnit.MILLISECONDS)
+                    .execute(child::timeout);
+        }
         State actualState = state();
         if (actualState != State.ACTIVE || (parent != null && !parent.isActive())) {
             child.cancel(actualState == State.ACTIVE ? State.CANCELLED : actualState);
@@ -81,6 +104,10 @@ public final class RetrievalExecutionContext {
 
     public boolean isUnbounded() {
         return deadlineNanos == Long.MAX_VALUE;
+    }
+
+    public long budgetMillis() {
+        return budgetMillis;
     }
 
     public boolean isActive() {

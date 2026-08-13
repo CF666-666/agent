@@ -108,20 +108,22 @@ public class MultiQuestionRewriteService implements QueryRewriteService {
     }
 
     private RewriteResult callLLMRewriteAndSplit(String normalizedQuestion,
-                                                 String originalQuestion,
-                                                 List<ChatMessage> history,
-                                                 RetrievalExecutionContext executionContext) {
+                                                  String originalQuestion,
+                                                  List<ChatMessage> history,
+                                                  RetrievalExecutionContext executionContext) {
         String systemPrompt = promptTemplateLoader.load(QUERY_REWRITE_AND_SPLIT_PROMPT_PATH);
         ChatRequest req = buildRewriteRequest(systemPrompt, normalizedQuestion, history);
+        long timeoutMillis = Math.max(0L, ragConfigProperties.getQueryRewriteTimeoutMillis());
+        RetrievalExecutionContext rewriteContext = executionContext.forkWithBudgetMillis(timeoutMillis);
 
         try {
             CancellableChatCall call = llmService.startChat(req);
-            executionContext.register(call);
+            rewriteContext.register(call);
             String raw;
             try {
                 raw = call.execute();
             } finally {
-                executionContext.unregister(call);
+                rewriteContext.unregister(call);
             }
             RewriteResult parsed = parseRewriteAndSplit(raw);
 
@@ -138,12 +140,17 @@ public class MultiQuestionRewriteService implements QueryRewriteService {
 
             log.warn("查询改写+拆分解析失败，使用归一化问题兜底 - normalizedQuestion={}", normalizedQuestion);
         } catch (java.util.concurrent.CancellationException exception) {
-            throw exception;
+            if (!executionContext.isActive()) {
+                throw exception;
+            }
+            log.warn("查询改写超过 {}ms 子预算，使用归一化问题继续检索", timeoutMillis);
         } catch (Exception e) {
             if (!executionContext.isActive()) {
                 throw new java.util.concurrent.CancellationException("query rewrite was cancelled");
             }
             log.warn("查询改写+拆分 LLM 调用失败，使用归一化问题兜底 - question={}，normalizedQuestion={}", originalQuestion, normalizedQuestion, e);
+        } finally {
+            rewriteContext.close();
         }
 
         // 统一兜底逻辑
