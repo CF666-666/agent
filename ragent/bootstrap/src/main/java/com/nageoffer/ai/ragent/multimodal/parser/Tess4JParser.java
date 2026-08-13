@@ -19,6 +19,7 @@ package com.nageoffer.ai.ragent.multimodal.parser;
 
 import com.nageoffer.ai.ragent.multimodal.parser.dto.FileType;
 import com.nageoffer.ai.ragent.multimodal.parser.dto.ParseResult;
+import com.nageoffer.ai.ragent.multimodal.parser.pdf.OcrPageReader;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.tess4j.Tesseract;
@@ -26,6 +27,7 @@ import net.sourceforge.tess4j.TesseractException;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class Tess4JParser implements MultimodalDocumentParser {
+public class Tess4JParser implements MultimodalDocumentParser, OcrPageReader {
 
     private final Tesseract tesseract;
     private final TessDataDownloader downloader;
@@ -114,6 +116,21 @@ public class Tess4JParser implements MultimodalDocumentParser {
     }
 
     @Override
+    public synchronized String read(BufferedImage pageImage, int pageNumber) {
+        if (!ocrReady) {
+            throw new IllegalStateException(
+                    "OCR 中文语言包未就绪，请检查网络后重启。下载目标: "
+                            + resolveTessDataPath()
+                            + "/chi_sim.traineddata");
+        }
+        try {
+            return tesseract.doOCR(pageImage);
+        } catch (TesseractException exception) {
+            throw new IllegalStateException("Tess4J OCR failed", exception);
+        }
+    }
+
+    @Override
     public List<ParseResult> batchParse(List<File> files) {
         List<ParseResult> results = new ArrayList<>();
         for (File file : files) {
@@ -122,5 +139,4 @@ public class Tess4JParser implements MultimodalDocumentParser {
         return results;
     }
 
-    // TODO: Phase 2+ 多页扫描 PDF → 用 PDFBox 逐页渲染为 BufferedImage，再逐页 OCR
 }
