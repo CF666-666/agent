@@ -58,16 +58,16 @@ rag:
     dimension: 4096
     metric-type: COSINE
     sse-timeout-ms: 300000  # SSE 全局超时（毫秒），默认 5 分钟
-    retrieval-timeout-ms: 18000  # 覆盖改写、意图和检索，预留客户端 20 秒预算收尾
+    retrieval-timeout-ms: 25000  # 覆盖改写、意图和检索；轻量任务已绑定快速模型，预留 25 秒预算
 
   query-rewrite:
     enabled: true
-    timeout-millis: 4500
+    timeout-millis: 10000
     max-history-messages: 4
     max-history-chars: 500
 
   intent-resolve:
-    timeout-millis: 2000
+    timeout-millis: 10000
 
   rate-limit:
     global:
@@ -119,7 +119,7 @@ rag:
         minimum-llm-fallback-budget-millis: 1500
 
   rerank:
-    timeout-millis: 3000
+    timeout-millis: 10000
 
   trace:
     enabled: true

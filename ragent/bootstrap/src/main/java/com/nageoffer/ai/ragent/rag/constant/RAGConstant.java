@@ -53,6 +53,15 @@ public class RAGConstant {
     public static final int MAX_INTENT_COUNT = 3;
 
     /**
+     * 轻量任务（意图分类、查询重写、MCP 参数提取）绑定的模型 ID。
+     * <p>
+     * 这些任务都是低复杂度、短 JSON 输出的同步调用，不应继承默认 32B 大模型
+     * 的长响应；绑定更快的模型可避免在短超时预算内失败而退化为全局检索/原问题。
+     * 该 ID 必须与 {@code ai.chat.candidates[].id} 中声明的候选模型一致。
+     */
+    public static final String LIGHTWEIGHT_TASK_MODEL_ID = "deepseek-v3.2";
+
+    /**
      * Rerank 分数过滤的边际比率（相对于最高分）
      */
     public static final double SCORE_MARGIN_RATIO = 0.75;

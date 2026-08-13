@@ -40,6 +40,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.LIGHTWEIGHT_TASK_MODEL_ID;
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.MCP_PARAMETER_EXTRACT_PROMPT_PATH;
 
 /**
@@ -77,14 +78,15 @@ public class LLMMCPParameterExtractor implements MCPParameterExtractor {
 
         String raw = null;
         try {
-            // 调用 LLM 提取参数
+            // 调用 LLM 提取参数（轻量短 JSON 任务，绑定快速模型并限制输出上限）
             ChatRequest request = ChatRequest.builder()
                     .messages(messages)
                     .temperature(0.1D)
                     .topP(0.3D)
                     .thinking(false)
+                    .maxTokens(512)
                     .build();
-            raw = llmService.chat(request);
+            raw = llmService.chat(request, LIGHTWEIGHT_TASK_MODEL_ID);
             log.info("MCP 参数提取 LLM 响应: {}", raw);
 
             // 解析 JSON 响应

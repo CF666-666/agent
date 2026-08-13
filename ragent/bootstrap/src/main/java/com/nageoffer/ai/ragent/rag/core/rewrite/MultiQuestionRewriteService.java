@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.QUERY_REWRITE_AND_SPLIT_PROMPT_PATH;
+import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.LIGHTWEIGHT_TASK_MODEL_ID;
 
 /**
  * 查询预处理：改写 + 拆分多问句
@@ -55,6 +56,12 @@ public class MultiQuestionRewriteService implements QueryRewriteService {
     private final RAGConfigProperties ragConfigProperties;
     private final QueryTermMappingService queryTermMappingService;
     private final PromptTemplateLoader promptTemplateLoader;
+
+    /**
+     * 改写输出上限（token）。改写结果只包含 rewrite 与 sub_questions 字段，
+     * 512 足够，同时避免默认不设上限导致的超长生成。
+     */
+    private static final int REWRITE_MAX_TOKENS = 512;
 
     @Override
     @RagTraceNode(name = "query-rewrite", type = "REWRITE")
@@ -117,7 +124,7 @@ public class MultiQuestionRewriteService implements QueryRewriteService {
         RetrievalExecutionContext rewriteContext = executionContext.forkWithBudgetMillis(timeoutMillis);
 
         try {
-            CancellableChatCall call = llmService.startChat(req);
+            CancellableChatCall call = llmService.startChat(req, LIGHTWEIGHT_TASK_MODEL_ID);
             rewriteContext.register(call);
             String raw;
             try {
@@ -183,6 +190,7 @@ public class MultiQuestionRewriteService implements QueryRewriteService {
                 .temperature(0.1D)
                 .topP(0.3D)
                 .thinking(false)
+                .maxTokens(REWRITE_MAX_TOKENS)
                 .build();
     }
 

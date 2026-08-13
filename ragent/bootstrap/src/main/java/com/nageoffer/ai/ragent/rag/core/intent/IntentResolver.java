@@ -58,7 +58,7 @@ public class IntentResolver {
 
     public IntentResolver(@Qualifier("defaultIntentClassifier") IntentClassifier intentClassifier,
                           @Qualifier("intentClassifyThreadPoolExecutor") Executor intentClassifyExecutor,
-                          @Value("${rag.intent-resolve.timeout-millis:2000}") long classifyTimeoutMillis) {
+                          @Value("${rag.intent-resolve.timeout-millis:10000}") long classifyTimeoutMillis) {
         this.intentClassifier = intentClassifier;
         this.intentClassifyExecutor = intentClassifyExecutor;
         this.classifyTimeoutMillis = classifyTimeoutMillis;

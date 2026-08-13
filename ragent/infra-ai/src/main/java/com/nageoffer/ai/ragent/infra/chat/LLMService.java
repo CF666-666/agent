@@ -92,11 +92,30 @@ public interface LLMService {
     }
 
     /**
+     * 同步调用（可取消 + 指定模型）
+     * <p>
+     * modelId 为空时等同于 {@link #startChat(ChatRequest)}，走默认路由；
+     * 非空时只使用指定模型，仍走路由层的健康检查与 fallback。
+     * 与 {@link #chat(ChatRequest, String)} 语义对称，供轻量任务（意图分类、查询重写）
+     * 显式绑定快速模型并保持可取消能力。
+     *
+     * @param request ChatRequest 完整配置的请求
+     * @param modelId 指定的模型ID，为空时走默认路由
+     * @return 可取消的同步调用
+     */
+    default CancellableChatCall startChat(ChatRequest request, String modelId) {
+        return CancellableChatCall.from(() -> chat(request, modelId));
+    }
+
+    /**
      * 同步调用（指定模型）
      * <p>
      * 说明：
      * - modelId 为空时等同于 chat(request)，走默认路由
      * - modelId 不为空时只使用指定模型，仍走路由层的健康检查与 fallback
+     * <p>
+     * 注意：本默认实现忽略 modelId 并直接走单参 {@link #chat(ChatRequest)}，
+     * 仅为接口兼容兜底；需要真正绑定模型的实现类（如 RoutingLLMService）必须覆盖本方法。
      *
      * @param request ChatRequest 完整配置的请求
      * @param modelId 指定的模型ID，为空时走默认路由

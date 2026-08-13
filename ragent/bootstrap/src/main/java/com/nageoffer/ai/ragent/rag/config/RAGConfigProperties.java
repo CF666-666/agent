@@ -65,6 +65,6 @@ public class RAGConfigProperties {
      * Query rewrite is an optional pre-processing stage. Keep it bounded so a
      * slow model cannot consume the complete request-level retrieval budget.
      */
-    @Value("${rag.query-rewrite.timeout-millis:4500}")
+    @Value("${rag.query-rewrite.timeout-millis:10000}")
     private Long queryRewriteTimeoutMillis;
 }

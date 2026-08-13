@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.INTENT_CLASSIFIER_PROMPT_PATH;
+import static com.nageoffer.ai.ragent.rag.constant.RAGConstant.LIGHTWEIGHT_TASK_MODEL_ID;
 
 /**
  * LLM 树形意图分类器（串行实现）
@@ -61,6 +62,12 @@ public class DefaultIntentClassifier implements IntentClassifier, IntentNodeRegi
     private final IntentNodeMapper intentNodeMapper;
     private final PromptTemplateLoader promptTemplateLoader;
     private final IntentTreeCacheManager intentTreeCacheManager;
+
+    /**
+     * 意图分类输出上限（token）。分类结果是固定意图 ID + score 的 JSON 数组，
+     * 512 足够容纳当前意图树，同时避免默认不设上限导致的超长生成。
+     */
+    private static final int INTENT_CLASSIFY_MAX_TOKENS = 512;
 
     /**
      * 从Redis加载意图树并构建内存结构
@@ -147,9 +154,10 @@ public class DefaultIntentClassifier implements IntentClassifier, IntentNodeRegi
                 .temperature(0.1D)
                 .topP(0.3D)
                 .thinking(false)
+                .maxTokens(INTENT_CLASSIFY_MAX_TOKENS)
                 .build();
 
-        String raw = llmService.chat(request);
+        String raw = llmService.chat(request, LIGHTWEIGHT_TASK_MODEL_ID);
 
         try {
             // 移除可能的 markdown 代码块标记

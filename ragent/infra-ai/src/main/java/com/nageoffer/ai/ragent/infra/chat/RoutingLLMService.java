@@ -88,12 +88,24 @@ public class RoutingLLMService implements LLMService {
 
     @Override
     public CancellableChatCall startChat(ChatRequest request) {
+        return startChat(request, (String) null);
+    }
+
+    @Override
+    public CancellableChatCall startChat(ChatRequest request, String modelId) {
+        boolean deepThinking = Boolean.TRUE.equals(request.getThinking());
+        List<ModelTarget> targets = StringUtils.hasText(modelId)
+                ? List.of(resolveTarget(modelId, deepThinking))
+                : selector.selectChatCandidates(deepThinking);
+        return buildStartChatCall(request, targets);
+    }
+
+    private CancellableChatCall buildStartChatCall(ChatRequest request, List<ModelTarget> targets) {
         AtomicBoolean cancelled = new AtomicBoolean(false);
         AtomicReference<CancellableChatCall> active = new AtomicReference<>();
         return new CancellableChatCall() {
             @Override
             public String execute() {
-                List<ModelTarget> targets = selector.selectChatCandidates(Boolean.TRUE.equals(request.getThinking()));
                 Throwable last = null;
                 for (ModelTarget target : targets) {
                     if (cancelled.get()) throw new CancellationException("chat request cancelled");
