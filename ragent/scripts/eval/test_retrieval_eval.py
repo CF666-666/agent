@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from retrieval_eval import run_warmups
+from retrieval_eval import execution_status, run_warmups
 
 
 class WarmupRetrievalTest(unittest.TestCase):
@@ -18,7 +18,7 @@ class WarmupRetrievalTest(unittest.TestCase):
 
         def retrieve(query):
             seen_queries.append(query)
-            return [{"id": query}], "received", 12
+            return [{"id": query}], "received", 12, None
 
         warmups = run_warmups(items, 2, retrieve)
 
@@ -38,6 +38,18 @@ class WarmupRetrievalTest(unittest.TestCase):
 
         self.assertEqual([], warmups)
         self.assertEqual([], calls)
+
+    def test_channel_timeout_is_excluded_from_quality_metrics(self):
+        self.assertEqual(
+            "channel_timed_out",
+            execution_status({"channels": [{"status": "TIMED_OUT"}]}, "received"),
+        )
+
+    def test_request_timeout_takes_precedence_over_channel_status(self):
+        self.assertEqual(
+            "timed_out",
+            execution_status({"timedOut": True, "channels": [{"status": "COMPLETED"}]}, "received"),
+        )
 
 
 if __name__ == "__main__":

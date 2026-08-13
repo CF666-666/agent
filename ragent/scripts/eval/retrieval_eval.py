@@ -132,8 +132,12 @@ def execution_status(execution: dict | None, fallback: str) -> str:
     if execution.get("cancelled"):
         return "cancelled"
     channels = execution.get("channels") or []
+    if any(channel.get("status") == "TIMED_OUT" for channel in channels if isinstance(channel, dict)):
+        return "channel_timed_out"
+    if any(channel.get("status") == "CANCELLED" for channel in channels if isinstance(channel, dict)):
+        return "channel_cancelled"
     if any(channel.get("status") == "FAILED" for channel in channels if isinstance(channel, dict)):
-        return "failed"
+        return "channel_failed"
     return "received"
 
 
