@@ -26,6 +26,7 @@ import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -99,7 +100,43 @@ class HyperGraphSearchChannelTest {
                 .containsEntry("bridgeEntities", List.of("轴承温度高"));
         assertThat((List<?>) result.getChunks().get(0).getMetadata().get("relationEvidence"))
                 .hasSize(2);
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> evidence = (List<Map<String, Object>>) result.getChunks().get(0)
+                .getMetadata().get("relationEvidence");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> availability = (Map<String, Object>) evidence.get(0).get("fieldAvailability");
+        assertThat(availability)
+                .containsEntry("hyperEdgeId", "AVAILABLE")
+                .containsEntry("sourceDocument", "AVAILABLE")
+                .containsEntry("sourceChunkId", "AVAILABLE")
+                .containsEntry("sourceChunkIndex", "UNAVAILABLE")
+                .containsEntry("sourcePage", "UNAVAILABLE")
+                .containsEntry("documentVersion", "UNAVAILABLE");
         verify(graph).findRelationPaths(eq(Set.of("1号泵")), eq(2), eq(10), any());
+    }
+
+    @Test
+    void shouldExposeMissingEvidenceFieldsWithoutFabricatingValues() {
+        HyperEdge edge = HyperEdge.builder()
+                .edgeId("edge-demo")
+                .equipment("氧化风机")
+                .sourceDocument("power_energy")
+                .build();
+
+        Map<String, Object> evidence = HyperGraphSearchChannel.buildEvidence(edge);
+
+        assertThat(evidence)
+                .containsEntry("hyperEdgeId", "edge-demo")
+                .containsEntry("sourceDocument", "power_energy")
+                .containsEntry("sourceChunkId", null)
+                .containsEntry("sourceChunkIndex", null)
+                .containsEntry("sourcePage", null);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> availability = (Map<String, Object>) evidence.get("fieldAvailability");
+        assertThat(availability)
+                .containsEntry("sourceChunkId", "UNAVAILABLE")
+                .containsEntry("sourceChunkIndex", "UNAVAILABLE")
+                .containsEntry("sourcePage", "UNAVAILABLE");
     }
 
     @Test

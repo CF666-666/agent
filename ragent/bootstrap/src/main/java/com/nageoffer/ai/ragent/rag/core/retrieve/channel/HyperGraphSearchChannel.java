@@ -249,7 +249,7 @@ public class HyperGraphSearchChannel implements SearchChannel {
                 .collect(java.util.stream.Collectors.joining(" => "));
     }
 
-    private static Map<String, Object> buildEvidence(HyperEdge edge) {
+    static Map<String, Object> buildEvidence(HyperEdge edge) {
         Map<String, Object> evidence = new LinkedHashMap<>();
         evidence.put("hyperEdgeId", edge.getEdgeId());
         evidence.put("sourceDocument", edge.getSourceDocument());
@@ -257,6 +257,9 @@ public class HyperGraphSearchChannel implements SearchChannel {
         evidence.put("sourceChunkIndex", edge.getSourceChunkIndex());
         evidence.put("sourcePage", edge.getSourcePage());
         evidence.put("documentVersion", edge.getDocumentVersion());
+        Map<String, String> availability = new LinkedHashMap<>();
+        evidence.forEach((field, value) -> availability.put(field, value == null ? "UNAVAILABLE" : "AVAILABLE"));
+        evidence.put("fieldAvailability", availability);
         return evidence;
     }
 }

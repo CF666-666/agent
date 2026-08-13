@@ -3,7 +3,13 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from retrieval_eval import execution_status, relation_metric_views, relation_metrics, run_warmups
+from retrieval_eval import (
+    execution_status,
+    relation_evidence_availability,
+    relation_metric_views,
+    relation_metrics,
+    run_warmups,
+)
 
 
 class WarmupRetrievalTest(unittest.TestCase):
@@ -159,6 +165,52 @@ class WarmupRetrievalTest(unittest.TestCase):
             references, ["edge-a"], {"edge-a": "manual-a"})
 
         self.assertFalse(result["source_accuracy"])
+
+    def test_relation_evidence_availability_distinguishes_missing_and_conflicting_fields(self):
+        references = [
+            {"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+                {"hyperEdgeId": "edge-a", "sourceDocument": "manual-a",
+                 "sourceChunkId": None, "sourcePage": None},
+                {"hyperEdgeId": "edge-b", "sourceDocument": "manual-b",
+                 "sourceChunkId": "chunk-2", "sourcePage": 3},
+            ]}},
+            {"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+                {"hyperEdgeId": "edge-b", "sourceDocument": "wrong-manual",
+                 "sourceChunkId": "chunk-2", "sourcePage": 3},
+            ]}},
+        ]
+
+        availability = relation_evidence_availability(references)
+
+        self.assertEqual(
+            {"available": 1, "unavailable": 1, "conflicting": 0},
+            availability["sourceChunkId"],
+        )
+        self.assertEqual(
+            {"available": 1, "unavailable": 0, "conflicting": 1},
+            availability["sourceDocument"],
+        )
+        self.assertEqual(
+            {"available": 1, "unavailable": 1, "conflicting": 0},
+            availability["sourcePage"],
+        )
+
+    def test_relation_evidence_availability_treats_mixed_missing_values_as_conflicting(self):
+        references = [
+            {"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+                {"hyperEdgeId": "edge-a", "sourceDocument": "manual-a"},
+            ]}},
+            {"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+                {"hyperEdgeId": "edge-a", "sourceDocument": None},
+            ]}},
+        ]
+
+        availability = relation_evidence_availability(references)
+
+        self.assertEqual(
+            {"available": 0, "unavailable": 0, "conflicting": 1},
+            availability["sourceDocument"],
+        )
 
 
 if __name__ == "__main__":

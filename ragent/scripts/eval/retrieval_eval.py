@@ -265,12 +265,51 @@ def relation_metrics(references, golden_hyperedge_ids, golden_hyperedge_sources)
         "hyperedge_recall": recall,
         "path_hit": path_hit,
         "source_accuracy": source_accuracy,
+        "evidence_availability": relation_evidence_availability(references),
         "ranked_hyperedge_ids": [
             [str(item.get("hyperEdgeId")) for item in evidence
              if item.get("hyperEdgeId") is not None]
             for evidence in ranked_evidence
         ],
     }
+
+
+RELATION_EVIDENCE_FIELDS = (
+    "hyperEdgeId",
+    "sourceDocument",
+    "sourceChunkId",
+    "sourceChunkIndex",
+    "sourcePage",
+    "documentVersion",
+)
+
+
+def relation_evidence_availability(references):
+    """Count real, missing, and conflicting evidence fields per unique hyperedge."""
+    evidence_by_edge = defaultdict(list)
+    for reference in references:
+        if reference.get("type") != "HYPERGRAPH":
+            continue
+        for item in (reference.get("extra") or {}).get("relationEvidence") or []:
+            if not isinstance(item, dict) or item.get("hyperEdgeId") is None:
+                continue
+            evidence_by_edge[str(item["hyperEdgeId"])].append(item)
+
+    availability = {
+        field: {"available": 0, "unavailable": 0, "conflicting": 0}
+        for field in RELATION_EVIDENCE_FIELDS
+    }
+    for evidence in evidence_by_edge.values():
+        for field in RELATION_EVIDENCE_FIELDS:
+            values = {str(item[field]) for item in evidence if item.get(field) is not None}
+            has_missing = any(item.get(field) is None for item in evidence)
+            status = (
+                "unavailable" if not values
+                else "conflicting" if len(values) > 1 or has_missing
+                else "available"
+            )
+            availability[field][status] += 1
+    return availability
 
 
 def relation_reference_metrics(references, golden_hyperedge_ids):
@@ -502,6 +541,16 @@ def main():
     relation_results = [result for result in quality_results if result["scene"] == "relation"]
     relation_total = len(relation_results)
     def summarize_relation_channel() -> dict:
+        evidence_availability = {
+            field: {
+                status: sum(
+                    result["relation"]["channel"]["evidence_availability"][field][status]
+                    for result in relation_results
+                )
+                for status in ("available", "unavailable", "conflicting")
+            }
+            for field in RELATION_EVIDENCE_FIELDS
+        }
         return {
             "hyperedge_hit_rate": {
                 f"@{k}": round(sum(1 for result in relation_results
@@ -521,6 +570,7 @@ def main():
             "source_accuracy": round(sum(1 for result in relation_results
                                          if result["relation"]["channel"]["source_accuracy"]) / relation_total, 4)
             if relation_total else 0.0,
+            "evidence_availability": evidence_availability,
         }
 
     relation_summary = {
