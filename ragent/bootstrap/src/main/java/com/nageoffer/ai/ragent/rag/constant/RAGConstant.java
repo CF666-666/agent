@@ -117,12 +117,6 @@ public class RAGConstant {
     public static final String CONVERSATION_SUMMARY_PROMPT_PATH = "prompt/conversation-summary.st";
 
     /**
-     * 会话标题生成提示词模板路径
-     * 通过 {@code {title_max_chars}} 与 {@code {question}} 控制标题长度与输入问题
-     */
-    public static final String CONVERSATION_TITLE_PROMPT_PATH = "prompt/conversation-title.st";
-
-    /**
      * 默认 RAG 问答提示词模板路径
      * 用于指导大模型基于检索到的文档内容进行准确回答，包含严格的事实性约束和链接处理规则
      */
