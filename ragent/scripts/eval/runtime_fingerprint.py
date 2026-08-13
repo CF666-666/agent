@@ -93,13 +93,15 @@ def build_execution_fingerprint(
         runner_path: Path,
         profile_path: Path = DEFAULT_PROFILE,
         application_config_path: Path = DEFAULT_APPLICATION_CONFIG,
-        extra: dict[str, Any] | None = None) -> dict[str, Any]:
+        extra: dict[str, Any] | None = None,
+        dependency_paths: list[Path] | None = None) -> dict[str, Any]:
     """Build deterministic provenance without environment secrets or timestamps."""
     profile = load_runtime_profile(profile_path)
     fingerprint: dict[str, Any] = {
         "fingerprint_version": FINGERPRINT_VERSION,
         "runner": file_descriptor(runner_path),
         "evaluation_contract": file_descriptor(SCRIPT_DIR / "evaluation_contract.py"),
+        "dependencies": [file_descriptor(path) for path in (dependency_paths or [])],
         "runtime_profile": {
             **file_descriptor(profile_path),
             "name": profile["name"],

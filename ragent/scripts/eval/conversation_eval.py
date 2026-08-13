@@ -3,6 +3,8 @@
 
 import argparse
 import json
+import re
+import subprocess
 import time
 import urllib.parse
 from pathlib import Path
@@ -24,6 +26,19 @@ from runtime_fingerprint import (
 )
 
 REPORT_SCHEMA_VERSION = 1
+IMAGE_ID_PATTERN = re.compile(r"^sha256:[0-9a-f]{64}$")
+
+
+def running_container_image(container_name: str) -> str:
+    try:
+        image_id = subprocess.check_output(
+            ["docker", "inspect", "--format", "{{.Image}}", container_name],
+            text=True, stderr=subprocess.STDOUT).strip()
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise ValueError(f"cannot inspect backend container {container_name}") from error
+    if not IMAGE_ID_PATTERN.fullmatch(image_id):
+        raise ValueError(f"backend container returned non-immutable image ID: {image_id}")
+    return image_id
 
 
 def elapsed_millis(started_at: float) -> int:
@@ -229,10 +244,15 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--disable-rewrite", action="store_true")
     parser.add_argument("--request-timeout", type=int, default=60)
+    parser.add_argument("--warmup-count", type=int, default=1)
+    parser.add_argument("--backend-container", default="ragent-backend")
     parser.add_argument("--runtime-profile", type=Path, default=DEFAULT_PROFILE)
     parser.add_argument("--application-config", type=Path, default=DEFAULT_APPLICATION_CONFIG)
     args = parser.parse_args()
     items = load_jsonl_dataset(args.dataset, kind="conversation")
+    if args.warmup_count < 0:
+        raise ValueError("warmup count must be greater than or equal to zero")
+    backend_image = running_container_image(args.backend_container)
     token = login(args.base_url, args.username, args.password)
 
     def chat(question: str, conversation_id: str | None) -> dict:
@@ -240,13 +260,39 @@ def main() -> None:
             args.base_url, token, question, conversation_id,
             enable_rewrite=not args.disable_rewrite, timeout=args.request_timeout)
 
+    warmup_results = [run_conversation_case(items[index % len(items)], chat)
+                      for index in range(args.warmup_count)]
     results = [run_conversation_case(item, chat) for item in items]
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,
         "mode": "rewrite-off" if args.disable_rewrite else "rewrite-on",
         "dataset": describe_dataset(args.dataset),
+        "retrieval_options": {
+            "enableRewrite": not args.disable_rewrite,
+            "enableImage": False,
+            "enableHyperGraph": False,
+            "enableFusion": True,
+            "retrievalOnly": False,
+        },
+        "runtime": {
+            "request_timeout_seconds": args.request_timeout,
+            "warmup_count": args.warmup_count,
+            "backend_container": args.backend_container,
+            "backend_image": backend_image,
+        },
         "execution_fingerprint": build_execution_fingerprint(
-            Path(__file__), args.runtime_profile, args.application_config),
+            Path(__file__), args.runtime_profile, args.application_config,
+            dependency_paths=[
+                Path(__file__).with_name("retrieval_eval.py"),
+                Path(__file__).with_name("runtime_fingerprint.py"),
+            ]),
+        "evaluation_slice": {"count": len(items)},
+        "warmup": {
+            "requested_count": args.warmup_count,
+            "executed_count": len(warmup_results),
+            "results": [{"dataset_id": result["dataset_id"], "ok": result["ok"],
+                         "status": result["status"]} for result in warmup_results],
+        },
         "summary": summarize(results),
         "results": results,
     }
