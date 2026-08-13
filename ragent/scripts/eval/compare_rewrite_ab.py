@@ -33,8 +33,8 @@ def validate_pair(off: dict, on: dict) -> None:
     _same(off.get("evaluation_slice"), on.get("evaluation_slice"), "evaluation slice")
     off_warmup, on_warmup = off.get("warmup") or {}, on.get("warmup") or {}
     _same(
-        {key: off_warmup.get(key) for key in ("requested_count", "executed_count")},
-        {key: on_warmup.get(key) for key in ("requested_count", "executed_count")},
+        {key: off_warmup.get(key) for key in ("requested_count", "executed_count", "query")},
+        {key: on_warmup.get(key) for key in ("requested_count", "executed_count", "query")},
         "warmup conditions")
     if not off_warmup.get("results") or not on_warmup.get("results"):
         raise ValueError("A/B warmup results are missing")
@@ -55,9 +55,6 @@ def validate_pair(off: dict, on: dict) -> None:
 def compare(off: dict, on: dict) -> dict:
     validate_pair(off, on)
     off_summary, on_summary = off["summary"], on["summary"]
-    off_hit1 = float(off_summary["hit_rate"]["@1"])
-    on_hit1 = float(on_summary["hit_rate"]["@1"])
-    off_mrr, on_mrr = float(off_summary["mrr"]), float(on_summary["mrr"])
     paired_cases = []
     for left, right in zip(off["results"], on["results"]):
         paired_cases.append({
@@ -67,6 +64,17 @@ def compare(off: dict, on: dict) -> dict:
             "rewrite_on": {"ok": right["ok"], "mrr": right.get("mrr", 0.0)},
             "mrr_delta": round(float(right.get("mrr", 0.0)) - float(left.get("mrr", 0.0)), 4),
         })
+    common = [case for case in paired_cases
+              if case["rewrite_off"]["ok"] and case["rewrite_on"]["ok"]]
+    common_count = len(common)
+    off_mrr = sum(case["rewrite_off"]["mrr"] for case in common) / common_count if common_count else None
+    on_mrr = sum(case["rewrite_on"]["mrr"] for case in common) / common_count if common_count else None
+    off_by_id = {item["dataset_id"]: item for item in off["results"]}
+    on_by_id = {item["dataset_id"]: item for item in on["results"]}
+    off_hit1 = sum(bool(off_by_id[case["dataset_id"]].get("hit", {}).get("1")
+                        or off_by_id[case["dataset_id"]].get("hit", {}).get(1)) for case in common) / common_count if common_count else None
+    on_hit1 = sum(bool(on_by_id[case["dataset_id"]].get("hit", {}).get("1")
+                       or on_by_id[case["dataset_id"]].get("hit", {}).get(1)) for case in common) / common_count if common_count else None
     return {
         "comparison_type": "strict_paired_rewrite_ab",
         "dataset": off["dataset"],
@@ -74,9 +82,19 @@ def compare(off: dict, on: dict) -> dict:
         "execution_fingerprint": off["execution_fingerprint"],
         "rewrite_off_summary": off_summary,
         "rewrite_on_summary": on_summary,
+        "paired_quality_sample_count": common_count,
+        "execution_success_count": {
+            "rewrite_off": sum(bool(item.get("ok")) for item in off["results"]),
+            "rewrite_on": sum(bool(item.get("ok")) for item in on["results"]),
+        },
+        "execution_success_rate": {
+            "total": len(off["results"]),
+            "rewrite_off": round(sum(bool(item.get("ok")) for item in off["results"]) / len(off["results"]), 4),
+            "rewrite_on": round(sum(bool(item.get("ok")) for item in on["results"]) / len(on["results"]), 4),
+        },
         "delta": {
-            "hit_at_1_absolute": round(on_hit1 - off_hit1, 4),
-            "mrr_absolute": round(on_mrr - off_mrr, 4),
+            "hit_at_1_absolute": round(on_hit1 - off_hit1, 4) if common_count else None,
+            "mrr_absolute": round(on_mrr - off_mrr, 4) if common_count else None,
             "mrr_relative": round((on_mrr - off_mrr) / off_mrr, 4) if off_mrr else None,
         },
         "paired_cases": paired_cases,

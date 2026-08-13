@@ -24,6 +24,24 @@ def case(turns=None, target=1):
 
 class ConversationRunnerTest(unittest.TestCase):
 
+    def test_fixed_warmup_must_complete_with_persisted_nonempty_answer(self):
+        success = conversation_eval.run_warmup(
+            "固定预热问题",
+            lambda question, conversation_id: {
+                "conversation_id": "warmup-1", "answer": "预热回答", "references": [],
+                "retrieval_status": "received", "latency_ms": 10, "execution": None,
+                "completed": True, "persisted": True,
+            })
+        self.assertTrue(success["ok"])
+        with self.assertRaisesRegex(RuntimeError, "warmup failed"):
+            conversation_eval.run_warmup(
+                "固定预热问题",
+                lambda question, conversation_id: {
+                    "conversation_id": "warmup-2", "answer": "", "references": [],
+                    "retrieval_status": "timed_out", "latency_ms": 18000, "execution": None,
+                    "completed": False, "persisted": False,
+                })
+
     def test_runs_user_turns_in_one_conversation_and_scores_only_target(self):
         calls = []
 

@@ -27,6 +27,7 @@ from runtime_fingerprint import (
 
 REPORT_SCHEMA_VERSION = 1
 IMAGE_ID_PATTERN = re.compile(r"^sha256:[0-9a-f]{64}$")
+DEFAULT_WARMUP_QUERY = "发电机轴承温度异常升高至95℃以上应如何处理？"
 
 
 def running_container_image(container_name: str) -> str:
@@ -217,6 +218,24 @@ def run_conversation_case(item: dict, chat: Callable[[str, str | None], dict]) -
     raise ValueError("target turn was not executed")
 
 
+def run_warmup(query: str, chat: Callable[[str, str | None], dict]) -> dict:
+    response = chat(query, None)
+    ok = (
+        response.get("retrieval_status") == "received"
+        and response.get("completed") is True
+        and response.get("persisted") is True
+        and bool(str(response.get("answer") or "").strip())
+    )
+    result = {
+        "ok": ok,
+        "status": response.get("retrieval_status"),
+        "latency_ms": response.get("latency_ms"),
+    }
+    if not ok:
+        raise RuntimeError(f"warmup failed: {result}")
+    return result
+
+
 def summarize(results: list[dict]) -> dict:
     quality = [result for result in results if result["ok"]]
     total = len(results)
@@ -245,6 +264,7 @@ def main() -> None:
     parser.add_argument("--disable-rewrite", action="store_true")
     parser.add_argument("--request-timeout", type=int, default=60)
     parser.add_argument("--warmup-count", type=int, default=1)
+    parser.add_argument("--warmup-query", default=DEFAULT_WARMUP_QUERY)
     parser.add_argument("--backend-container", default="ragent-backend")
     parser.add_argument("--runtime-profile", type=Path, default=DEFAULT_PROFILE)
     parser.add_argument("--application-config", type=Path, default=DEFAULT_APPLICATION_CONFIG)
@@ -260,8 +280,7 @@ def main() -> None:
             args.base_url, token, question, conversation_id,
             enable_rewrite=not args.disable_rewrite, timeout=args.request_timeout)
 
-    warmup_results = [run_conversation_case(items[index % len(items)], chat)
-                      for index in range(args.warmup_count)]
+    warmup_results = [run_warmup(args.warmup_query, chat) for _ in range(args.warmup_count)]
     results = [run_conversation_case(item, chat) for item in items]
     report = {
         "schema_version": REPORT_SCHEMA_VERSION,
@@ -277,6 +296,7 @@ def main() -> None:
         "runtime": {
             "request_timeout_seconds": args.request_timeout,
             "warmup_count": args.warmup_count,
+            "warmup_query": args.warmup_query,
             "backend_container": args.backend_container,
             "backend_image": backend_image,
         },
@@ -290,8 +310,8 @@ def main() -> None:
         "warmup": {
             "requested_count": args.warmup_count,
             "executed_count": len(warmup_results),
-            "results": [{"dataset_id": result["dataset_id"], "ok": result["ok"],
-                         "status": result["status"]} for result in warmup_results],
+            "query": args.warmup_query,
+            "results": warmup_results,
         },
         "summary": summarize(results),
         "results": results,

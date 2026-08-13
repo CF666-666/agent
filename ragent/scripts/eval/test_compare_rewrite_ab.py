@@ -26,11 +26,12 @@ def report(rewrite: bool):
         "execution_fingerprint": {"sha256": "f" * 64},
         "evaluation_slice": {"count": 2},
         "warmup": {"requested_count": 1, "executed_count": 1,
-                   "results": [{"dataset_id": "warmup", "ok": True, "status": "received"}]},
+                   "query": "固定预热问题",
+                   "results": [{"ok": True, "status": "received"}]},
         "summary": {"hit_rate": {"@1": 0.5, "@3": 0.5, "@5": 1.0}, "mrr": 0.6},
         "results": [
-            {"dataset_id": "c-1", "target_query": "它呢？", "ok": True, "mrr": 0.5},
-            {"dataset_id": "c-2", "target_query": "这个呢？", "ok": True, "mrr": 0.7},
+            {"dataset_id": "c-1", "target_query": "它呢？", "ok": True, "mrr": 0.5, "hit": {"1": False}},
+            {"dataset_id": "c-2", "target_query": "这个呢？", "ok": True, "mrr": 0.7, "hit": {"1": True}},
         ],
     }
 
@@ -41,8 +42,8 @@ class RewriteAbTest(unittest.TestCase):
         off, on = report(False), report(True)
         on["summary"] = {"hit_rate": {"@1": 1.0, "@3": 1.0, "@5": 1.0}, "mrr": 0.9}
         on["results"] = [
-            {"dataset_id": "c-1", "target_query": "它呢？", "ok": True, "mrr": 1.0},
-            {"dataset_id": "c-2", "target_query": "这个呢？", "ok": True, "mrr": 0.8},
+            {"dataset_id": "c-1", "target_query": "它呢？", "ok": True, "mrr": 1.0, "hit": {"1": True}},
+            {"dataset_id": "c-2", "target_query": "这个呢？", "ok": True, "mrr": 0.8, "hit": {"1": True}},
         ]
 
         comparison = compare_rewrite_ab.compare(off, on)
@@ -50,6 +51,7 @@ class RewriteAbTest(unittest.TestCase):
         self.assertEqual(0.3, comparison["delta"]["mrr_absolute"])
         self.assertEqual(0.5, comparison["delta"]["hit_at_1_absolute"])
         self.assertEqual(2, len(comparison["paired_cases"]))
+        self.assertEqual(2, comparison["paired_quality_sample_count"])
 
     def test_rejects_any_runtime_dataset_or_case_order_mismatch(self):
         mutations = []
@@ -83,6 +85,19 @@ class RewriteAbTest(unittest.TestCase):
         on["warmup"]["results"][0]["ok"] = False
         with self.assertRaisesRegex(ValueError, "warmup must succeed"):
             compare_rewrite_ab.compare(report(False), on)
+
+    def test_quality_delta_uses_only_common_successful_cases(self):
+        off, on = report(False), report(True)
+        off["results"][1]["ok"] = False
+        on["results"][0]["ok"] = False
+
+        comparison = compare_rewrite_ab.compare(off, on)
+
+        self.assertEqual(0, comparison["paired_quality_sample_count"])
+        self.assertIsNone(comparison["delta"]["mrr_absolute"])
+        self.assertEqual({"rewrite_off": 1, "rewrite_on": 1}, comparison["execution_success_count"])
+        self.assertEqual({"total": 2, "rewrite_off": 0.5, "rewrite_on": 0.5},
+                         comparison["execution_success_rate"])
 
 
 if __name__ == "__main__":
