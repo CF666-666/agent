@@ -108,6 +108,9 @@ def build_case(edges: list[dict], index: int, split: str, source_path: Path,
         "golden_source_ids": edge_ids,
         "golden_hyperedge_ids": edge_ids,
         "golden_source_documents": source_documents,
+        "golden_hyperedge_sources": {
+            edge["edgeId"]: edge["sourceDocument"] for edge in edges
+        },
         "business_tags": tags,
         "provenance": {
             "source_file": source_path.resolve().relative_to(DEFAULT_ROOT.resolve()).as_posix(),

@@ -33,6 +33,8 @@ class RelationDatasetTest(unittest.TestCase):
         validate_dataset_split(frozen, "frozen")
         validate_split_isolation(tuning, frozen)
         self.assertTrue(all(case["golden_source_documents"] for case in first))
+        self.assertTrue(all(set(case["golden_hyperedge_sources"])
+                            == set(case["golden_hyperedge_ids"]) for case in first))
 
 
 if __name__ == "__main__":

@@ -206,11 +206,13 @@ def source_id_hit(references, golden_source_ids):
     return False
 
 
-def relation_metrics(references, golden_hyperedge_ids, golden_source_documents):
+def relation_metrics(references, golden_hyperedge_ids, golden_hyperedge_sources):
     """Score structured hypergraph evidence without relying on answer wording."""
     golden_edges = {str(value) for value in (golden_hyperedge_ids or []) if value is not None}
     golden_sources = {
-        str(value) for value in (golden_source_documents or []) if value is not None
+        str(edge_id): str(source)
+        for edge_id, source in (golden_hyperedge_sources or {}).items()
+        if edge_id is not None and source is not None
     }
 
     def evidence_for(reference):
@@ -221,27 +223,29 @@ def relation_metrics(references, golden_hyperedge_ids, golden_source_documents):
         return [item for item in evidence if isinstance(item, dict)]
 
     ranked_evidence = [evidence_for(reference) for reference in references]
+    ranked_edges = []
+    seen_edges = set()
+    for evidence in ranked_evidence:
+        for item in evidence:
+            edge_id = item.get("hyperEdgeId")
+            if edge_id is None or str(edge_id) in seen_edges:
+                continue
+            seen_edges.add(str(edge_id))
+            ranked_edges.append(item)
     hit = {}
     recall = {}
     for k in TOPK:
-        returned = {
-            str(item.get("hyperEdgeId"))
-            for evidence in ranked_evidence[:k]
-            for item in evidence
-            if item.get("hyperEdgeId") is not None
-        }
+        returned = {str(item.get("hyperEdgeId")) for item in ranked_edges[:k]}
         matched = returned & golden_edges
         hit[k] = bool(matched)
         recall[k] = len(matched) / len(golden_edges) if golden_edges else 0.0
 
+    golden_path = [str(value) for value in (golden_hyperedge_ids or [])]
     path_hit = any(
-        golden_edges.issubset({
-            str(item.get("hyperEdgeId"))
-            for item in evidence
-            if item.get("hyperEdgeId") is not None
-        })
+        [str(item.get("hyperEdgeId")) for item in evidence
+         if item.get("hyperEdgeId") is not None] == golden_path
         for evidence in ranked_evidence
-    ) if golden_edges else False
+    ) if golden_path else False
 
     matched_evidence = [
         item
@@ -249,19 +253,50 @@ def relation_metrics(references, golden_hyperedge_ids, golden_source_documents):
         for item in evidence
         if str(item.get("hyperEdgeId")) in golden_edges
     ]
-    matched_sources = {
-        str(item.get("sourceDocument"))
-        for item in matched_evidence
-        if item.get("sourceDocument") is not None
-    }
-    source_accuracy = bool(matched_evidence) and (
-        not golden_sources or bool(matched_sources & golden_sources)
+    evidence_by_edge = defaultdict(set)
+    for item in matched_evidence:
+        if item.get("hyperEdgeId") is not None and item.get("sourceDocument") is not None:
+            evidence_by_edge[str(item.get("hyperEdgeId"))].add(str(item.get("sourceDocument")))
+    source_accuracy = bool(golden_sources) and all(
+        evidence_by_edge.get(edge_id) == {source} for edge_id, source in golden_sources.items()
     )
     return {
         "hyperedge_hit": hit,
         "hyperedge_recall": recall,
         "path_hit": path_hit,
         "source_accuracy": source_accuracy,
+        "ranked_hyperedge_ids": [
+            [str(item.get("hyperEdgeId")) for item in evidence
+             if item.get("hyperEdgeId") is not None]
+            for evidence in ranked_evidence
+        ],
+    }
+
+
+def relation_reference_metrics(references, golden_hyperedge_ids):
+    """Score golden edges by their positions in the final mixed reference list."""
+    golden_edges = {str(value) for value in (golden_hyperedge_ids or [])}
+    hit = {}
+    for k in TOPK:
+        returned = {
+            str(item.get("hyperEdgeId"))
+            for reference in references[:k]
+            for item in ((reference.get("extra") or {}).get("relationEvidence") or [])
+            if isinstance(item, dict) and item.get("hyperEdgeId") is not None
+        }
+        hit[k] = bool(returned & golden_edges)
+    return {"hit": hit}
+
+
+def relation_metric_views(references, golden_hyperedge_ids, golden_hyperedge_sources):
+    """Expose raw hypergraph-channel rank and rank after all-channel composition."""
+    hypergraph_references = [
+        reference for reference in references if reference.get("type") == "HYPERGRAPH"
+    ]
+    return {
+        "channel": relation_metrics(
+            hypergraph_references, golden_hyperedge_ids, golden_hyperedge_sources),
+        "final_reference": relation_reference_metrics(references, golden_hyperedge_ids),
     }
 
 
@@ -424,14 +459,20 @@ def main():
         hits, mrr, channel_hit, source_hit = metrics(
             refs, golden, it.get("expected_channels", []), it.get("golden_source_ids", [])) if ok else (
                 {k: False for k in TOPK}, 0.0, False, False)
-        relation = relation_metrics(
+        relation = relation_metric_views(
             refs,
             it.get("golden_hyperedge_ids", []),
-            it.get("golden_source_documents", []),
+            it.get("golden_hyperedge_sources", {}),
         ) if ok and it.get("scene") == "relation" else None
         results.append({
             "case_id": evaluation_case_id(it),
+            "dataset_id": it.get("id"),
             "query": query, "scene": it.get("scene", ""), "ok": ok,
+            "split": it.get("split", "legacy"),
+            "business_tags": it.get("business_tags", []),
+            "golden_hyperedge_ids": it.get("golden_hyperedge_ids", []),
+            "golden_source_documents": it.get("golden_source_documents", []),
+            "golden_hyperedge_sources": it.get("golden_hyperedge_sources", {}),
             "retrieval_status": retrieval_status, "latency_ms": latency_ms,
             "num_refs": len(refs), "hit": hits, "mrr": mrr,
             "channel_hit": channel_hit,
@@ -460,26 +501,37 @@ def main():
     source_id_hit_rate = sum(1 for r in quality_results if r["source_id_hit"]) / quality_total if quality_total else 0.0
     relation_results = [result for result in quality_results if result["scene"] == "relation"]
     relation_total = len(relation_results)
+    def summarize_relation_channel() -> dict:
+        return {
+            "hyperedge_hit_rate": {
+                f"@{k}": round(sum(1 for result in relation_results
+                                   if result["relation"]["channel"]["hyperedge_hit"][k]) / relation_total, 4)
+                if relation_total else 0.0
+                for k in TOPK
+            },
+            "hyperedge_recall": {
+                f"@{k}": round(sum(result["relation"]["channel"]["hyperedge_recall"][k]
+                                   for result in relation_results) / relation_total, 4)
+                if relation_total else 0.0
+                for k in TOPK
+            },
+            "path_hit_rate": round(sum(1 for result in relation_results
+                                       if result["relation"]["channel"]["path_hit"]) / relation_total, 4)
+            if relation_total else 0.0,
+            "source_accuracy": round(sum(1 for result in relation_results
+                                         if result["relation"]["channel"]["source_accuracy"]) / relation_total, 4)
+            if relation_total else 0.0,
+        }
+
     relation_summary = {
         "quality_sample_count": relation_total,
-        "hyperedge_hit_rate": {
+        "channel": summarize_relation_channel(),
+        "final_reference_hit_rate": {
             f"@{k}": round(sum(1 for result in relation_results
-                               if result["relation"]["hyperedge_hit"][k]) / relation_total, 4)
+                               if result["relation"]["final_reference"]["hit"][k]) / relation_total, 4)
             if relation_total else 0.0
             for k in TOPK
         },
-        "hyperedge_recall": {
-            f"@{k}": round(sum(result["relation"]["hyperedge_recall"][k]
-                               for result in relation_results) / relation_total, 4)
-            if relation_total else 0.0
-            for k in TOPK
-        },
-        "path_hit_rate": round(sum(1 for result in relation_results
-                                   if result["relation"]["path_hit"]) / relation_total, 4)
-        if relation_total else 0.0,
-        "source_accuracy": round(sum(1 for result in relation_results
-                                     if result["relation"]["source_accuracy"]) / relation_total, 4)
-        if relation_total else 0.0,
     }
     summary = {
         "total": total, "quality_sample_count": quality_total, "excluded_execution_count": no_retrieval,

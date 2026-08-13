@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from retrieval_eval import execution_status, relation_metrics, run_warmups
+from retrieval_eval import execution_status, relation_metric_views, relation_metrics, run_warmups
 
 
 class WarmupRetrievalTest(unittest.TestCase):
@@ -81,7 +81,7 @@ class WarmupRetrievalTest(unittest.TestCase):
         result = relation_metrics(
             references,
             ["edge-a", "edge-b"],
-            ["manual-a"],
+            {"edge-a": "manual-a", "edge-b": "manual-a"},
         )
 
         self.assertFalse(result["hyperedge_hit"][1])
@@ -90,6 +90,7 @@ class WarmupRetrievalTest(unittest.TestCase):
         self.assertEqual(1.0, result["hyperedge_recall"][3])
         self.assertTrue(result["path_hit"])
         self.assertTrue(result["source_accuracy"])
+        self.assertEqual([["edge-other"], ["edge-a", "edge-b"]], result["ranked_hyperedge_ids"])
 
     def test_relation_metrics_do_not_accept_unrelated_source(self):
         references = [{
@@ -101,9 +102,62 @@ class WarmupRetrievalTest(unittest.TestCase):
             },
         }]
 
-        result = relation_metrics(references, ["edge-a"], ["manual-a"])
+        result = relation_metrics(references, ["edge-a"], {"edge-a": "manual-a"})
 
         self.assertTrue(result["hyperedge_hit"][1])
+        self.assertFalse(result["source_accuracy"])
+
+    def test_relation_metric_views_separate_channel_rank_from_final_rank(self):
+        references = [
+            {"type": "TEXT", "extra": {}},
+            {"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+                {"hyperEdgeId": "edge-a", "sourceDocument": "manual-a"}
+            ]}},
+        ]
+
+        views = relation_metric_views(references, ["edge-a"], {"edge-a": "manual-a"})
+
+        self.assertTrue(views["channel"]["hyperedge_hit"][1])
+        self.assertFalse(views["final_reference"]["hit"][1])
+        self.assertTrue(views["final_reference"]["hit"][3])
+
+    def test_relation_metrics_require_exact_ordered_path(self):
+        references = [{"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+            {"hyperEdgeId": "edge-b", "sourceDocument": "manual-a"},
+            {"hyperEdgeId": "edge-a", "sourceDocument": "manual-a"},
+        ]}}]
+
+        result = relation_metrics(
+            references, ["edge-a", "edge-b"],
+            {"edge-a": "manual-a", "edge-b": "manual-a"})
+
+        self.assertFalse(result["path_hit"])
+
+    def test_relation_metrics_require_every_edge_source_mapping(self):
+        references = [{"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+            {"hyperEdgeId": "edge-a", "sourceDocument": "manual-a"},
+            {"hyperEdgeId": "edge-b", "sourceDocument": "wrong-manual"},
+        ]}}]
+
+        result = relation_metrics(
+            references, ["edge-a", "edge-b"],
+            {"edge-a": "manual-a", "edge-b": "manual-b"})
+
+        self.assertFalse(result["source_accuracy"])
+
+    def test_relation_metrics_reject_conflicting_duplicate_edge_sources(self):
+        references = [
+            {"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+                {"hyperEdgeId": "edge-a", "sourceDocument": "manual-a"}
+            ]}},
+            {"type": "HYPERGRAPH", "extra": {"relationEvidence": [
+                {"hyperEdgeId": "edge-a", "sourceDocument": "wrong-manual"}
+            ]}},
+        ]
+
+        result = relation_metrics(
+            references, ["edge-a"], {"edge-a": "manual-a"})
+
         self.assertFalse(result["source_accuracy"])
 
 

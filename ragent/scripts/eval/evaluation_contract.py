@@ -103,6 +103,15 @@ def validate_single_turn_record(record: dict[str, Any], location: str = "record"
         if "golden_source_documents" in record:
             _non_empty_string_list(
                 record.get("golden_source_documents"), location, "golden_source_documents")
+        sources = record.get("golden_hyperedge_sources")
+        if sources is not None:
+            if not isinstance(sources, dict) or not sources:
+                _fail(location, "golden_hyperedge_sources must be a non-empty object")
+            expected_ids = set(record["golden_hyperedge_ids"])
+            if set(sources) != expected_ids:
+                _fail(location, "golden_hyperedge_sources keys must equal golden_hyperedge_ids")
+            for edge_id, source in sources.items():
+                _non_empty_string(source, location, f"golden_hyperedge_sources[{edge_id}]")
 
 
 def validate_conversation_record(record: dict[str, Any], location: str = "record") -> None:
