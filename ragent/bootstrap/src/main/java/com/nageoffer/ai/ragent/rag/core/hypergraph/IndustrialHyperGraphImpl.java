@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 工业超图引擎实现
@@ -284,15 +285,20 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
             for (Map.Entry<Integer, Integer> seed : seeds) {
                 ensureActive(active, "relation path lookup was cancelled");
                 paths.put("edge:" + seed.getKey(), new RelationPath(
-                        List.of(hyperEdges.get(seed.getKey())), List.of(), seed.getValue()));
+                        List.of(hyperEdges.get(seed.getKey())), List.of(),
+                        relationCoverageCount(List.of(hyperEdges.get(seed.getKey())), normalizedQueries)));
             }
             if (maxHops == 2) {
                 addTwoHopPaths(normalizedQueries, seeds, paths, active);
             }
             return paths.values().stream()
-                    .sorted(Comparator.comparingInt(RelationPath::score).reversed()
-                            .thenComparing(Comparator.comparingInt(RelationPath::hopCount).reversed()))
+                    .map(path -> rankRelationPath(path, normalizedQueries))
+                    .sorted(Comparator.comparingInt(RelationPathRank::coverage).reversed()
+                            .thenComparingInt(rank -> rank.path().hopCount())
+                            .thenComparing(Comparator.comparingDouble(RelationPathRank::weightedScore).reversed())
+                            .thenComparing(RelationPathRank::stableKey))
                     .limit(maxPaths)
+                    .map(RelationPathRank::path)
                     .toList();
         } finally {
             lock.readLock().unlock();
@@ -416,13 +422,73 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
                     if (secondEdgeIndex == firstEdgeIndex) {
                         continue;
                     }
-                    String pathKey = "path:" + Math.min(firstEdgeIndex, secondEdgeIndex)
-                            + ':' + Math.max(firstEdgeIndex, secondEdgeIndex);
+                    HyperEdge first = hyperEdges.get(firstEdgeIndex);
+                    HyperEdge second = hyperEdges.get(secondEdgeIndex);
+                    List<HyperEdge> orderedEdges = orderRelationEdges(first, second, queryEntities);
+                    String pathKey = "path:" + relationPairKey(first, second);
                     paths.putIfAbsent(pathKey, new RelationPath(
-                            List.of(hyperEdges.get(firstEdgeIndex), hyperEdges.get(secondEdgeIndex)),
-                            List.of(bridgeEntity), seed.getValue() + 1));
+                            orderedEdges,
+                            List.of(bridgeEntity),
+                            relationCoverageCount(orderedEdges, queryEntities)));
                 }
             }
         }
+    }
+
+    private int relationCoverageCount(List<HyperEdge> path, Set<String> queryEntities) {
+        Set<String> covered = new HashSet<>();
+        for (HyperEdge edge : path) {
+            for (String entity : indexableEntityValues(edge)) {
+                if (queryEntities.contains(entity)) {
+                    covered.add(entity);
+                }
+            }
+        }
+        return covered.size();
+    }
+
+    private double relationWeightedScore(RelationPath path, Set<String> queryEntities) {
+        return path.hyperEdges().stream()
+                .mapToDouble(edge -> matchScorer.score(edge, queryEntities))
+                .sum();
+    }
+
+    private String relationPathStableKey(RelationPath path) {
+        return path.hyperEdges().stream()
+                .map(this::relationEdgeStableKey)
+                .collect(Collectors.joining("->"));
+    }
+
+    private RelationPathRank rankRelationPath(RelationPath path, Set<String> queryEntities) {
+        return new RelationPathRank(
+                path,
+                path.score(),
+                relationWeightedScore(path, queryEntities),
+                relationPathStableKey(path));
+    }
+
+    private List<HyperEdge> orderRelationEdges(HyperEdge first, HyperEdge second, Set<String> queryEntities) {
+        Comparator<HyperEdge> order = Comparator
+                .comparingInt((HyperEdge edge) -> relationCoverageCount(List.of(edge), queryEntities)).reversed()
+                .thenComparing(Comparator.comparingDouble(
+                        (HyperEdge edge) -> matchScorer.score(edge, queryEntities)).reversed())
+                .thenComparing(this::relationEdgeStableKey);
+        return order.compare(first, second) <= 0 ? List.of(first, second) : List.of(second, first);
+    }
+
+    private String relationPairKey(HyperEdge first, HyperEdge second) {
+        return Stream.of(relationEdgeStableKey(first), relationEdgeStableKey(second))
+                .sorted()
+                .collect(Collectors.joining("|"));
+    }
+
+    private String relationEdgeStableKey(HyperEdge edge) {
+        if (edge.getEdgeId() != null && !edge.getEdgeId().isBlank()) {
+            return "id:" + edge.getEdgeId();
+        }
+        return "entity:" + indexableEntityValues(edge).stream().sorted().collect(Collectors.joining("|"));
+    }
+
+    private record RelationPathRank(RelationPath path, int coverage, double weightedScore, String stableKey) {
     }
 }

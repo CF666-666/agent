@@ -152,4 +152,35 @@ class IndustrialHyperGraphNormalizationTest {
         assertEquals(List.of("equipment-edge", "condition-edge"),
                 matches.stream().map(match -> match.hyperEdge().getEdgeId()).toList());
     }
+
+    @Test
+    void shouldPreferCompactSingleEdgeWhenTwoHopPathAddsNoQueryCoverage() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+        graph.addHyperedges(List.of(
+                HyperEdge.builder().edgeId("edge-target").equipment("氧化风机").fault("压力异常").build(),
+                HyperEdge.builder().edgeId("edge-noise").condition("压力异常").fault("无关故障").build()));
+
+        List<IndustrialHyperGraph.RelationPath> paths = graph.findRelationPaths(Set.of("氧化风机"), 2, 10);
+
+        assertEquals(List.of("edge-target"),
+                paths.get(0).hyperEdges().stream().map(HyperEdge::getEdgeId).toList());
+    }
+
+    @Test
+    void shouldPreferTwoHopPathThatCoversBothQueryEndpoints() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+        graph.addHyperedges(List.of(
+                HyperEdge.builder().edgeId("edge-a").equipment("储罐").fault("静电异常").build(),
+                HyperEdge.builder().edgeId("edge-b").condition("静电异常").parameter("液位").build(),
+                HyperEdge.builder().edgeId("edge-noise").equipment("储罐").fault("腐蚀").build()));
+
+        List<IndustrialHyperGraph.RelationPath> paths = graph.findRelationPaths(Set.of("储罐", "液位"), 2, 10);
+
+        assertEquals(List.of("edge-a", "edge-b"),
+                paths.get(0).hyperEdges().stream().map(HyperEdge::getEdgeId).toList());
+    }
 }
