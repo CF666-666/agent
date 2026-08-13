@@ -28,7 +28,7 @@
 ## 四、核心亮点(面试可展开,每条都有真实代码支撑)
 
 ### 1. 多模态 RAG 升级:让系统"看得懂图纸"
-- 三路解析管道:`PdfBoxParser`(电子 PDF)+ `Tess4JParser`(OCR 扫描件)+ `QwenVLImageParser`(图纸语义描述,工业引导 Prompt)。
+- 三路解析管道：PDF 逐页评估文本质量与视觉覆盖率，电子页走 PDFBox、扫描/低质量页选择性调用 Tesseract OCR，空白页显式标记；Qwen-VL 负责图纸语义描述。页码、解析策略和触发原因随 Chunk 入库并可在检查点恢复。
 - 图像独立向量通道:`ImageSearchChannel` 在 Milvus `industrial_images` 集合检索,回答时把原始图纸作为 IMAGE 引用一并输出。
 
 ### 2. 超图推理引擎:补足向量检索"只认相似、不懂关系"的短板

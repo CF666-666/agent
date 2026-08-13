@@ -41,6 +41,7 @@ public class MultimodalParseOutputProjector implements NodeOutputProjector {
         Map<String, Object> output = new LinkedHashMap<>();
         output.put("mimeType", context.getMimeType());
         output.put("rawText", context.getRawText());
+        output.put("pdfParseResult", context.getPdfParseResult());
         output.put("metadata", context.getMetadata());
         return output;
     }

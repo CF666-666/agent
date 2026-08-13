@@ -39,7 +39,7 @@
 - `ConditionEvaluator` 支持 SpEL 字符串条件和 JSON `all/any/not/field` 规则。
 - `IngestionEngine` 已具备路径环检测、节点执行日志和链式执行能力。
 - 入库任务通过流水线、流水线节点、任务、任务节点 4 类持久化对象支撑前端管理和节点日志。
-- 已实现 PDFBox、Tesseract OCR、Qwen-VL 多模态解析，以及图像独立 Milvus 集合和 `ImageSearchChannel`。
+- 已实现 PDFBox、Tesseract OCR、Qwen-VL 多模态解析，以及图像独立 Milvus 集合和 `ImageSearchChannel`；PDF 支持按页识别电子/扫描/空白页，仅对扫描或低质量文本页执行 OCR，并保留页级来源。
 - 已实现工业 N 元超边、LLM Few-shot 抽取、正则降级、实体到超边倒排索引、读写锁和 `HyperGraphSearchChannel`。
 - 已实现意图、向量、图像、超图四路检索，以及去重、多源归一化加权、Rerank 和 SSE `references`。
 - 已具备检索 Hit Rate/MRR Runner 和 RAGAS 生成质量评测脚本。
@@ -470,6 +470,12 @@ score = 实体命中率
 - [x] 记录四种通道配置的可复现基线结果；
 - [x] 完成 R0-E schema v3 四场景运行、合并一致性校验与归档；
 - [ ] 修复超图查询可用性后，以相同 R0-E 配置获取非降级质量基线；当前 100/100 为超图通道超时，不能计入 Hit@K/MRR。
+
+### R1：PDF 按页智能解析
+
+- [x] 完成页级策略模型、PDFBox 分析、选择性 OCR、失败传播与页图释放；
+- [x] 接入多模态入库节点，页级结果进入检查点，Chunk 保留页码/策略/原因；
+- [x] 完成真实混合 PDF 的分析、渲染、路由与分块验收，R1 聚合 28 项测试通过。
 
 ### P1：ETL 引擎
 

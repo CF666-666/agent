@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.ingestion.domain.context;
 
 import com.nageoffer.ai.ragent.core.chunk.VectorChunk;
+import com.nageoffer.ai.ragent.multimodal.parser.pdf.DocumentParseResult;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorSpaceId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,8 @@ public class IngestionCheckpoint {
 
     private String rawText;
 
+    private DocumentParseResult pdfParseResult;
+
     private StructuredDocument document;
 
     private List<VectorChunk> chunks;
@@ -57,6 +60,7 @@ public class IngestionCheckpoint {
     public static IngestionCheckpoint from(IngestionContext context) {
         return IngestionCheckpoint.builder()
                 .rawText(context.getRawText())
+                .pdfParseResult(context.getPdfParseResult())
                 .document(context.getDocument())
                 .chunks(context.getChunks())
                 .enhancedText(context.getEnhancedText())
@@ -69,6 +73,7 @@ public class IngestionCheckpoint {
 
     public void restoreTo(IngestionContext context) {
         context.setRawText(rawText);
+        context.setPdfParseResult(pdfParseResult);
         context.setDocument(document);
         context.setChunks(chunks);
         context.setEnhancedText(enhancedText);

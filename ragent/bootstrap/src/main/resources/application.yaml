@@ -42,6 +42,14 @@ milvus:
   uri: http://localhost:19530
 
 rag:
+  multimodal:
+    pdf:
+      policy-version: pdf-routing-v1
+      minimum-effective-characters: 20
+      minimum-valid-character-ratio: 0.50
+      maximum-mojibake-ratio: 0.15
+      minimum-visual-coverage-ratio: 0.02
+      render-dpi: 200
   vector:
     type: milvus  # 可选 milvus / pg
 

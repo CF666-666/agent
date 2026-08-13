@@ -26,6 +26,8 @@ import com.nageoffer.ai.ragent.multimodal.parser.PdfBoxParser;
 import com.nageoffer.ai.ragent.multimodal.parser.QwenVLImageParser;
 import com.nageoffer.ai.ragent.multimodal.parser.Tess4JParser;
 import com.nageoffer.ai.ragent.multimodal.parser.dto.FileType;
+import com.nageoffer.ai.ragent.multimodal.parser.pdf.PdfPageParser;
+import com.nageoffer.ai.ragent.multimodal.parser.pdf.PdfParseMode;
 import com.nageoffer.ai.ragent.multimodal.retrieval.image.ImageIngestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -51,6 +53,7 @@ public class MultimodalDocumentParserNode implements IngestionNode {
     private final Tess4JParser tess4JParser;
     private final QwenVLImageParser qwenVLImageParser;
     private final ImageIngestionService imageIngestionService;
+    private final PdfPageParser pdfPageParser;
 
     /** 显式路由表：FileType → Parser */
     private final Map<FileType, MultimodalDocumentParser> routing;
@@ -58,11 +61,13 @@ public class MultimodalDocumentParserNode implements IngestionNode {
     public MultimodalDocumentParserNode(PdfBoxParser pdfBoxParser,
                                         Tess4JParser tess4JParser,
                                         QwenVLImageParser qwenVLImageParser,
-                                        ImageIngestionService imageIngestionService) {
+                                        ImageIngestionService imageIngestionService,
+                                        PdfPageParser pdfPageParser) {
         this.pdfBoxParser = pdfBoxParser;
         this.tess4JParser = tess4JParser;
         this.qwenVLImageParser = qwenVLImageParser;
         this.imageIngestionService = imageIngestionService;
+        this.pdfPageParser = pdfPageParser;
         this.routing = Map.of(
                 FileType.PDF_ELECTRONIC, pdfBoxParser,
                 FileType.PDF_SCANNED,    tess4JParser,
@@ -100,6 +105,21 @@ public class MultimodalDocumentParserNode implements IngestionNode {
             Files.write(tmp, rawBytes);
             File tmpFile = tmp.toFile();
 
+            if (fileType == FileType.PDF_ELECTRONIC || fileType == FileType.PDF_SCANNED) {
+                PdfParseMode mode = resolvePdfMode(config);
+                var pageResult = pdfPageParser.parse(tmpFile, mode);
+                context.setPdfParseResult(pageResult);
+                context.setRawText(pageResult.mergedText());
+                Map<String, Object> meta = mutableMetadata(context);
+                meta.put("multimodalParser", PdfPageParser.class.getSimpleName());
+                meta.put("multimodalFileType", fileType.name());
+                meta.put("pdfParseMode", mode.name());
+                meta.put("pdfPolicyVersion", pageResult.policyVersion());
+                meta.put("pdfPageCount", pageResult.pages().size());
+                meta.put("pdfOcrPages", pageResult.ocrPageNumbers());
+                return NodeResult.ok("PDF 按页解析完成: " + pageResult.pages().size() + " 页");
+            }
+
             // 全限定类名避免与 core.parser.ParseResult 冲突
             com.nageoffer.ai.ragent.multimodal.parser.dto.ParseResult mmResult =
                     parser.parse(tmpFile, fileType);
@@ -107,11 +127,7 @@ public class MultimodalDocumentParserNode implements IngestionNode {
             // 写回 context 原生字段
             context.setRawText(mmResult.getTextContent());
 
-            Map<String, Object> meta = context.getMetadata();
-            if (meta == null) {
-                meta = new HashMap<>();
-                context.setMetadata(meta);
-            }
+            Map<String, Object> meta = mutableMetadata(context);
             if (mmResult.getVisualDescription() != null) {
                 meta.put("visualDescription", mmResult.getVisualDescription());
             }
@@ -146,6 +162,25 @@ public class MultimodalDocumentParserNode implements IngestionNode {
         }
 
         return NodeResult.ok();
+    }
+
+    private PdfParseMode resolvePdfMode(NodeConfig config) {
+        if (config == null || config.getSettings() == null) {
+            return PdfParseMode.AUTO;
+        }
+        String configured = config.getSettings().path("pdfMode").asText("AUTO");
+        try {
+            return PdfParseMode.valueOf(configured.trim().toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Unsupported pdfMode: " + configured, exception);
+        }
+    }
+
+    private Map<String, Object> mutableMetadata(IngestionContext context) {
+        Map<String, Object> existing = context.getMetadata();
+        Map<String, Object> mutable = existing == null ? new HashMap<>() : new HashMap<>(existing);
+        context.setMetadata(mutable);
+        return mutable;
     }
 
     /**

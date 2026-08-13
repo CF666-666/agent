@@ -20,6 +20,7 @@ package com.nageoffer.ai.ragent.ingestion.domain.context;
 import com.nageoffer.ai.ragent.core.chunk.VectorChunk;
 import com.nageoffer.ai.ragent.ingestion.domain.enums.IngestionStatus;
 import com.nageoffer.ai.ragent.rag.core.vector.VectorSpaceId;
+import com.nageoffer.ai.ragent.multimodal.parser.pdf.DocumentParseResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -74,6 +75,9 @@ public class IngestionContext {
      * 解析后的原始文本内容
      */
     private String rawText;
+
+    /** Typed page-level PDF evidence retained for page-aware chunking and recovery. */
+    private DocumentParseResult pdfParseResult;
 
     /**
      * 结构化解析后的文档对象
