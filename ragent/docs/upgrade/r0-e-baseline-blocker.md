@@ -1,6 +1,6 @@
 # R0-E 受控基线阻塞记录
 
-更新时间：2026-08-12。
+更新时间：2026-08-13。
 
 ## 已完成的可复现性准备
 
@@ -16,14 +16,40 @@
 
 2026-08-12 23:14～23:17 已在修复后的 Docker 镜像上完成一次真实启动验收：期间出现 3 次 10 秒网络超时，均在首次有界重试后由同一 `qwen-emb-8b` 调用恢复；最终日志记录 `input=210, embedded=210, persisted=210`，并完成 12 条图像入库和全量完成记录。该启动已形成稳定索引快照；此前 `50/210`、`100/210` 或其他部分入库记录仍不得归档或引用。
 
-当前剩余工作是基于该稳定索引运行四类 schema v3 评测并归档。
+稳定索引下的四类 schema v3 评测与归档已完成，结果见本文件“R0-E-2”。
+
+## R0-E-1：检索预算与取消传播（已完成）
+
+在首次受控全链路评测中，超图通道的实体抽取可持续运行约 45 秒；评测客户端已在 20 秒超时返回，但服务端检索任务仍继续占用线程。该现象使后续样本受到前序残留任务干扰，因此该批原始报告不得合并或归档。
+
+本闭环只修复执行可靠性，不调整实体抽取、关系路径排序或召回策略：
+
+1. 请求进入服务端时创建基于 `System.nanoTime()` 的唯一绝对 deadline，覆盖改写、意图解析、子问题并发和多通道检索；
+2. 超图通道使用独立可配置预算，实际预算取通道预算与请求剩余时间的较小值；超时取消通道 Future，并把取消传递到同步 LLM HTTP 调用；
+3. 客户端断开或主动停止时取消整个请求下未完成的检索任务；超图超时仅降级该通道，保留其他真实证据；
+4. 新增 `retrieval_status` SSE 事件，在 `references` 之前发送请求汇总与通道/子问题明细。`references` 只保留真实证据，不写入空占位；
+5. 评测脚本读取该事件。只有 `COMPLETED` 样本进入 Hit@K/MRR；`TIMED_OUT`、`CANCELLED`、`FAILED` 单列执行可靠性指标，同时保留总样本数和排除数。
+
+验收：阻塞超图任务预算耗尽后底层取消句柄被调用、活动任务归零、下一条请求可立即获得执行机会；请求级取消同样终止未完成通道；状态事件顺序为 `retrieval_status → references → finish/done`。
+
+实现已于 2026-08-13 完成：请求入口建立统一单调 deadline；改写超时按剩余预算降级到规范化 query；超图通道采用独立 7 秒预算；`retrieval_status` 输出请求级及通道级明细；评测器把 `TIMED_OUT`、`CANCELLED`、`FAILED` 与正常零命中分离。定向 Java 测试 9 项及 Python 评测分类回归 4 项通过。
+
+## R0-E-2：真实四场景运行与归档（已完成，但质量门禁阻塞）
+
+- 运行集：`industrial_eval_v2.jsonl`，100 条（事实/口语/图纸/关系各 25 条），SHA-256：`75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc`；
+- 运行标签：`R0-E-controlled-full-chain`；运行时标签：`r0e-stable-index-deadline`；执行指纹：`c51bdb2a03de75c3d3a14a654cda84ca7db12882edfbecc7df84dda94144a4fd`；
+- 运行配置：`retrievalOnly=true`，改写、图像、超图、融合均开启；请求 deadline 18 秒，超图预算 7 秒；
+- 归档目录：`scripts/eval/report/baselines/r0e-20260813-degraded-full-chain/`。归档器已复算四份原始报告并验证数据集、标签、开关和执行指纹一致。
+
+结果：100/100 样本均出现 `channel_timed_out`，无可计分质量样本；P50/P95 为 12.917s/14.570s。根因是超图通道的 LLM 实体抽取超过 7 秒预算；其他通道的真实引用仍被正常输出。此结果是有效的**执行可靠性基线**，但不是可用于 Hit@K/MRR 的质量基线。
 
 ## 收口条件
 
-1. 用 R0-E 固定参数运行 `fact/colloquial/image/relation` 四个 schema v3 原始分片，并由 `merge_eval_reports.py` 合并；
-2. 使用 `archive_baseline.py` 归档到 `scripts/eval/report/baselines/<run-id>/`；
-3. 仅在归档成功后，把该目录及摘要写入路线图和评测报告。
+1. ✅ 用 R0-E 固定参数运行 `fact/colloquial/image/relation` 四个 schema v3 原始分片，并由 `merge_eval_reports.py` 合并；
+2. ✅ 使用 `archive_baseline.py` 归档到 `scripts/eval/report/baselines/r0e-20260813-degraded-full-chain/`；
+3. ✅ 把归档目录及摘要写入路线图和评测报告；
+4. ⛔ 在相同执行配置下，先解决超图通道可用性，再获得非空质量样本并关闭 R0-E 的质量门禁。
 
 ## 非结论
 
-本记录不报告任何 Hit@K、MRR、延迟或“提升”结论；历史报告中的数字也不因本记录而获得新的简历使用资格。
+本记录不报告任何 Hit@K、MRR 或“提升”结论；本次 P50/P95 仅描述降级执行状态，不得写入简历。历史报告中的数字也不因本记录而获得新的简历使用资格。

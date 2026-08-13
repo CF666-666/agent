@@ -1,0 +1,1461 @@
+{
+  "schema_version": 3,
+  "mode": "rewrite-on",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "R0-E-controlled-full-chain",
+    "enableRewrite": true,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "r0e-stable-index-deadline",
+    "request_timeout_seconds": 20
+  },
+  "execution_fingerprint": {
+    "fingerprint_version": 1,
+    "runner": {
+      "path": "scripts/eval/retrieval_eval.py",
+      "sha256": "cf3c1896a62eb7981aa82ce348ee537f54d86979d7cba6f3e325cdf76c1a3f6f"
+    },
+    "evaluation_contract": {
+      "path": "scripts/eval/evaluation_contract.py",
+      "sha256": "857d79450ef079216d4423d93b35b0cea02e9004651ef32763826e73cebdba9d"
+    },
+    "runtime_profile": {
+      "path": "scripts/eval/runtime-profiles/local-default.json",
+      "sha256": "849ffc178ef791d2dd29dd3d87f7e4d4d4e35bfd0c8155db8862cf5941ddf76b",
+      "name": "local-ragent-default",
+      "configured_models": {
+        "chat": {
+          "model_id": "qwen3-32b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-32B"
+        },
+        "embedding": {
+          "model_id": "qwen-emb-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Embedding-8B"
+        },
+        "rerank": {
+          "model_id": "qwen3-reranker-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Reranker-8B"
+        }
+      }
+    },
+    "application_config": {
+      "path": "bootstrap/src/main/resources/application.yaml",
+      "sha256": "e2d5ccfe1144d116c7d8e9588adc82f3a7c5a0fb07fcbda482633c84ea011056"
+    },
+    "git": {
+      "revision": "2424df83a76e34b0178a8aedfac4651c7df6bb9f",
+      "worktree_dirty": true
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.14.2"
+    },
+    "sha256": "c51bdb2a03de75c3d3a14a654cda84ca7db12882edfbecc7df84dda94144a4fd"
+  },
+  "evaluation_slice": {
+    "scenes": "fact",
+    "offset": 0,
+    "limit": 0,
+    "count": 25
+  },
+  "warmup": {
+    "requested_count": 1,
+    "executed_count": 1,
+    "results": [
+      {
+        "case_id": "8bb3c0716361c4bbb1ce69e58477ffb6461377c7c807cb13874c12b6f37e0312",
+        "retrieval_status": "channel_timed_out",
+        "latency_ms": 13680,
+        "num_refs": 10,
+        "execution": {
+          "budgetMillis": 18000,
+          "cancelled": false,
+          "channels": [
+            {
+              "question": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+              "channel": "VectorGlobalSearch",
+              "status": "COMPLETED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 541
+            },
+            {
+              "question": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+              "channel": "图像语义检索",
+              "status": "COMPLETED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 525
+            },
+            {
+              "question": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+              "channel": "超图N元关系检索",
+              "status": "TIMED_OUT",
+              "timedOut": true,
+              "cancelled": true,
+              "budgetMillis": 7000,
+              "elapsedMillis": 7000
+            }
+          ],
+          "elapsedMillis": 7000,
+          "timedOut": false
+        }
+      }
+    ]
+  },
+  "summary": {
+    "total": 25,
+    "quality_sample_count": 0,
+    "excluded_execution_count": 25,
+    "hit_rate": {
+      "@1": 0.0,
+      "@3": 0.0,
+      "@5": 0.0
+    },
+    "mrr": 0.0,
+    "expected_channel_hit_rate": 0.0,
+    "source_id_hit_rate": 0.0,
+    "latency": {
+      "p50_ms": 13094,
+      "p95_ms": 14579,
+      "max_ms": 14586
+    },
+    "retrieval_status_counts": {
+      "channel_timed_out": 25
+    },
+    "by_scene": {
+      "fact": {
+        "count": 25,
+        "quality_sample_count": 0,
+        "hit_rate": {
+          "@1": 0.0,
+          "@3": 0.0,
+          "@5": 0.0
+        },
+        "mrr": 0.0,
+        "expected_channel_hit_rate": 0.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 13094,
+          "p95_ms": 14579,
+          "max_ms": 14586
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "8bb3c0716361c4bbb1ce69e58477ffb6461377c7c807cb13874c12b6f37e0312",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 13307,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 341
+          },
+          {
+            "question": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 313
+          },
+          {
+            "question": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "0b2b36937ffbc9a9612100dac2a64f8f2a939cbc2edd891643e1bac98adae690",
+      "query": "液压系统应如何进行定期保养？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 14579,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "液压系统应如何进行定期保养？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10010
+          },
+          {
+            "question": "液压系统应如何进行定期保养？",
+            "channel": "图像语义检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 3000,
+            "elapsedMillis": 3000
+          },
+          {
+            "question": "液压系统应如何进行定期保养？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 10010,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "0ea584f3d1f391990303fc6dde07ea36ffd4dc57e19825aafa342e86ab39a69e",
+      "query": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 13713,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2479
+          },
+          {
+            "question": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 476
+          },
+          {
+            "question": "压缩机润滑油系统泄漏时应采取哪些安全措施？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "88f28f7d58429cbf9b3598c27d837cc5d770fb3b201c4d3aed3b6cdc9b443611",
+      "query": "转炉兑铁前必须完成哪些安全确认步骤？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 12767,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "转炉兑铁前必须完成哪些安全确认步骤？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 172
+          },
+          {
+            "question": "转炉兑铁前必须完成哪些安全确认步骤？",
+            "channel": "图像语义检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 3000,
+            "elapsedMillis": 3000
+          },
+          {
+            "question": "转炉兑铁前必须完成哪些安全确认步骤？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "998535743288986d91e116e8d6f44886f3ad4a03cb9c04ffceac2d7f11e32790",
+      "query": "热轧机换辊操作的标准流程是什么？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 14586,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "热轧机换辊操作的标准流程是什么？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1799
+          },
+          {
+            "question": "热轧机换辊操作的标准流程是什么？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 181
+          },
+          {
+            "question": "热轧机换辊操作的标准流程是什么？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "84010fef94448cc365ff89d2cce7556b2835df31f72ae44225d5b880c506b32d",
+      "query": "操作人员进入反应釜内部检修有何安全要求？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 12915,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "操作人员进入反应釜内部检修有何安全要求？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1171
+          },
+          {
+            "question": "操作人员进入反应釜内部检修有何安全要求？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1167
+          },
+          {
+            "question": "操作人员进入反应釜内部检修有何安全要求？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1f64e719c0e128563feb5177999034b6d89c6a91ecea214616d07f35370b9d88",
+      "query": "泵在低流量下长时间运行有何风险？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 13129,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "泵在低流量下长时间运行有何风险？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 185
+          },
+          {
+            "question": "泵在低流量下长时间运行有何风险？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 167
+          },
+          {
+            "question": "泵在低流量下长时间运行有何风险？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "85390c62b0b643ed22c49951632fe76e09c8bcef8117be09e3b97ed55d366da9",
+      "query": "进入焦炉地下室进行检修时，必须遵守哪些安全规范？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 13823,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "进入焦炉地下室进行检修时，必须遵守哪些安全规范？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 148
+          },
+          {
+            "question": "进入焦炉地下室进行检修时，必须遵守哪些安全规范？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1529
+          },
+          {
+            "question": "进入焦炉地下室进行检修时，必须遵守哪些安全规范？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "f1e1b5d54a0c977786d48ed896b49d34c3288eeb1b9a86192498206805a8a4b6",
+      "query": "裂解炉正常运行时如何调节负荷？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 14570,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "裂解炉正常运行时如何调节负荷？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 168
+          },
+          {
+            "question": "裂解炉正常运行时如何调节负荷？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 138
+          },
+          {
+            "question": "裂解炉正常运行时如何调节负荷？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e3575588fb13048ce83d1251ed14af9620640354613a8d8919fc8e78b9bbfe71",
+      "query": "烧结机头尾密封装置的日常维护要点是什么？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 14558,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烧结机头尾密封装置的日常维护要点是什么？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10002
+          },
+          {
+            "question": "烧结机头尾密封装置的日常维护要点是什么？",
+            "channel": "图像语义检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 3000,
+            "elapsedMillis": 3000
+          },
+          {
+            "question": "烧结机头尾密封装置的日常维护要点是什么？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 10002,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e3272d5ff298538f78f179028ab6194b7530c2284c2d7736fd552ade73231597",
+      "query": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 11578,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1
+          },
+          {
+            "question": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          },
+          {
+            "question": "锅炉安全阀校验周期和起跳压力设定标准是什么？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "b5ae11c9105bb3588b4968bbc78f5705311ad27466f6c5a841f8e9324a1193aa",
+      "query": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 11561,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1
+          },
+          {
+            "question": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          },
+          {
+            "question": "在发电机附近作业时应遵守哪些安全距离和防护要求？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "873a7c5dd09355676a8efb3c28a66358e7caebbf4520eb430a795810d538acdf",
+      "query": "反应过程中如何控制升温速率？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 11544,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "反应过程中如何控制升温速率？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1
+          },
+          {
+            "question": "反应过程中如何控制升温速率？",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          },
+          {
+            "question": "反应过程中如何控制升温速率？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "816d37bfa0f303fc238e6fa59f9168cba8c3a48f3ae7e2891057f950528342c0",
+      "query": "高炉休风复风时如何控制风量恢复节奏？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 11575,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "高炉休风复风时如何控制风量恢复节奏？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1
+          },
+          {
+            "question": "高炉休风复风时如何控制风量恢复节奏？",
+            "channel": "图像语义检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 3000,
+            "elapsedMillis": 3000
+          },
+          {
+            "question": "高炉休风复风时如何控制风量恢复节奏？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1e0f633f7ab486a6a43c02cf654530bf0327f198f995cec7c58447170c3aa01d",
+      "query": "冷轧机工作辊的日常维护要点有哪些？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 11647,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷轧机工作辊的日常维护要点有哪些？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          },
+          {
+            "question": "冷轧机工作辊的日常维护要点有哪些？",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          },
+          {
+            "question": "冷轧机工作辊的日常维护要点有哪些？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "bd0364a7d1b8441be73cb894832e93c4a54a109c649ef5c2e51ef765544acc02",
+      "query": "冷却塔风机振动异常增大，可能原因有哪些？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 11592,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷却塔风机振动异常增大，可能原因有哪些？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1
+          },
+          {
+            "question": "冷却塔风机振动异常增大，可能原因有哪些？",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          },
+          {
+            "question": "冷却塔风机振动异常增大，可能原因有哪些？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e4a7f0d03faf6181c2e17385e9fc4de97eea6d5458ed9d687989f25a4f6215ee",
+      "query": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 11542,
+      "num_refs": 5,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1
+          },
+          {
+            "question": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2588
+          },
+          {
+            "question": "焦炉出炉操作中，如何判断焦饼成熟度是否达标？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "b4bc21e7ddf1462d49d4fe323420913a59b7ae3380c8fd961cebd3c5e994f8f1",
+      "query": "精馏塔出现液泛现象如何诊断和处理？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 14570,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "精馏塔出现液泛现象如何诊断和处理？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 187
+          },
+          {
+            "question": "精馏塔出现液泛现象如何诊断和处理？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 155
+          },
+          {
+            "question": "精馏塔出现液泛现象如何诊断和处理？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "c95376ae5aedd603b8276f8512e062ee54e6a2f890005535ad50d287fc6b6852",
+      "query": "脱硫塔启动前应执行哪些关键操作步骤？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 13095,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "脱硫塔启动前应执行哪些关键操作步骤？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 302
+          },
+          {
+            "question": "脱硫塔启动前应执行哪些关键操作步骤？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 173
+          },
+          {
+            "question": "脱硫塔启动前应执行哪些关键操作步骤？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "850fb7d32faa4cd45da2aee7bb3c4e2108c20eeb704bd3b2f2372dcc18b4bc53",
+      "query": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 12914,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 343
+          },
+          {
+            "question": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 309
+          },
+          {
+            "question": "烧结机点火炉区域动火作业需满足哪些安全条件？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "5aab2d989c2134d336d77b4f9ef2f77d4efc15582fc5eb7401a94a97676e2d25",
+      "query": "离心式压缩机出现喘振现象如何判断和处理？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 14553,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "离心式压缩机出现喘振现象如何判断和处理？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10015
+          },
+          {
+            "question": "离心式压缩机出现喘振现象如何判断和处理？",
+            "channel": "图像语义检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 3000,
+            "elapsedMillis": 3000
+          },
+          {
+            "question": "离心式压缩机出现喘振现象如何判断和处理？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 10015,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "cb6a02e37ababf27fa3e4ddd53bcc0004fb44fcd35e4492da10d299fd7468bd5",
+      "query": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 13094,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 205
+          },
+          {
+            "question": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 130
+          },
+          {
+            "question": "汽轮机冷态启动时，冲转前需满足哪些关键参数条件？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "80783d70d306193672f6116ce3edae70a703d8617d9295296d65b960c6ec1eed",
+      "query": "变压器停运超过7天重新投运前需做哪些检查？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 12893,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "变压器停运超过7天重新投运前需做哪些检查？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 180
+          },
+          {
+            "question": "变压器停运超过7天重新投运前需做哪些检查？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1835
+          },
+          {
+            "question": "变压器停运超过7天重新投运前需做哪些检查？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "0c4c28c9c40e59d2764d42261dd0270996c5ea1eab958eed3b7c4298c62d46bc",
+      "query": "启动发电机前必须执行哪些操作步骤？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 14551,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "启动发电机前必须执行哪些操作步骤？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10003
+          },
+          {
+            "question": "启动发电机前必须执行哪些操作步骤？",
+            "channel": "图像语义检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 3000,
+            "elapsedMillis": 3000
+          },
+          {
+            "question": "启动发电机前必须执行哪些操作步骤？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 10003,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1f894fa75f7bbc71b8fb759f48c5f74fa2258caf59f812075d911ecb20420748",
+      "query": "精馏塔区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": false,
+      "retrieval_status": "channel_timed_out",
+      "latency_ms": 12862,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "execution": {
+        "budgetMillis": 18000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "精馏塔区域动火作业需满足哪些安全条件？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 165
+          },
+          {
+            "question": "精馏塔区域动火作业需满足哪些安全条件？",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 152
+          },
+          {
+            "question": "精馏塔区域动火作业需满足哪些安全条件？",
+            "channel": "超图N元关系检索",
+            "status": "TIMED_OUT",
+            "timedOut": true,
+            "cancelled": true,
+            "budgetMillis": 7000,
+            "elapsedMillis": 7000
+          }
+        ],
+        "elapsedMillis": 7000,
+        "timedOut": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "baseline_archive_version": 1,
+  "purpose": "pre-feature controlled retrieval baseline",
+  "backend_image": "sha256:cd4317d817633bdfa9c02e31ddf39c55cbc2fb9a330fff74cbd1ff720e1f7d29",
+  "service_url": "http://localhost:9090/api/ragent",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_eval_v2.jsonl",
+    "sha256": "75db65ee7f95df7bdaae1ff050989b17cf7585de06546dac6900cbb35b3e77cc"
+  },
+  "retrieval_options": {
+    "label": "R0-E-controlled-full-chain",
+    "enableRewrite": true,
+    "enableImage": true,
+    "enableHyperGraph": true,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "r0e-stable-index-deadline",
+    "request_timeout_seconds": 20
+  },
+  "execution_fingerprint": {
+    "fingerprint_version": 1,
+    "runner": {
+      "path": "scripts/eval/retrieval_eval.py",
+      "sha256": "cf3c1896a62eb7981aa82ce348ee537f54d86979d7cba6f3e325cdf76c1a3f6f"
+    },
+    "evaluation_contract": {
+      "path": "scripts/eval/evaluation_contract.py",
+      "sha256": "857d79450ef079216d4423d93b35b0cea02e9004651ef32763826e73cebdba9d"
+    },
+    "runtime_profile": {
+      "path": "scripts/eval/runtime-profiles/local-default.json",
+      "sha256": "849ffc178ef791d2dd29dd3d87f7e4d4d4e35bfd0c8155db8862cf5941ddf76b",
+      "name": "local-ragent-default",
+      "configured_models": {
+        "chat": {
+          "model_id": "qwen3-32b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-32B"
+        },
+        "embedding": {
+          "model_id": "qwen-emb-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Embedding-8B"
+        },
+        "rerank": {
+          "model_id": "qwen3-reranker-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Reranker-8B"
+        }
+      }
+    },
+    "application_config": {
+      "path": "bootstrap/src/main/resources/application.yaml",
+      "sha256": "e2d5ccfe1144d116c7d8e9588adc82f3a7c5a0fb07fcbda482633c84ea011056"
+    },
+    "git": {
+      "revision": "2424df83a76e34b0178a8aedfac4651c7df6bb9f",
+      "worktree_dirty": true
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.14.2"
+    },
+    "sha256": "c51bdb2a03de75c3d3a14a654cda84ca7db12882edfbecc7df84dda94144a4fd"
+  },
+  "raw_reports": [
+    {
+      "file": "fact.json",
+      "sha256": "4baf3d521b0d7c6c879e77747adc541d0453b8aa0f109036f81d0ed970b2f5a1"
+    },
+    {
+      "file": "colloquial.json",
+      "sha256": "ac893a8e05febf9a61f42bf6158719540497597899f5f583bf93f766cfa98d80"
+    },
+    {
+      "file": "image.json",
+      "sha256": "d81055894f5e8b244b91d6fd530760b152acaf978daf39c576c669e5c08044c1"
+    },
+    {
+      "file": "relation.json",
+      "sha256": "960b9d3e4f199b4b6b5286d5fbcf02c600d9871ca175b31b38abddf232119b75"
+    }
+  ],
+  "merged_report": {
+    "file": "merged.json",
+    "sha256": "a89186c6536c5f3955187beff796f5c0a908705fa47c574c492980f49e259ecb"
+  },
+  "reproduction": {
+    "runner": "scripts/eval/retrieval_eval.py",
+    "merge_runner": "scripts/eval/merge_eval_reports.py",
+    "contract_check": "scripts/eval/evaluation_contract.py",
+    "notes": "Run the commands in commands.md; never record API keys in this archive."
+  }
+}

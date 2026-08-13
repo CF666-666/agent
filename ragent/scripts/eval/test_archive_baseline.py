@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from archive_baseline import BaselineArchiveError, archive
+from merge_eval_reports import merge_documents
 
 
 def report(scene: str, case_id: str) -> dict:
@@ -39,20 +40,8 @@ class BaselineArchiveTest(unittest.TestCase):
             raw_path = root / "raw.json"
             merged_path = root / "merged.json"
             raw = report("fact", "case-001")
-            merged = {**raw, "batch_reports": [str(raw_path)],
-                      "batch_slices": [raw["evaluation_slice"]],
-                      "summary": {"total": 1, "no_retrieval": 0,
-                                  "hit_rate": {"@1": 1.0, "@3": 1.0, "@5": 1.0},
-                                  "mrr": 1.0, "expected_channel_hit_rate": 1.0,
-                                  "source_id_hit_rate": 1.0,
-                                  "latency": {"p50_ms": 10, "p95_ms": 10, "max_ms": 10},
-                                  "retrieval_status_counts": {"received": 1},
-                                  "by_scene": {"fact": {"count": 1,
-                                      "hit_rate": {"@1": 1.0, "@3": 1.0, "@5": 1.0},
-                                      "mrr": 1.0, "expected_channel_hit_rate": 1.0,
-                                      "source_id_hit_rate": 1.0,
-                                      "latency": {"p50_ms": 10, "p95_ms": 10, "max_ms": 10}}}}}
             self.write_json(raw_path, raw)
+            merged = merge_documents([raw], [raw_path])
             self.write_json(merged_path, merged)
 
             manifest = archive([raw_path], merged_path, root / "archive", "sha256:image", "http://service")
