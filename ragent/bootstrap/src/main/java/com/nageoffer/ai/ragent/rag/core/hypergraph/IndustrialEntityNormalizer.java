@@ -18,6 +18,7 @@
 package com.nageoffer.ai.ragent.rag.core.hypergraph;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -28,4 +29,13 @@ public interface IndustrialEntityNormalizer {
     String normalize(String entity);
 
     Set<String> normalizeAll(Collection<String> entities);
+
+    /** Query mention forms mapped to canonical index keys. */
+    default Map<String, String> mentionForms(Collection<String> canonicalEntities) {
+        java.util.LinkedHashMap<String, String> forms = new java.util.LinkedHashMap<>();
+        for (String canonical : normalizeAll(canonicalEntities)) {
+            forms.put(canonical, canonical);
+        }
+        return forms;
+    }
 }

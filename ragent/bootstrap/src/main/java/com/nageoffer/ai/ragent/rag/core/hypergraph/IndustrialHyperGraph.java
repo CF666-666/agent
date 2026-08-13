@@ -20,6 +20,7 @@ package com.nageoffer.ai.ragent.rag.core.hypergraph;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.function.BooleanSupplier;
 
 /**
  * 工业超图引擎接口
@@ -134,6 +135,30 @@ public interface IndustrialHyperGraph {
      * supports one or two hyperedges and preserves each edge's source evidence.
      */
     List<RelationPath> findRelationPaths(Set<String> queryEntities, int maxHops, int maxPaths);
+
+    default List<RelationPath> findRelationPaths(
+            Set<String> queryEntities,
+            int maxHops,
+            int maxPaths,
+            BooleanSupplier active) {
+        if (active == null || !active.getAsBoolean()) {
+            throw new java.util.concurrent.CancellationException("relation path lookup was cancelled");
+        }
+        return findRelationPaths(queryEntities, maxHops, maxPaths);
+    }
+
+    /**
+     * Returns entities from the current in-memory index that are explicitly
+     * mentioned by the query. This local seam is used before remote entity
+     * extraction so common indexed entities do not consume LLM latency.
+     */
+    default Set<String> findMentionedEntities(String query) {
+        return findMentionedEntities(query, () -> true);
+    }
+
+    default Set<String> findMentionedEntities(String query, BooleanSupplier active) {
+        return Set.of();
+    }
 
     /**
      * 将超边展开为自然语言文本（模板方法，0 API 消耗）

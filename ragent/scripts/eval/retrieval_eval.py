@@ -138,6 +138,8 @@ def execution_status(execution: dict | None, fallback: str) -> str:
         return "channel_cancelled"
     if any(channel.get("status") == "FAILED" for channel in channels if isinstance(channel, dict)):
         return "channel_failed"
+    if any(channel.get("status") == "DEGRADED" for channel in channels if isinstance(channel, dict)):
+        return "channel_degraded"
     return "received"
 
 

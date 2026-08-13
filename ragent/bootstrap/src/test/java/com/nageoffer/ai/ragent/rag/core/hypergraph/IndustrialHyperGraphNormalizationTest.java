@@ -43,6 +43,50 @@ class IndustrialHyperGraphNormalizationTest {
         assertEquals(2, result.matchCount());
         assertEquals("1号鼓风机", result.hyperEdge().getEquipment());
         assertEquals("过载跳闸", result.hyperEdge().getFault());
+        assertEquals(Set.of("1号鼓风机", "过载跳闸"),
+                graph.findMentionedEntities("风机1号为什么跳机"));
+    }
+
+    @Test
+    void shouldIgnoreSingleCharacterIndexEntitiesDuringLocalMentionMatching() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+        graph.addHyperedges(List.of(HyperEdge.builder().equipment("泵").fault("高").build()));
+
+        assertEquals(Set.of(), graph.findMentionedEntities("泵体温度升高"));
+    }
+
+    @Test
+    void shouldRecognizeDistinctiveTwoCharacterChineseFaults() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+        graph.addHyperedges(List.of(HyperEdge.builder().equipment("循环泵").fault("跳闸").build()));
+
+        assertEquals(Set.of("循环泵", "跳闸"), graph.findMentionedEntities("循环泵为何跳闸"));
+    }
+
+    @Test
+    void shouldNotMatchAsciiEntityInsideLongerIdentifier() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+        graph.addHyperedges(List.of(HyperEdge.builder().equipment("fan-a").fault("overheat").build()));
+
+        assertEquals(Set.of(), graph.findMentionedEntities("fan-ab is unavailable"));
+        assertEquals(Set.of("fan-a"), graph.findMentionedEntities("check fan-a now"));
+    }
+
+    @Test
+    void shouldCancelLocalMatchingEvenWhenMentionSnapshotIsEmpty() {
+        ConfigurableIndustrialEntityNormalizer normalizer = new ConfigurableIndustrialEntityNormalizer();
+        IndustrialHyperGraph graph = new IndustrialHyperGraphImpl(null, normalizer,
+                new ConfigurableHyperEdgeMatchScorer(normalizer));
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                java.util.concurrent.CancellationException.class,
+                () -> graph.findMentionedEntities("anything", () -> false));
     }
 
     @Test

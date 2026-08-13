@@ -110,11 +110,38 @@ public class HyperGraphSearchChannel implements SearchChannel {
         try {
             log.info("{} 检索开始: query={}, topK={}", CHANNEL_NAME, query, TOP_K);
 
-            // Step 1: 实体抽取
-            Set<String> entities = context.getExecutionContext().isUnbounded()
-                    ? entityExtractor.extractFromQuery(query)
-                    : entityExtractor.extractFromQuery(query, context.getExecutionContext());
-            log.debug("实体抽取完成: query={}, entities={}", query, entities);
+            // Step 1: prefer deterministic entities already present in the local index.
+            Set<String> entities = hyperGraph.findMentionedEntities(
+                    query, context.getExecutionContext()::isActive);
+            String extractionMode = "LOCAL_INDEX";
+            if (entities.isEmpty()) {
+                long minimumFallbackBudget = properties.getChannels()
+                        .getHyperGraph()
+                        .getMinimumLlmFallbackBudgetMillis();
+                long remainingMillis = context.getExecutionContext().remainingMillis();
+                if (!context.getExecutionContext().isUnbounded()
+                        && remainingMillis < minimumFallbackBudget) {
+                    long latency = System.currentTimeMillis() - start;
+                    log.info("{} 剩余预算不足，跳过远程实体抽取。remaining={}ms, minimum={}ms",
+                            CHANNEL_NAME, remainingMillis, minimumFallbackBudget);
+                    return SearchChannelResult.builder()
+                            .channelType(SearchChannelType.HYPERGRAPH)
+                            .channelName(CHANNEL_NAME)
+                            .chunks(Collections.emptyList())
+                            .latencyMs(latency)
+                            .metadata(Map.of(
+                                    "status", "DEGRADED",
+                                    "entityExtractionMode", "SKIPPED_BUDGET",
+                                    "remainingBudgetMillis", remainingMillis,
+                                    "minimumLlmFallbackBudgetMillis", minimumFallbackBudget))
+                            .build();
+                }
+                extractionMode = "LLM_FALLBACK";
+                entities = context.getExecutionContext().isUnbounded()
+                        ? entityExtractor.extractFromQuery(query)
+                        : entityExtractor.extractFromQuery(query, context.getExecutionContext());
+            }
+            log.debug("实体抽取完成: query={}, mode={}, entities={}", query, extractionMode, entities);
 
             if (entities.isEmpty()) {
                 long latency = System.currentTimeMillis() - start;
@@ -124,11 +151,13 @@ public class HyperGraphSearchChannel implements SearchChannel {
                         .channelName(CHANNEL_NAME)
                         .chunks(Collections.emptyList())
                         .latencyMs(latency)
+                        .metadata(Map.of("entityExtractionMode", extractionMode))
                         .build();
             }
 
             // Step 2: 超图子图匹配
-            List<RelationPath> matched = hyperGraph.findRelationPaths(entities, 2, TOP_K);
+            List<RelationPath> matched = hyperGraph.findRelationPaths(
+                    entities, 2, TOP_K, context.getExecutionContext()::isActive);
             log.debug("关系路径匹配完成: entityCount={}, pathCount={}", entities.size(), matched.size());
 
             // Step 3: 超边展开为自然语言 → RetrievedChunk
@@ -167,6 +196,7 @@ public class HyperGraphSearchChannel implements SearchChannel {
                     .channelName(CHANNEL_NAME)
                     .chunks(chunks)
                     .latencyMs(latency)
+                    .metadata(Map.of("entityExtractionMode", extractionMode))
                     .build();
         } catch (java.util.concurrent.CancellationException exception) {
             throw exception;

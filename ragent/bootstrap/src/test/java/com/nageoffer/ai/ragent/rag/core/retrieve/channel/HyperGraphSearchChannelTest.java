@@ -20,6 +20,8 @@ package com.nageoffer.ai.ragent.rag.core.retrieve.channel;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.EntityExtractor;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.HyperEdge;
 import com.nageoffer.ai.ragent.rag.core.hypergraph.IndustrialHyperGraph;
+import com.nageoffer.ai.ragent.rag.config.SearchChannelProperties;
+import com.nageoffer.ai.ragent.rag.core.retrieve.RetrievalExecutionContext;
 import com.nageoffer.ai.ragent.rag.dto.RetrievalOptions;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +29,10 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -76,7 +81,7 @@ class HyperGraphSearchChannelTest {
         HyperEdge second = HyperEdge.builder().edgeId("edge-2").condition("轴承温度高")
                 .fault("润滑不足").sourceDocument("lube-sop.pdf").sourceChunkId("lube#7").build();
         when(extractor.extractFromQuery("1号泵怎么处理")).thenReturn(Set.of("1号泵"));
-        when(graph.findRelationPaths(Set.of("1号泵"), 2, 10)).thenReturn(List.of(
+        when(graph.findRelationPaths(eq(Set.of("1号泵")), eq(2), eq(10), any())).thenReturn(List.of(
                 new IndustrialHyperGraph.RelationPath(List.of(first, second), List.of("轴承温度高"), 2)));
         when(graph.expandToText(first)).thenReturn("1号泵，轴承温度高");
         when(graph.expandToText(second)).thenReturn("轴承温度高，润滑不足");
@@ -94,6 +99,73 @@ class HyperGraphSearchChannelTest {
                 .containsEntry("bridgeEntities", List.of("轴承温度高"));
         assertThat((List<?>) result.getChunks().get(0).getMetadata().get("relationEvidence"))
                 .hasSize(2);
-        verify(graph).findRelationPaths(Set.of("1号泵"), 2, 10);
+        verify(graph).findRelationPaths(eq(Set.of("1号泵")), eq(2), eq(10), any());
+    }
+
+    @Test
+    void shouldUseIndexedEntitiesWithoutCallingRemoteExtractor() {
+        IndustrialHyperGraph graph = mock(IndustrialHyperGraph.class);
+        EntityExtractor extractor = mock(EntityExtractor.class);
+        HyperEdge edge = HyperEdge.builder().edgeId("edge-local")
+                .equipment("1号鼓风机").fault("跳闸").build();
+        when(graph.findMentionedEntities(eq("1号鼓风机为什么跳闸"), any()))
+                .thenReturn(Set.of("1号鼓风机", "跳闸"));
+        when(graph.findRelationPaths(eq(Set.of("1号鼓风机", "跳闸")), eq(2), eq(10), any()))
+                .thenReturn(List.of(new IndustrialHyperGraph.RelationPath(List.of(edge), List.of(), 2)));
+        when(graph.expandToText(edge)).thenReturn("1号鼓风机导致跳闸");
+        HyperGraphSearchChannel channel = new HyperGraphSearchChannel(graph, extractor);
+
+        SearchChannelResult result = channel.search(SearchContext.builder()
+                .originalQuestion("1号鼓风机为什么跳闸")
+                .retrievalOptions(RetrievalOptions.defaults())
+                .build());
+
+        assertThat(result.getChunks()).hasSize(1);
+        assertThat(result.getMetadata()).containsEntry("entityExtractionMode", "LOCAL_INDEX");
+        verify(extractor, never()).extractFromQuery("1号鼓风机为什么跳闸");
+    }
+
+    @Test
+    void shouldUseRemoteExtractorOnlyWhenLocalIndexHasNoMention() {
+        IndustrialHyperGraph graph = mock(IndustrialHyperGraph.class);
+        EntityExtractor extractor = mock(EntityExtractor.class);
+        RetrievalExecutionContext execution = RetrievalExecutionContext.withBudgetMillis(5000);
+        when(graph.findMentionedEntities(eq("这个异常如何处理"), any())).thenReturn(Set.of());
+        when(extractor.extractFromQuery("这个异常如何处理", execution)).thenReturn(Set.of("轴承过热"));
+        when(graph.findRelationPaths(eq(Set.of("轴承过热")), eq(2), eq(10), any())).thenReturn(List.of());
+        HyperGraphSearchChannel channel = new HyperGraphSearchChannel(
+                graph, extractor, new SearchChannelProperties());
+
+        SearchChannelResult result = channel.search(SearchContext.builder()
+                .originalQuestion("这个异常如何处理")
+                .executionContext(execution)
+                .retrievalOptions(RetrievalOptions.defaults())
+                .build());
+
+        assertThat(result.getMetadata()).containsEntry("entityExtractionMode", "LLM_FALLBACK");
+        verify(extractor).extractFromQuery("这个异常如何处理", execution);
+    }
+
+    @Test
+    void shouldSkipRemoteExtractorWhenRemainingBudgetIsInsufficient() {
+        IndustrialHyperGraph graph = mock(IndustrialHyperGraph.class);
+        EntityExtractor extractor = mock(EntityExtractor.class);
+        SearchChannelProperties properties = new SearchChannelProperties();
+        properties.getChannels().getHyperGraph().setMinimumLlmFallbackBudgetMillis(5000);
+        RetrievalExecutionContext execution = RetrievalExecutionContext.withBudgetMillis(1000);
+        when(graph.findMentionedEntities(eq("未知设备异常"), any())).thenReturn(Set.of());
+        HyperGraphSearchChannel channel = new HyperGraphSearchChannel(graph, extractor, properties);
+
+        SearchChannelResult result = channel.search(SearchContext.builder()
+                .originalQuestion("未知设备异常")
+                .executionContext(execution)
+                .retrievalOptions(RetrievalOptions.defaults())
+                .build());
+
+        assertThat(result.getChunks()).isEmpty();
+        assertThat(result.getMetadata())
+                .containsEntry("status", "DEGRADED")
+                .containsEntry("entityExtractionMode", "SKIPPED_BUDGET");
+        verify(extractor, never()).extractFromQuery("未知设备异常", execution);
     }
 }

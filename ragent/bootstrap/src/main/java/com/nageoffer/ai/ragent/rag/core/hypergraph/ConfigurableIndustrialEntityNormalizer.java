@@ -72,4 +72,17 @@ public class ConfigurableIndustrialEntityNormalizer implements IndustrialEntityN
         }
         return normalized;
     }
+
+    @Override
+    public Map<String, String> mentionForms(Collection<String> canonicalEntities) {
+        Set<String> canonical = normalizeAll(canonicalEntities);
+        Map<String, String> forms = new LinkedHashMap<>();
+        canonical.forEach(entity -> forms.put(entity, entity));
+        aliases.forEach((alias, target) -> {
+            if (canonical.contains(target)) {
+                forms.put(alias, target);
+            }
+        });
+        return forms;
+    }
 }

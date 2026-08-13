@@ -67,6 +67,9 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
     /** 倒排索引：实体值 → 包含该实体的超边下标集合 */
     private final Map<String, Set<Integer>> entityToEdgeIdx = new HashMap<>();
 
+    /** Immutable query-mention snapshot rebuilt atomically with the inverted index. */
+    private volatile List<EntityMention> entityMentions = List.of();
+
     /** 读写锁：写操作排他，读操作可并发 */
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -136,6 +139,8 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
                 }
             }
 
+            rebuildMentionSnapshot();
+
             log.info("超边索引完成。新增={}, 跳过空超边={}, 总超边数={}, 总实体数={}",
                     edges.size() - skipped, skipped, hyperEdges.size(), entityToEdgeIdx.size());
         } finally {
@@ -169,6 +174,31 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
                 entityToEdgeIdx.computeIfAbsent(entity, ignored -> new HashSet<>()).add(edgeIndex);
             }
         }
+        rebuildMentionSnapshot();
+    }
+
+    private void rebuildMentionSnapshot() {
+        entityMentions = entityNormalizer.mentionForms(entityToEdgeIdx.keySet()).entrySet().stream()
+                .filter(entry -> isDistinctiveMention(entry.getKey()))
+                .map(entry -> new EntityMention(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparingInt((EntityMention mention) -> mention.text().length()).reversed()
+                        .thenComparing(EntityMention::text))
+                .toList();
+    }
+
+    private boolean isDistinctiveMention(String mention) {
+        if (mention == null) {
+            return false;
+        }
+        int codePoints = mention.codePointCount(0, mention.length());
+        return codePoints >= 3
+                || mention.codePoints().anyMatch(Character::isDigit)
+                || (codePoints == 2 && mention.codePoints().allMatch(this::isCjk));
+    }
+
+    private boolean isCjk(int codePoint) {
+        Character.UnicodeScript script = Character.UnicodeScript.of(codePoint);
+        return script == Character.UnicodeScript.HAN;
     }
 
     private Set<String> indexableEntityValues(HyperEdge edge) {
@@ -222,6 +252,15 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
     @Override
     public List<RelationPath> findRelationPaths(Set<String> queryEntities, int maxHops, int maxPaths) {
+        return findRelationPathsInternal(queryEntities, maxHops, maxPaths, () -> true);
+    }
+
+    private List<RelationPath> findRelationPathsInternal(
+            Set<String> queryEntities,
+            int maxHops,
+            int maxPaths,
+            java.util.function.BooleanSupplier active) {
+        ensureActive(active, "relation path lookup was cancelled");
         if (maxHops < 1 || maxHops > MAX_RELATION_HOPS || maxPaths <= 0) {
             return Collections.emptyList();
         }
@@ -232,7 +271,7 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
         lock.readLock().lock();
         try {
-            Map<Integer, Integer> hitCounts = matchedEdgeCounts(normalizedQueries);
+            Map<Integer, Integer> hitCounts = matchedEdgeCounts(normalizedQueries, active);
             if (hitCounts.isEmpty()) {
                 return Collections.emptyList();
             }
@@ -243,11 +282,12 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
                     .toList();
             Map<String, RelationPath> paths = new LinkedHashMap<>();
             for (Map.Entry<Integer, Integer> seed : seeds) {
+                ensureActive(active, "relation path lookup was cancelled");
                 paths.put("edge:" + seed.getKey(), new RelationPath(
                         List.of(hyperEdges.get(seed.getKey())), List.of(), seed.getValue()));
             }
             if (maxHops == 2) {
-                addTwoHopPaths(normalizedQueries, seeds, paths);
+                addTwoHopPaths(normalizedQueries, seeds, paths, active);
             }
             return paths.values().stream()
                     .sorted(Comparator.comparingInt(RelationPath::score).reversed()
@@ -259,12 +299,94 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
         }
     }
 
+    @Override
+    public Set<String> findMentionedEntities(String query, java.util.function.BooleanSupplier active) {
+        if (query == null || query.isBlank()) {
+            return Set.of();
+        }
+        ensureActive(active, "local entity matching was cancelled");
+        Set<String> mentioned = new LinkedHashSet<>();
+        for (EntityMention mention : entityMentions) {
+            ensureActive(active, "local entity matching was cancelled");
+            if (containsMention(query, mention.text())) {
+                mentioned.add(mention.canonical());
+            }
+        }
+        ensureActive(active, "local entity matching was cancelled");
+        return mentioned;
+    }
+
+    private boolean containsMention(String query, String mention) {
+        int fromIndex = 0;
+        while (fromIndex <= query.length() - mention.length()) {
+            int index = query.indexOf(mention, fromIndex);
+            if (index < 0) {
+                return false;
+            }
+            int end = index + mention.length();
+            if ((!isAsciiWord(mention)
+                    || ((!hasAsciiWordCharacterBefore(query, index))
+                    && !hasAsciiWordCharacterAfter(query, end)))) {
+                return true;
+            }
+            fromIndex = index + 1;
+        }
+        return false;
+    }
+
+    private boolean isAsciiWord(String value) {
+        return value.chars().allMatch(character -> character < 128
+                && (Character.isLetterOrDigit(character) || character == '-' || character == '_'));
+    }
+
+    private boolean hasAsciiWordCharacterBefore(String value, int index) {
+        return index > 0 && isAsciiWordCharacter(value.charAt(index - 1));
+    }
+
+    private boolean hasAsciiWordCharacterAfter(String value, int index) {
+        return index < value.length() && isAsciiWordCharacter(value.charAt(index));
+    }
+
+    private boolean isAsciiWordCharacter(char character) {
+        return character < 128
+                && (Character.isLetterOrDigit(character) || character == '-' || character == '_');
+    }
+
+    private void ensureActive(java.util.function.BooleanSupplier active, String message) {
+        if (Thread.currentThread().isInterrupted() || active == null || !active.getAsBoolean()) {
+            throw new java.util.concurrent.CancellationException(message);
+        }
+    }
+
+    private record EntityMention(String text, String canonical) {
+    }
+
+    @Override
+    public List<RelationPath> findRelationPaths(
+            Set<String> queryEntities,
+            int maxHops,
+            int maxPaths,
+            java.util.function.BooleanSupplier active) {
+        ensureActive(active, "relation path lookup was cancelled");
+        List<RelationPath> result = findRelationPathsInternal(queryEntities, maxHops, maxPaths, active);
+        ensureActive(active, "relation path lookup was cancelled");
+        return result;
+    }
+
     private Map<Integer, Integer> matchedEdgeCounts(Set<String> queryEntities) {
+        return matchedEdgeCounts(queryEntities, () -> true);
+    }
+
+    private Map<Integer, Integer> matchedEdgeCounts(
+            Set<String> queryEntities,
+            java.util.function.BooleanSupplier active) {
         Map<Integer, Integer> hitCounts = new HashMap<>();
         for (String entity : queryEntities) {
+            ensureActive(active, "relation path lookup was cancelled");
             Set<Integer> matchedEdges = entityToEdgeIdx.get(entity);
             if (matchedEdges != null) {
                 for (int edgeIdx : matchedEdges) {
+                    ensureActive(active, "relation path lookup was cancelled");
                     hitCounts.merge(edgeIdx, 1, Integer::sum);
                 }
             }
@@ -274,15 +396,19 @@ public class IndustrialHyperGraphImpl implements IndustrialHyperGraph {
 
     private void addTwoHopPaths(Set<String> queryEntities,
                                 List<Map.Entry<Integer, Integer>> seeds,
-                                Map<String, RelationPath> paths) {
+                                Map<String, RelationPath> paths,
+                                java.util.function.BooleanSupplier active) {
         for (Map.Entry<Integer, Integer> seed : seeds) {
+            ensureActive(active, "relation path lookup was cancelled");
             int firstEdgeIndex = seed.getKey();
             for (String bridgeEntity : indexableEntityValues(hyperEdges.get(firstEdgeIndex))) {
+                ensureActive(active, "relation path lookup was cancelled");
                 if (queryEntities.contains(bridgeEntity)) {
                     continue;
                 }
                 Set<Integer> connectedEdges = entityToEdgeIdx.getOrDefault(bridgeEntity, Set.of());
                 for (int secondEdgeIndex : connectedEdges) {
+                    ensureActive(active, "relation path lookup was cancelled");
                     if (secondEdgeIndex == firstEdgeIndex) {
                         continue;
                     }

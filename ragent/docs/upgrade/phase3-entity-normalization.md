@@ -1,5 +1,9 @@
 # Phase 3-A: Configurable industrial entity normalization
 
+## R2-A query availability closure (2026-08-13)
+
+Query-time extraction now uses an immutable mention snapshot rebuilt with the inverted index. Canonical entities and configured aliases participate in high-confidence local matching; a local hit skips the remote LLM entirely. Only a local miss with sufficient request budget starts the cancellable LLM extractor. Budget-starved requests return `DEGRADED/SKIPPED_BUDGET`, and the evaluator excludes them from quality metrics. Snapshot scanning and bounded relation-path traversal both observe request cancellation. This closure restores availability only; ranking weights and frozen-set quality remain unchanged for later R2 closures.
+
 ## Closed-loop goal
 
 Make hypergraph retrieval tolerant of equipment aliases and operational colloquialisms

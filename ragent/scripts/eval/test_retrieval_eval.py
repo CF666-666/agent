@@ -51,6 +51,12 @@ class WarmupRetrievalTest(unittest.TestCase):
             execution_status({"timedOut": True, "channels": [{"status": "COMPLETED"}]}, "received"),
         )
 
+    def test_channel_degraded_is_excluded_from_quality_metrics(self):
+        self.assertEqual(
+            "channel_degraded",
+            execution_status({"channels": [{"status": "DEGRADED"}]}, "received"),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

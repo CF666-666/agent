@@ -41,5 +41,8 @@ class IndustrialHyperGraphReplacementTest {
         assertEquals(0, graph.matchSubgraph(Set.of("old-fault"), 10).size());
         assertEquals("new-fault", graph.matchSubgraph(Set.of("new-fault"), 10).get(0).hyperEdge().getFault());
         assertEquals("pump-b", graph.matchSubgraph(Set.of("pump-b"), 10).get(0).hyperEdge().getEquipment());
+        assertEquals(Set.of(), graph.findMentionedEntities("old-fault如何处理"));
+        assertEquals(Set.of("new-fault", "fan-a"),
+                graph.findMentionedEntities("fan-a出现new-fault如何处理"));
     }
 }

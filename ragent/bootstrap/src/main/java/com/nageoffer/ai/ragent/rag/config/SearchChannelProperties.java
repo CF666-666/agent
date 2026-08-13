@@ -125,5 +125,8 @@ public class SearchChannelProperties {
     public static class HyperGraph {
         /** Short independent budget for query-time entity extraction and path lookup. */
         private long timeoutMillis = 7000L;
+
+        /** Do not start a remote extractor when too little request time remains. */
+        private long minimumLlmFallbackBudgetMillis = 1500L;
     }
 }

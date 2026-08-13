@@ -116,6 +116,7 @@ rag:
         timeout-millis: 3000
       hyper-graph:
         timeout-millis: 7000
+        minimum-llm-fallback-budget-millis: 1500
 
   rerank:
     timeout-millis: 3000
