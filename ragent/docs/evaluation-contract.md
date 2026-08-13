@@ -23,6 +23,8 @@ python scripts/eval/evaluation_contract.py --tuning path/to/tuning.jsonl --froze
 
 `scene` 取值为 `fact`、`colloquial`、`image`、`relation`。`image` 必须提供 `golden_image_paths`；`relation` 必须提供 `golden_hyperedge_ids`。
 
+R3 单轮噪声样本额外必填 `canonical_query`、`noise_type` 与 `mutation_notes`。`noise_type` 仅允许 `typo_homophone`、`alias_synonym`、`unit_format`、`ellipsis_word_order`；样本必须使用 `scene: "colloquial"` 与 `ragas_group: "noise"`，且变体不得与规范问题相同。当前 40 条数据由显式逐条变体构成，不使用通用口语前缀模板，也不声明人工评价。
+
 现有 v2 基线未填写的新增字段按兼容模式处理为 `legacy`，以保证历史报告仍可复现；新数据不得继续使用 `legacy`。
 
 ## 调优集与冻结集隔离

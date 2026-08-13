@@ -58,6 +58,33 @@ class EvaluationContractTest(unittest.TestCase):
     def test_accepts_a_complete_single_turn_record(self):
         validate_single_turn_record(single_turn())
 
+    def test_validates_declared_query_noise_metadata(self):
+        noisy = single_turn(
+            scene="colloquial", ragas_group="noise",
+            query="主变油温九十五度往上走咋查？",
+            canonical_query="变压器运行中油温异常升高至95℃以上，可能原因有哪些？",
+            noise_type="unit_format",
+            mutation_notes="设备简称与温度单位口语化",
+        )
+        validate_single_turn_record(noisy)
+        with self.assertRaisesRegex(EvaluationContractError, "unsupported noise_type"):
+            validate_single_turn_record({**noisy, "noise_type": "generic_prefix"})
+        with self.assertRaisesRegex(EvaluationContractError, "must differ"):
+            validate_single_turn_record({**noisy, "query": noisy["canonical_query"]})
+        with self.assertRaisesRegex(EvaluationContractError, "generic prefix"):
+            validate_single_turn_record({**noisy, "query": "师傅现场问：" + noisy["canonical_query"]})
+        with self.assertRaisesRegex(EvaluationContractError, "must differ"):
+            validate_single_turn_record({**noisy, "query": "  " + noisy["canonical_query"] + "  "})
+        missing_notes = dict(noisy)
+        missing_notes.pop("mutation_notes")
+        with self.assertRaisesRegex(EvaluationContractError, "mutation_notes"):
+            validate_single_turn_record(missing_notes)
+        missing_all = dict(noisy)
+        for field in ("canonical_query", "noise_type", "mutation_notes"):
+            missing_all.pop(field)
+        with self.assertRaisesRegex(EvaluationContractError, "query noise metadata requires"):
+            validate_single_turn_record(missing_all)
+
     def test_accepts_legacy_v2_style_record(self):
         legacy = single_turn()
         for field in ("schema_version", "case_type", "split", "ragas_group", "business_tags"):

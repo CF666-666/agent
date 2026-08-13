@@ -12,6 +12,7 @@ and declare a ``split``.
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -20,6 +21,14 @@ DATASET_SCHEMA_VERSION = 1
 SINGLE_TURN_SCENES = frozenset({"fact", "colloquial", "image", "relation"})
 SPLITS = frozenset({"legacy", "tuning", "frozen"})
 RAGAS_GROUPS = frozenset({"text", "noise", "image", "relation"})
+QUERY_NOISE_TYPES = frozenset({
+    "typo_homophone", "alias_synonym", "unit_format", "ellipsis_word_order",
+})
+GENERIC_NOISE_PREFIXES = ("师傅现场问", "用大白话说", "现场比较急", "帮我查一下")
+
+
+def _normalized_query(value: str) -> str:
+    return re.sub(r"[\s，。！？：；、,.!?:;]", "", value).lower()
 CHANNELS = frozenset({
     "VECTOR_GLOBAL", "INTENT_DIRECTED", "KEYWORD_ES", "HYBRID",
     "IMAGE_SEMANTIC", "HYPERGRAPH",
@@ -112,6 +121,27 @@ def validate_single_turn_record(record: dict[str, Any], location: str = "record"
                 _fail(location, "golden_hyperedge_sources keys must equal golden_hyperedge_ids")
             for edge_id, source in sources.items():
                 _non_empty_string(source, location, f"golden_hyperedge_sources[{edge_id}]")
+
+    noise_fields = {"canonical_query", "noise_type", "mutation_notes"}
+    if record.get("ragas_group") == "noise" or noise_fields & set(record):
+        missing = sorted(noise_fields - set(record))
+        if missing:
+            _fail(location, f"query noise metadata requires fields: {missing}")
+        canonical = _non_empty_string(record.get("canonical_query"), location, "canonical_query")
+        noise_type = _non_empty_string(record.get("noise_type"), location, "noise_type")
+        _non_empty_string(record.get("mutation_notes"), location, "mutation_notes")
+        if noise_type not in QUERY_NOISE_TYPES:
+            _fail(location, f"unsupported noise_type: {noise_type}")
+        if _normalized_query(record["query"]) == _normalized_query(canonical):
+            _fail(location, "query must differ from canonical_query")
+        for prefix in GENERIC_NOISE_PREFIXES:
+            query = record["query"].strip()
+            if query.startswith(prefix):
+                suffix = query[len(prefix):].lstrip("：:，,。 ")
+                if _normalized_query(suffix) == _normalized_query(canonical):
+                    _fail(location, "query must not be a generic prefix wrapped canonical_query")
+        if scene != "colloquial" or record.get("ragas_group") != "noise":
+            _fail(location, "query noise cases require scene=colloquial and ragas_group=noise")
 
 
 def validate_conversation_record(record: dict[str, Any], location: str = "record") -> None:

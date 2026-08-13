@@ -1,0 +1,19 @@
+{
+  "generator_version": "industrial-noise-r3-curated-1",
+  "count": 40,
+  "split_counts": {
+    "tuning": 20,
+    "frozen": 20
+  },
+  "noise_type_counts": {
+    "typo_homophone": 10,
+    "alias_synonym": 10,
+    "unit_format": 10,
+    "ellipsis_word_order": 10
+  },
+  "source_file": "bootstrap/data/faq/industrial_faq.jsonl",
+  "source_sha256": "3b421cddd65686ee2ff36fd9a5aca2402e85127d90242f8ac98561b38f725f64",
+  "human_evaluation": false,
+  "authoring_method": "explicit curated mutations with source-grounded goldens",
+  "gold_validation": "canonical question, answer, and source document resolved from FAQ record"
+}
