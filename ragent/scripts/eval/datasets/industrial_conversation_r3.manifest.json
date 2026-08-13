@@ -1,0 +1,21 @@
+{
+  "generator_version": "industrial-conversation-r3-curated-1",
+  "count": 20,
+  "split_counts": {
+    "tuning": 10,
+    "frozen": 10
+  },
+  "conversation_type_counts": {
+    "ellipsis": 10,
+    "cross_turn_reference": 10
+  },
+  "turn_count_distribution": {
+    "3": 10,
+    "2": 10
+  },
+  "source_file": "bootstrap/data/faq/industrial_faq.jsonl",
+  "source_sha256": "3b421cddd65686ee2ff36fd9a5aca2402e85127d90242f8ac98561b38f725f64",
+  "human_evaluation": false,
+  "assistant_history": "generated and persisted by the system under test",
+  "gold_validation": "target answer and source document resolved from canonical FAQ record"
+}

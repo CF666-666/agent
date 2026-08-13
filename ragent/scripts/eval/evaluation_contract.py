@@ -156,6 +156,13 @@ def validate_conversation_record(record: dict[str, Any], location: str = "record
         _fail(location, "case_type must be conversation")
     if record.get("scene") != "colloquial":
         _fail(location, "conversation scene must be colloquial")
+    if record.get("ragas_group") == "noise":
+        conversation_type = _non_empty_string(
+            record.get("conversation_type"), location, "conversation_type")
+        if conversation_type not in {"ellipsis", "cross_turn_reference"}:
+            _fail(location, f"unsupported conversation_type: {conversation_type}")
+        _non_empty_string(record.get("canonical_target_query"), location, "canonical_target_query")
+        _non_empty_string(record.get("context_notes"), location, "context_notes")
     turns = record.get("turns")
     if not isinstance(turns, list) or len(turns) < 2:
         _fail(location, "turns must contain at least two messages")
@@ -165,6 +172,8 @@ def validate_conversation_record(record: dict[str, Any], location: str = "record
             _fail(turn_location, "turn must be an object")
         if turn.get("role") not in MESSAGE_ROLES:
             _fail(turn_location, f"role must be one of {sorted(MESSAGE_ROLES)}")
+        if turn.get("role") != "user":
+            _fail(turn_location, "conversation fixtures must contain user turns only; assistant replies come from the system under test")
         _non_empty_string(turn.get("content"), turn_location, "content")
     target_index = record.get("target_turn_index")
     if not isinstance(target_index, int) or isinstance(target_index, bool):

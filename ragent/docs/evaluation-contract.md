@@ -35,7 +35,9 @@ R3 单轮噪声样本额外必填 `canonical_query`、`noise_type` 与 `mutation
 
 ## 多轮样本
 
-多轮样本使用 `case_type: "conversation"` 和 `scene: "colloquial"`，以 `turns` 保存按顺序排列的 user/assistant 消息。`target_turn_index` 必须指向最后一个 user turn；该规则使后续 Runner 不会因为会话追加而评测错目标问题。
+多轮样本使用 `case_type: "conversation"` 和 `scene: "colloquial"`，以 `turns` 保存按顺序排列的 user 输入。数据文件不预写 assistant 回复：Runner 必须完整消费每个历史 user 轮的真实 SSE 回答，由被测系统将其持久化到同一个 `conversationId`，再发送下一轮。`target_turn_index` 必须指向最后一个 user turn，辅助轮不参与质量指标。
+
+R3 会话还必须声明 `conversation_type: "ellipsis" | "cross_turn_reference"`、`canonical_target_query` 与 `context_notes`。报告应保存每轮真实 query、assistant answer、references、执行状态、耗时及会话 ID，以便核验历史是否真实生效；只有目标轮的 references 可计算 Hit@K、MRR 和来源命中。
 
 ## 契约保证
 

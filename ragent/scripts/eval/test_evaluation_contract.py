@@ -43,10 +43,12 @@ def conversation(**overrides):
         ragas_group="noise",
         turns=[
             {"role": "user", "content": "冷却泵流量低怎么办？"},
-            {"role": "assistant", "content": "先检查入口过滤器。"},
             {"role": "user", "content": "它的压差正常范围呢？"},
         ],
-        target_turn_index=2,
+        target_turn_index=1,
+        conversation_type="cross_turn_reference",
+        canonical_target_query="冷却泵入口过滤器压差正常范围是多少？",
+        context_notes="它指代冷却泵入口过滤器",
     )
     record.pop("query")
     record.update(overrides)
@@ -115,6 +117,28 @@ class EvaluationContractTest(unittest.TestCase):
         validate_conversation_record(conversation())
         with self.assertRaisesRegex(EvaluationContractError, "final turn"):
             validate_conversation_record(conversation(target_turn_index=0))
+
+    def test_accepts_user_only_conversation_and_rejects_assistant_fixture(self):
+        user_only = conversation(turns=[
+            {"role": "user", "content": "冷却泵流量低怎么办？"},
+            {"role": "user", "content": "它的压差正常范围呢？"},
+        ], target_turn_index=1)
+        validate_conversation_record(user_only)
+        assistant_fixture = conversation(turns=[
+            {"role": "user", "content": "冷却泵流量低怎么办？"},
+            {"role": "assistant", "content": "先检查入口过滤器。"},
+            {"role": "user", "content": "它的压差正常范围呢？"},
+        ], target_turn_index=2)
+        with self.assertRaisesRegex(EvaluationContractError, "user turns only"):
+            validate_conversation_record(assistant_fixture)
+
+    def test_rejects_missing_r3_conversation_metadata(self):
+        record = conversation()
+        record.pop("canonical_target_query")
+        with self.assertRaisesRegex(EvaluationContractError, "canonical_target_query"):
+            validate_conversation_record(record)
+        with self.assertRaisesRegex(EvaluationContractError, "conversation_type"):
+            validate_conversation_record(conversation(conversation_type="unsupported"))
 
     def test_load_reports_line_specific_invalid_json(self):
         with tempfile.TemporaryDirectory() as directory:
