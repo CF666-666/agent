@@ -1,0 +1,1101 @@
+{
+  "source_report": "r2d-21cf62f-isolated-frozen",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_relation_r2.jsonl",
+    "sha256": "334ad4149aae457f282d4d6f226527c557c2c27a9f13c4f25f1039759d8e213d"
+  },
+  "counts": {
+    "execution_failed_unattributed": 2,
+    "passed": 20,
+    "ranking_error": 3
+  },
+  "by_split": {
+    "tuning": {},
+    "frozen": {
+      "execution_failed_unattributed": 2,
+      "passed": 20,
+      "ranking_error": 3
+    }
+  },
+  "results": [
+    {
+      "dataset_id": "r2-relation-frozen-001",
+      "split": "frozen",
+      "query": "烧结机的台车轨道状态、台车栏板紧固螺栓扭矩异常与对应故障有什么关系，应该如何排查？（注意不要与同类设备的相似故障混淆）",
+      "business_tags": [
+        "single_edge",
+        "similar_entity_distractor"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "39a44eca-c63b-4fbe-a71e-4d5942bee9d3"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "39a44eca-c63b-4fbe-a71e-4d5942bee9d3"
+        ],
+        [
+          "39a44eca-c63b-4fbe-a71e-4d5942bee9d3",
+          "8efaf48e-a341-47fe-9858-fbee5ece1075"
+        ],
+        [
+          "39a44eca-c63b-4fbe-a71e-4d5942bee9d3",
+          "5c77e2ce-2a51-40bc-a839-accf455fd8a5"
+        ],
+        [
+          "39a44eca-c63b-4fbe-a71e-4d5942bee9d3",
+          "0166a9c1-27b8-45a7-8b5f-c1114665349b"
+        ],
+        [
+          "39a44eca-c63b-4fbe-a71e-4d5942bee9d3",
+          "9e7453e6-c46b-44a5-b15f-4308a1c9ea09"
+        ],
+        [
+          "038ecc27-0064-4c9f-8aa0-74890e82b787"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-002",
+      "split": "frozen",
+      "query": "35kV变压器的人员及工具最小安全距离异常与对应故障有什么关系，应该如何排查？（注意不要与同类设备的相似故障混淆）",
+      "business_tags": [
+        "single_edge",
+        "similar_entity_distractor"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "c7ae9eb2-3779-4720-ad20-23f5b581aa50"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "c7ae9eb2-3779-4720-ad20-23f5b581aa50",
+          "daf7de05-5932-4e83-b055-1845f8d33329"
+        ],
+        [
+          "c7ae9eb2-3779-4720-ad20-23f5b581aa50"
+        ],
+        [
+          "c7ae9eb2-3779-4720-ad20-23f5b581aa50",
+          "b2c1d6b5-d2f7-4e81-be02-381a6ec8d0e5"
+        ],
+        [
+          "c7ae9eb2-3779-4720-ad20-23f5b581aa50",
+          "8a1fbc71-984d-448a-b11f-e23201790e63"
+        ],
+        [
+          "c7ae9eb2-3779-4720-ad20-23f5b581aa50",
+          "5200e5f9-c81f-4f2d-9b72-e29aca5c39df"
+        ],
+        [
+          "daf7de05-5932-4e83-b055-1845f8d33329",
+          "b2c1d6b5-d2f7-4e81-be02-381a6ec8d0e5"
+        ],
+        [
+          "daf7de05-5932-4e83-b055-1845f8d33329",
+          "8a1fbc71-984d-448a-b11f-e23201790e63"
+        ],
+        [
+          "5200e5f9-c81f-4f2d-9b72-e29aca5c39df",
+          "b2c1d6b5-d2f7-4e81-be02-381a6ec8d0e5"
+        ],
+        [
+          "5200e5f9-c81f-4f2d-9b72-e29aca5c39df",
+          "8a1fbc71-984d-448a-b11f-e23201790e63"
+        ],
+        [
+          "09810fee-2936-4e40-a2f6-4323c8096dee"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-003",
+      "split": "frozen",
+      "query": "反应釜的釜内压力异常与未泄至微正压有什么关系，应该如何排查？（注意不要与同类设备的相似故障混淆）",
+      "business_tags": [
+        "single_edge",
+        "similar_entity_distractor"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "07550d41-ff70-4f2d-bba1-d66425412607"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "07550d41-ff70-4f2d-bba1-d66425412607"
+        ],
+        [
+          "07550d41-ff70-4f2d-bba1-d66425412607",
+          "5756f019-0bd4-48ce-a642-ee1d8737bd7e"
+        ],
+        [
+          "4415ea7c-f8db-44ce-b25b-c227073adada"
+        ],
+        [
+          "4415ea7c-f8db-44ce-b25b-c227073adada",
+          "347e3bde-d6e3-4ce9-afdc-1ab26b1abd4f"
+        ],
+        [
+          "4415ea7c-f8db-44ce-b25b-c227073adada",
+          "9bf3ce4e-21ab-44eb-8c55-ac2eb5033b46"
+        ],
+        [
+          "2150cd84-8e9b-4fab-81b4-6bbbbc19946b"
+        ],
+        [
+          "5756f019-0bd4-48ce-a642-ee1d8737bd7e"
+        ],
+        [
+          "2911753d-2700-4187-943d-ed991df6fafd"
+        ],
+        [
+          "545621bd-a7a4-4502-9f7a-050d4d9432bc"
+        ],
+        [
+          "0ee4d82d-9c05-4d91-9974-1fb55e0f973c"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-004",
+      "split": "frozen",
+      "query": "搅拌电机的变频器输出频率异常与跳闸有什么关系，应该如何排查？（注意不要与同类设备的相似故障混淆）",
+      "business_tags": [
+        "single_edge",
+        "similar_entity_distractor"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "62fc1de0-352b-4ca6-bbc6-a458376e336a"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "62fc1de0-352b-4ca6-bbc6-a458376e336a"
+        ],
+        [
+          "74c072f2-fc5d-4cf6-995a-a60de21d4dcd"
+        ],
+        [
+          "7f908446-1cb4-4cd2-9f7f-8ce3983f6c48"
+        ],
+        [
+          "1e9560fb-06a8-4f62-8ca7-5f038e0d31d7"
+        ],
+        [
+          "9c5dbad0-4e9e-41ff-a288-19266bf8b3d8"
+        ],
+        [
+          "8d694e76-ad82-47b0-a078-b90e8a9f2eba"
+        ],
+        [
+          "74c072f2-fc5d-4cf6-995a-a60de21d4dcd",
+          "ce1b352d-8dbf-461a-904f-3a209ca18ad2"
+        ],
+        [
+          "c567ae28-32a5-4dbc-bb13-f40f0ac9fb09"
+        ],
+        [
+          "a52f475b-e7df-431f-814b-ad27613db7fc"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-005",
+      "split": "frozen",
+      "query": "出料管线的伴热温度异常与温度不足有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "05fe3a80-b7e5-4249-965a-505f11304784"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "05fe3a80-b7e5-4249-965a-505f11304784"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-006",
+      "split": "frozen",
+      "query": "高炉冷却系统的回水温度异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "a378312d-e295-4f38-bc54-2222d8227fac"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "a378312d-e295-4f38-bc54-2222d8227fac"
+        ],
+        [
+          "a378312d-e295-4f38-bc54-2222d8227fac",
+          "7707a8a9-510c-4991-80d6-78091d12a015"
+        ],
+        [
+          "a378312d-e295-4f38-bc54-2222d8227fac",
+          "0879a49e-ea65-4386-85bf-ff6945c8f769"
+        ],
+        [
+          "a378312d-e295-4f38-bc54-2222d8227fac",
+          "6e216512-369a-4669-aa48-c5e9823da9f4"
+        ],
+        [
+          "a378312d-e295-4f38-bc54-2222d8227fac",
+          "d4d932fe-f3eb-49e0-bb30-22eb53a40253"
+        ],
+        [
+          "0879a49e-ea65-4386-85bf-ff6945c8f769"
+        ],
+        [
+          "3408b50f-b7a4-4945-9ca2-736ddec62041"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-007",
+      "split": "frozen",
+      "query": "烧结机的混合料粒度＜3mm占比异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "48d829d9-3dd5-4451-baa8-52ff75ec33cf"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "48d829d9-3dd5-4451-baa8-52ff75ec33cf"
+        ],
+        [
+          "48d829d9-3dd5-4451-baa8-52ff75ec33cf",
+          "291e710a-d280-42ec-91a3-f96b040e8d56"
+        ],
+        [
+          "49925737-59ae-45fd-a216-467ffe29ecfd"
+        ],
+        [
+          "39252c76-ce64-49cb-89c7-910c514fb58b"
+        ],
+        [
+          "2833669c-67ea-45db-8f4c-a383aa84c565"
+        ],
+        [
+          "038ecc27-0064-4c9f-8aa0-74890e82b787"
+        ],
+        [
+          "331799d3-711c-4174-89ec-57fb951ec087"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-008",
+      "split": "frozen",
+      "query": "锅炉的饱和温度上升速度异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "fa69bb84-23ad-4170-ba24-a4446549c314"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "fa69bb84-23ad-4170-ba24-a4446549c314"
+        ],
+        [
+          "fa69bb84-23ad-4170-ba24-a4446549c314",
+          "6bd7ae34-63e6-438a-8ea6-b29d214f15b8"
+        ],
+        [
+          "fa69bb84-23ad-4170-ba24-a4446549c314",
+          "2c27f897-2b9b-47e0-a568-c21968b656da"
+        ],
+        [
+          "19fd5328-9ad4-444d-9997-dab565e5f7ab"
+        ],
+        [
+          "574f4ac9-5aa3-4107-9552-fb087954b07f"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-009",
+      "split": "frozen",
+      "query": "连铸机扇形段辊组的液压缸密封泄漏量异常与漏油有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "execution_failed_unattributed",
+      "retrieval_status": "channel_timed_out",
+      "golden_hyperedge_ids": [
+        "83e4acad-ee4b-48a8-a1be-186369ec13fa"
+      ],
+      "ranked_hyperedge_ids": []
+    },
+    {
+      "dataset_id": "r2-relation-frozen-010",
+      "split": "frozen",
+      "query": "牺牲阳极式阴保系统的保护电位异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "execution_failed_unattributed",
+      "retrieval_status": "channel_timed_out",
+      "golden_hyperedge_ids": [
+        "83627d0b-6c9f-4081-b3a6-a124d0288022"
+      ],
+      "ranked_hyperedge_ids": []
+    },
+    {
+      "dataset_id": "r2-relation-frozen-011",
+      "split": "frozen",
+      "query": "烧结机头尾密封装置的积料异常与卡涩有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "79ab5ee8-19bd-4726-93e0-e7471758469e"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e"
+        ],
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e",
+          "ffa73194-e2c5-4198-a69f-2b0555638785"
+        ],
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e",
+          "cda0f6b4-c901-4e7d-ad58-c78c03c3961f"
+        ],
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e",
+          "cb89d5e1-52a9-437a-af85-636e62b3c123"
+        ],
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e",
+          "fcf4f2f3-886b-466f-9647-724ecb369fa2"
+        ],
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e",
+          "4208f0e6-a327-4023-8ddc-a9c93e1b8c09"
+        ],
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e",
+          "52d67fbe-bd03-4a8d-9882-2355a6b876da"
+        ],
+        [
+          "79ab5ee8-19bd-4726-93e0-e7471758469e",
+          "bf7345f2-0e8e-4ebc-b8b5-238e5d5fcc5e"
+        ],
+        [
+          "21d789d5-c2c7-48c2-9ab5-164721b746f0"
+        ],
+        [
+          "038ecc27-0064-4c9f-8aa0-74890e82b787"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-012",
+      "split": "frozen",
+      "query": "汽轮机的主蒸汽压力≥3.5MPa、温度≥360℃（过热度≥50℃）；再热蒸汽压力≥1.2MPa、温度≥320℃；润滑油温38–45℃；顶轴油压8–12MPa；盘车连续运行≥4小时且偏心度＜0.03mm；上下缸温差＜50℃；真空维持在-88kPa以上异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "50053548-4ed5-4eb1-b8d6-0f8d2c2d06b3"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "50053548-4ed5-4eb1-b8d6-0f8d2c2d06b3"
+        ],
+        [
+          "ad4555b9-b0b2-46bd-b717-f144ab557295",
+          "35ee1770-eae5-4dd5-b10b-2c047ce3b9f2"
+        ],
+        [
+          "9967a9dd-6451-46bf-a446-c5cc8443ff31",
+          "9dadeadf-8f06-4fbc-acb5-05bf31f4b92e"
+        ],
+        [
+          "7bf3e139-d440-49b2-98cc-0cedb331b51f",
+          "9967a9dd-6451-46bf-a446-c5cc8443ff31"
+        ],
+        [
+          "ad4555b9-b0b2-46bd-b717-f144ab557295",
+          "0645dc93-2042-4e3f-9ed8-059f29543abb"
+        ],
+        [
+          "ad4555b9-b0b2-46bd-b717-f144ab557295",
+          "2dee3790-0474-4ca0-8b96-91fd5a035231"
+        ],
+        [
+          "ad4555b9-b0b2-46bd-b717-f144ab557295",
+          "84203797-2cca-4a40-9142-e03b897b3d3b"
+        ],
+        [
+          "ad4555b9-b0b2-46bd-b717-f144ab557295"
+        ],
+        [
+          "4415ea7c-f8db-44ce-b25b-c227073adada",
+          "cfb76d92-fe8a-4109-a590-af9dd6188f14"
+        ],
+        [
+          "7bf3e139-d440-49b2-98cc-0cedb331b51f",
+          "9dadeadf-8f06-4fbc-acb5-05bf31f4b92e"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-013",
+      "split": "frozen",
+      "query": "以反应釜机械密封为关联，密封冲洗液压力与冲洗液温度之间有什么关系，请给出完整关系路径？",
+      "business_tags": [
+        "two_hop"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "487585b2-7cce-4857-963c-da06aed43fad",
+        "f9a0298f-d034-4117-94a3-d75b788e96ac"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "487585b2-7cce-4857-963c-da06aed43fad",
+          "f9a0298f-d034-4117-94a3-d75b788e96ac"
+        ],
+        [
+          "f9a0298f-d034-4117-94a3-d75b788e96ac"
+        ],
+        [
+          "487585b2-7cce-4857-963c-da06aed43fad"
+        ],
+        [
+          "f9a0298f-d034-4117-94a3-d75b788e96ac",
+          "fbb4001f-3ec9-4859-bfbc-49b31532cfff"
+        ],
+        [
+          "487585b2-7cce-4857-963c-da06aed43fad",
+          "fbb4001f-3ec9-4859-bfbc-49b31532cfff"
+        ],
+        [
+          "f9a0298f-d034-4117-94a3-d75b788e96ac",
+          "e5583f1d-0cf1-4d75-a9e6-276fcbb0a8b3"
+        ],
+        [
+          "487585b2-7cce-4857-963c-da06aed43fad",
+          "e5583f1d-0cf1-4d75-a9e6-276fcbb0a8b3"
+        ],
+        [
+          "4415ea7c-f8db-44ce-b25b-c227073adada"
+        ],
+        [
+          "4415ea7c-f8db-44ce-b25b-c227073adada",
+          "347e3bde-d6e3-4ce9-afdc-1ab26b1abd4f"
+        ],
+        [
+          "cfb76d92-fe8a-4109-a590-af9dd6188f14"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-014",
+      "split": "frozen",
+      "query": "烧结机减速机的异响异常与存在异响有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "9bf3ce4e-21ab-44eb-8c55-ac2eb5033b46"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "9bf3ce4e-21ab-44eb-8c55-ac2eb5033b46"
+        ],
+        [
+          "12b5b782-a9db-482f-8e7e-6e953bf806cb"
+        ],
+        [
+          "49925737-59ae-45fd-a216-467ffe29ecfd"
+        ],
+        [
+          "48d829d9-3dd5-4451-baa8-52ff75ec33cf"
+        ],
+        [
+          "2833669c-67ea-45db-8f4c-a383aa84c565"
+        ],
+        [
+          "39252c76-ce64-49cb-89c7-910c514fb58b"
+        ],
+        [
+          "21d789d5-c2c7-48c2-9ab5-164721b746f0"
+        ],
+        [
+          "39a44eca-c63b-4fbe-a71e-4d5942bee9d3"
+        ],
+        [
+          "038ecc27-0064-4c9f-8aa0-74890e82b787"
+        ],
+        [
+          "331799d3-711c-4174-89ec-57fb951ec087"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-015",
+      "split": "frozen",
+      "query": "以精馏塔为关联，回流比与升温速率之间有什么关系，请给出完整关系路径？",
+      "business_tags": [
+        "two_hop"
+      ],
+      "category": "ranking_error",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "57837edf-b95f-4e8d-ace7-316a1916fd1f",
+        "a831a00c-9d45-49f1-b5cc-877c85c550fe"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "57837edf-b95f-4e8d-ace7-316a1916fd1f"
+        ],
+        [
+          "a831a00c-9d45-49f1-b5cc-877c85c550fe"
+        ],
+        [
+          "17819f9a-af24-4798-b929-6ad71570441d"
+        ],
+        [
+          "8a03ccc1-1e5a-422e-a50d-a6ce65f77864"
+        ],
+        [
+          "6c903d79-5e9b-4ffb-8285-d8318941d5a1"
+        ],
+        [
+          "cab77080-bdf5-43c7-a3c0-89b00e5c68a5"
+        ],
+        [
+          "42a7e375-4019-4af6-aab2-f61ce8822c49"
+        ],
+        [
+          "94e2d4fa-1bb2-488b-96a9-bc29f2b64406"
+        ],
+        [
+          "4577e5e4-d43b-4505-9355-38ed6350c396"
+        ],
+        [
+          "3134d731-bc60-48b6-887c-b61abbbf4d9b"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-016",
+      "split": "frozen",
+      "query": "以氧化风为关联，出口阀与电流异常之间有什么关系，请给出完整关系路径？",
+      "business_tags": [
+        "two_hop",
+        "alias_variant"
+      ],
+      "category": "ranking_error",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "a05ad2f3-1360-40b3-b597-ef916b9e664d",
+        "e77a9e79-a149-4775-8617-8b2164a2801c"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "e77a9e79-a149-4775-8617-8b2164a2801c"
+        ],
+        [
+          "a05ad2f3-1360-40b3-b597-ef916b9e664d"
+        ],
+        [
+          "a05ad2f3-1360-40b3-b597-ef916b9e664d",
+          "edf6174d-7228-4cb3-b09f-6eaa1c64a38c"
+        ],
+        [
+          "e8d389f6-4b59-468d-86ff-64a10d5ba25d"
+        ],
+        [
+          "b791db8a-5124-4c69-9427-3d7d4b2d1970"
+        ],
+        [
+          "c3139c2d-46a7-42e2-bfe6-ba0e0802688a"
+        ],
+        [
+          "f22ba13a-b054-47ab-97f5-8e616695c573"
+        ],
+        [
+          "2d0b146c-c40e-4832-a909-f20ea61a4845"
+        ],
+        [
+          "458c4f7b-30a9-4faa-8061-0928898d991d"
+        ],
+        [
+          "57837edf-b95f-4e8d-ace7-316a1916fd1f"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-017",
+      "split": "frozen",
+      "query": "开关柜的绝缘电阻异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "8f624aae-7fd4-4da7-8169-33e10bbb61bf"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "74df253e-0b40-4a5f-ba62-a35082e32335"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "d99eddf5-1b3c-44b8-9826-f811427879cf"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "7780a5b2-c545-4dfa-bb8c-ec3f82079767"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "7bf3e139-d440-49b2-98cc-0cedb331b51f"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "5677fa3c-2380-452d-b47b-09cf34b6c7a6"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "1704750d-d9c9-4c9c-b2b0-9d3001b38846"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "9a43cf60-23aa-4b92-b35d-d9aec989fb45"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf",
+          "2816f74c-6c64-4bc6-ae84-6c90765aa4c7"
+        ],
+        [
+          "448c1bba-780a-405d-8a64-093c63e2a54f"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-018",
+      "split": "frozen",
+      "query": "开关柜的安全距离（10kV≥0.7m，35kV≥1.0m）异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "ranking_error",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "761bd6c6-4eea-4fb7-a5e2-06160345cb8f"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "7d1a8fad-f7da-428e-8cf3-6005e7558f69"
+        ],
+        [
+          "4f3804f4-b1a4-4d79-88f4-2a2ee15bb87d"
+        ],
+        [
+          "761bd6c6-4eea-4fb7-a5e2-06160345cb8f"
+        ],
+        [
+          "8f624aae-7fd4-4da7-8169-33e10bbb61bf"
+        ],
+        [
+          "de5e1ef9-1223-4220-95fb-4636241383cf"
+        ],
+        [
+          "74df253e-0b40-4a5f-ba62-a35082e32335"
+        ],
+        [
+          "93c9d632-40ed-48bc-93d1-f5bc95551be7"
+        ],
+        [
+          "448c1bba-780a-405d-8a64-093c63e2a54f"
+        ],
+        [
+          "b484f71f-14a5-4e26-bc16-97416ce2965f"
+        ],
+        [
+          "c26d2a31-aaff-4c55-9d78-42f6372a850a"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-019",
+      "split": "frozen",
+      "query": "以汽轮机调速系统（DEH）为关联，EH油清洁度与LVDT线性度之间有什么关系，请给出完整关系路径？",
+      "business_tags": [
+        "two_hop"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3",
+        "bfa61f85-ec58-4c69-9e33-4bb1e218e66a"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3",
+          "bfa61f85-ec58-4c69-9e33-4bb1e218e66a"
+        ],
+        [
+          "bfa61f85-ec58-4c69-9e33-4bb1e218e66a"
+        ],
+        [
+          "bfa61f85-ec58-4c69-9e33-4bb1e218e66a",
+          "320547ff-e180-4e3c-84ce-c2268963e389"
+        ],
+        [
+          "bfa61f85-ec58-4c69-9e33-4bb1e218e66a",
+          "34705525-2dad-4ed7-98c8-519e27481a36"
+        ],
+        [
+          "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3"
+        ],
+        [
+          "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3",
+          "320547ff-e180-4e3c-84ce-c2268963e389"
+        ],
+        [
+          "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3",
+          "92da4217-352f-4b51-ae6c-6831ed6ec745"
+        ],
+        [
+          "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3",
+          "34705525-2dad-4ed7-98c8-519e27481a36"
+        ],
+        [
+          "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3",
+          "573c3da7-e4c4-42bf-a7a9-0d2d19f0398b"
+        ],
+        [
+          "a7c819ab-6ffc-48cc-86ad-a2bb9f7c9ce3",
+          "ddd98a55-9219-4cd2-8a90-3b5d88ae971d"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-020",
+      "split": "frozen",
+      "query": "以铁水为关联，硅含量与铁水温度之间有什么关系，请给出完整关系路径？",
+      "business_tags": [
+        "two_hop"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "9254c05d-021d-4a65-98db-056167e40a62",
+        "a5d833f9-8cc2-492b-a059-5cecf52787c8"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62",
+          "a5d833f9-8cc2-492b-a059-5cecf52787c8"
+        ],
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62"
+        ],
+        [
+          "a5d833f9-8cc2-492b-a059-5cecf52787c8"
+        ],
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62",
+          "604087e5-413a-4580-ae07-8a437792eef6"
+        ],
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62",
+          "3282f118-3607-488f-b29d-987bad2b845f"
+        ],
+        [
+          "a5d833f9-8cc2-492b-a059-5cecf52787c8",
+          "3282f118-3607-488f-b29d-987bad2b845f"
+        ],
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62",
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45"
+        ],
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62",
+          "e946314c-8c86-4ed1-8dcd-5a2fd84b4b3d"
+        ],
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62",
+          "114ae54b-90bf-4a1f-941c-afa252009f59"
+        ],
+        [
+          "a5d833f9-8cc2-492b-a059-5cecf52787c8",
+          "114ae54b-90bf-4a1f-941c-afa252009f59"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-021",
+      "split": "frozen",
+      "query": "屏式过热器的吹灰频次异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "46bfee62-93c6-4551-8dae-ecd59690670a"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "46bfee62-93c6-4551-8dae-ecd59690670a"
+        ],
+        [
+          "46bfee62-93c6-4551-8dae-ecd59690670a",
+          "659bd815-a976-4614-a56c-5290baec071c"
+        ],
+        [
+          "659bd815-a976-4614-a56c-5290baec071c"
+        ],
+        [
+          "d0447b32-6cd9-4e52-b39f-65ab0cadaf68"
+        ],
+        [
+          "4bd7de4d-9f75-4806-9656-11bca10045ed"
+        ],
+        [
+          "6202b3b8-53af-4faf-8bd0-f123106af780"
+        ],
+        [
+          "6202b3b8-53af-4faf-8bd0-f123106af780",
+          "942a5e9b-9f96-4d4b-a382-88bdca570cf1"
+        ],
+        [
+          "57837edf-b95f-4e8d-ace7-316a1916fd1f"
+        ],
+        [
+          "57837edf-b95f-4e8d-ace7-316a1916fd1f",
+          "17819f9a-af24-4798-b929-6ad71570441d"
+        ],
+        [
+          "57837edf-b95f-4e8d-ace7-316a1916fd1f",
+          "0c81123f-a3a4-4d32-9526-ee7c4be8a761"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-022",
+      "split": "frozen",
+      "query": "连铸机的旋转部件防护罩状态异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "d7a5c264-1035-4d08-ba18-4511b1d0d378"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "d7a5c264-1035-4d08-ba18-4511b1d0d378"
+        ],
+        [
+          "1c5ed9b5-19cc-4e79-baf9-6b0652495b67"
+        ],
+        [
+          "d82e61c7-9820-47cf-82f6-03777eb0aa7e"
+        ],
+        [
+          "4e863966-bbfc-4da9-8765-05aee95f316d"
+        ],
+        [
+          "512f7e9f-1c0b-4611-8605-35f35084d33f"
+        ],
+        [
+          "63bd53ef-1615-4818-945d-182502ace322"
+        ],
+        [
+          "d6c81a09-5407-4784-91fa-fc5c3a2fd9c8"
+        ],
+        [
+          "75525185-b1f1-4ec4-bf7a-6fdc494a9d4e"
+        ],
+        [
+          "4dc2e134-7618-4303-ac46-d1db8ea15b1a"
+        ],
+        [
+          "c1881473-a706-424a-8966-83f2031f5308"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-023",
+      "split": "frozen",
+      "query": "冷却塔的布水均匀性异常与布水不均有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "7388d12c-f509-4299-a3d0-10213f8ff781"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "7388d12c-f509-4299-a3d0-10213f8ff781"
+        ],
+        [
+          "af63fc66-5b2e-4bac-bbac-cf2bac71af4b"
+        ],
+        [
+          "c7251d06-234c-425e-babc-7cd12e0a220c"
+        ],
+        [
+          "a09c3ad2-3c94-4e96-957f-7444a010d0b0"
+        ],
+        [
+          "5b330168-9943-4883-ba18-92a80309d268"
+        ],
+        [
+          "5b330168-9943-4883-ba18-92a80309d268",
+          "a09c3ad2-3c94-4e96-957f-7444a010d0b0"
+        ],
+        [
+          "c3f0147c-d283-40af-9ae4-fe78b5f99c58"
+        ],
+        [
+          "517866c3-c80f-480f-9709-6b6f9497e10a"
+        ],
+        [
+          "458c4f7b-30a9-4faa-8061-0928898d991d"
+        ],
+        [
+          "57837edf-b95f-4e8d-ace7-316a1916fd1f"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-024",
+      "split": "frozen",
+      "query": "铁水包的龙门钩与包嘴状态异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "51a93fc6-2065-4675-842a-fe1ea8c1ec45"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45"
+        ],
+        [
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45",
+          "9254c05d-021d-4a65-98db-056167e40a62"
+        ],
+        [
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45",
+          "a5d833f9-8cc2-492b-a059-5cecf52787c8"
+        ],
+        [
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45",
+          "604087e5-413a-4580-ae07-8a437792eef6"
+        ],
+        [
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45",
+          "3282f118-3607-488f-b29d-987bad2b845f"
+        ],
+        [
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45",
+          "e946314c-8c86-4ed1-8dcd-5a2fd84b4b3d"
+        ],
+        [
+          "51a93fc6-2065-4675-842a-fe1ea8c1ec45",
+          "114ae54b-90bf-4a1f-941c-afa252009f59"
+        ],
+        [
+          "9254c05d-021d-4a65-98db-056167e40a62"
+        ],
+        [
+          "a5d833f9-8cc2-492b-a059-5cecf52787c8"
+        ],
+        [
+          "57837edf-b95f-4e8d-ace7-316a1916fd1f"
+        ]
+      ]
+    },
+    {
+      "dataset_id": "r2-relation-frozen-025",
+      "split": "frozen",
+      "query": "脱硫塔的石灰石浆液供给量异常与对应故障有什么关系，应该如何排查？",
+      "business_tags": [
+        "single_edge"
+      ],
+      "category": "passed",
+      "retrieval_status": "received",
+      "golden_hyperedge_ids": [
+        "502f5264-464b-4e7c-89ee-ee0dc36eabca"
+      ],
+      "ranked_hyperedge_ids": [
+        [
+          "502f5264-464b-4e7c-89ee-ee0dc36eabca"
+        ],
+        [
+          "502f5264-464b-4e7c-89ee-ee0dc36eabca",
+          "0c81123f-a3a4-4d32-9526-ee7c4be8a761"
+        ],
+        [
+          "9bd72642-c501-4f46-a303-3979b18e513a"
+        ],
+        [
+          "d0389140-d84a-466b-a8c6-07d057ef1eb6"
+        ],
+        [
+          "b56d51b5-3776-40a1-9a50-a4630669bb8b"
+        ],
+        [
+          "0bc1acab-6d53-40c7-ba0c-d6cb6f4ca388"
+        ],
+        [
+          "33fc1e65-ea4d-43d1-98c7-627e3da27ea9"
+        ],
+        [
+          "6aedd516-3af3-42bc-b6f1-302469651191"
+        ],
+        [
+          "dafc3d5e-2783-4f84-8210-6ce66d18c30a"
+        ],
+        [
+          "4e98c317-e1ff-426c-81a4-d41dc6641112"
+        ]
+      ]
+    }
+  ]
+}

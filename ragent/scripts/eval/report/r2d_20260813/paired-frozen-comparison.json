@@ -1,0 +1,33 @@
+{
+  "comparison": "R2-B baseline vs R2-D final on identical successful frozen cases",
+  "common_case_count": 23,
+  "common_case_ids_sha256": "ce449b681d618ea8db5ff1a603cd7f20a135533da5ec8442a79f4e17e890db93",
+  "baseline": {
+    "report": "../r2b_20260813/unfused-final.json",
+    "hyperedge_hit_at_1": 0.8261,
+    "hyperedge_recall_at_5": 0.8261,
+    "strict_ordered_path_hit": 0.3478,
+    "source_accuracy": 0.8261,
+    "final_reference_hit_at_1": 0.8261
+  },
+  "final": {
+    "report": "frozen-final.json",
+    "hyperedge_hit_at_1": 0.9565,
+    "hyperedge_recall_at_5": 1.0,
+    "strict_ordered_path_hit": 0.913,
+    "source_accuracy": 1.0,
+    "final_reference_hit_at_1": 0.9565
+  },
+  "delta_percentage_points": {
+    "hyperedge_hit_at_1": 13.04,
+    "hyperedge_recall_at_5": 17.39,
+    "strict_ordered_path_hit": 56.52,
+    "source_accuracy": 17.39,
+    "final_reference_hit_at_1": 13.04
+  },
+  "limitations": [
+    "This is a post-hoc paired view restricted to cases that completed in both runs.",
+    "Two R2-D frozen requests timed out and remain reported as execution failures.",
+    "The comparison supports the whole R2 change set; it does not isolate R2-D from R2-C1."
+  ]
+}

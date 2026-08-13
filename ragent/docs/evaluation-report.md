@@ -166,3 +166,11 @@ scripts/eval/
 关系引用继续输出真实 `hyperEdgeId/sourceDocument/sourceChunkId/sourceChunkIndex/sourcePage/documentVersion`，并为每个字段增加 `AVAILABLE/UNAVAILABLE` 状态；评测按唯一超边汇总 available、unavailable、conflicting，同一超边多值或“有值与缺失并存”均记为冲突。系统不使用 edgeId、数组位置或文档名合成缺失的 chunk/page。
 
 Demo JSONL 审计显示 603/603 条具备 edgeId 与 sourceDocument，603/603 条缺少 chunkId、chunkIndex、page 和 documentVersion。隔离镜像 `7cb1d67` 的 1 条真实 SSE 探针返回 5 个唯一超边：edgeId/document 均 5/5 available，其余四类字段均 5/5 unavailable、0 conflicting，与源数据一致。Java 11 项、Python 49 项测试通过，独立复审无 P0/P1/P2。该探针只验证契约，不作为质量指标。
+
+## 12. 2026-08-13：R2-D 路径评分与 frozen 最终验收
+
+路径评分改为“查询实体覆盖优先、短路径优先、类型权重次之、稳定 edge key 收口”，消除第二跳无条件加分造成的单边污染。19 项 Java 定向测试通过，独立复审无 P0/P1。
+
+tuning 24/25 条可计分：逐超边 Recall@5 **95.83%**、严格路径 **79.17%**、来源准确率 **100%**。通过预设门禁后，只运行一次 frozen：23/25 条可计分，逐超边 Hit@1/5 **95.65%/100%**、Recall@1/3/5 **84.78%/100%/100%**、严格有序路径 **91.30%**、来源准确率 **100%**；2 条通道超时单独排除。Recall@5≥85%、来源准确率≥90% 的 R2 门槛通过。
+
+与 R2-B 共同成功的 23 条 frozen 离线配对中，Recall@5 由 82.61% 到 100%，严格路径由 34.78% 到 91.30%，来源由 82.61% 到 100%。该配对存在共同成功样本筛选，且支持整个 R2 变更集，不能忽略 2 条执行超时或单独归因于 R2-D。归档见 `scripts/eval/report/r2d_20260813/README.md`；简历最终指标仍等待 R5 全链路同配置重跑。
