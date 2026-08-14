@@ -58,8 +58,21 @@ class ValidateAssetsTest(unittest.TestCase):
             descriptions[0]["source_url"] = ""
             report = image_asset_registry.validate_assets(descriptions, image_dir)
             self.assertEqual([], report["errors"])
-            self.assertTrue(any("license_unverified" in w for w in report["warnings"]))
+            self.assertTrue(any("license" in w for w in report["warnings"]))
             self.assertEqual(1, report["stats"]["license_unverified"])
+
+    def test_license_without_source_url_counts_as_licensed(self):
+        # 授权由提供者声明:license 非空即可,source_url 不再是硬要求
+        with tempfile.TemporaryDirectory() as tmp:
+            image_dir, descriptions = make_assets(Path(tmp), count=1)
+            descriptions[0]["license"] = "proprietary"
+            descriptions[0]["source_url"] = ""
+            report = image_asset_registry.validate_assets(descriptions, image_dir)
+            self.assertEqual([], report["errors"])
+            self.assertEqual(1, report["stats"]["licensed"])
+            self.assertEqual(0, report["stats"]["license_unverified"])
+            manifest = image_asset_registry.build_manifest(report, descriptions)
+            self.assertTrue(manifest["entries"][0]["license_verified"])
 
     def test_content_duplicate_detected_by_sha256(self):
         with tempfile.TemporaryDirectory() as tmp:

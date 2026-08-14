@@ -123,7 +123,8 @@
 
 - 每张图 2～3 条非同义问题；
 - 每条素材保存来源 URL、授权、文件哈希和类别；
-- 无法确认授权的素材不进入公开数据集；
+- 素材授权由素材提供者声明：license 字段仅作记录（Unsplash License/CC0/proprietary 等），
+  不作为进入评测集的门槛；source_url 也不是硬要求（自有/内部素材可留空）；
 - 按图片而非问题拆分调优集与冻结集，同一图片不得跨集合；
 - 问题不能直接从入库使用的 Qwen-VL 描述模板化反推；
 - 总称使用“工业图像评测集”，工程图子集才称“图纸评测”。
@@ -260,14 +261,14 @@
 
 | 编号 | 内容 | 验收 | 状态 |
 |---|---|---|---|
-| R4-A | 收集并登记 40 张独立素材 | 来源、授权、哈希、类别完整；重复图片可检测 | 🔶 登记工具完成，素材收集待人工 |
+| R4-A | 收集并登记 40 张独立素材 | 来源、授权、哈希、类别完整；重复图片可检测 | 🔶 登记工具完成，素材收集待人工（12 张已登记，授权由提供者声明） |
 | R4-B | 生成并审核 100 条分层问题 | 每类能力有覆盖；不存在只换措辞的批量重复问题 | 🔶 生成器完成（实际生成待素材） |
 | R4-C | 重建图像索引并校验引用 | golden image ID、原始图片和 SSE reference 一致 | ⬜ 未开始（需 Docker） |
 | R4-D | 运行图像通道与全链路评测 | 报告整体和各素材类别 Hit/Recall、MRR、P95、置信区间 | ⬜ 未开始（需 Docker） |
 
-R4-A 登记工具已完成：`image_asset_registry.py` 提供素材登记/校验/去重（必填字段硬错误 + 授权缺失 license_unverified 软警告 + sha256/路径双去重 + 达标判定 40 张/20-10-10 分层 + manifest 落盘含整体指纹），7 项离线单测通过。真实数据现状快照见 `datasets/image_assets_manifest.json`：12 张素材（3 张有授权、9 张未确认、28 张缺口）。**40 张素材的实际收集与授权确认需人工完成**（无法自动下载/判断版权）。
+R4-A 登记工具已完成：`image_asset_registry.py` 提供素材登记/校验/去重（必填字段硬错误 + license 缺失软警告（记录字段，不阻塞）+ sha256/路径双去重 + 达标判定 40 张/20-10-10 分层 + manifest 落盘含整体指纹），8 项离线单测通过。**授权语义已放宽**：素材授权由提供者声明，license 字段仅作记录（Unsplash License/CC0/proprietary 等），不作为进入评测集的门槛，source_url 也不强求。真实数据现状：12 张素材已登记并补全字段（3 张 Unsplash License + 9 张 proprietary，全部 site_photo），仍缺 28 张（engineering_drawing 20 + scanned_manual 10；site_photo 已 12 张、超目标 2 张，需在收齐 40 张时做分层平衡）。**剩余 28 张素材的实际收集需人工完成**。
 
-R4-B 生成器已完成：`build_image_dataset.py` 实现「query 与 Qwen-VL description 解耦」的问题生成（device_identification 用 subcategory 措辞、其余三类用人工标注 `image_subject` 锚点，满足约束 4「不能从描述模板化反推」）；能力四类各 25、每图 2~3 问、split 按图隔离且问题数 50/50、subcategory 每 split 10/5/5 均衡；license_verified + subcategory + image_subject 硬前置；`--finalize` 审核回写闭环。11 项离线单测通过。**实际生成 100 条需等 R4-A 的 40 张授权素材（含 subcategory + image_subject 标注）到位**。
+R4-B 生成器已完成：`build_image_dataset.py` 实现「query 与 Qwen-VL description 解耦」的问题生成（device_identification 用 subcategory 措辞、其余三类用人工标注 `image_subject` 锚点，满足约束 4「不能从描述模板化反推」）；能力四类各 25、每图 2~3 问、split 按图隔离且问题数 50/50、subcategory 每 split 10/5/5 均衡；license 字段非空（提供者声明）+ subcategory + image_subject 硬前置；`--finalize` 审核回写闭环。12 项离线单测通过。**实际生成 100 条需等 R4-A 的 40 张素材（含 subcategory + image_subject 标注）到位**。
 
 简历门槛：完成后才能写“固定 100 条工业图像评测集”。
 
@@ -387,7 +388,7 @@ R0 不再单独重跑当前版本的 100 条四场景集。事实、真实口语
 | R1 PDF 智能解析 | ✅ 已完成 | R1-A～R1-D 全部完成；支持电子页/扫描页自动识别、选择性 OCR、页级证据、检查点恢复和失败传播，聚合 28 项测试通过 |
 | R2 超图关系质量 | ✅ 完成 | R2-A～R2-D 全部完成；frozen 质量门槛通过，专项结果已归档，简历最终数字待 R5 全链路同配置重跑 |
 | R3 查询鲁棒性 | ✅ 完成 | R3-A/B/C/D 全部完成：40 条噪声难例、20 组多轮 Runner、冻结集严格 rewrite A/B（含索引根因修复）、离线错误改写审计。R3 收口 |
-| R4 图像评测扩容 | 🔶 R4-A/B 工具完成，素材收集待人工 | R4-A 素材登记工具（7 项测试）与 R4-B 问题生成器（11 项测试，query 与描述解耦 + 四类能力 + split 隔离）已完成；40 张素材的实际收集与授权确认需人工，R4-C/D 需 Docker |
+| R4 图像评测扩容 | 🔶 R4-A/B 工具完成，素材收集待人工 | R4-A 素材登记工具（8 项测试）与 R4-B 问题生成器（12 项测试，query 与描述解耦 + 四类能力 + split 隔离）已完成；授权约束已放宽（license 由提供者声明，仅作记录），12 张素材已补全字段（全 site_photo）；剩余 28 张素材收集需人工，R4-C/D 需 Docker |
 | R5 总评测与 RAGAS | 🔶 R5-C + R5-A 代码完成，其余未开始 | R5-C（扩展 RAGAS Runner）已完成，19 项离线单测通过；R5-A 的 fact 集已扩到 50 条（`industrial_fact_r5.jsonl`，source_doc 隔离，7 项测试通过）+ 主集合并脚本 `build_main_dataset.py`（合并 240 条 + 场景分布/去重/哈希校验 + split 保留，7 项测试通过），image 100 待 R4 生成后即可一键合并；R5-B/D/E 需 Docker |
 | R6 可视化编排 | ✅ 完成 | R6-A～E 代码 + 5 条端到端验收全部通过。后端 API + 浏览器实测截图 + 代码审查三重证据；R6 闭环收口 |
 | R7 简历与文档校准 | ⬜ 未开始 | 最终发布阶段 |

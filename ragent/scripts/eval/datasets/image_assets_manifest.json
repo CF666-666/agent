@@ -4,14 +4,16 @@
     "total": 12,
     "target_total": 40,
     "missing_total": 28,
-    "subcategory_counts": {},
+    "subcategory_counts": {
+      "site_photo": 12
+    },
     "subcategory_targets": {
       "engineering_drawing": 20,
       "scanned_manual": 10,
       "site_photo": 10
     },
-    "licensed": 3,
-    "license_unverified": 9
+    "licensed": 12,
+    "license_unverified": 0
   },
   "duplicates": {
     "path_duplicate": [],
@@ -21,34 +23,34 @@
     {
       "image_path": "drawings/2787306.jpg",
       "sha256": "cfb073dbf0f35425ae2ef06a3747885c5d3374839e4e7245d8eefa389249109e",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/2787308.jpg",
       "sha256": "cc63fcaba0500e9a55e8c8e850c26d802298d6b0f8ee456d32989b77b81d1268",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/7148222_2f11a02f-8c4f-4b55-9e2a-6ea8f158c756copy.jpg",
       "sha256": "4265e67f579b6933b26d18c8707b33246b88eae579fd76e683f2b418d67dafc6",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/ant-rozetsky-SLIFI67jv5k-unsplash.jpg",
       "sha256": "b253c667c1248bdce519799cff4770ee5d9cf7106922fe07dfb2bebbb40b0b7a",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
       "license_verified": true,
       "source_url": "https://unsplash.com/photos/SLIFI67jv5k",
@@ -57,7 +59,7 @@
     {
       "image_path": "drawings/christian-harb-76yzygeNLT0-unsplash.jpg",
       "sha256": "894026211c7a72606b0deffd60cd8f3487bc87645da78383b53ef2c59103cbd5",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
       "license_verified": true,
       "source_url": "https://unsplash.com/photos/76yzygeNLT0",
@@ -66,16 +68,16 @@
     {
       "image_path": "drawings/e75a331f1ba426f2b216e8b150519fad.jpg",
       "sha256": "c06087b458b6b47769c450227868b9c06936332e0a59e01c547506ebca71d61f",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/homa-appliances-pWUyHVJgLhg-unsplash.jpg",
       "sha256": "6b25d3f47bc12723cd09b6c391cd5760b533933118dd61c8168e54449a9ddce8",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
       "license_verified": true,
       "source_url": "https://unsplash.com/photos/pWUyHVJgLhg",
@@ -84,48 +86,48 @@
     {
       "image_path": "drawings/MAIN1750404271742C5IC9JDV3U.jpg",
       "sha256": "7a4e46231a2bf586dac65841b852cf6b593adb2e1ae5628dd2398e8995a32adc",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/MAIN1750404271746XKP8DIVH23.jpg",
       "sha256": "526d71a46eb7f23a080a39b36b36c7a733ea9e1a00f365cc93922eebbde7269d",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/MAIN1750404271747XZQSW3LIY9.jpg",
       "sha256": "81ff3155217a1b40fbb7eb14b9d844c297c7e6b26649185c6e4de47954dff8da",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/W020250325397883167507_ORIGIN.jpg",
       "sha256": "166b907f1b4759018a118c429a9507e8c2d76ee85174e73cb2a5c55921074875",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     },
     {
       "image_path": "drawings/W020250325397884321254_ORIGIN.jpg",
       "sha256": "ad1678f006bc516d2696a918353f0ca0fdb2186c8fade4d551660daf0e1a99c1",
-      "subcategory": null,
+      "subcategory": "site_photo",
       "category": "industrial_equipment",
-      "license_verified": false,
+      "license_verified": true,
       "source_url": "",
-      "license": ""
+      "license": "proprietary"
     }
   ],
-  "sha256": "0ff2b7985a460d053362cd03d90d11de1531dfda8cb131941550c33f162e251d"
+  "sha256": "0e0abfe3c299d784995f824bc8f7e4a96061af7c922408bb26505cfdb93d32a0"
 }

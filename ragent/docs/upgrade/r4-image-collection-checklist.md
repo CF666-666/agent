@@ -1,7 +1,9 @@
 # R4-A 工业图像素材收集清单
 
-> 目标：收集 40 张**有授权**的工业图像素材 → 供 R4-B 生成 100 条评测问题。
-> 你只需做两件事：**下载图片 + 填 5 个字段**。图片描述（description）由 Qwen-VL 自动生成，无需手写。
+> 目标：收集 40 张工业图像素材 → 供 R4-B 生成 100 条评测问题。
+> 你只需做两件事：**下载图片 + 填 4 个字段**（image_path / subcategory / image_subject / source_url）。
+> `license` 字段由素材提供者声明（Unsplash License/CC0/proprietary 等），仅作记录、不作为进入门槛，可留空（默认按提供者声明已授权）。
+> 图片描述（description）由 Qwen-VL 自动生成，无需手写。
 
 ---
 
@@ -53,7 +55,9 @@
 | `Public Domain` | Wikimedia Commons / 政府公开资料 | ✅ 公有领域 |
 | `CC BY` | Wikimedia Commons | ✅ 可商用，需署名 |
 | `CC BY-SA` | Wikimedia Commons | ⚠️ 可商用，但衍生作品需同授权 |
+| `proprietary` | 自有/内部素材 | ✅ 素材提供者声明授权（不填具体来源） |
 
+> license 字段由素材提供者声明、仅作记录，不作为进入评测集的门槛；未填时默认按提供者声明已授权。
 > **最省力组合**：现场照片 + 铭牌手册页用 Unsplash；工程图/原理图用 Wikimedia Commons 的 CC0 / Public Domain（筛选条件里勾选对应授权）。
 
 ---
@@ -129,7 +133,9 @@
 
 ## 六、现有素材复用提示
 
-仓库里已有 12 张图（`bootstrap/data/images/drawings/`），其中 **3 张有 Unsplash 授权**，可以直接复用（只需补 `subcategory` 和 `image_subject` 两个字段）。其余 9 张无授权，若要进入公开数据集需补齐来源与授权，否则排除。
+仓库里已有 12 张图（`bootstrap/data/images/drawings/`），已全部登记并补全 `subcategory`（均为 site_photo）、`image_subject` 与 `license`（3 张 Unsplash License + 9 张 proprietary，均视为提供者声明已授权），可直接复用。
+
+> **注意分层平衡**：`build_image_dataset.py` 的 `validate_distribution` 是精确匹配（subcategory 必须恰好 20/10/10），当前 site_photo 已 12 张、**超目标 2 张**。收齐 40 张时，site_photo 必须**只保留 10 张**——超出的 2 张要么改判为其他 subcategory（若内容符合），要么移出评测集。后续收集重点放在 engineering_drawing（缺 20 张）与 scanned_manual（缺 10 张）。
 
 ---
 

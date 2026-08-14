@@ -106,12 +106,20 @@ class BuildImageDatasetTest(unittest.TestCase):
         assets[0]["license"] = ""
         assets[0]["source_url"] = ""
         eligible = build_image_dataset.select_eligible(assets)
-        # 未授权素材被过滤
+        # license 未填的素材被过滤
         self.assertEqual(39, len(eligible))
         # 过滤后不足 40 张,不满足 20/10/10 分布,应报错
         with self.assertRaises(ValueError):
             build_image_dataset.build_cases(
                 eligible, Path("descriptions.jsonl"), random.Random(1))
+
+    def test_license_without_source_url_is_eligible(self):
+        # 授权由提供者声明:license 非空即可,source_url 不再是硬要求
+        assets = make_40_assets()
+        assets[0]["license"] = "proprietary"
+        assets[0]["source_url"] = ""
+        eligible = build_image_dataset.select_eligible(assets)
+        self.assertEqual(40, len(eligible))
 
     def test_missing_subcategory_raises(self):
         assets = make_40_assets()

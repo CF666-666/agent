@@ -9,8 +9,9 @@
 - query 与 Qwen-VL description 解耦(约束 4「不能从描述模板化反推」):
   * device_identification 用 subcategory 定制措辞(不贴 description,答案即设备类型);
   * 其余三类用人工标注的 image_subject(图片主题短语)作锚点,非描述反推;
-- 素材过滤:仅 license_verified(source_url + license 齐备)且 subcategory、image_subject
-  齐备的素材进入评测集(约束 2),缺失 subcategory/image_subject 报错阻塞;
+- 素材过滤:license 字段非空(素材提供者声明授权,如 Unsplash License/CC0/proprietary)
+  且 subcategory、image_subject 齐备的素材进入评测集,缺失 subcategory/image_subject
+  报错阻塞;source_url 不再是硬要求(自有素材可留空);
 - 按图拆分 split(约束 3):同一图片的所有问题进同一 split,问题数 tuning/frozen 各 50;
 - 每图 2~3 问、总数精确 100;能力分配用「最小计数优先」确定性轮询,保证四类各 25。
 
@@ -84,11 +85,13 @@ def source_display_path(path: Path) -> str:
 
 
 def is_license_verified(record: dict) -> bool:
-    return bool(record.get("source_url") and record.get("license"))
+    """素材授权由提供者声明:license 字段非空即视为已声明授权。
+    source_url 不再是硬要求(自有/内部素材可留空)。"""
+    return bool(record.get("license"))
 
 
 def select_eligible(descriptions: list[dict]) -> list[dict]:
-    """过滤并校验:license_verified + subcategory + image_subject 齐备。
+    """过滤并校验:license 字段非空 + subcategory + image_subject 齐备。
 
     缺失/非法 subcategory 或 image_subject 时抛错(与 R4-A 登记工具的 warning 定位区分,
     生成阶段这些字段是硬前置)。
@@ -100,11 +103,11 @@ def select_eligible(descriptions: list[dict]) -> list[dict]:
         subcategory = record.get("subcategory")
         if subcategory not in SUBCATEGORIES:
             raise ValueError(
-                f"license_verified asset missing/invalid subcategory: "
+                f"licensed asset missing/invalid subcategory: "
                 f"{record.get('image_path')} (subcategory={subcategory!r})")
         if not record.get("image_subject"):
             raise ValueError(
-                f"license_verified asset missing image_subject: {record.get('image_path')}")
+                f"licensed asset missing image_subject: {record.get('image_path')}")
         eligible.append(record)
     return eligible
 

@@ -2,13 +2,15 @@
 """R4-A 工业图像素材登记/校验/去重工具。
 
 定位:辅助人工收集 40 张独立素材(工程图 20 / 扫描手册 10 / 现场照片 10)时
-快速检查完整性。不负责下载图片(授权真实性需人工审核),只负责登记校验。
+快速检查完整性。不负责下载图片(授权由素材提供者声明,登记工具不负责核验),只负责
+登记校验。
 
 关键语义:
 - category 是「设备/领域类别」(开放词表,如 steel_metallurgy / petrochemical);
 - subcategory 是「素材类型」,枚举 engineering_drawing / scanned_manual / site_photo;
-- 授权缺失(source_url 或 license 为空)不阻塞登记,而是标记 license_unverified,
-  并按 §4.3 约束「无法确认授权的素材不进入公开数据集」输出到排除清单;
+- 素材授权由素材提供者声明:license 字段仅作记录(可填 Unsplash License/CC0/
+  proprietary 等),不构成进入评测集的门槛;source_url 也不再是硬要求(自有/内部素材
+  可留空)。license 为空仅产生软警告(建议填写),不阻塞登记;
 - 哈希去重以内容 sha256 为准(同一图片复制成不同文件名也能检测),image_path
   去重捕获登记重复,同名不同内容视为路径冲突。
 
@@ -93,10 +95,9 @@ def validate_assets(descriptions: list[dict], image_dir: Path) -> dict:
         else:
             seen_hashes[sha] = image_path
 
-        if not record.get("source_url") or not record.get("license"):
+        if not record.get("license"):
             warnings.append(
-                f"{location}: source_url/license missing, marked license_unverified "
-                f"(excluded from public dataset)")
+                f"{location}: license 字段为空(记录字段,不阻塞;建议填授权类型)")
         if record.get("subcategory") not in SUBCATEGORIES:
             warnings.append(
                 f"{location}: missing/invalid subcategory (required for R4-B question generation)")
@@ -121,7 +122,7 @@ def build_stats(descriptions: list[dict], hashes: dict[str, str]) -> dict:
         record.get("subcategory") for record in descriptions
         if record.get("subcategory") in SUBCATEGORIES)
     licensed = sum(
-        1 for record in descriptions if record.get("source_url") and record.get("license"))
+        1 for record in descriptions if record.get("license"))
     unverified = total - licensed
     return {
         "total": total,
@@ -143,7 +144,7 @@ def build_manifest(report: dict, descriptions: list[dict]) -> dict:
             "sha256": report["hashes"].get(image_path),
             "subcategory": record.get("subcategory"),
             "category": record.get("category"),
-            "license_verified": bool(record.get("source_url") and record.get("license")),
+            "license_verified": bool(record.get("license")),
             "source_url": record.get("source_url", ""),
             "license": record.get("license", ""),
         })
@@ -169,7 +170,7 @@ def main() -> None:
 
     print(f"素材总数: {report['stats']['total']} (目标 {TOTAL_TARGET})")
     print(f"subcategory 分层: {report['stats']['subcategory_counts']}")
-    print(f"授权合规: {report['stats']['licensed']} 张,未确认: {report['stats']['license_unverified']} 张")
+    print(f"已声明授权: {report['stats']['licensed']} 张,license 未填: {report['stats']['license_unverified']} 张")
     if report["errors"]:
         print(f"\n硬错误 {len(report['errors'])} 条:")
         for error in report["errors"]:
