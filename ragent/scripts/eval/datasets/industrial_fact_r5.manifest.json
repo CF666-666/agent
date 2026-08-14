@@ -1,0 +1,25 @@
+{
+  "generator_version": "industrial-fact-r5-template-1",
+  "seed": 20260814,
+  "count": 50,
+  "split_counts": {
+    "tuning": 25,
+    "frozen": 25
+  },
+  "source_doc_counts": {
+    "petrochemical": 12,
+    "steel_metallurgy": 13,
+    "power_energy": 25
+  },
+  "category_counts": {
+    "维护保养": 12,
+    "安全规范": 14,
+    "故障诊断": 12,
+    "操作规程": 12
+  },
+  "source_file": "bootstrap/data/faq/industrial_faq.jsonl",
+  "source_sha256": "3b421cddd65686ee2ff36fd9a5aca2402e85127d90242f8ac98561b38f725f64",
+  "excluded_noise_file": "scripts/eval/datasets/industrial_noise_r3.jsonl",
+  "human_evaluation": false,
+  "gold_validation": "question/answer/source_doc resolved from FAQ record; source_doc split-isolated from noise"
+}
