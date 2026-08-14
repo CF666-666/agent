@@ -51,12 +51,14 @@ R4-C/D 推进中暴露 2 个真实缺陷，均已修复并验证：
 
 | 分组 | Hit@1 | Hit@3 | Hit@5 | MRR | srcHit | P95 |
 |---|---:|---:|---:|---:|---:|---:|
-| **整体** | 35.87% | 56.52% | 67.39% | 0.4745 | 64% | 17653ms |
-| engineering_drawing | 27.66% | 51.06% | 59.57% | 0.3915 | 56% | 15493ms |
-| scanned_manual | 56.52% | 78.26% | 82.61% | 0.6754 | 76% | 13415ms |
-| site_photo | 31.82% | 45.45% | 68.18% | 0.4418 | 68% | 17689ms |
-| frozen | 33.33% | 54.17% | 64.58% | 0.4549 | 66% | 17653ms |
-| tuning | 38.64% | 59.09% | 70.45% | 0.4958 | 62% | 15493ms |
+| **整体** | 35.87% | 56.52% | 67.39% | 0.4745 | 69.57% | 17653ms |
+| engineering_drawing | 27.66% | 51.06% | 59.57% | 0.3915 | 59.57% | 15493ms |
+| scanned_manual | 56.52% | 78.26% | 82.61% | 0.6754 | 82.61% | 13415ms |
+| site_photo | 31.82% | 45.45% | 68.18% | 0.4418 | 77.27% | 17689ms |
+| frozen | 33.33% | 54.17% | 64.58% | 0.4549 | 68.75% | 17653ms |
+| tuning | 38.64% | 59.09% | 70.45% | 0.4958 | 70.45% | 15493ms |
+
+> srcHit / channel_hit 口径与 `retrieval_eval` 顶层 summary 一致：只对**质量样本**（成功检索）计分母，执行失败样本（8 条超时）不混入质量统计。
 
 ### 2.3 观察（限制性结论）
 
@@ -96,3 +98,4 @@ python scripts/eval/_r4d_breakdown.py --report scripts/eval/report/r4d_20260815/
 - 全链路评测有 8/100 条因 SiliconFlow embedding 网络抖动导致图像通道超时（执行不稳定，非质量缺陷）；数据按 quality sample（92 条）统计，执行失败样本单独计入 `excluded_execution_count`。
 - 超图通道对图像场景无意义（图像评测 `expected_channels` 仅 `IMAGE_SEMANTIC`），且对图像 query 会超时（R2 已知问题），故两组评测均关闭超图。
 - 置信区间采用 Wilson 95%（小样本下比正态近似更保守），见 breakdown 的 `hit_rate_wilson95` 字段。
+- **可复现性说明**：评测报告 `execution_fingerprint.git.revision` 为 `ab35fc0` 且 `worktree_dirty=true` —— 因为图像 ingest 修复（`ab35fc0`）与 timeout 修复（`image-semantic.timeout-millis` 3s→10s）在评测执行时尚处于工作区未提交状态，评测运行的是含两处修复的镜像。两处修复现已分别提交于 `ab35fc0`（图像 ingest 固定重试模型）与 `1e5cd91`（timeout 修复，即本闭环提交）。**复现需 checkout 至 `1e5cd91` 及之后**，干净 checkout 上重跑即可得到一致结果。

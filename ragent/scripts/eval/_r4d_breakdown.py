@@ -48,8 +48,10 @@ def group_metrics(cases: list[dict]) -> dict:
             for k in TOPK
         },
         "mrr": round(sum(c["mrr"] for c in quality) / max(1, q), 4),
-        "channel_hit_rate": round(sum(1 for c in cases if c.get("channel_hit")) / max(1, total), 4),
-        "source_id_hit_rate": round(sum(1 for c in cases if c.get("source_id_hit")) / max(1, total), 4),
+        # 口径与 retrieval_eval 顶层 summary 一致:channel_hit/source_id_hit
+        # 只对质量样本(ok)计分母,执行失败样本不混入质量统计。
+        "channel_hit_rate": round(sum(1 for c in quality if c.get("channel_hit")) / max(1, q), 4),
+        "source_id_hit_rate": round(sum(1 for c in quality if c.get("source_id_hit")) / max(1, q), 4),
         "latency": {
             "p50_ms": latency_percentile(sorted(c["latency_ms"] for c in quality), 50),
             "p95_ms": latency_percentile(sorted(c["latency_ms"] for c in quality), 95),

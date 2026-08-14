@@ -24,8 +24,8 @@
       ]
     },
     "mrr": 0.4745,
-    "channel_hit_rate": 0.92,
-    "source_id_hit_rate": 0.64,
+    "channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.6957,
     "latency": {
       "p50_ms": 6244,
       "p95_ms": 17653,
@@ -57,8 +57,8 @@
         ]
       },
       "mrr": 0.3915,
-      "channel_hit_rate": 0.94,
-      "source_id_hit_rate": 0.56,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.5957,
       "latency": {
         "p50_ms": 6130,
         "p95_ms": 15493,
@@ -89,8 +89,8 @@
         ]
       },
       "mrr": 0.6754,
-      "channel_hit_rate": 0.92,
-      "source_id_hit_rate": 0.76,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.8261,
       "latency": {
         "p50_ms": 6121,
         "p95_ms": 13415,
@@ -121,8 +121,8 @@
         ]
       },
       "mrr": 0.4418,
-      "channel_hit_rate": 0.88,
-      "source_id_hit_rate": 0.68,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.7727,
       "latency": {
         "p50_ms": 6777,
         "p95_ms": 17689,
@@ -155,8 +155,8 @@
         ]
       },
       "mrr": 0.4549,
-      "channel_hit_rate": 0.96,
-      "source_id_hit_rate": 0.66,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.6875,
       "latency": {
         "p50_ms": 6124,
         "p95_ms": 17653,
@@ -187,8 +187,8 @@
         ]
       },
       "mrr": 0.4958,
-      "channel_hit_rate": 0.88,
-      "source_id_hit_rate": 0.62,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.7045,
       "latency": {
         "p50_ms": 6380,
         "p95_ms": 15493,
@@ -253,8 +253,8 @@
         ]
       },
       "mrr": 0.4205,
-      "channel_hit_rate": 0.88,
-      "source_id_hit_rate": 0.52,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.5909,
       "latency": {
         "p50_ms": 6357,
         "p95_ms": 13594,
@@ -285,8 +285,8 @@
         ]
       },
       "mrr": 0.62,
-      "channel_hit_rate": 0.8333,
-      "source_id_hit_rate": 0.6667,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.8,
       "latency": {
         "p50_ms": 5877,
         "p95_ms": 12213,
@@ -381,8 +381,8 @@
         ]
       },
       "mrr": 0.3593,
-      "channel_hit_rate": 0.75,
-      "source_id_hit_rate": 0.5833,
+      "channel_hit_rate": 1.0,
+      "source_id_hit_rate": 0.7778,
       "latency": {
         "p50_ms": 6859,
         "p95_ms": 18283,
