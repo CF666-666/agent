@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ClipboardList,
   FileUp,
   FolderKanban,
+  GitBranch,
   Pencil,
   Plus,
   RefreshCw,
@@ -25,6 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import type {
+  IngestionCondition,
   IngestionPipeline,
   IngestionPipelineNode,
   IngestionPipelinePayload,
@@ -47,6 +49,7 @@ import {
 } from "@/services/ingestionService";
 import { getSystemSettings } from "@/services/settingsService";
 import { getErrorMessage } from "@/utils/error";
+import { TaskTopology } from "./components/TaskTopology";
 const PIPELINE_PAGE_SIZE = 10;
 const TASK_PAGE_SIZE = 10;
 
@@ -205,6 +208,7 @@ const taskSchema = z
 type TaskFormValues = z.infer<typeof taskSchema>;
 
 export function IngestionPage() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState<"pipelines" | "tasks">(() =>
@@ -436,6 +440,14 @@ export function IngestionPage() {
                         <div className="flex justify-end gap-2">
                           <Button size="sm" variant="outline" onClick={() => openPipelineNodes(pipeline)}>
                             查看节点
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => navigate(`/admin/ingestion/${pipeline.id}/editor`)}
+                          >
+                            <GitBranch className="mr-0.1 h-4 w-4" />
+                            画布编辑
                           </Button>
                           <Button
                             size="sm"
@@ -809,11 +821,11 @@ function PipelineDialog({ open, mode, pipeline, onOpenChange, onSubmit }: Pipeli
     return source.map(buildNodeForm);
   };
 
-  const parseCondition = (raw: string) => {
+  const parseCondition = (raw: string): IngestionCondition => {
     const trimmed = raw.trim();
     if (!trimmed) return null;
     if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
-      return JSON.parse(trimmed);
+      return JSON.parse(trimmed) as IngestionCondition;
     }
     return trimmed;
   };
@@ -927,7 +939,7 @@ function PipelineDialog({ open, mode, pipeline, onOpenChange, onSubmit }: Pipeli
         return { ok: false as const, message: "节点类型不能为空" };
       }
       let settings: Record<string, unknown> | undefined;
-      let condition: unknown;
+      let condition: IngestionCondition;
       try {
         settings = buildSettings(node) as Record<string, unknown> | undefined;
         condition = parseCondition(node.condition);
@@ -1740,7 +1752,7 @@ function PipelineDialog({ open, mode, pipeline, onOpenChange, onSubmit }: Pipeli
                             )
                           )
                         }
-                        placeholder='{"field":"source_type","op":"eq","value":"file"} 或 #context.source.type == "file"'
+                        placeholder='{"field":"source_type","operator":"eq","value":"file"} 或 #context.source.type == "file"'
                       />
                     </div>
                   </div>
@@ -2229,6 +2241,8 @@ interface TaskDetailDialogProps {
 function TaskDetailDialog({ open, taskId, onOpenChange }: TaskDetailDialogProps) {
   const [task, setTask] = useState<IngestionTask | null>(null);
   const [nodes, setNodes] = useState<IngestionTaskNode[]>([]);
+  const [pipeline, setPipeline] = useState<IngestionPipeline | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -2236,17 +2250,23 @@ function TaskDetailDialog({ open, taskId, onOpenChange }: TaskDetailDialogProps)
     let active = true;
     const load = async () => {
       setLoading(true);
+      setSelectedNodeId(null);
       try {
-        const [detail, nodeLogs] = await Promise.all([
-          getIngestionTask(taskId),
-          getIngestionTaskNodes(taskId)
-        ]);
+        const detail = await getIngestionTask(taskId);
         if (!active) return;
         setTask(detail);
+        const [nodeLogs, pipelineDetail] = await Promise.all([
+          getIngestionTaskNodes(taskId),
+          getIngestionPipeline(detail.pipelineId)
+        ]);
+        if (!active) return;
         setNodes(nodeLogs || []);
+        setPipeline(pipelineDetail);
       } catch (error) {
-        toast.error(getErrorMessage(error, "加载任务详情失败"));
-        console.error(error);
+        if (active) {
+          toast.error(getErrorMessage(error, "加载任务详情失败"));
+          console.error(error);
+        }
       } finally {
         if (active) setLoading(false);
       }
@@ -2257,9 +2277,26 @@ function TaskDetailDialog({ open, taskId, onOpenChange }: TaskDetailDialogProps)
     };
   }, [open, taskId]);
 
+  const nodeStatuses = useMemo(() => {
+    const map = new Map<string, IngestionTaskNode>();
+    for (const node of nodes) {
+      map.set(node.nodeId, node);
+    }
+    return map;
+  }, [nodes]);
+
+  const selectedNode = selectedNodeId ? nodeStatuses.get(selectedNodeId) ?? null : null;
+
+  const orphanLogs = useMemo(() => {
+    const pipelineIds = new Set(pipeline?.nodes?.map((node) => node.nodeId) ?? []);
+    return nodes.filter((node) => !pipelineIds.has(node.nodeId));
+  }, [nodes, pipeline]);
+
+  const taskRunning = task?.status?.toLowerCase() === "running";
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sidebar-scroll sm:max-w-[820px]">
+      <DialogContent className="max-h-[92vh] overflow-y-auto sidebar-scroll sm:max-w-[920px]">
         <DialogHeader>
           <DialogTitle>任务详情</DialogTitle>
           <DialogDescription>{taskId || ""}</DialogDescription>
@@ -2301,6 +2338,89 @@ function TaskDetailDialog({ open, taskId, onOpenChange }: TaskDetailDialogProps)
                 {stringifyJson(task.metadata)}
               </pre>
             </div>
+
+            <div>
+              <h3 className="text-sm font-medium">执行拓扑</h3>
+              <p className="mt-1 text-xs text-muted-foreground">点击节点查看耗时、消息与节点日志</p>
+              {pipeline ? (
+                <div className="mt-2">
+                  <TaskTopology
+                    key={taskId}
+                    pipelineNodes={pipeline.nodes}
+                    pipelineEdges={pipeline.edges}
+                    nodeStatuses={nodeStatuses}
+                    taskRunning={taskRunning}
+                    selectedNodeId={selectedNodeId}
+                    onNodeClick={setSelectedNodeId}
+                    onPaneClick={() => setSelectedNodeId(null)}
+                  />
+                </div>
+              ) : (
+                <div className="mt-2 text-sm text-muted-foreground">无法加载流水线拓扑</div>
+              )}
+            </div>
+
+            {selectedNode ? (
+              <div className="rounded-lg border border-slate-200 p-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-medium">
+                    节点详情：<span className="font-mono">{selectedNode.nodeId}</span>
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={nodeStatusVariant(selectedNode.status)}>
+                      {selectedNode.status || "-"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">{selectedNode.nodeType}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {selectedNode.durationMs ?? "-"} ms
+                    </span>
+                  </div>
+                </div>
+                <div className="mt-3 space-y-3">
+                  {selectedNode.message ? (
+                    <div>
+                      <p className="text-xs font-medium text-slate-500">消息</p>
+                      <p className="mt-1 rounded-md bg-muted p-2 text-xs text-slate-700">
+                        {selectedNode.message}
+                      </p>
+                    </div>
+                  ) : null}
+                  {selectedNode.errorMessage ? (
+                    <div>
+                      <p className="text-xs font-medium text-red-500">错误</p>
+                      <p className="mt-1 rounded-md bg-red-50 p-2 text-xs text-red-600">
+                        {selectedNode.errorMessage}
+                      </p>
+                    </div>
+                  ) : null}
+                  <div>
+                    <p className="text-xs font-medium text-slate-500">输出</p>
+                    <pre className="mt-1 max-h-48 overflow-auto rounded-md bg-muted p-2 text-xs text-muted-foreground">
+                      {stringifyJson(selectedNode.output)}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {orphanLogs.length > 0 ? (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                <p className="text-sm font-medium text-amber-700">无法映射到当前拓扑的节点日志</p>
+                <p className="mt-1 text-xs text-amber-600">
+                  以下节点在当前流水线中已被改名或删除：
+                </p>
+                <ul className="mt-2 space-y-1">
+                  {orphanLogs.map((node) => (
+                    <li key={node.id} className="flex items-center gap-2 text-xs text-amber-700">
+                      <Badge variant="outline">{node.status || "-"}</Badge>
+                      <span className="font-mono">{node.nodeId}</span>
+                      <span className="text-amber-600">{node.nodeType}</span>
+                      <span>{node.durationMs ?? "-"} ms</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
             <div>
               <h3 className="text-sm font-medium">节点执行日志</h3>

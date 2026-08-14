@@ -270,12 +270,17 @@ export function AdminLayout() {
     }
 
     if (section === "ingestion") {
-      const searchParams = new URLSearchParams(location.search);
-      const tab = searchParams.get("tab");
-      if (tab === "tasks") {
-        items.push({ label: "流水线任务" });
-      } else if (tab === "pipelines") {
-        items.push({ label: "流水线管理" });
+      if (segments.includes("editor")) {
+        items.push({ label: "流水线管理", to: "/admin/ingestion?tab=pipelines" });
+        items.push({ label: "画布编辑" });
+      } else {
+        const searchParams = new URLSearchParams(location.search);
+        const tab = searchParams.get("tab");
+        if (tab === "tasks") {
+          items.push({ label: "流水线任务" });
+        } else if (tab === "pipelines") {
+          items.push({ label: "流水线管理" });
+        }
       }
     }
 

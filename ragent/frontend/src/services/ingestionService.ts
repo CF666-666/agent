@@ -8,14 +8,77 @@ export interface PageResult<T> {
   pages: number;
 }
 
+/**
+ * 8 类摄取节点类型（与后端 IngestionNodeType 枚举一一对应）
+ */
+export const INGESTION_NODE_TYPES = [
+  "fetcher",
+  "parser",
+  "enhancer",
+  "chunker",
+  "enricher",
+  "indexer",
+  "hyperedge_extract",
+  "multimodal_parse"
+] as const;
+
+export type IngestionNodeType = (typeof INGESTION_NODE_TYPES)[number];
+
+/**
+ * 条件表达式（与后端 ConditionEvaluator 支持的形态对齐）
+ * - null：无条件，恒真
+ * - boolean：直接判定真/假
+ * - string：SpEL 表达式
+ * - object：结构化条件 { all | any | not | field/operator/value }
+ */
+export type IngestionCondition =
+  | null
+  | boolean
+  | string
+  | {
+      all?: IngestionCondition[];
+      any?: IngestionCondition[];
+      not?: IngestionCondition;
+      field?: string;
+      operator?: string;
+      value?: unknown;
+    };
+
+/** 节点级执行策略（对齐后端 NodeExecutionPolicy，缺失表示一次尝试、无退避） */
+export interface IngestionNodeExecutionPolicy {
+  maxAttempts?: number | null;
+  retryBackoffMs?: number | null;
+}
+
+/** 显式 DAG 边（对齐后端 IngestionPipelineEdgeVO） */
+export interface IngestionPipelineEdge {
+  edgeId?: string | null;
+  fromNodeId: string;
+  toNodeId: string;
+  condition?: IngestionCondition | null;
+  priority?: number | null;
+  defaultEdge?: boolean | null;
+}
+
+/** 流水线节点（对齐后端 IngestionPipelineNodeVO） */
 export interface IngestionPipelineNode {
-  id: number;
+  /** 数据库主键（雪花字符串，仅读取时由后端返回） */
+  id?: string | null;
   nodeId: string;
   nodeType: string;
   settings?: Record<string, unknown> | null;
-  condition?: Record<string, unknown> | null;
+  condition?: IngestionCondition | null;
+  executionPolicy?: IngestionNodeExecutionPolicy | null;
+  /**
+   * 线性链 fallback：当该节点没有显式 outgoing edge 时，
+   * 后端依据 nextNodeId 合成 defaultEdge=true 的 legacy 边。
+   * 画布编辑时应优先使用显式 edges，避免与 nextNodeId 产生双真相。
+   */
   nextNodeId?: string | null;
 }
+
+/** 提交给后端的节点载荷（对齐 IngestionPipelineNodeRequest，不含数据库主键 id） */
+export type IngestionPipelineNodePayload = Omit<IngestionPipelineNode, "id">;
 
 export interface IngestionPipeline {
   id: string;
@@ -23,6 +86,8 @@ export interface IngestionPipeline {
   description?: string | null;
   createdBy?: string | null;
   nodes?: IngestionPipelineNode[];
+  /** 显式 DAG 边（后端语义：edges 优先，nextNodeId 仅作 fallback） */
+  edges?: IngestionPipelineEdge[];
   createTime?: string;
   updateTime?: string;
 }
@@ -30,13 +95,12 @@ export interface IngestionPipeline {
 export interface IngestionPipelinePayload {
   name: string;
   description?: string | null;
-  nodes?: Array<{
-    nodeId: string;
-    nodeType: string;
-    settings?: Record<string, unknown> | null;
-    condition?: Record<string, unknown> | null;
-    nextNodeId?: string | null;
-  }>;
+  nodes?: IngestionPipelineNodePayload[];
+  /**
+   * 显式 DAG 边。
+   * 更新语义：null 保留既有边；空数组清空所有边；非空数组整体替换。
+   */
+  edges?: IngestionPipelineEdge[];
 }
 
 export interface IngestionTask {
