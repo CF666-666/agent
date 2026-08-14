@@ -29,6 +29,10 @@ nageoffer-nginx-2.0.1/
 ### Logs ###
 *.log
 
+### Python ###
+__pycache__/
+*.pyc
+
 ### Dev debug scripts ###
 ragent/scripts/*
 !ragent/scripts/eval/
