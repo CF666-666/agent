@@ -1,18 +1,20 @@
 {
   "generator_version": "image-asset-registry-1",
   "stats": {
-    "total": 12,
+    "total": 40,
     "target_total": 40,
-    "missing_total": 28,
+    "missing_total": 0,
     "subcategory_counts": {
-      "site_photo": 12
+      "engineering_drawing": 20,
+      "scanned_manual": 10,
+      "site_photo": 10
     },
     "subcategory_targets": {
       "engineering_drawing": 20,
       "scanned_manual": 10,
       "site_photo": 10
     },
-    "licensed": 12,
+    "licensed": 40,
     "license_unverified": 0
   },
   "duplicates": {
@@ -20,6 +22,276 @@
     "content_duplicate": []
   },
   "entries": [
+    {
+      "image_path": "drawings/BUS1原理图.png",
+      "sha256": "9f9484724c1eb69b35dcc0d41e4b57f378f3abbd500438a50dfcc4568c2503db",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/CPU工作原理图.png",
+      "sha256": "7988d349b0664ae253394173105167c4e105dfa0df73635d3d135fac3ec6e037",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/PCB原理图.jpg",
+      "sha256": "348993d9bf58af1269b8eb8d185eec6ec3e15e7323d469154feaa39576fc5d42",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/PCB板制作流程图.jpeg",
+      "sha256": "8623930ce31f2751315fee060c02b2cac211ee93ecfb53c429ba639d3640288a",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/PCB版工程图.png",
+      "sha256": "e26f323779d38c9f17a253a2b6e157cf6ab73ec26e1d9a43574171361d92328e",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/分体式空调电路工作原理图.png",
+      "sha256": "1cc3431d558a1445051edfc008858538bb1d53b18a2053b450fb8afbace3cf04",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/制冷原理图.png",
+      "sha256": "bc22b8191b36b72bfc094289df05015825c02c1223e5a9d750153415eb4f401f",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/化工原理流程图.png",
+      "sha256": "a3b5a679170faf67868fa50a7fff1397e902a8054b0c39875e3e423875a39865",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/变压器工作原理图.png",
+      "sha256": "3f73ef3b9a61f598c4a104eadc438c08b1b977f3ef4eb8f9be913e0ad8aa9b4e",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/品控工作流程图.png",
+      "sha256": "840b8b87d9078d0c4b5740b2ca884d7f32fbbe18c5b37fd239235cec878018ae",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/基于系统工程原理的农业机械设计方法研究工程图.png",
+      "sha256": "16335f1dd3454037d4f589e0baeb43ab6731f6fa0b7a7e81257a418113755914",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/机械制图.jpg",
+      "sha256": "5e5a8d81ecb1067aec2a988909bc334ac77d3830864802485b668e1021d037c1",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/火电、核电、水电、光电、垃圾发电流程及运行原理图.png",
+      "sha256": "074967987704541a0682497bfc9cb9a286d1e0fe54af99db919f9fa47230c653",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/电磁炉工作原理图.jpeg",
+      "sha256": "e0ec44bee3f224f5beffa7e8a70b92e4c9ba0bf94d99953fe3b73758f73a4033",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/电路原理图.png",
+      "sha256": "7a380a962b3c4620aaf649cd37de8d30649f239e22ca381c056b86d97872176a",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/电路工程图.webp",
+      "sha256": "50bca1b34fad191c69bcf3d959c8a32a2a2362a4d7872e104bac3b2827f76ba2",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/管道仪表流程图.jpeg",
+      "sha256": "cfbc8f92dfdc9802038ef9a8059fb7819ce419ccbf52d26b5171e72109b3a6c8",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/脉冲电磁阀工作原理图.jpg",
+      "sha256": "00fd20b53926aa533d564d127d347d28f0ed352535c4dae2abca25a989066f3c",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/西门子官方接线图.jpeg",
+      "sha256": "83250b6cc0e1c37097d9329fa29e3253c5ef6c2acee321d5b2bdab9e599a3397",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/霍尔元件工作原理图.png",
+      "sha256": "fcd24223858496eff8a412027ab90bb6a3a17fb7590720e036f9309e1fc19395",
+      "subcategory": "engineering_drawing",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/DCS系统操作站屏幕特写.webp",
+      "sha256": "44311d5faa24e256430ce62bcbc0f44744fcfd8adab53c9d2ef361b0f19f7337",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/PMP51B压力变送器仪表盘.jpg",
+      "sha256": "b67f99f6ad84e35c71ac46be99098eaba99e7844ef4033034f5cf8e34fca85c0",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/三相异步电动机铭牌.webp",
+      "sha256": "3e4798eca05d0d5f16ba980dee0a8f3959418bfdb94ada2b12d000bd4acf8d68",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/压力计仪表盘.jpg",
+      "sha256": "8667914112e5646882f606f43a907a4189b2161204649086f0aebed1110bd3e0",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/工业离心机操作手册页.png",
+      "sha256": "01b7d8b948e1b5e955818468993f5e39fa47b29a6d8f39813d5c827f45ac6555",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/干洗机铭牌.png",
+      "sha256": "a1056783c7310e6f0ed8105afa4cd3517fa514462784ca6f8b3935d5c301ddb9",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/机动绞磨机铭牌.jpg",
+      "sha256": "760c1ff0e1485a3a9b6bedc92c06aecb7f196be4e58b266c11a5403fd3ccfa36",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/柴油发电机铭牌.webp",
+      "sha256": "ae8faf24257335769095cbdd701646b5b606d153b0a2432d9cb66604ec208393",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/汽车仪表盘.webp",
+      "sha256": "a98bababbbacd4a144a863eddbab45945190e0569df02de732bad09069d86170",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/流量计安装调试手册页.png",
+      "sha256": "86440dcb1745fba987c25cfa7d109c90ef5c673353b87cb5450200317390c033",
+      "subcategory": "scanned_manual",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
     {
       "image_path": "drawings/2787306.jpg",
       "sha256": "cfb073dbf0f35425ae2ef06a3747885c5d3374839e4e7245d8eefa389249109e",
@@ -39,8 +311,35 @@
       "license": "proprietary"
     },
     {
-      "image_path": "drawings/7148222_2f11a02f-8c4f-4b55-9e2a-6ea8f158c756copy.jpg",
-      "sha256": "4265e67f579b6933b26d18c8707b33246b88eae579fd76e683f2b418d67dafc6",
+      "image_path": "drawings/MAIN1750404271742C5IC9JDV3U.jpg",
+      "sha256": "7a4e46231a2bf586dac65841b852cf6b593adb2e1ae5628dd2398e8995a32adc",
+      "subcategory": "site_photo",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/MAIN1750404271746XKP8DIVH23.jpg",
+      "sha256": "526d71a46eb7f23a080a39b36b36c7a733ea9e1a00f365cc93922eebbde7269d",
+      "subcategory": "site_photo",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/MAIN1750404271747XZQSW3LIY9.jpg",
+      "sha256": "81ff3155217a1b40fbb7eb14b9d844c297c7e6b26649185c6e4de47954dff8da",
+      "subcategory": "site_photo",
+      "category": "industrial_equipment",
+      "license_verified": true,
+      "source_url": "",
+      "license": "proprietary"
+    },
+    {
+      "image_path": "drawings/W020250325397884321254_ORIGIN.jpg",
+      "sha256": "ad1678f006bc516d2696a918353f0ca0fdb2186c8fade4d551660daf0e1a99c1",
       "subcategory": "site_photo",
       "category": "industrial_equipment",
       "license_verified": true,
@@ -82,52 +381,7 @@
       "license_verified": true,
       "source_url": "https://unsplash.com/photos/pWUyHVJgLhg",
       "license": "Unsplash License"
-    },
-    {
-      "image_path": "drawings/MAIN1750404271742C5IC9JDV3U.jpg",
-      "sha256": "7a4e46231a2bf586dac65841b852cf6b593adb2e1ae5628dd2398e8995a32adc",
-      "subcategory": "site_photo",
-      "category": "industrial_equipment",
-      "license_verified": true,
-      "source_url": "",
-      "license": "proprietary"
-    },
-    {
-      "image_path": "drawings/MAIN1750404271746XKP8DIVH23.jpg",
-      "sha256": "526d71a46eb7f23a080a39b36b36c7a733ea9e1a00f365cc93922eebbde7269d",
-      "subcategory": "site_photo",
-      "category": "industrial_equipment",
-      "license_verified": true,
-      "source_url": "",
-      "license": "proprietary"
-    },
-    {
-      "image_path": "drawings/MAIN1750404271747XZQSW3LIY9.jpg",
-      "sha256": "81ff3155217a1b40fbb7eb14b9d844c297c7e6b26649185c6e4de47954dff8da",
-      "subcategory": "site_photo",
-      "category": "industrial_equipment",
-      "license_verified": true,
-      "source_url": "",
-      "license": "proprietary"
-    },
-    {
-      "image_path": "drawings/W020250325397883167507_ORIGIN.jpg",
-      "sha256": "166b907f1b4759018a118c429a9507e8c2d76ee85174e73cb2a5c55921074875",
-      "subcategory": "site_photo",
-      "category": "industrial_equipment",
-      "license_verified": true,
-      "source_url": "",
-      "license": "proprietary"
-    },
-    {
-      "image_path": "drawings/W020250325397884321254_ORIGIN.jpg",
-      "sha256": "ad1678f006bc516d2696a918353f0ca0fdb2186c8fade4d551660daf0e1a99c1",
-      "subcategory": "site_photo",
-      "category": "industrial_equipment",
-      "license_verified": true,
-      "source_url": "",
-      "license": "proprietary"
     }
   ],
-  "sha256": "0e0abfe3c299d784995f824bc8f7e4a96061af7c922408bb26505cfdb93d32a0"
+  "sha256": "44d163f42d180e1590eef2c307ce473635ffbb3d8252e8830c1e0b60d7042461"
 }
