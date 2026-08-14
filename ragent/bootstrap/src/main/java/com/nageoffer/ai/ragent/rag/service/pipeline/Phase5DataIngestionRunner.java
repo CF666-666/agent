@@ -214,6 +214,7 @@ public class Phase5DataIngestionRunner implements CommandLineRunner {
         }
 
         int total = 0;
+        String modelId = env.getProperty(STARTUP_EMBEDDING_MODEL_KEY, DEFAULT_STARTUP_EMBEDDING_MODEL);
         try (BufferedReader reader = Files.newBufferedReader(descriptionFile)) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -227,8 +228,10 @@ public class Phase5DataIngestionRunner implements CommandLineRunner {
                 String text = description.get("description").getAsString();
                 String imagePath = description.get("image_path").getAsString();
                 String license = description.has("license") ? description.get("license").getAsString() : "";
+                // 与 FAQ 一致：用固定模型 + 有界重试，避免网络抖动下走在线路由降级到不可用候选
+                List<Float> vector = startupEmbeddingRetryExecutor.embed(modelId, text);
                 imageIngestionService.ingest(text, imagePath, imagePath, "Qwen-VL",
-                        Map.of("license", license, "category", "industrial_equipment"));
+                        Map.of("license", license, "category", "industrial_equipment"), vector);
                 total++;
             }
         }

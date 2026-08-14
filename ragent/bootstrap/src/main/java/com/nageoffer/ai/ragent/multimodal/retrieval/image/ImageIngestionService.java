@@ -95,16 +95,36 @@ public class ImageIngestionService {
                        String sourceFile,
                        String parserName,
                        Map<String, Object> extraMeta) {
+        // 在线路径：走模型路由（含健康状态/候选降级）
+        ingest(textContent, imagePath, sourceFile, parserName, extraMeta, null);
+    }
+
+    /**
+     * 使用预计算向量入库（启动 Phase5 ingest 专用）。
+     *
+     * <p>当 {@code embedding} 为 null 时回退到在线路由 {@link EmbeddingService#embed(String)}；
+     * 非 null 时直接使用该向量，不再进入路由（与 FAQ 的
+     * {@link com.nageoffer.ai.ragent.rag.service.pipeline.StartupEmbeddingRetryExecutor}
+     * 保持一致，确保网络抖动下仍走固定模型、索引来源可复现）。</p>
+     */
+    public void ingest(String textContent,
+                       String imagePath,
+                       String sourceFile,
+                       String parserName,
+                       Map<String, Object> extraMeta,
+                       List<Float> embedding) {
         if (textContent == null || textContent.isBlank()) {
             log.warn("图像描述为空，跳过入库: {}", imagePath);
             return;
         }
 
-        // 1. Embedding
-        List<Float> embeddingList = embeddingService.embed(textContent);
-        float[] embedding = new float[embeddingList.size()];
+        // 1. Embedding（预计算优先，否则在线路由）
+        List<Float> embeddingList = embedding != null
+                ? embedding
+                : embeddingService.embed(textContent);
+        float[] vector = new float[embeddingList.size()];
         for (int i = 0; i < embeddingList.size(); i++) {
-            embedding[i] = embeddingList.get(i);
+            vector[i] = embeddingList.get(i);
         }
 
         // 2. 构建 metadata
@@ -123,7 +143,7 @@ public class ImageIngestionService {
                 .index(0)
                 .content(textContent)
                 .metadata(metadata)
-                .embedding(embedding)
+                .embedding(vector)
                 .build();
 
         // 4. 写入 Milvus
@@ -131,6 +151,6 @@ public class ImageIngestionService {
                 List.of(chunk));
 
         log.info("图像描述已入库: {} → collection={}, vectorDim={}, chars={}",
-                imagePath, COLLECTION_NAME, embedding.length, textContent.length());
+                imagePath, COLLECTION_NAME, vector.length, textContent.length());
     }
 }

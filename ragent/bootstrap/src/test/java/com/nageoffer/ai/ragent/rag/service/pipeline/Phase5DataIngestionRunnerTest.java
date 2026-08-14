@@ -30,7 +30,9 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -90,6 +92,33 @@ class Phase5DataIngestionRunnerTest {
         verify(vectorStore).indexDocumentChunks(anyString(), anyString(), anyList());
         verify(vectorStore, times(2)).deleteDocumentVectors("rag_default_store", "phase5_faq");
         verifyNoInteractions(imageIngestion);
+    }
+
+    @Test
+    void shouldIngestImagesUsingRetryExecutorVectors() throws Exception {
+        Path faqFile = write("faq.jsonl", "{\"question\":\"pump maintenance\",\"answer\":\"inspect bearings\"}\n");
+        Path imageFile = write("images.jsonl",
+                "{\"description\":\"pump drawing\",\"image_path\":\"drawings/pump.jpg\",\"license\":\"proprietary\"}\n");
+        VectorStoreService vectorStore = mock(VectorStoreService.class);
+        VectorStoreAdmin vectorStoreAdmin = mock(VectorStoreAdmin.class);
+        StartupEmbeddingRetryExecutor retryExecutor = mock(StartupEmbeddingRetryExecutor.class);
+        ImageIngestionService imageIngestion = mock(ImageIngestionService.class);
+        when(vectorStoreAdmin.vectorSpaceExists(any())).thenReturn(true);
+        when(retryExecutor.embed(anyString(), anyString()))
+                .thenReturn(java.util.List.of(0.1F, 0.2F, 0.3F));
+        when(vectorStore.countDocumentChunks("rag_default_store", "phase5_faq")).thenReturn(1L);
+
+        Phase5DataIngestionRunner runner = new Phase5DataIngestionRunner(
+                vectorStore, vectorStoreAdmin, imageIngestion, environment(),
+                retryExecutor, faqFile, imageFile);
+
+        runner.run();
+
+        // FAQ 1 次 + 图像 1 次，均走固定模型 qwen-emb-8b 的重试执行器
+        verify(retryExecutor, times(2)).embed(eq("qwen-emb-8b"), anyString());
+        // 图像 ingest 使用带预计算向量的重载，向量来自 retryExecutor 而非在线路由
+        verify(imageIngestion).ingest(
+                anyString(), anyString(), anyString(), anyString(), anyMap(), anyList());
     }
 
     private Environment environment() {
