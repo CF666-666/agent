@@ -113,7 +113,7 @@ rag:
         min-intent-score: 0.4
         top-k-multiplier: 2
       image-semantic:
-        timeout-millis: 3000
+        timeout-millis: 10000
       hyper-graph:
         timeout-millis: 7000
         minimum-llm-fallback-budget-millis: 1500

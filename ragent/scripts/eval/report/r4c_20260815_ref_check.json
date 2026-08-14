@@ -1,0 +1,410 @@
+{
+  "golden_path_count": 40,
+  "milvus_path_count": 40,
+  "missing_in_milvus": [],
+  "extra_in_milvus": [],
+  "file_and_url_ok": 40,
+  "file_and_url_failed": [],
+  "details": [
+    {
+      "path": "drawings/2787306.jpg",
+      "file_exists": true,
+      "file_bytes": 351778,
+      "url": "http://localhost:9090/api/ragent/files/drawings/2787306.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 351778,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/2787308.jpg",
+      "file_exists": true,
+      "file_bytes": 347005,
+      "url": "http://localhost:9090/api/ragent/files/drawings/2787308.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 347005,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/BUS1原理图.png",
+      "file_exists": true,
+      "file_bytes": 17767,
+      "url": "http://localhost:9090/api/ragent/files/drawings/BUS1%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 17767,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/CPU工作原理图.png",
+      "file_exists": true,
+      "file_bytes": 61936,
+      "url": "http://localhost:9090/api/ragent/files/drawings/CPU%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 61936,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/DCS系统操作站屏幕特写.webp",
+      "file_exists": true,
+      "file_bytes": 64832,
+      "url": "http://localhost:9090/api/ragent/files/drawings/DCS%E7%B3%BB%E7%BB%9F%E6%93%8D%E4%BD%9C%E7%AB%99%E5%B1%8F%E5%B9%95%E7%89%B9%E5%86%99.webp",
+      "http_status": 200,
+      "content_type": "image/webp;charset=UTF-8",
+      "url_bytes": 64832,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/MAIN1750404271742C5IC9JDV3U.jpg",
+      "file_exists": true,
+      "file_bytes": 265056,
+      "url": "http://localhost:9090/api/ragent/files/drawings/MAIN1750404271742C5IC9JDV3U.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 265056,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/MAIN1750404271746XKP8DIVH23.jpg",
+      "file_exists": true,
+      "file_bytes": 156475,
+      "url": "http://localhost:9090/api/ragent/files/drawings/MAIN1750404271746XKP8DIVH23.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 156475,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/MAIN1750404271747XZQSW3LIY9.jpg",
+      "file_exists": true,
+      "file_bytes": 172431,
+      "url": "http://localhost:9090/api/ragent/files/drawings/MAIN1750404271747XZQSW3LIY9.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 172431,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/PCB原理图.jpg",
+      "file_exists": true,
+      "file_bytes": 70318,
+      "url": "http://localhost:9090/api/ragent/files/drawings/PCB%E5%8E%9F%E7%90%86%E5%9B%BE.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 70318,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/PCB板制作流程图.jpeg",
+      "file_exists": true,
+      "file_bytes": 54303,
+      "url": "http://localhost:9090/api/ragent/files/drawings/PCB%E6%9D%BF%E5%88%B6%E4%BD%9C%E6%B5%81%E7%A8%8B%E5%9B%BE.jpeg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 54303,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/PCB版工程图.png",
+      "file_exists": true,
+      "file_bytes": 36534,
+      "url": "http://localhost:9090/api/ragent/files/drawings/PCB%E7%89%88%E5%B7%A5%E7%A8%8B%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 36534,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/PMP51B压力变送器仪表盘.jpg",
+      "file_exists": true,
+      "file_bytes": 49339,
+      "url": "http://localhost:9090/api/ragent/files/drawings/PMP51B%E5%8E%8B%E5%8A%9B%E5%8F%98%E9%80%81%E5%99%A8%E4%BB%AA%E8%A1%A8%E7%9B%98.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 49339,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/W020250325397884321254_ORIGIN.jpg",
+      "file_exists": true,
+      "file_bytes": 344268,
+      "url": "http://localhost:9090/api/ragent/files/drawings/W020250325397884321254_ORIGIN.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 344268,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/ant-rozetsky-SLIFI67jv5k-unsplash.jpg",
+      "file_exists": true,
+      "file_bytes": 2360757,
+      "url": "http://localhost:9090/api/ragent/files/drawings/ant-rozetsky-SLIFI67jv5k-unsplash.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 2360757,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/christian-harb-76yzygeNLT0-unsplash.jpg",
+      "file_exists": true,
+      "file_bytes": 2771298,
+      "url": "http://localhost:9090/api/ragent/files/drawings/christian-harb-76yzygeNLT0-unsplash.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 2771298,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/e75a331f1ba426f2b216e8b150519fad.jpg",
+      "file_exists": true,
+      "file_bytes": 2225548,
+      "url": "http://localhost:9090/api/ragent/files/drawings/e75a331f1ba426f2b216e8b150519fad.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 2225548,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/homa-appliances-pWUyHVJgLhg-unsplash.jpg",
+      "file_exists": true,
+      "file_bytes": 2521706,
+      "url": "http://localhost:9090/api/ragent/files/drawings/homa-appliances-pWUyHVJgLhg-unsplash.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 2521706,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/三相异步电动机铭牌.webp",
+      "file_exists": true,
+      "file_bytes": 32268,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E4%B8%89%E7%9B%B8%E5%BC%82%E6%AD%A5%E7%94%B5%E5%8A%A8%E6%9C%BA%E9%93%AD%E7%89%8C.webp",
+      "http_status": 200,
+      "content_type": "image/webp;charset=UTF-8",
+      "url_bytes": 32268,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/分体式空调电路工作原理图.png",
+      "file_exists": true,
+      "file_bytes": 128719,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%88%86%E4%BD%93%E5%BC%8F%E7%A9%BA%E8%B0%83%E7%94%B5%E8%B7%AF%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 128719,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/制冷原理图.png",
+      "file_exists": true,
+      "file_bytes": 132561,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%88%B6%E5%86%B7%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 132561,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/化工原理流程图.png",
+      "file_exists": true,
+      "file_bytes": 17371,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%8C%96%E5%B7%A5%E5%8E%9F%E7%90%86%E6%B5%81%E7%A8%8B%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 17371,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/压力计仪表盘.jpg",
+      "file_exists": true,
+      "file_bytes": 55746,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%8E%8B%E5%8A%9B%E8%AE%A1%E4%BB%AA%E8%A1%A8%E7%9B%98.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 55746,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/变压器工作原理图.png",
+      "file_exists": true,
+      "file_bytes": 23907,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%8F%98%E5%8E%8B%E5%99%A8%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 23907,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/品控工作流程图.png",
+      "file_exists": true,
+      "file_bytes": 120170,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%93%81%E6%8E%A7%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 120170,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/基于系统工程原理的农业机械设计方法研究工程图.png",
+      "file_exists": true,
+      "file_bytes": 34387,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%9F%BA%E4%BA%8E%E7%B3%BB%E7%BB%9F%E5%B7%A5%E7%A8%8B%E5%8E%9F%E7%90%86%E7%9A%84%E5%86%9C%E4%B8%9A%E6%9C%BA%E6%A2%B0%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95%E7%A0%94%E7%A9%B6%E5%B7%A5%E7%A8%8B%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 34387,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/工业离心机操作手册页.png",
+      "file_exists": true,
+      "file_bytes": 127726,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%B7%A5%E4%B8%9A%E7%A6%BB%E5%BF%83%E6%9C%BA%E6%93%8D%E4%BD%9C%E6%89%8B%E5%86%8C%E9%A1%B5.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 127726,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/干洗机铭牌.png",
+      "file_exists": true,
+      "file_bytes": 8905,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E5%B9%B2%E6%B4%97%E6%9C%BA%E9%93%AD%E7%89%8C.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 8905,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/机动绞磨机铭牌.jpg",
+      "file_exists": true,
+      "file_bytes": 55866,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E6%9C%BA%E5%8A%A8%E7%BB%9E%E7%A3%A8%E6%9C%BA%E9%93%AD%E7%89%8C.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 55866,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/机械制图.jpg",
+      "file_exists": true,
+      "file_bytes": 464382,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E6%9C%BA%E6%A2%B0%E5%88%B6%E5%9B%BE.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 464382,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/柴油发电机铭牌.webp",
+      "file_exists": true,
+      "file_bytes": 59014,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E6%9F%B4%E6%B2%B9%E5%8F%91%E7%94%B5%E6%9C%BA%E9%93%AD%E7%89%8C.webp",
+      "http_status": 200,
+      "content_type": "image/webp;charset=UTF-8",
+      "url_bytes": 59014,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/汽车仪表盘.webp",
+      "file_exists": true,
+      "file_bytes": 16370,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E6%B1%BD%E8%BD%A6%E4%BB%AA%E8%A1%A8%E7%9B%98.webp",
+      "http_status": 200,
+      "content_type": "image/webp;charset=UTF-8",
+      "url_bytes": 16370,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/流量计安装调试手册页.png",
+      "file_exists": true,
+      "file_bytes": 262141,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E6%B5%81%E9%87%8F%E8%AE%A1%E5%AE%89%E8%A3%85%E8%B0%83%E8%AF%95%E6%89%8B%E5%86%8C%E9%A1%B5.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 262141,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/火电、核电、水电、光电、垃圾发电流程及运行原理图.png",
+      "file_exists": true,
+      "file_bytes": 155588,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E7%81%AB%E7%94%B5%E3%80%81%E6%A0%B8%E7%94%B5%E3%80%81%E6%B0%B4%E7%94%B5%E3%80%81%E5%85%89%E7%94%B5%E3%80%81%E5%9E%83%E5%9C%BE%E5%8F%91%E7%94%B5%E6%B5%81%E7%A8%8B%E5%8F%8A%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 155588,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/电磁炉工作原理图.jpeg",
+      "file_exists": true,
+      "file_bytes": 21128,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E7%94%B5%E7%A3%81%E7%82%89%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.jpeg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 21128,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/电路原理图.png",
+      "file_exists": true,
+      "file_bytes": 50723,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E7%94%B5%E8%B7%AF%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 50723,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/电路工程图.webp",
+      "file_exists": true,
+      "file_bytes": 25004,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E7%94%B5%E8%B7%AF%E5%B7%A5%E7%A8%8B%E5%9B%BE.webp",
+      "http_status": 200,
+      "content_type": "image/webp;charset=UTF-8",
+      "url_bytes": 25004,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/管道仪表流程图.jpeg",
+      "file_exists": true,
+      "file_bytes": 38129,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E7%AE%A1%E9%81%93%E4%BB%AA%E8%A1%A8%E6%B5%81%E7%A8%8B%E5%9B%BE.jpeg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 38129,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/脉冲电磁阀工作原理图.jpg",
+      "file_exists": true,
+      "file_bytes": 55933,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E8%84%89%E5%86%B2%E7%94%B5%E7%A3%81%E9%98%80%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.jpg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 55933,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/西门子官方接线图.jpeg",
+      "file_exists": true,
+      "file_bytes": 108772,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E8%A5%BF%E9%97%A8%E5%AD%90%E5%AE%98%E6%96%B9%E6%8E%A5%E7%BA%BF%E5%9B%BE.jpeg",
+      "http_status": 200,
+      "content_type": "image/jpeg;charset=UTF-8",
+      "url_bytes": 108772,
+      "bytes_match": true
+    },
+    {
+      "path": "drawings/霍尔元件工作原理图.png",
+      "file_exists": true,
+      "file_bytes": 15416,
+      "url": "http://localhost:9090/api/ragent/files/drawings/%E9%9C%8D%E5%B0%94%E5%85%83%E4%BB%B6%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png",
+      "http_status": 200,
+      "content_type": "image/png;charset=UTF-8",
+      "url_bytes": 15416,
+      "bytes_match": true
+    }
+  ]
+}

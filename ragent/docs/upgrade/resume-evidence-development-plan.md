@@ -263,8 +263,8 @@
 |---|---|---|---|
 | R4-A | 收集并登记 40 张独立素材 | 来源、授权、哈希、类别完整；重复图片可检测 | ✅ 完成：40 张素材齐（engineering 20 / scanned_manual 10 / site_photo 10），Qwen3-VL 描述全生成，重复去重 1 组（流体传输==化工原理流程图） |
 | R4-B | 生成并审核 100 条分层问题 | 每类能力有覆盖；不存在只换措辞的批量重复问题 | ✅ 完成：100 条问题生成并人工审核通过（tuning/frozen 50/50、四类能力各 25、分层 50/25/25），finalize 回写 human_review=false |
-| R4-C | 重建图像索引并校验引用 | golden image ID、原始图片和 SSE reference 一致 | ⬜ 未开始（需 Docker） |
-| R4-D | 运行图像通道与全链路评测 | 报告整体和各素材类别 Hit/Recall、MRR、P95、置信区间 | ⬜ 未开始（需 Docker） |
+| R4-C | 重建图像索引并校验引用 | golden image ID、原始图片和 SSE reference 一致 | ✅ 完成：40 张图入库，golden/milvus/文件 URL 三件套一致（40/40/40），修复图像 ingest 走固定重试模型（ab35fc0）+ 图像通道 timeout 3s→10s |
+| R4-D | 运行图像通道与全链路评测 | 报告整体和各素材类别 Hit/Recall、MRR、P95、置信区间 | ✅ 完成：图像通道 100/100（Hit@1 34%、MRR 0.4173）+ 全链路 92/100（Hit@1 35.9%、MRR 0.4745），按 subcategory/split 分组含 Wilson 置信区间，见 `report/r4d_20260815/README.md` |
 
 R4-A 已完成：`image_asset_registry.py` 提供素材登记/校验/去重（必填字段硬错误 + license 缺失软警告（记录字段，不阻塞）+ sha256/路径双去重 + 达标判定 40 张/20-10-10 分层 + manifest 落盘含整体指纹），8 项离线单测通过。**授权语义已放宽**：素材授权由提供者声明，license 字段仅作记录（Unsplash License/CC0/proprietary 等），不作为进入评测集的门槛，source_url 也不强求。**40 张素材已全部到位**：engineering_drawing 20（变压器/PCB/化工流程/制冷原理图等）+ scanned_manual 10（柴油发电机/电动机/离心机铭牌等）+ site_photo 10（高炉/连铸机/冷却塔等）。description 由 SiliconFlow `Qwen/Qwen3-VL-32B-Instruct` 生成（30 张新图；10 张旧图沿用 qwen-vl-max），铭牌/参数类图读数精确（如柴油发电机型号 WP10D264E200）。去重：检测到 1 组内容重复（`流体传输等解决方案工程图.png` == `化工原理流程图.png`），已用 `PCB板制作流程图.jpeg` 替换。
 
@@ -388,7 +388,7 @@ R0 不再单独重跑当前版本的 100 条四场景集。事实、真实口语
 | R1 PDF 智能解析 | ✅ 已完成 | R1-A～R1-D 全部完成；支持电子页/扫描页自动识别、选择性 OCR、页级证据、检查点恢复和失败传播，聚合 28 项测试通过 |
 | R2 超图关系质量 | ✅ 完成 | R2-A～R2-D 全部完成；frozen 质量门槛通过，专项结果已归档，简历最终数字待 R5 全链路同配置重跑 |
 | R3 查询鲁棒性 | ✅ 完成 | R3-A/B/C/D 全部完成：40 条噪声难例、20 组多轮 Runner、冻结集严格 rewrite A/B（含索引根因修复）、离线错误改写审计。R3 收口 |
-| R4 图像评测扩容 | 🔶 R4-A/B 完成，R4-C/D 需 Docker | R4-A 40 张素材齐（20/10/10，Qwen3-VL 描述全生成，去重 1 组）；R4-B 100 条问题生成（50/50、四类各 25）；R4-C（重建图像索引+校验引用）与 R4-D（图像通道评测）需 Docker 环境 |
+| R4 图像评测扩容 | ✅ 完成 | R4-A 40 张素材（20/10/10，Qwen3-VL 描述）+ R4-B 100 条问题（人工审核）+ R4-C 索引重建与引用校验（含 2 个 bug 修复）+ R4-D 图像通道/全链路评测（Hit/MRR/P95/置信区间）全部完成 |
 | R5 总评测与 RAGAS | 🔶 R5-C + R5-A 代码完成，其余未开始 | R5-C（扩展 RAGAS Runner）已完成，19 项离线单测通过；R5-A 的 fact 集已扩到 50 条（`industrial_fact_r5.jsonl`，source_doc 隔离，7 项测试通过）+ 主集合并脚本 `build_main_dataset.py`（合并 240 条 + 场景分布/去重/哈希校验 + split 保留，7 项测试通过），image 100 待 R4 生成后即可一键合并；R5-B/D/E 需 Docker |
 | R6 可视化编排 | ✅ 完成 | R6-A～E 代码 + 5 条端到端验收全部通过。后端 API + 浏览器实测截图 + 代码审查三重证据；R6 闭环收口 |
 | R7 简历与文档校准 | ⬜ 未开始 | 最终发布阶段 |
