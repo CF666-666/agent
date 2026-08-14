@@ -1,0 +1,111 @@
+{
+  "scenarios": {
+    "s1_create": {
+      "status": 200,
+      "ok": true,
+      "code": "0",
+      "message": null,
+      "data": {
+        "id": "2088237419568128000",
+        "name": "R6-Accept-Branch-1786709573",
+        "node_count": 4,
+        "edge_count": 4
+      }
+    },
+    "s2_update": {
+      "status": 200,
+      "ok": true,
+      "roundtrip": {
+        "edge_count": 4,
+        "parser_conditional_priorities": [
+          {
+            "to": "node_3",
+            "priority": 20,
+            "default": false,
+            "condition": {
+              "field": "mimeType",
+              "value": "image/*",
+              "operator": "eq"
+            }
+          },
+          {
+            "to": "node_4",
+            "priority": 10,
+            "default": false,
+            "condition": {
+              "field": "mimeType",
+              "value": "application/pdf",
+              "operator": "eq"
+            }
+          }
+        ]
+      }
+    },
+    "s3_restore": {
+      "status": 200,
+      "ok": true,
+      "node_count": 4,
+      "edge_count": 4,
+      "positions": [
+        {
+          "nodeId": "node_1",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "nodeId": "node_2",
+          "position": {
+            "x": 220,
+            "y": 0
+          }
+        },
+        {
+          "nodeId": "node_3",
+          "position": {
+            "x": 220,
+            "y": 120
+          }
+        },
+        {
+          "nodeId": "node_4",
+          "position": {
+            "x": 440,
+            "y": 0
+          }
+        }
+      ]
+    },
+    "s4_cycle": {
+      "status": 200,
+      "ok": true,
+      "code": "A000001",
+      "message": "Pipeline contains a cycle: node_3 -> node_1"
+    },
+    "s5_task_create": {
+      "status": 200,
+      "taskId": "2088237420306325504",
+      "body": null
+    },
+    "s5_task_topology": {
+      "status": 200,
+      "node_statuses": [
+        {
+          "nodeId": "node_1",
+          "nodeType": "fetcher",
+          "status": "failed",
+          "durationMs": 1,
+          "message": "读取文件失败: demo.pdf"
+        }
+      ]
+    },
+    "s5_task_detail": {
+      "status": 200,
+      "taskStatus": "failed",
+      "chunkCount": 0,
+      "log_count": 1,
+      "error": "读取文件失败: demo.pdf"
+    }
+  }
+}

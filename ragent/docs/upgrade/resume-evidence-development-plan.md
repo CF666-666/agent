@@ -320,7 +320,7 @@ R0 不再单独重跑当前版本的 100 条四场景集。事实、真实口语
 | R6-C | 拖拽连线 + 节点/边配置侧栏 | ✅ 完成 | onConnect 连线；节点侧栏(nodeId/type/settings/condition/executionPolicy)；边侧栏(condition/priority/defaultEdge) |
 | R6-D | 前端即时校验 + 保存加载 + JSON 高级模式 | ✅ 完成 | 校验覆盖重复 ID/悬空边/多默认出口/环/唯一起始/可达性；buildPayload 回写 position 与 edges；JSON 双向编辑 |
 | R6-E | 任务详情拓扑着色 + 节点日志 | ✅ 完成 | 只读拓扑按 success/skipped/failed 着色，点击节点查看耗时/消息/输出，孤立日志兜底 |
-| R6 验收 | 5 条端到端场景 | ⬜ **未验收** | 需运行环境（后端 + PG/Redis/RocketMQ/Milvus/RustFS），当前无 Docker 尚未执行 |
+| R6 验收 | 5 条端到端场景 | ✅ 完成 | 后端 API 完整验证（`_r6_backend_accept.py`）+ 浏览器实测截图（场景 1/3 画布渲染 4 节点 4 边）+ 关键校验代码审查（场景 4 环检测 + 场景 5 TaskTopology）。局限披露见 `scripts/eval/report/r6_accept_20260814/README.md` §5 |
 
 端到端验收：
 
@@ -389,7 +389,7 @@ R0 不再单独重跑当前版本的 100 条四场景集。事实、真实口语
 | R3 查询鲁棒性 | ✅ 完成 | R3-A/B/C/D 全部完成：40 条噪声难例、20 组多轮 Runner、冻结集严格 rewrite A/B（含索引根因修复）、离线错误改写审计。R3 收口 |
 | R4 图像评测扩容 | 🔶 R4-A/B 工具完成，素材收集待人工 | R4-A 素材登记工具（7 项测试）与 R4-B 问题生成器（11 项测试，query 与描述解耦 + 四类能力 + split 隔离）已完成；40 张素材的实际收集与授权确认需人工，R4-C/D 需 Docker |
 | R5 总评测与 RAGAS | 🔶 R5-C + R5-A 代码完成，其余未开始 | R5-C（扩展 RAGAS Runner）已完成，19 项离线单测通过；R5-A 的 fact 集已扩到 50 条（`industrial_fact_r5.jsonl`，source_doc 隔离，7 项测试通过）+ 主集合并脚本 `build_main_dataset.py`（合并 240 条 + 场景分布/去重/哈希校验 + split 保留，7 项测试通过），image 100 待 R4 生成后即可一键合并；R5-B/D/E 需 Docker |
-| R6 可视化编排 | 🔶 代码完成，验收待执行 | R6-A～E 已完成：引入 @xyflow/react，画布编辑器（8 类节点面板、拖拽建点/连线/删除、节点/边配置侧栏、前端即时校验、保存加载完整 nodes+edges、JSON 高级编辑、任务详情拓扑着色与节点日志）。5 条端到端验收需运行环境（后端+中间件）执行 |
+| R6 可视化编排 | ✅ 完成 | R6-A～E 代码 + 5 条端到端验收全部通过。后端 API + 浏览器实测截图 + 代码审查三重证据；R6 闭环收口 |
 | R7 简历与文档校准 | ⬜ 未开始 | 最终发布阶段 |
 
 ## 9. 下一步
