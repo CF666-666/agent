@@ -98,7 +98,11 @@ def validate_assets(descriptions: list[dict], image_dir: Path) -> dict:
                 f"{location}: source_url/license missing, marked license_unverified "
                 f"(excluded from public dataset)")
         if record.get("subcategory") not in SUBCATEGORIES:
-            warnings.append(f"{location}: missing/invalid subcategory")
+            warnings.append(
+                f"{location}: missing/invalid subcategory (required for R4-B question generation)")
+        if not record.get("image_subject"):
+            warnings.append(
+                f"{location}: missing image_subject (人工标注的图片主题短语, R4-B 生成问题必需)")
 
     # 同名不同内容:image_path 相同但 sha 不同(先出现的 path_duplicate 之外的场景)
     stats = build_stats(descriptions, hashes)
