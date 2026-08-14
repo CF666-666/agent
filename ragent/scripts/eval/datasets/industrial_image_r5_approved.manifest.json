@@ -1,0 +1,25 @@
+{
+  "generator_version": "industrial-image-r5-template-1",
+  "seed": 20260814,
+  "count": 100,
+  "split_counts": {
+    "tuning": 50,
+    "frozen": 50
+  },
+  "capability_counts": {
+    "fault_symptom": 25,
+    "parameter_reading": 25,
+    "device_identification": 25,
+    "component_location": 25
+  },
+  "subcategory_counts": {
+    "engineering_drawing": 50,
+    "scanned_manual": 25,
+    "site_photo": 25
+  },
+  "source_file": "bootstrap/data/images/descriptions.jsonl",
+  "source_sha256": "afbf7418c5ed6e725679e1cf896326ecad9d0ba9f00d0b38dea370e27ae34ab1",
+  "sha256": "7a9481c8224fabf62ad8a50f8db16a9aa57a81c589bb6dd75eec1d86b85b7092",
+  "human_review_pending": 0,
+  "golden_answer_note": "golden_answer 为素材 description 全文,仅作评测 reference,不构成可被 query 反推的证据"
+}

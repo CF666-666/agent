@@ -262,13 +262,13 @@
 | 编号 | 内容 | 验收 | 状态 |
 |---|---|---|---|
 | R4-A | 收集并登记 40 张独立素材 | 来源、授权、哈希、类别完整；重复图片可检测 | ✅ 完成：40 张素材齐（engineering 20 / scanned_manual 10 / site_photo 10），Qwen3-VL 描述全生成，重复去重 1 组（流体传输==化工原理流程图） |
-| R4-B | 生成并审核 100 条分层问题 | 每类能力有覆盖；不存在只换措辞的批量重复问题 | ✅ 完成：100 条问题生成（tuning/frozen 50/50、四类能力各 25、分层 50/25/25），待人工审核 finalize |
+| R4-B | 生成并审核 100 条分层问题 | 每类能力有覆盖；不存在只换措辞的批量重复问题 | ✅ 完成：100 条问题生成并人工审核通过（tuning/frozen 50/50、四类能力各 25、分层 50/25/25），finalize 回写 human_review=false |
 | R4-C | 重建图像索引并校验引用 | golden image ID、原始图片和 SSE reference 一致 | ⬜ 未开始（需 Docker） |
 | R4-D | 运行图像通道与全链路评测 | 报告整体和各素材类别 Hit/Recall、MRR、P95、置信区间 | ⬜ 未开始（需 Docker） |
 
 R4-A 已完成：`image_asset_registry.py` 提供素材登记/校验/去重（必填字段硬错误 + license 缺失软警告（记录字段，不阻塞）+ sha256/路径双去重 + 达标判定 40 张/20-10-10 分层 + manifest 落盘含整体指纹），8 项离线单测通过。**授权语义已放宽**：素材授权由提供者声明，license 字段仅作记录（Unsplash License/CC0/proprietary 等），不作为进入评测集的门槛，source_url 也不强求。**40 张素材已全部到位**：engineering_drawing 20（变压器/PCB/化工流程/制冷原理图等）+ scanned_manual 10（柴油发电机/电动机/离心机铭牌等）+ site_photo 10（高炉/连铸机/冷却塔等）。description 由 SiliconFlow `Qwen/Qwen3-VL-32B-Instruct` 生成（30 张新图；10 张旧图沿用 qwen-vl-max），铭牌/参数类图读数精确（如柴油发电机型号 WP10D264E200）。去重：检测到 1 组内容重复（`流体传输等解决方案工程图.png` == `化工原理流程图.png`），已用 `PCB板制作流程图.jpeg` 替换。
 
-R4-B 已完成：`build_image_dataset.py` 实现「query 与 Qwen-VL description 解耦」的问题生成（device_identification 用 subcategory 措辞、其余三类用人工标注 `image_subject` 锚点，满足约束 4「不能从描述模板化反推」）；能力四类各 25、每图 2~3 问、split 按图隔离且问题数 50/50、subcategory 每 split 10/5/5 均衡；license 字段非空（提供者声明）+ subcategory + image_subject 硬前置；`--finalize` 审核回写闭环。12 项离线单测通过。**100 条问题已生成**：`datasets/industrial_image_r5.jsonl`（tuning 50 / frozen 50、四类能力各 25、subcategory 问题数 50/25/25），`human_review=true` 待人工审核后 `--finalize` 回写。
+R4-B 已完成：`build_image_dataset.py` 实现「query 与 Qwen-VL description 解耦」的问题生成（device_identification 用 subcategory 措辞、其余三类用人工标注 `image_subject` 锚点，满足约束 4「不能从描述模板化反推」）；能力四类各 25、每图 2~3 问、split 按图隔离且问题数 50/50、subcategory 每 split 10/5/5 均衡；license 字段非空（提供者声明）+ subcategory + image_subject 硬前置；`--finalize` 审核回写闭环。12 项离线单测通过。**100 条问题已生成并人工审核通过**：`datasets/industrial_image_r5_approved.jsonl`（tuning 50 / frozen 50、四类能力各 25、subcategory 问题数 50/25/25，human_review=false），审核证据 `datasets/industrial_image_r5_review.json`（100 条 approve）。
 
 简历门槛：完成后才能写“固定 100 条工业图像评测集”。
 
