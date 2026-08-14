@@ -6,7 +6,7 @@
 >
 > 目标岗位：Java 后端校招
 >
-> 文档定位：本轮后续开发的权威入口；既有 `dev-roadmap.md` 与 `next-development-plan.md` 保留历史背景和已完成阶段记录。
+> 文档定位：本轮后续开发的**唯一权威入口**；任何其他文档（含历史 `evaluation-expansion-todo.md` 等）与本文档不一致时，**一律以本文档为准**。既有 `dev-roadmap.md` 与 `next-development-plan.md` 保留历史背景和已完成阶段记录。
 
 ## 1. 目标与主线
 
@@ -406,4 +406,4 @@ R3 阶段产出：查询重写价值已在 frozen 集严格 A/B 证实（会话 
 - [phase1-dag-routing.md](phase1-dag-routing.md)：ETL DAG、恢复和租约验收；
 - [phase2-hyperedge-ingestion.md](phase2-hyperedge-ingestion.md)：超边入库与生命周期；
 - [phase3-entity-normalization.md](phase3-entity-normalization.md)：实体归一化与有限多跳设计；
-- [evaluation-expansion-todo.md](../../../evaluation-expansion-todo.md)：早期扩容建议，仅作为历史参考，不作为本轮最终口径。
+- ~~evaluation-expansion-todo.md~~：早期扩容建议，**已废弃删除**，本轮口径一律以本文档为准。
