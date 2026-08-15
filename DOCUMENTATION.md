@@ -47,7 +47,11 @@ agent/  (仓库根目录)
         └── upgrade/                # 升级开发文档(多模态 RAG 升级)
             ├── dev-roadmap.md      # 开发路线图(Phase 0-8 进度)
             ├── upgrade-plan.md     # 升级技术方案
-            └── source-checklist.md # 源码排查清单
+            ├── source-checklist.md # 源码排查清单
+            ├── next-development-plan.md # 后续开发顺序、验收标准和简历边界
+            ├── resume-evidence-development-plan.md # 校招简历证据化开发与评测路线
+            ├── phase0-baseline-report.md # Phase 0 真实检索基线与评测口径
+            └── phase1-dag-routing.md # Phase 1-A ETL 显式边、DAG 路由与发布说明
 ```
 
 ## 按分类索引
@@ -90,6 +94,10 @@ agent/  (仓库根目录)
 | [ragent/docs/upgrade/dev-roadmap.md](ragent/docs/upgrade/dev-roadmap.md) | 开发路线图:Phase 0-8 任务、里程碑、进度追踪 |
 | [ragent/docs/upgrade/upgrade-plan.md](ragent/docs/upgrade/upgrade-plan.md) | 多模态 RAG + 超图索引完整技术方案 |
 | [ragent/docs/upgrade/source-checklist.md](ragent/docs/upgrade/source-checklist.md) | 源码排查结论(方案待确认项) |
+| [ragent/docs/upgrade/next-development-plan.md](ragent/docs/upgrade/next-development-plan.md) | 后续开发顺序、ETL/超边/评测方案、验收标准和简历边界 |
+| [ragent/docs/upgrade/resume-evidence-development-plan.md](ragent/docs/upgrade/resume-evidence-development-plan.md) | 校招简历证据化路线：真实基线、问题取舍、240+20 评测、开发闭环与发布门槛 |
+| [ragent/docs/upgrade/phase0-baseline-report.md](ragent/docs/upgrade/phase0-baseline-report.md) | Phase 0 真实检索基线、样本范围和自动评测结果 |
+| [ragent/docs/upgrade/phase1-dag-routing.md](ragent/docs/upgrade/phase1-dag-routing.md) | Phase 1 ETL：显式 DAG 路由、安全重试、幂等写入与上传任务检查点恢复 |
 | [ragent/docs/skills/ragent-dev-workflow/README.md](ragent/docs/skills/ragent-dev-workflow/README.md) | 开发流程 Skill 使用说明 |
 
 ### 前端测试
@@ -107,6 +115,6 @@ agent/  (仓库根目录)
 
 **部署/演示**:docs/quick-start → ragent/docs/deployment → demo_queries
 
-**开发/升级**:ragent/docs/upgrade/dev-roadmap → upgrade-plan → source-checklist
+**开发/升级**:ragent/docs/upgrade/resume-evidence-development-plan → next-development-plan → dev-roadmap → upgrade-plan → source-checklist
 
 **追溯历史**:ragent/README-v1.0.md（未升级原始版）→ ragent/README.md（升级后主文档）
