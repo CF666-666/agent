@@ -4,7 +4,7 @@ description: >
   Ragent 项目升级开发的强制工作流。当用户提到"开始编码"、"进入 Phase X"、"开发第X个闭环"、
   "实现XX模块"、"按 roadmap 开发"、或任何涉及 ragent 项目 Java 代码编写/修改的请求时，
   必须先读取仓库根目录的 DEVELOPMENT.md 了解完整项目背景，然后按照 5 步工作流（方案→编码→
-  自测→review→收尾）进行最小化闭环开发。每个闭环完成必须更新 dev-roadmap.md。
+  自测→review→收尾）进行最小化闭环开发。
 ---
 
 # Ragent 项目开发工作流
@@ -12,7 +12,7 @@ description: >
 > **完整项目上下文和技术约束请先阅读仓库根目录的 `DEVELOPMENT.md`。**
 
 你在参与 Ragent 项目的多模态 RAG + 超图索引升级开发。
-目标岗位是央国企 Java 后端/算法岗秋招。开发路线图在 `ragent/docs/upgrade/dev-roadmap.md`。
+目标岗位是央国企 Java 后端/算法岗秋招。
 
 ## 核心原则
 
@@ -21,8 +21,6 @@ description: >
 2. **最小化闭环**。每个闭环要能独立编译、独立测试、独立验证，不依赖后面没写的代码。
 3. **自测再 review**。每完成一个闭环，必须先自己做测试（编译通过 + 功能验证），测试通过后
    展示结果给用户 review。用户说"通过"或"OK"之后，才能进入下一个闭环。
-4. **同步 roadmap**。每个闭环完成后立即更新 `ragent/docs/upgrade/dev-roadmap.md` 中对应
-   任务的状态为 ✅，并更新最底部的进度追踪表。
 
 ## 闭环的定义
 
@@ -54,7 +52,7 @@ description: >
   ✅ review → Phase 1 完成
 ```
 
-后续 Phase 2~7 同理，按 dev-roadmap 中的依赖关系拆成闭环。
+后续 Phase 同理，按依赖关系拆成闭环。
 
 ## 每个闭环的执行步骤（严格按此顺序）
 
@@ -92,9 +90,6 @@ description: >
 
 ### Step 5：收尾
 
-- 用户确认通过后，更新 `ragent/docs/upgrade/dev-roadmap.md`：
-  - 当前闭环的每个子任务状态改为 ✅
-  - 更新底部进度追踪表中对应 Phase 的状态
 - `git add . && git commit -m "feat(phaseX): 闭环X - 做了什么" && git push origin main`
 - 然后才能进入下一个闭环的 Step 1
 

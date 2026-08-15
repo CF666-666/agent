@@ -18,8 +18,6 @@
 | **源码位置** | `ragent/bootstrap/src/main/java/com/nageoffer/ai/ragent/` |
 | **配置文件** | `ragent/bootstrap/src/main/resources/application.yaml` |
 | **POM 文件** | `ragent/bootstrap/pom.xml` |
-| **路线图** | `ragent/docs/upgrade/dev-roadmap.md` — 全部任务和进度 |
-| **技术方案** | `ragent/docs/upgrade/upgrade-plan.md` — 架构设计 |
 | **启动指南** | `docs/quick-start.md` — 克隆→运行 |
 
 ---
@@ -52,7 +50,6 @@
 - **等待用户说"通过"或给出修改意见**
 
 ### Step 5：收尾
-- 更新 `ragent/docs/upgrade/dev-roadmap.md` 对应任务为 ✅
 - `git add . && git commit -m "feat(phaseX): 闭环Y - 做了什么" && git push origin main`
 - 然后才能进入下一个闭环
 

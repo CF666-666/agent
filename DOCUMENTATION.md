@@ -1,7 +1,6 @@
 # Agent 项目文档导航
 
 > 工业级 Agentic RAG 智能体平台（多模态 RAG + 超图推理）。本文档为 **agent 仓库全量文档总索引**，按用途分类，每篇一句话说明。
-> 未升级的原始项目文档（v1.0）与升级后文档在命名上已区分：`ragent/README.md`（当前主文档） vs `ragent/README-v1.0.md`（升级前原始版）。
 
 ## 快速上手
 
@@ -24,8 +23,7 @@ agent/  (仓库根目录)
 │   └── quick-start.md      # 从零克隆 → 启动基础设施 → 编译运行
 ├── milvus/                 # Milvus 独立部署配置
 └── ragent/
-    ├── README.md           # 项目主文档(升级后 v2.0+，核心能力、架构、快速开始)
-    ├── README-v1.0.md      # 未升级的原始项目文档(v1.0，纯文本 RAG 版本)
+    ├── README.md           # 项目主文档(核心能力、架构、快速开始)
     ├── CHANGELOG.md        # 版本变更日志
     ├── Dockerfile          # 后端容器化
     ├── frontend/
@@ -44,14 +42,12 @@ agent/  (仓库根目录)
         │   └── pdf-ingestion-example.md  # PDF 入库完整示例
         ├── skills/
         │   └── ragent-dev-workflow/      # 开发流程 Skill 说明
-        └── upgrade/                # 升级开发文档(多模态 RAG 升级)
-            ├── dev-roadmap.md      # 开发路线图(Phase 0-8 进度)
-            ├── upgrade-plan.md     # 升级技术方案
-            ├── source-checklist.md # 源码排查清单
-            ├── next-development-plan.md # 后续开发顺序、验收标准和简历边界
-            ├── resume-evidence-development-plan.md # 校招简历证据化开发与评测路线
+        └── upgrade/                # 升级评测结论文档
             ├── phase0-baseline-report.md # Phase 0 真实检索基线与评测口径
-            └── phase1-dag-routing.md # Phase 1-A ETL 显式边、DAG 路由与发布说明
+            ├── phase1-dag-routing.md # Phase 1-A ETL 显式边、DAG 路由与发布说明
+            ├── phase2-hyperedge-ingestion.md # Phase 2 超边入库
+            ├── phase3-entity-normalization.md # Phase 3 实体归一化
+            └── r5-restricted-conclusions.md # R5 总评测限制性结论(简历指标口径)
 ```
 
 ## 按分类索引
@@ -59,8 +55,7 @@ agent/  (仓库根目录)
 ### 项目入口
 | 文档 | 功能 |
 |------|------|
-| [ragent/README.md](ragent/README.md) | 项目主文档:核心能力、技术架构、快速开始(升级后) |
-| [ragent/README-v1.0.md](ragent/README-v1.0.md) | **未升级的原始项目文档**(v1.0):纯文本 RAG 版本的完整介绍 |
+| [ragent/README.md](ragent/README.md) | 项目主文档:核心能力、技术架构、快速开始 |
 | [ragent/CHANGELOG.md](ragent/CHANGELOG.md) | 版本变更日志(v1.0 / v2.0 / Unreleased) |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | AI 开发协作规范与 7 步工作流 |
 
@@ -88,17 +83,14 @@ agent/  (仓库根目录)
 | [ragent/docs/resume-project.md](ragent/docs/resume-project.md) | 简历 4 条工作内容、量化指标、面试应答 |
 | [ragent/docs/demo_queries.md](ragent/docs/demo_queries.md) | 5 个典型工业演示问题(故障/工艺/图纸) |
 
-### 升级开发流程
+### 升级评测结论
 | 文档 | 功能 |
 |------|------|
-| [ragent/docs/upgrade/dev-roadmap.md](ragent/docs/upgrade/dev-roadmap.md) | 开发路线图:Phase 0-8 任务、里程碑、进度追踪 |
-| [ragent/docs/upgrade/upgrade-plan.md](ragent/docs/upgrade/upgrade-plan.md) | 多模态 RAG + 超图索引完整技术方案 |
-| [ragent/docs/upgrade/source-checklist.md](ragent/docs/upgrade/source-checklist.md) | 源码排查结论(方案待确认项) |
-| [ragent/docs/upgrade/next-development-plan.md](ragent/docs/upgrade/next-development-plan.md) | 后续开发顺序、ETL/超边/评测方案、验收标准和简历边界 |
-| [ragent/docs/upgrade/resume-evidence-development-plan.md](ragent/docs/upgrade/resume-evidence-development-plan.md) | 校招简历证据化路线：真实基线、问题取舍、240+20 评测、开发闭环与发布门槛 |
 | [ragent/docs/upgrade/phase0-baseline-report.md](ragent/docs/upgrade/phase0-baseline-report.md) | Phase 0 真实检索基线、样本范围和自动评测结果 |
 | [ragent/docs/upgrade/phase1-dag-routing.md](ragent/docs/upgrade/phase1-dag-routing.md) | Phase 1 ETL：显式 DAG 路由、安全重试、幂等写入与上传任务检查点恢复 |
-| [ragent/docs/skills/ragent-dev-workflow/README.md](ragent/docs/skills/ragent-dev-workflow/README.md) | 开发流程 Skill 使用说明 |
+| [ragent/docs/upgrade/phase2-hyperedge-ingestion.md](ragent/docs/upgrade/phase2-hyperedge-ingestion.md) | Phase 2 超边抽取与持久化 |
+| [ragent/docs/upgrade/phase3-entity-normalization.md](ragent/docs/upgrade/phase3-entity-normalization.md) | Phase 3 工业实体归一化 |
+| [ragent/docs/upgrade/r5-restricted-conclusions.md](ragent/docs/upgrade/r5-restricted-conclusions.md) | R5 总评测限制性结论：简历指标口径与复现映射 |
 
 ### 前端测试
 | 文档 | 功能 |
@@ -115,6 +107,4 @@ agent/  (仓库根目录)
 
 **部署/演示**:docs/quick-start → ragent/docs/deployment → demo_queries
 
-**开发/升级**:ragent/docs/upgrade/resume-evidence-development-plan → next-development-plan → dev-roadmap → upgrade-plan → source-checklist
-
-**追溯历史**:ragent/README-v1.0.md（未升级原始版）→ ragent/README.md（升级后主文档）
+**评测结论**:ragent/docs/upgrade/r5-restricted-conclusions → phase0-baseline-report → phase1-dag-routing

@@ -56,8 +56,6 @@ Step 5: Phase Finalize     → 更新 roadmap + git commit
 | 文件 | 读取目的 |
 |------|---------|
 | `DEVELOPMENT.md` | 扩展点机制、禁止行为、技术栈约束 |
-| `ragent/docs/upgrade/dev-roadmap.md` | 本 Phase 的全部闭环列表、依赖关系、预计工时 |
-| `ragent/docs/upgrade/upgrade-plan.md` | 本 Phase 的架构设计参考 |
 
 ### 1.2 输出 Phase 整体方案
 
@@ -213,11 +211,7 @@ use_skill("requesting-code-review")
 
 ## Step 5: Phase Finalize
 
-### 5.1 更新 Phase 进度
-
-在 `ragent/docs/upgrade/dev-roadmap.md` 底部进度表中，将本 Phase 行改为 `✅ 完成`。
-
-### 5.2 Git 提交
+### 5.1 Git 提交
 
 ```bash
 git add .
@@ -253,6 +247,4 @@ Phase X 完成 ✅
 | 用途 | 路径 |
 |------|------|
 | 开发规范 | `DEVELOPMENT.md` |
-| 路线图 & 进度 | `ragent/docs/upgrade/dev-roadmap.md` |
-| 技术方案 | `ragent/docs/upgrade/upgrade-plan.md` |
 | 单闭环开发 skill | `.codebuddy/skills/ragent-dev-workflow/SKILL.md` |

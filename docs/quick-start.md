@@ -199,16 +199,6 @@ chmod +x ragent/mvnw
 
 ---
 
-## 九、升级开发指南
-
-本项目已规划了面向央国企秋招的技术升级方案，详见：
-
-| 文档 | 路径 | 说明 |
-|------|------|------|
-| **源码排查结论** | `ragent/docs/upgrade/source-checklist.md` | 6 项关键组件确认，技术参数修正 |
-| **升级技术方案** | `ragent/docs/upgrade/upgrade-plan.md` | 多模态 RAG + 超图索引完整方案 |
-| **开发路线图** | `ragent/docs/upgrade/dev-roadmap.md` | 7 阶段开发顺序与进度追踪 |
-
 ---
 
 > **提示**：首次启动会拉取多个 Docker 镜像（总计约 3-5GB），建议在良好网络环境下执行。

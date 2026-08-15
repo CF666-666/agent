@@ -8,7 +8,6 @@ description: >
   方案设计后必须强制 grill-me 追问细节并等用户确认才能开始编码；
   编码测试通过后必须强制调用 requesting-code-review 进行代码审查，
   所有 Critical/Important 问题必须修复后才能进入展示和收尾。
-  每个闭环完成后必须更新 dev-roadmap.md。
 ---
 
 # Ragent 项目开发工作流
@@ -29,8 +28,6 @@ description: >
 | # | 文件 | 目的 |
 |:--:|------|------|
 | 1 | `DEVELOPMENT.md`（仓库根目录） | 技术栈约束、包路径规范、禁止行为、扩展点机制 |
-| 2 | `ragent/docs/upgrade/dev-roadmap.md` | 确认当前 Phase 进度、闭环间依赖关系 |
-| 3 | `ragent/docs/upgrade/upgrade-plan.md` | 架构设计、类签名参考、入库流程 |
 
 **输出**：当前 Phase + 闭环编号 + 前置依赖状态。
 
@@ -361,15 +358,7 @@ B. 方案 vs 实际对照
 
 ## Step 6：收尾（全类型通用）
 
-### 6.1 更新 roadmap
-
-在 `ragent/docs/upgrade/dev-roadmap.md` 中，找到本闭环对应的任务行，将状态 `⬜` 改为 `✅`，追加完成日期。
-
-### 6.2 更新 Phase 进度表
-
-如果本闭环是当前 Phase 的最后一个任务，将 roadmap 底部进度表中对应 Phase 行改为 `✅ 完成`。
-
-### 6.3 Git 提交
+### 6.1 Git 提交
 
 ```bash
 git add .
@@ -410,9 +399,6 @@ commit message 格式：
 | 用途 | 路径 |
 |------|------|
 | 开发规范 | `DEVELOPMENT.md`（仓库根目录） |
-| 路线图 & 进度 | `ragent/docs/upgrade/dev-roadmap.md` |
-| 技术方案 | `ragent/docs/upgrade/upgrade-plan.md` |
-| 源码排查 | `ragent/docs/upgrade/source-checklist.md` |
 | 主 POM | `ragent/bootstrap/pom.xml` |
 | 应用配置 | `ragent/bootstrap/src/main/resources/application.yaml` |
 | 代码审查 | `.codebuddy/skills/requesting-code-review/SKILL.md` |
