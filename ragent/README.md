@@ -510,7 +510,7 @@ npm run dev
 - [架构文档](docs/architecture.md) — 系统全景、模块划分、数据流、扩展点
 - [API 文档](docs/api.md) — REST 接口、LLM 路由、Milvus Schema
 - [部署指南](docs/deployment.md) — 一键容器化部署与生产配置
-- [评测报告](docs/evaluation-report.md) — RAGAS 端到端评测指标
+- [评测结论](docs/eval/r5-restricted-conclusions.md) — R5 总评测权威结论
 - [演示 Query 集](docs/demo_queries.md) — 5 个典型工业问题
 
 ## 为什么开源？
