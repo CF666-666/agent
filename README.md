@@ -8,7 +8,7 @@
 
 > 面向工业设备运维场景的多模态 RAG 智能问答平台：文本、图纸、扫描件联合解析，意图 / 向量 / 图像 / 超图四路混合检索，回答附带可溯源引用。
 
-![](ragent/assets/qa-home.png)
+![](ragent/assets/admin-overview.png)
 
 ## 项目简介
 
@@ -24,11 +24,15 @@
 |------|------|
 | 多模态文档理解 | PDF / Word / Markdown / 图纸扫描件联合解析，Tika + PDFBox + Tesseract OCR + Qwen-VL 图像语义 |
 | 多路混合检索 | 意图定向 / 全局向量 / 图像语义 / 超图四通道并行，后处理链「去重 → 多源加权融合 → Rerank」 |
+
+![](ragent/assets/multi-channel-retrieval.png)
 | 超图推理引擎 | N 元超边建模（设备 / 工况 / 参数 / 故障 / SOP），实体→超边倒排索引 O(k) 子图匹配，读写锁并发安全 |
 | 查询重写 | 多轮对话上下文补全、口语噪声规范化，解决"说的不是想问的" |
 | 意图识别与路由 | 树形多级意图体系（领域→类目→话题），置信度不足时主动引导澄清 |
 | 模型路由与容错 | 多供应商候选 + 优先级调度 + 首包探测 + 三态熔断降级，单模型故障无感切换 |
 | 文档入库 ETL | 节点可视化编排 Pipeline，任务幂等 + 检查点恢复 + 租约控制，长耗时入库可断点续跑 |
+
+![](ragent/assets/ingestion-pipeline.png)
 | 可溯源回答 | 检索结果结构化 references，SSE 先发引用再发正文，前端分类型渲染 |
 | 全链路追踪 | 重写 → 意图 → 检索 → 生成全环节 Trace，基于 AOP + TTL 跨线程透传 |
 | 企业级工程 | Redisson 分布式排队限流、Sa-Token 认证、MCP 工具集成、会话记忆压缩 |
@@ -113,6 +117,8 @@ npm run dev
 | `framework` | 无业务横切能力：三级异常体系、统一响应、SSE 封装、分布式 ID、幂等、Trace 上下文、MQ 封装 |
 | `infra-ai` | AI 基础设施：Chat / Embedding / Rerank 客户端，多供应商路由与故障切换 |
 | `mcp-server` | 独立 MCP 服务器（端口 9099）：JSON-RPC 协议、工具注册与分发 |
+
+![](ragent/assets/ragent-module-layering.png)
 
 前端为独立项目：`frontend`（React 18 + Vite + TypeScript + Tailwind），覆盖聊天页、管理后台、个人中心。
 
