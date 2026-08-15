@@ -1,0 +1,21 @@
+{
+  "generator_version": "industrial-main-r5-merge-1",
+  "count": 240,
+  "scene_counts": {
+    "fact": 50,
+    "noise": 40,
+    "image": 100,
+    "relation": 50
+  },
+  "split_counts": {
+    "tuning": 120,
+    "frozen": 120
+  },
+  "subset_sha256": {
+    "fact": "72d8abc5d40e927398023742c63e6920a08af0908f5a4ff5f0ce0fa19d59a1fb",
+    "noise": "6a528739bac25b40c0f4054904074b0a00f840334428907d2073e1a0fa70bf51",
+    "image": "9b4ab48ea24544012374ab48725d3a6ba01cfb4261250e008b793006589698be",
+    "relation": "334ad4149aae457f282d4d6f226527c557c2c27a9f13c4f25f1039759d8e213d"
+  },
+  "sha256": "968a1bbc15c1f3e2ec6e777640b739f7ab3e8dfd3556a8eaef375811bbdeb977"
+}

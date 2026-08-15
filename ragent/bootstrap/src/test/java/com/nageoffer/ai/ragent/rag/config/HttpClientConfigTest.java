@@ -46,7 +46,9 @@ class HttpClientConfigTest {
         assertThat(client.writeTimeoutMillis()).isEqualTo(10000);
         assertThat(client.readTimeoutMillis()).isEqualTo(10000);
         assertThat(client.callTimeoutMillis()).isEqualTo(10000);
-        assertThat(client.retryOnConnectionFailure()).isFalse();
+        // embedding 是检索前置依赖,siliconflow 偶发 HTTP/2 stream reset 时需重试,
+        // 否则单次抖动会直接导致整个检索通道失败。
+        assertThat(client.retryOnConnectionFailure()).isTrue();
     }
 
     @Test

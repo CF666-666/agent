@@ -113,7 +113,7 @@ rag:
         min-intent-score: 0.4
         top-k-multiplier: 2
       image-semantic:
-        timeout-millis: 10000
+        timeout-millis: 20000
       hyper-graph:
         timeout-millis: 7000
         minimum-llm-fallback-budget-millis: 1500
@@ -184,7 +184,9 @@ ai:
 
   embedding:
     # 单个远程嵌入调用的总预算；超时后由模型路由按候选顺序降级。
-    timeout-millis: 10000
+    # siliconflow 偶发长尾抖动(实测 1.3s~60s),10s 过短会导致降级 ollama(评测环境不可用)
+    # 而全链路失败;上调到 20s 容忍中等抖动。
+    timeout-millis: 20000
     default-model: qwen-emb-8b
     candidates:
       - id: qwen-emb-8b
@@ -197,6 +199,7 @@ ai:
         model: qwen3-embedding:8b-fp16
         dimension: ${rag.default.dimension}
         priority: 2
+        enabled: false
 
   rerank:
     default-model: qwen3-reranker-8b

@@ -1,0 +1,4148 @@
+{
+  "schema_version": 4,
+  "mode": "rewrite-on",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_main_r5.jsonl",
+    "sha256": "4eca3ba0540e1ed873ae8ea8e343057ca005da7b135a3922888dc26a7af87e4f"
+  },
+  "retrieval_options": {
+    "label": "r5b-text",
+    "enableRewrite": true,
+    "enableImage": false,
+    "enableHyperGraph": false,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "r5-main",
+    "request_timeout_seconds": 60
+  },
+  "execution_fingerprint": {
+    "fingerprint_version": 1,
+    "runner": {
+      "path": "scripts/eval/retrieval_eval.py",
+      "sha256": "e8ffca6b41dcbceff0551bbfdd51df01d62b6bf5be77833de35db07fae83787c"
+    },
+    "evaluation_contract": {
+      "path": "scripts/eval/evaluation_contract.py",
+      "sha256": "546b1186c1514fecc5e9b54d576692c937763f34a3ccda6159bc05ab347d571a"
+    },
+    "dependencies": [],
+    "runtime_profile": {
+      "path": "scripts/eval/runtime-profiles/local-default.json",
+      "sha256": "849ffc178ef791d2dd29dd3d87f7e4d4d4e35bfd0c8155db8862cf5941ddf76b",
+      "name": "local-ragent-default",
+      "configured_models": {
+        "chat": {
+          "model_id": "qwen3-32b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-32B"
+        },
+        "embedding": {
+          "model_id": "qwen-emb-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Embedding-8B"
+        },
+        "rerank": {
+          "model_id": "qwen3-reranker-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Reranker-8B"
+        }
+      }
+    },
+    "application_config": {
+      "path": "bootstrap/src/main/resources/application.yaml",
+      "sha256": "d26f4a7d810291b12965c9a6fac29426e5c4e2aa302181deff1a4924a0070898"
+    },
+    "git": {
+      "revision": "fbfdc018b8536b51cd723f9711bd6ffbcc8dd3b4",
+      "worktree_dirty": true
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.14.2"
+    },
+    "sha256": "b23377d31c9e6473ca080c37060edec487fdce30138c0826796e55994deeb050"
+  },
+  "evaluation_slice": {
+    "scenes": "fact,colloquial",
+    "offset": 0,
+    "limit": 0,
+    "count": 90
+  },
+  "warmup": {
+    "requested_count": 2,
+    "executed_count": 2,
+    "results": [
+      {
+        "case_id": "e9f4b9ae40bc350d23d31c38793b568d80c3db5b1ef197e0227c24942c29bf51",
+        "retrieval_status": "received",
+        "latency_ms": 7012,
+        "num_refs": 10,
+        "execution": {
+          "elapsedMillis": 1146,
+          "timedOut": false,
+          "budgetMillis": 25000,
+          "cancelled": false,
+          "channels": [
+            {
+              "question": "反应釜机械密封定期维护",
+              "channel": "VectorGlobalSearch",
+              "status": "COMPLETED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 1146
+            }
+          ]
+        }
+      },
+      {
+        "case_id": "400f8792d39bf435c95c30d8c537ca0b0209018ee5e7e2ead92c538a57378ea8",
+        "retrieval_status": "received",
+        "latency_ms": 4051,
+        "num_refs": 10,
+        "execution": {
+          "elapsedMillis": 268,
+          "timedOut": false,
+          "budgetMillis": 25000,
+          "cancelled": false,
+          "channels": [
+            {
+              "question": "换热器定期维护保养内容",
+              "channel": "VectorGlobalSearch",
+              "status": "COMPLETED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 268
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "summary": {
+    "total": 90,
+    "quality_sample_count": 90,
+    "excluded_execution_count": 0,
+    "hit_rate": {
+      "@1": 0.8667,
+      "@3": 0.8667,
+      "@5": 0.8667
+    },
+    "mrr": 0.8667,
+    "expected_channel_hit_rate": 0.8667,
+    "source_id_hit_rate": 0.0,
+    "relation": {
+      "quality_sample_count": 0,
+      "channel": {
+        "hyperedge_hit_rate": {
+          "@1": 0.0,
+          "@3": 0.0,
+          "@5": 0.0
+        },
+        "hyperedge_recall": {
+          "@1": 0.0,
+          "@3": 0.0,
+          "@5": 0.0
+        },
+        "path_hit_rate": 0.0,
+        "source_accuracy": 0.0,
+        "evidence_availability": {
+          "hyperEdgeId": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourceDocument": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourceChunkId": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourceChunkIndex": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourcePage": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "documentVersion": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          }
+        }
+      },
+      "final_reference_hit_rate": {
+        "@1": 0.0,
+        "@3": 0.0,
+        "@5": 0.0
+      }
+    },
+    "latency": {
+      "p50_ms": 5165,
+      "p95_ms": 13031,
+      "max_ms": 20064
+    },
+    "retrieval_status_counts": {
+      "received": 90
+    },
+    "by_scene": {
+      "colloquial": {
+        "count": 40,
+        "quality_sample_count": 40,
+        "hit_rate": {
+          "@1": 1.0,
+          "@3": 1.0,
+          "@5": 1.0
+        },
+        "mrr": 1.0,
+        "expected_channel_hit_rate": 1.0,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 4974,
+          "p95_ms": 9391,
+          "max_ms": 11479
+        }
+      },
+      "fact": {
+        "count": 50,
+        "quality_sample_count": 50,
+        "hit_rate": {
+          "@1": 0.76,
+          "@3": 0.76,
+          "@5": 0.76
+        },
+        "mrr": 0.76,
+        "expected_channel_hit_rate": 0.76,
+        "source_id_hit_rate": 0.0,
+        "latency": {
+          "p50_ms": 5409,
+          "p95_ms": 18388,
+          "max_ms": 20064
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "e9f4b9ae40bc350d23d31c38793b568d80c3db5b1ef197e0227c24942c29bf51",
+      "dataset_id": "r5-fact-tuning-001",
+      "query": "反应釜机械密封应如何定期维护？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12708,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10059,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "反应釜机械密封定期维护",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10059
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "400f8792d39bf435c95c30d8c537ca0b0209018ee5e7e2ead92c538a57378ea8",
+      "dataset_id": "r5-fact-tuning-002",
+      "query": "换热器定期维护保养包括哪些内容？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4690,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 433,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "换热器定期维护保养内容",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 433
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "8df2292d8ce34f57d33f896b812357471dc6de8038667726acf8757cefb3c085",
+      "dataset_id": "r5-fact-tuning-003",
+      "query": "转炉托圈冷却系统如何进行日常维护？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5158,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 430,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "转炉托圈冷却系统日常维护",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 430
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "3c45370274e08fab474fec85749842ef671bd492c605b83fc7aaa9547866fa0f",
+      "dataset_id": "r5-fact-tuning-004",
+      "query": "冷轧机区域有哪些强制性安全规范？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4172,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 289,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷轧机区域强制性安全规范",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 289
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "aa3ef9b919b63620390132f0767fbfafe9784fceea25ae310b6778ae1a865fae",
+      "dataset_id": "r5-fact-tuning-005",
+      "query": "压缩机运行中排气温度异常升高，可能的原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11537,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 290,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "压缩机运行中排气温度异常升高，可能的原因有哪些？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 290
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "8e80f854bf2ac1df4e84908cbd32e72cb521c4b32865655dc3d3d113e40268c7",
+      "dataset_id": "r5-fact-tuning-006",
+      "query": "结晶器铜板出现局部过热甚至烧穿，应如何分析原因？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 18388,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10022,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "结晶器铜板出现局部过热甚至烧穿的原因分析",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10022
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "30e4fc6ab780df881e7e469dd845a08aba3e4231711c715a323771121fab78e3",
+      "dataset_id": "r5-fact-tuning-007",
+      "query": "烧结机开机前应执行哪些标准操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4861,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 305,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烧结机开机前应执行的标准操作步骤",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 305
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "ed5ea54fa3806df90ed898fd1d9b238f5fa25b83b6899678932aee5d82db50e7",
+      "dataset_id": "r5-fact-tuning-008",
+      "query": "焦炉集气管压力频繁波动，影响荒煤气导出，应如何处理？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11568,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 282,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "焦炉集气管压力频繁波动，影响荒煤气导出，应如何处理？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 282
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "ddc134253b65ecd9a9af105fe9912e33e6f41948a7fbc8cda63aa0ac195c83d6",
+      "dataset_id": "r5-fact-tuning-009",
+      "query": "离心式压缩机出现喘振现象如何判断和处理？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4245,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 202,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "离心式压缩机喘振现象判断和处理",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 202
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "f1be95167b54c8af9f8cf5060c08fedd952e91a04f9b92d78c7834cb5de4cb72",
+      "dataset_id": "r5-fact-tuning-010",
+      "query": "换辊作业的标准操作流程是什么？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 3812,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 205,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "换辊作业的标准操作流程",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 205
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "ca02fd4d2313bb1861d9d578eba24df44a0091db1d22d770164dcf9c6aacc8c4",
+      "dataset_id": "r5-fact-tuning-011",
+      "query": "换热器检修时有哪些关键安全规范？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 3964,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 285,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "换热器检修的关键安全规范",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 285
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "8544e0b57a1827030c5dc56e462e160ba632edc38273486103b28562ffd9c5c0",
+      "dataset_id": "r5-fact-tuning-012",
+      "query": "转炉氧枪频繁漏水可能是什么原因？如何诊断？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5409,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 198,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "转炉氧枪频繁漏水的原因和诊断方法",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 198
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "bc976dab3f5ebada47761feab2e65f24506c173a8ae5fe3a032d048e88282c1d",
+      "dataset_id": "r5-fact-tuning-013",
+      "query": "储罐防雷接地系统应满足哪些技术参数？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5434,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 193,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "储罐防雷接地系统的技术参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 193
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "7148dfe81c835ab015e3d9bb205415d69df133eb2055953604ebbeefa7caf615",
+      "dataset_id": "r5-fact-tuning-014",
+      "query": "烧结机布料操作的关键控制参数有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8100,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 190,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烧结机布料操作的关键控制参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 190
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "3fad96cbfdc5922372f1c743613257907277c6f0ca4f6d506de62fc3490d86ce",
+      "dataset_id": "r5-fact-tuning-015",
+      "query": "转炉倾动减速机润滑系统维护要点有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4263,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 188,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "转炉倾动减速机润滑系统维护要点",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 188
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "a5f45678a5bf23552bcaa940dbbe7068947ce2973e276e476bfc5d1f693a6b55",
+      "dataset_id": "r5-fact-tuning-016",
+      "query": "精馏塔区域动火作业需满足哪些安全条件？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 18767,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 231,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "精馏塔区域动火作业需满足哪些安全条件？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 231
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "953945afe30f3958d81a9543e2700c4c87a2aa3751729b612e2c665da7d7cd84",
+      "dataset_id": "r5-fact-tuning-017",
+      "query": "启动往复式压缩机前应执行哪些关键操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4416,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 192,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "启动往复式压缩机前应执行的关键操作步骤",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 192
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "17c5798b095674eeecbf9068c647997e6d11fc9e73f6389491a2e68af96a48d2",
+      "dataset_id": "r5-fact-tuning-018",
+      "query": "压缩机切换备用机的操作要点有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 3814,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 197,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "压缩机切换备用机的操作要点",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 197
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "8a45daf2e18ab72664db99071a8059e2069e755df1c55739b9ca75bd02df52f7",
+      "dataset_id": "r5-fact-tuning-019",
+      "query": "热轧机区域作业时有哪些强制性安全规定？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4116,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 222,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "热轧机区域作业时的强制性安全规定",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 222
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "2075bb93766870a98f3897bd25eb6fbbf11609fa68808424efd912593de6ea5a",
+      "dataset_id": "r5-fact-tuning-020",
+      "query": "氧枪升降过程中突发停电应如何应急处置？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5656,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1224,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "氧枪升降过程中突发停电应急处置",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1224
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "b861ca949e2150612552918376d95055da62b840a4a3fcf41823a65c20d27321",
+      "dataset_id": "r5-fact-tuning-021",
+      "query": "高炉风口平台巡检有哪些安全要求？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7890,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 151,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "高炉风口平台巡检安全要求",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 151
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "37308890ac25f10edc08c59d971ef593d872bd8bbe8cd48492c317788b753cd4",
+      "dataset_id": "r5-fact-tuning-022",
+      "query": "储罐液位计显示异常波动，可能是什么原因？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11617,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 185,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "储罐液位计显示异常波动，可能是什么原因？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 185
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "9c7b9cab8a7fad9dc64b2ff8f5ffd413cc6e68c0b6517ad010d17c6cba7cbeb6",
+      "dataset_id": "r5-fact-tuning-023",
+      "query": "烧结机头尾密封装置的日常维护要点是什么？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 20064,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10008,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烧结机头尾密封装置的日常维护要点是什么？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10008
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "e0c356d35334be751a91a2521bdc05caff684912c5c01357968a200a13cdb5b3",
+      "dataset_id": "r5-fact-tuning-024",
+      "query": "启动离心泵前必须执行哪些操作步骤？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 13333,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10004,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "启动离心泵前必须执行的操作步骤",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10004
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "ebb9e561f11fc0ab88eb20ba0f2038128eef8a5575a468ac02a33bdaae78ca9b",
+      "dataset_id": "r5-fact-tuning-025",
+      "query": "储罐内部阴极保护系统如何维护？",
+      "scene": "fact",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 3068,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "储罐内部阴极保护系统维护",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "02e01a389685ad3e82f4925351a364ab1030182ea043b08c28162189682bfe0e",
+      "dataset_id": "r5-fact-frozen-001",
+      "query": "冷却塔填料应如何进行定期维护？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4010,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷却塔填料定期维护方法",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "7b17992d91f82cb365b1203f7f20d159704b82f4876078a5dce29f3339c56b4a",
+      "dataset_id": "r5-fact-frozen-002",
+      "query": "在变压器附近作业时应遵守哪些安全距离规定？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 2492,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "变压器附近作业的安全距离规定",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "a549435321ab4687e7371b6f6af41e6965caf515ee2430d61428125171d420ce",
+      "dataset_id": "r5-fact-frozen-003",
+      "query": "汽轮机运行中如何正确进行高加（高压加热器）投运操作？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4438,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "汽轮机运行中高加（高压加热器）投运操作",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "34ecc874b070af7c470aacebf2dd81411217eacb1f61a9deaf052343ae1e4bfb",
+      "dataset_id": "r5-fact-frozen-004",
+      "query": "汽轮机大修期间，如何检查和调整推力轴承间隙？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4005,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 5,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "汽轮机大修期间检查和调整推力轴承间隙",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 5
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "1156a8580395e9ca9fbc583f736dfd359421e17a17a0165aac0def8585e567b7",
+      "dataset_id": "r5-fact-frozen-005",
+      "query": "锅炉停用一周以上应采取何种保养措施？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 2770,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "锅炉停用一周以上应采取何种保养措施",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "15d6e82f8791f7e8b7f4758e6ddb26d0398cecea37fc44b8bdb5d6fd9f9afeeb",
+      "dataset_id": "r5-fact-frozen-006",
+      "query": "开关柜的日常维护保养内容有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11304,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 169,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "开关柜的日常维护保养内容",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 169
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "53e43838003c0d9decaecb786d95ca465a5c027d5a7723658b792ff7baa0a6fd",
+      "dataset_id": "r5-fact-frozen-007",
+      "query": "进入冷却塔内部检修时需遵守哪些安全规范？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4194,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 182,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "进入冷却塔内部检修时需遵守的安全规范",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 182
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "3a6a613f51807f8b809d9303d984d1c59aa0927a7387b4a0f0f4c3c4e2b0801f",
+      "dataset_id": "r5-fact-frozen-008",
+      "query": "开关柜发出‘嗡嗡’异响，如何判断是否为故障？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4473,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 173,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "开关柜发出‘嗡嗡’异响是否为故障的判断方法",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 173
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "b7cf49994af6b8b6f0fd57e82c3c504cec7ac5d9770d3a0c782b424362ce4e92",
+      "dataset_id": "r5-fact-frozen-009",
+      "query": "脱硫塔pH值异常波动可能由哪些原因引起？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8613,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 4314,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "脱硫塔pH值异常波动可能由哪些原因引起",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4314
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "29ac8133a582081191d37d345b409de0c2a2aaa4f792213439fdf303d5901127",
+      "dataset_id": "r5-fact-frozen-010",
+      "query": "脱硫区域动火作业有哪些特殊安全要求？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11809,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 7407,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "脱硫区域动火作业的特殊安全要求",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 7407
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "391c14e933e161d91fcbe56c71af65e9860e45eba2c67942a37394648bc02ffa",
+      "dataset_id": "r5-fact-frozen-011",
+      "query": "汽轮机运行期间，润滑油系统发生泄漏时应如何应急处置？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 13031,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10008,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "汽轮机运行期间润滑油系统发生泄漏的应急处置",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10008
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "6c452433a1839343ff1ab543f51d4e0a65d5513e8b930123170f6a7d40f82c1d",
+      "dataset_id": "r5-fact-frozen-012",
+      "query": "发电机运行中出现电压波动超过±5%的原因可能有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6888,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 163,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "发电机运行中出现电压波动超过±5%的原因",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 163
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "2902420c54245096533e98c6a1d3ddd094133ec5b1d3047c7a0ca19285f5b9ef",
+      "dataset_id": "r5-fact-frozen-013",
+      "query": "开关柜运维中防止误操作的安全措施有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 13000,
+      "num_refs": 0,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10002,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "开关柜运维中防止误操作的安全措施",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10002
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "0a3645e9cc9433ccc5d684c71fd6c3e835488c015d1750ea5505219f9acef0b9",
+      "dataset_id": "r5-fact-frozen-014",
+      "query": "汽轮机正常停机时，如何控制降温降压速率以避免热应力超标？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6010,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 167,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "汽轮机正常停机时控制降温降压速率以避免热应力超标",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 167
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "af49f22a0471cba736b020c0fe27b20578046b5bf75e7fdea21258905c027fe3",
+      "dataset_id": "r5-fact-frozen-015",
+      "query": "变压器定期维护中油样检测的周期和关键指标是什么？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8204,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 143,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "变压器定期维护中油样检测的周期和关键指标",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 143
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "72e9f8b79432a79a331133cf92188b847b0f5db854ba48066a3a0b485c7e90c6",
+      "dataset_id": "r5-fact-frozen-016",
+      "query": "脱硫塔停运时的标准操作流程是什么？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4079,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 178,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "脱硫塔停运时的标准操作流程",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 178
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "2564ea8cf5b458e2967544d870e76985a6ccc1f4d512676a0b2d7ec44d183a1c",
+      "dataset_id": "r5-fact-frozen-017",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 10551,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 135,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "开关柜内断路器频繁跳闸的可能原因",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 135
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "cdd150bc21a71fe3b14cc448f18ae0216250852038647fba1cc72703db79da10",
+      "dataset_id": "r5-fact-frozen-018",
+      "query": "冷却塔风机振动异常增大，可能原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4818,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 173,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷却塔风机振动异常增大的可能原因",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 173
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "d01fdfc0c22ef190478be0329f7d16954f062cf32d092cb09a54946867f2c904",
+      "dataset_id": "r5-fact-frozen-019",
+      "query": "变压器油泄漏时应急处置措施有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4178,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 154,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "变压器油泄漏应急处置措施",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 154
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "98f2efe2a933ca34328e2c7051b441ce94c7ba63d523438f2abb3e411b7a6995",
+      "dataset_id": "r5-fact-frozen-020",
+      "query": "开关柜内元器件多久需要进行预防性试验？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6949,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 272,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "开关柜内元器件预防性试验周期",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 272
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "07b2388de7cd827348810a6b7343b39ae8dafe33b85b6d997439190d7c7df42b",
+      "dataset_id": "r5-fact-frozen-021",
+      "query": "操作高压开关柜断路器合闸前应执行哪些规程？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7206,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3041,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "操作高压开关柜断路器合闸前应执行哪些规程",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3041
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "1d81a68d8e5265a2e5ba01c50e05de58004d75f69fe2f5b3a1f92d66be3b5d72",
+      "dataset_id": "r5-fact-frozen-022",
+      "query": "冷却塔周边作业有哪些电气安全要求？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "安全规范"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5463,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1492,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷却塔周边作业的电气安全要求",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1492
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "0bdcd4df7c93f6577fff9c86278acbca957bb20ace792bab433b32915a0b7003",
+      "dataset_id": "r5-fact-frozen-023",
+      "query": "锅炉运行中出现汽包水位异常波动，可能的原因有哪些？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6076,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 197,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "锅炉运行中汽包水位异常波动的可能原因",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 197
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "1f76968dba564c7a9284c726d6a35c0f145096151348575693be8c4a65ea8b8e",
+      "dataset_id": "r5-fact-frozen-024",
+      "query": "如何调节冷却塔的运行参数以适应负荷变化？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4632,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 177,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "调节冷却塔的运行参数以适应负荷变化",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 177
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "e542e09199fb8545da36ca7e24ef1acfeaa827958e72c302d9fb33ab773ddd2b",
+      "dataset_id": "r5-fact-frozen-025",
+      "query": "变压器停运超过7天重新投运前需做哪些检查？",
+      "scene": "fact",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5290,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 199,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "变压器停运超过7天重新投运前需做哪些检查",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 199
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "a9a70ab4d68f9343a9beb03a9d65144b2440fd27d8dd0339647871c828333552",
+      "dataset_id": "r3-noise-tuning-001",
+      "query": "高炉冷确壁漏水咋诊断？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 3796,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 186,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "高炉冷却壁漏水诊断",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 186
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "f9309f059ad7e4d53e209242a11af6c21bb73636445e2019ff839fb94066a663",
+      "dataset_id": "r3-noise-tuning-002",
+      "query": "转炉顷动系统又响又振，怎么查？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5815,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 143,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "转炉顷动系统又响又振的排查方法",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 143
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "874915fc6b37e9466f9f9c78eb7e8b78dfbfb98e50f5c4e1be39b35831541020",
+      "dataset_id": "r3-noise-tuning-003",
+      "query": "连铸拉数突然不稳，先排查哪？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4099,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 145,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "连铸拉数突然不稳的排查步骤",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 145
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "a1412d4addcf106869a93c8f982c4b236f756a3fd3cd194ab47c7c79ddf653ae",
+      "dataset_id": "r3-noise-tuning-004",
+      "query": "热扎机液压压力老跳，咋排查？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4240,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 166,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "热扎机液压压力老跳排查",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 166
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "bc2c82ead4f7ce75fefeb403886f601a21c28d0573e1a12924f0636f03152e6d",
+      "dataset_id": "r3-noise-tuning-005",
+      "query": "烧结机主抽风机震动超标啥原因？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5683,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 206,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烧结机主抽风机震动超标原因",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 206
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "91c5210787a562d19a41b656f628f88dc7f674945f4b05bc7e1a87ff2f849525",
+      "dataset_id": "r3-noise-tuning-006",
+      "query": "高炉无钟炉顶上料要守哪些规程？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 3965,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 141,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "高炉无钟炉顶上料规程",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 141
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "06f4b3bcac4ac2f4c10e19b09b0cc9231ee0ee2031ae8ca7e2a0bdb93cf54703",
+      "dataset_id": "r3-noise-tuning-007",
+      "query": "转炉吹氧时枪位和供氧怎么控？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5963,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 159,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "转炉吹氧时枪位和供氧控制",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 159
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "a21723f7dcf4f2b85adb544ef3731640b477ecea70b8cc85fbff2dea1e5f63da",
+      "dataset_id": "r3-noise-tuning-008",
+      "query": "连铸扇形段辊列平时保养啥？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5568,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1878,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "连铸扇形段辊列平时保养",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1878
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "4f78eee4dbdc728c6c64814aadd851179b79ef93145a8777593e3bde64a7cdbc",
+      "dataset_id": "r3-noise-tuning-009",
+      "query": "热轧主减速箱的油路平时怎么养护？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "维护保养",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5419,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 207,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "热轧主减速箱的油路养护",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 207
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "c6caa42bb0dd654c480ad6107a70dc1f671b0b80da6ecb434b54ca58b2e15153",
+      "dataset_id": "r3-noise-tuning-010",
+      "query": "焦炉四大车联动作业要满足哪些联锁？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8207,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2939,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "焦炉四大车联动作业要满足的联锁",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2939
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "b4ec57396067f325542efdeba11c6fed18239b841fd2d0ecf0b034dfc0d349c1",
+      "dataset_id": "r3-noise-tuning-011",
+      "query": "高炉复风从三四成往上加时，多久加一次、每次加多少？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4974,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 158,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "高炉复风从三四成往上加时，多久加一次、每次加多少",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 158
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "4701f8d998469eb9adf4829ce1ba5f64b305ce878257b6fb8b5faa56a7ca8663",
+      "dataset_id": "r3-noise-tuning-012",
+      "query": "转炉炉衬掉到多厚、温度高到多少就得停炉补？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4901,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 161,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "转炉炉衬掉到多厚、温度高到多少就得停炉补",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 161
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "591a32a7b195974bbc68aecb5ed181f6b61c7c547f1f837a083b27123966eefc",
+      "dataset_id": "r3-noise-tuning-013",
+      "query": "轧辊裂纹一圈圈出现，裂多深多长要换辊？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9391,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1204,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "轧辊裂纹一圈圈出现，裂多深多长要换辊",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1204
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "256ba2f8a8a0db8919fcd39af763de1ebe67c80aee9c4353d2eb04e9e687c823",
+      "dataset_id": "r3-noise-tuning-014",
+      "query": "烧结终温上下窜五十来度，查哪些参数？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4881,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 181,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烧结终温上下窜五十来度查哪些参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 181
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "1af58aa8e015f31ffd840439a5c65141421214a5b58ff3192d275ee00c6c6f3c",
+      "dataset_id": "r3-noise-tuning-015",
+      "query": "炉缸侧壁到三百度、相邻点差五十多度，算侵蚀严重吗？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6282,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 192,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "炉缸侧壁到三百度、相邻点差五十多度，算侵蚀严重吗？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 192
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "bcd7927960d9c83e26d881c33417aba4598102adddc5426134da3e1597a026e5",
+      "dataset_id": "r3-noise-tuning-016",
+      "query": "烘炉好了准备送风，先开多少，后面怎么加？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4663,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 210,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "烘炉送风先开多少，后面怎么加",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 210
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "a106f04df4e51550e28c8b42517c45f51dd339daa04a75d2fc9f16fa4ec3ca80",
+      "dataset_id": "r3-noise-tuning-017",
+      "query": "要兑铁了，炉前这几项先确认啥？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5278,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 166,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "兑铁前炉前确认事项",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 166
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "d28abe5ba03c3dfb076824627a91a049b72152a77193a07ddbe2f277fe0de076",
+      "dataset_id": "r3-noise-tuning-018",
+      "query": "结晶器要换，先停哪些、装完查什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4553,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 194,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "结晶器更换前先停哪些、装完查什么",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 194
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "00c0e44315794b5e62548bf45a7e4c5ab99f0479fa61370ace582296361e452e",
+      "dataset_id": "r3-noise-tuning-019",
+      "query": "卡住了，人过去处理前必须先做啥？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "安全规范",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5335,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 188,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "卡住了，人过去处理前必须先做啥",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 188
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "21955e72e3cce8c961f67e6b2520d5c74df9a4e1b5c074daba3f3772d4aba640",
+      "dataset_id": "r3-noise-tuning-020",
+      "query": "推着越来越费劲，先看炉墙还是机械？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "故障诊断",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4597,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 159,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "推着越来越费劲，先看炉墙还是机械",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 159
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "7ef5d52f1e98c5dd3ce979dce81b453857e68d3a218fa9c996a5f3e92086f260",
+      "dataset_id": "r3-noise-frozen-001",
+      "query": "气轮机振动突然过0.08毫米，可能哪坏了？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5319,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 199,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "气轮机振动突然过0.08毫米的可能原因",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 199
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "3328ca00797cc7c8e46193ceae0c07a3c3728d9f9ffbba3bd43aac26ba9abe91",
+      "dataset_id": "r3-noise-frozen-002",
+      "query": "发电机轴成温度过95度怎么处置？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11479,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 227,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "发电机轴成温度过95度怎么处置？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 227
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "527364b402b5a6b64a0a798f327b1a9f00bdac4a9b4b0c2a3c8f12c5ece9dbb1",
+      "dataset_id": "r3-noise-frozen-003",
+      "query": "锅炉主蒸气压力上下超0.5MPa咋处理？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4201,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 181,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "锅炉主蒸气压力上下超0.5MPa处理",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 181
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "2a2924784763c4ec41f65fcfd4a2b0adce4df91ecb39be4b37f2af14ac31dc49",
+      "dataset_id": "r3-noise-frozen-004",
+      "query": "变压器差洞保护跳了怎么查？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4071,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 161,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "变压器差动保护跳闸怎么查",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 161
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "2ee11f2daf1e9baaa89db66670c8f03fca1ffd047a2afb8087a4c510e84ac360",
+      "dataset_id": "r3-noise-frozen-005",
+      "query": "脱流塔出口二氧化硫突然高了先查啥？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "typo_homophone"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5165,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 179,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "脱流塔出口二氧化硫突然高了先查什么",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 179
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "5a02d3a490a823747d4b6c9e92cc95a7617cc4074928b5c2901208e04243b4e6",
+      "dataset_id": "r3-noise-frozen-006",
+      "query": "汽机DEH定检都做哪些项目？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4919,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 152,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "汽机DEH定检项目",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 152
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "4503ed3bb68d09a758fc38e8a1f8bda86a74ba697ee4c4b37e90457f485a7356",
+      "dataset_id": "r3-noise-frozen-007",
+      "query": "发电机定子线圈日常保养查什么？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5153,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 254,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "发电机定子线圈日常保养检查内容",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 254
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "7dd7749701326f759616c70f4ee85cf50155ff07ddd9f0fab09b0515405e21a4",
+      "dataset_id": "r3-noise-frozen-008",
+      "query": "锅炉水冷壁和过热器多久吹一次灰，参数怎么定？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5536,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 191,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "锅炉水冷壁和过热器吹灰频率和参数设定",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 191
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "c5561b7affe1e7ef4b5d93a544cdae2e7421ff97b860ddd010d304de692cc1f3",
+      "dataset_id": "r3-noise-frozen-009",
+      "query": "主变投运前要走哪些步骤？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9349,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 217,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "主变投运前的步骤",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 217
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "bceb00ac3d1c1ea2fb91f529a898c101c482a64b1d802d4180322c3db86ca167",
+      "dataset_id": "r3-noise-frozen-010",
+      "query": "脱硫循泵机封漏了怎么处理，之后咋防？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "维护保养",
+        "alias_synonym"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4622,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 232,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "脱硫循泵机封漏了处理方法和预防措施",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 232
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "781670334e89f374485afd80c716bff96e9aa54f984c1eb596f782d7b96e8957",
+      "dataset_id": "r3-noise-frozen-011",
+      "query": "汽机正胀差超过三点五毫米该怎么控？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5733,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 148,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "汽机正胀差超过三点五毫米的控制方法",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 148
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "97504c1b92de89a31fab8a84cd4de8a27344f749faf8fa7788686f0eff50724e",
+      "dataset_id": "r3-noise-frozen-012",
+      "query": "发电频率在五十赫兹上下晃半个点，怎么查？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4387,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 171,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "发电频率在五十赫兹上下晃半个点怎么查",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 171
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "334e2db5ffc253a8c7bfd18059e1eced4951487ffe5798bfacc413595f4d345e",
+      "dataset_id": "r3-noise-frozen-013",
+      "query": "锅炉烟温一下到一百八十多度，先排哪几处？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4414,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 142,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "锅炉烟温一下到一百八十多度，先排哪几处",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 142
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "2c4b36e368b4693b5ddb7aa198e341de4037bb6206c4c8857419d16653ba45fc",
+      "dataset_id": "r3-noise-frozen-014",
+      "query": "主变油温95度往上走，一般是什么原因？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11434,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 163,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "主变油温95度往上走，一般是什么原因？",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 163
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "303d7c79d08c66527216722c83bbe71d4019bbf3ae594b519ec3d97978b62936",
+      "dataset_id": "r3-noise-frozen-015",
+      "query": "冷却塔出水一直三十五度以上，按啥顺序查？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6038,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 258,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷却塔出水一直三十五度以上，按什么顺序查",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 258
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "493fcd1f9fb24d6bdf24b89afda4f80e33082e983db27f9d85c222dda4455682",
+      "dataset_id": "r3-noise-frozen-016",
+      "query": "冷态准备冲转了，哪些数没到位不能开？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4497,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 188,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "冷态准备冲转时哪些参数没到位不能开",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 188
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "8422ea0093411b9aeba2c29f43aa532e8bb6c56038875f35df1b339504feff3e",
+      "dataset_id": "r3-noise-frozen-017",
+      "query": "准备起机，前面的电气检查按啥顺序？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7330,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 263,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "准备起机前的电气检查顺序",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 263
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "d86b23ba3874692efdd9caa2db43b9a80c90f73e0f5aac70c94d203a8172476a",
+      "dataset_id": "r3-noise-frozen-018",
+      "query": "要正常停了，先减负荷还是先停燃料？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4398,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 143,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "正常停炉时先减负荷还是先停燃料",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 143
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "292bc2931476867711a73ead73ad4680815bc4b34994c8bed364312298e8d5c3",
+      "dataset_id": "r3-noise-frozen-019",
+      "query": "柜子要从运行转检修，手车、接地刀先动哪个？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4615,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 147,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "柜子从运行转检修，手车、接地刀先动哪个",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 147
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "cb36be903aef0d1e161b7f2136ea7544a4b05eee55d17bfa2c824464e5accb92",
+      "dataset_id": "r3-noise-frozen-020",
+      "query": "这个风机电机老跳，电气还是机械问题？",
+      "scene": "colloquial",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "故障诊断",
+        "ellipsis_word_order"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4181,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 135,
+        "timedOut": false,
+        "budgetMillis": 25000,
+        "cancelled": false,
+        "channels": [
+          {
+            "question": "风机电机老跳是电气问题还是机械问题",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 135
+          }
+        ]
+      }
+    }
+  ]
+}

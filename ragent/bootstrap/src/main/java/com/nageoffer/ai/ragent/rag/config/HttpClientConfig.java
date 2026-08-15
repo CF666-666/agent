@@ -92,7 +92,7 @@ public class HttpClientConfig {
                 .writeTimeout(timeout)
                 .readTimeout(timeout)
                 .callTimeout(timeout)
-                .retryOnConnectionFailure(false)
+                .retryOnConnectionFailure(true)
                 .build();
     }
 }

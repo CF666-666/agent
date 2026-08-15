@@ -1,0 +1,94 @@
+{
+  "dataset": "industrial_main_r5",
+  "total": 240,
+  "scene_counts": {
+    "text": 90,
+    "image": 100,
+    "relation": 50
+  },
+  "macro_average": {
+    "hit_rate": {
+      "@1": 0.6588,
+      "@3": 0.769,
+      "@5": 0.8037
+    },
+    "mrr": 0.7136
+  },
+  "micro_average": {
+    "count": 240,
+    "quality_sample_count": 235,
+    "excluded_execution_count": 5,
+    "hit_rate": {
+      "@1": 0.6383,
+      "@3": 0.7489,
+      "@5": 0.7872
+    },
+    "hit_rate_wilson95": {
+      "@1": [
+        0.5751,
+        0.6971
+      ],
+      "@3": [
+        0.6898,
+        0.8001
+      ],
+      "@5": [
+        0.7305,
+        0.8347
+      ]
+    },
+    "mrr": 0.6944,
+    "latency_p50_ms": 6038,
+    "latency_p95_ms": 14666
+  },
+  "per_scene": {
+    "text": {
+      "count": 90,
+      "quality_sample_count": 90,
+      "excluded_execution_count": 0,
+      "hit_rate": {
+        "@1": 0.8667,
+        "@3": 0.8667,
+        "@5": 0.8667
+      },
+      "mrr": 0.8667,
+      "latency_p50_ms": 5165,
+      "latency_p95_ms": 13031,
+      "no_retrieval_count": 0
+    },
+    "image": {
+      "count": 100,
+      "quality_sample_count": 96,
+      "excluded_execution_count": 4,
+      "hit_rate": {
+        "@1": 0.375,
+        "@3": 0.5833,
+        "@5": 0.6667
+      },
+      "mrr": 0.4841,
+      "latency_p50_ms": 7957,
+      "latency_p95_ms": 16980,
+      "no_retrieval_count": 4
+    },
+    "relation": {
+      "count": 50,
+      "quality_sample_count": 49,
+      "excluded_execution_count": 1,
+      "hit_rate": {
+        "@1": 0.7347,
+        "@3": 0.8571,
+        "@5": 0.8776
+      },
+      "mrr": 0.79,
+      "latency_p50_ms": 5997,
+      "latency_p95_ms": 11989,
+      "no_retrieval_count": 1
+    }
+  },
+  "retrieval_status_counts": {
+    "received": 235,
+    "channel_failed": 4,
+    "channel_timed_out": 1
+  },
+  "note": "text=fact50+noise40(关image/hypergraph); image=100(关hypergraph); relation=50(全开含hypergraph)。均为 rewrite-on + fusion + retrieval-only。"
+}

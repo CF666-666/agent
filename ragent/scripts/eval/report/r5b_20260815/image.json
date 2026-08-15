@@ -1,0 +1,5540 @@
+{
+  "schema_version": 4,
+  "mode": "rewrite-on",
+  "dataset": {
+    "path": "scripts/eval/datasets/industrial_main_r5.jsonl",
+    "sha256": "4eca3ba0540e1ed873ae8ea8e343057ca005da7b135a3922888dc26a7af87e4f"
+  },
+  "retrieval_options": {
+    "label": "r5b-image",
+    "enableRewrite": true,
+    "enableImage": true,
+    "enableHyperGraph": false,
+    "enableFusion": true,
+    "retrievalOnly": true
+  },
+  "runtime": {
+    "label": "r5-main",
+    "request_timeout_seconds": 60
+  },
+  "execution_fingerprint": {
+    "fingerprint_version": 1,
+    "runner": {
+      "path": "scripts/eval/retrieval_eval.py",
+      "sha256": "e8ffca6b41dcbceff0551bbfdd51df01d62b6bf5be77833de35db07fae83787c"
+    },
+    "evaluation_contract": {
+      "path": "scripts/eval/evaluation_contract.py",
+      "sha256": "546b1186c1514fecc5e9b54d576692c937763f34a3ccda6159bc05ab347d571a"
+    },
+    "dependencies": [],
+    "runtime_profile": {
+      "path": "scripts/eval/runtime-profiles/local-default.json",
+      "sha256": "849ffc178ef791d2dd29dd3d87f7e4d4d4e35bfd0c8155db8862cf5941ddf76b",
+      "name": "local-ragent-default",
+      "configured_models": {
+        "chat": {
+          "model_id": "qwen3-32b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-32B"
+        },
+        "embedding": {
+          "model_id": "qwen-emb-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Embedding-8B"
+        },
+        "rerank": {
+          "model_id": "qwen3-reranker-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Reranker-8B"
+        }
+      }
+    },
+    "application_config": {
+      "path": "bootstrap/src/main/resources/application.yaml",
+      "sha256": "d46af2b16eb0e439d3d7882d364843b7035e9fe89d6f58903aa1c6f8be20a811"
+    },
+    "git": {
+      "revision": "fbfdc018b8536b51cd723f9711bd6ffbcc8dd3b4",
+      "worktree_dirty": true
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.14.2"
+    },
+    "sha256": "706dab226da528b2951f7ebb8803ee810104322f8a6c06532a2f256c15c6f05f"
+  },
+  "evaluation_slice": {
+    "scenes": "image",
+    "offset": 0,
+    "limit": 0,
+    "count": 100
+  },
+  "warmup": {
+    "requested_count": 2,
+    "executed_count": 2,
+    "results": [
+      {
+        "case_id": "77041406c956fd5e816010266e4df4a4dd32b2595d0ff2f1fdcc9c7fa36fccd7",
+        "retrieval_status": "channel_failed",
+        "latency_ms": 3500,
+        "num_refs": 0,
+        "execution": {
+          "elapsedMillis": 0,
+          "channels": [
+            {
+              "question": "图中「总线」是否存在异常、磨损或故障迹象",
+              "channel": "VectorGlobalSearch",
+              "status": "COMPLETED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 0
+            },
+            {
+              "question": "图中「总线」是否存在异常、磨损或故障迹象",
+              "channel": "图像语义检索",
+              "status": "FAILED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 0
+            }
+          ],
+          "cancelled": false,
+          "budgetMillis": 25000,
+          "timedOut": false
+        }
+      },
+      {
+        "case_id": "e5930ac5e34f7483c590eeab2348da5d0d73d85fcf9989d948a092325adaf0ee",
+        "retrieval_status": "received",
+        "latency_ms": 3685,
+        "num_refs": 5,
+        "execution": {
+          "elapsedMillis": 153,
+          "channels": [
+            {
+              "question": "图中「总线」是否有可见的仪表读数、铭牌或操作参数",
+              "channel": "VectorGlobalSearch",
+              "status": "COMPLETED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 0
+            },
+            {
+              "question": "图中「总线」是否有可见的仪表读数、铭牌或操作参数",
+              "channel": "图像语义检索",
+              "status": "COMPLETED",
+              "timedOut": false,
+              "cancelled": false,
+              "budgetMillis": 0,
+              "elapsedMillis": 153
+            }
+          ],
+          "cancelled": false,
+          "budgetMillis": 25000,
+          "timedOut": false
+        }
+      }
+    ]
+  },
+  "summary": {
+    "total": 100,
+    "quality_sample_count": 96,
+    "excluded_execution_count": 4,
+    "hit_rate": {
+      "@1": 0.375,
+      "@3": 0.5833,
+      "@5": 0.6667
+    },
+    "mrr": 0.4841,
+    "expected_channel_hit_rate": 1.0,
+    "source_id_hit_rate": 0.6875,
+    "relation": {
+      "quality_sample_count": 0,
+      "channel": {
+        "hyperedge_hit_rate": {
+          "@1": 0.0,
+          "@3": 0.0,
+          "@5": 0.0
+        },
+        "hyperedge_recall": {
+          "@1": 0.0,
+          "@3": 0.0,
+          "@5": 0.0
+        },
+        "path_hit_rate": 0.0,
+        "source_accuracy": 0.0,
+        "evidence_availability": {
+          "hyperEdgeId": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourceDocument": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourceChunkId": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourceChunkIndex": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "sourcePage": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          },
+          "documentVersion": {
+            "available": 0,
+            "unavailable": 0,
+            "conflicting": 0
+          }
+        }
+      },
+      "final_reference_hit_rate": {
+        "@1": 0.0,
+        "@3": 0.0,
+        "@5": 0.0
+      }
+    },
+    "latency": {
+      "p50_ms": 8150,
+      "p95_ms": 17027,
+      "max_ms": 21836
+    },
+    "retrieval_status_counts": {
+      "channel_failed": 4,
+      "received": 96
+    },
+    "by_scene": {
+      "image": {
+        "count": 100,
+        "quality_sample_count": 96,
+        "hit_rate": {
+          "@1": 0.375,
+          "@3": 0.5833,
+          "@5": 0.6667
+        },
+        "mrr": 0.4841,
+        "expected_channel_hit_rate": 0.96,
+        "source_id_hit_rate": 0.66,
+        "latency": {
+          "p50_ms": 8150,
+          "p95_ms": 17027,
+          "max_ms": 21836
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "77041406c956fd5e816010266e4df4a4dd32b2595d0ff2f1fdcc9c7fa36fccd7",
+      "dataset_id": "r5-image-tuning-001",
+      "query": "图中「总线」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12969,
+      "num_refs": 5,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10002,
+        "channels": [
+          {
+            "question": "图中「总线」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10002
+          },
+          {
+            "question": "图中「总线」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 161
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e5930ac5e34f7483c590eeab2348da5d0d73d85fcf9989d948a092325adaf0ee",
+      "dataset_id": "r5-image-tuning-002",
+      "query": "图中「总线」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6405,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1857,
+        "channels": [
+          {
+            "question": "图中「总线」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 174
+          },
+          {
+            "question": "图中「总线」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1857
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "6fe1ecc16dc4a10e86f6d599f0b3259e1221b8255c4e9c397b83a32475b7594b",
+      "dataset_id": "r5-image-tuning-003",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12152,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2288,
+        "channels": [
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2288
+          },
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 135
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "dd1b46a3bee94c3867c6442cc7b0395fe47bf826bed2d1d89d8eb33612060730",
+      "dataset_id": "r5-image-tuning-004",
+      "query": "图中「PCB」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4374,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 221,
+        "channels": [
+          {
+            "question": "图中PCB是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 138
+          },
+          {
+            "question": "图中PCB是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 221
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "219af2797f540baff0919fa4de7d0ca7df0b915079eba69dd992bc0e067dbbe8",
+      "dataset_id": "r5-image-tuning-005",
+      "query": "请指出图中「PCB」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 14666,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 668,
+        "channels": [
+          {
+            "question": "PCB的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 187
+          },
+          {
+            "question": "PCB的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 668
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3ba2f287a54a008b61dacf632ac8b3985d80397ac7712a43a261f8016ba6a9e0",
+      "dataset_id": "r5-image-tuning-006",
+      "query": "图中「PCB」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": false,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "channel_failed",
+      "latency_ms": 14971,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 189,
+        "channels": [
+          {
+            "question": "图中「PCB」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 189
+          },
+          {
+            "question": "图中「PCB」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "31c81d029dcd4113a9d59a50067f8791a781f41375d67914450fd823bd1b0006",
+      "dataset_id": "r5-image-tuning-007",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 13053,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 6310,
+        "channels": [
+          {
+            "question": "图纸标注 图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 130
+          },
+          {
+            "question": "图纸标注 图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 6310
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "385be2868436eb119ebcb8e86d8d1db7a1dcecd1ad5e31ef2a05a6f2caf63022",
+      "dataset_id": "r5-image-tuning-008",
+      "query": "图中「PCB」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8150,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3938,
+        "channels": [
+          {
+            "question": "图中PCB是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3938
+          },
+          {
+            "question": "图中PCB是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 154
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "4d0c51a73afb2885fddb1404c8a77c7508b3bf43e0c0e43f33d84dd42e071a4e",
+      "dataset_id": "r5-image-tuning-009",
+      "query": "请指出图中「PCB」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7139,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3252,
+        "channels": [
+          {
+            "question": "PCB的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 178
+          },
+          {
+            "question": "PCB的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3252
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "45167f27b01aef85ad951cddb2ad6fb295f42f57f6185c144381ba5e5ce7c76a",
+      "dataset_id": "r5-image-tuning-010",
+      "query": "图中「PCB」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6688,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 158,
+        "channels": [
+          {
+            "question": "图中PCB是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 145
+          },
+          {
+            "question": "图中PCB是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 158
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "f0d9ce3012b665eb2b33846a3b8d6b94cacae93bd0c72ba3017ced79fbee18a8",
+      "dataset_id": "r5-image-tuning-011",
+      "query": "图中「分体式空调」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7898,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3073,
+        "channels": [
+          {
+            "question": "分体式空调是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3073
+          },
+          {
+            "question": "分体式空调是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 377
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "cecb08ced23145d4c0e7296bf650a8e692373cac5937a63596b12a90a9374d1d",
+      "dataset_id": "r5-image-tuning-012",
+      "query": "图中「分体式空调」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5804,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 214,
+        "channels": [
+          {
+            "question": "图中「分体式空调」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 214
+          },
+          {
+            "question": "图中「分体式空调」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 132
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "142981ee3e32b9ce876e94e54e6d2fcbbb646100848e93186632fdac052de8b8",
+      "dataset_id": "r5-image-tuning-013",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9093,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 4299,
+        "channels": [
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4299
+          },
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 129
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "d609fac79f151d0f0439fafd4803baadba12c207f58f250c8c6933f1ca20c5da",
+      "dataset_id": "r5-image-tuning-014",
+      "query": "请指出图中「化工工艺流程」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12040,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 7639,
+        "channels": [
+          {
+            "question": "图中「化工工艺流程」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 7639
+          },
+          {
+            "question": "图中「化工工艺流程」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 6712
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e5424d77ea066cab2e764fc736b7ea7e42da683ea2402a13dfab7d54abea39b2",
+      "dataset_id": "r5-image-tuning-015",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4332,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 235,
+        "channels": [
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 235
+          },
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 228
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "c495bbba73e4ac269942a214a4bfc97708babd78d2c7d6a968014ac9460faae8",
+      "dataset_id": "r5-image-tuning-016",
+      "query": "请指出图中「电磁炉」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11602,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 176,
+        "channels": [
+          {
+            "question": "请指出图中「电磁炉」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 176
+          },
+          {
+            "question": "请指出图中「电磁炉」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 161
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "5a0cfa6aac545f22a137b87d167fb43a492cf15f32bfffe3c2d6a4bf91b2e0a2",
+      "dataset_id": "r5-image-tuning-017",
+      "query": "图中「电磁炉」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 16188,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 4961,
+        "channels": [
+          {
+            "question": "图中「电磁炉」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2563
+          },
+          {
+            "question": "图中「电磁炉」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4961
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "f2bcfe06c952fffe502e8db8c5758b312510965e26111b08af0a3ca0069b290c",
+      "dataset_id": "r5-image-tuning-018",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 13463,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 849,
+        "channels": [
+          {
+            "question": "根据图纸标注，判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 849
+          },
+          {
+            "question": "根据图纸标注，判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 441
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "2a432749c5a04297d74f76dbf41b00a53be5834cba32c415d675790b575ead35",
+      "dataset_id": "r5-image-tuning-019",
+      "query": "图中「电路」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 10754,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 6231,
+        "channels": [
+          {
+            "question": "图中「电路」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 6231
+          },
+          {
+            "question": "图中「电路」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 6230
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "b84f0acfc7a988689299cc95c1d6081ef5021efb4f5c69f155f18978e6c5c2af",
+      "dataset_id": "r5-image-tuning-020",
+      "query": "图中「电路」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 16340,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 5391,
+        "channels": [
+          {
+            "question": "图中电路是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 5391
+          },
+          {
+            "question": "图中电路是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 543
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "2b02bfe25e4c10c15dc8470e0ce7382478c4dd859d5033d7d60ef457a1c1c689",
+      "dataset_id": "r5-image-tuning-021",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5076,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 206,
+        "channels": [
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 206
+          },
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 131
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "62eaeaae097227dac5571a361bb45811303df9cad57297b42682842370b272b2",
+      "dataset_id": "r5-image-tuning-022",
+      "query": "请指出图中「电路」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4109,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 167,
+        "channels": [
+          {
+            "question": "图中电路的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 167
+          },
+          {
+            "question": "图中电路的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 123
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1fd86cb53ddb7c45552aa102ef669a6eb92fba2c0b982bf5dbc86addebedb78e",
+      "dataset_id": "r5-image-tuning-023",
+      "query": "图中「霍尔元件」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11904,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2593,
+        "channels": [
+          {
+            "question": "图中「霍尔元件」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 133
+          },
+          {
+            "question": "图中「霍尔元件」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2593
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "15e1a7c1d29345865d6e5a53ffef41cd1537fcd481cdd02395388ea0fe7fa437",
+      "dataset_id": "r5-image-tuning-024",
+      "query": "请指出图中「霍尔元件」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4341,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 221,
+        "channels": [
+          {
+            "question": "霍尔元件的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 221
+          },
+          {
+            "question": "霍尔元件的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 174
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "823aa8c6f38cd8c493953db5feb0f7a5acd4255df9786efd058c032010890f62",
+      "dataset_id": "r5-image-tuning-025",
+      "query": "图中「霍尔元件」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7588,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3000,
+        "channels": [
+          {
+            "question": "霍尔元件是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3000
+          },
+          {
+            "question": "霍尔元件是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2985
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "2534231e22583071a2fa6a3719824ce5c708737ed93885a7e44a6881a5e9c401",
+      "dataset_id": "r5-image-tuning-026",
+      "query": "根据手册页内容，判断该页说明的设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5249,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 198,
+        "channels": [
+          {
+            "question": "手册页说明的设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 198
+          },
+          {
+            "question": "手册页说明的设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 177
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "850fa5c3215148a49e6e09534596114af614edb99b4abc4aa290da0e7109d0d9",
+      "dataset_id": "r5-image-tuning-027",
+      "query": "图中「DCS系统」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 21836,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 8345,
+        "channels": [
+          {
+            "question": "图中「DCS系统」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 8345
+          },
+          {
+            "question": "图中「DCS系统」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2027
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "a57536f52049bc1bf374bc593b0a287bf457895ec5e91113a2957372078e4fbd",
+      "dataset_id": "r5-image-tuning-028",
+      "query": "图中「压力变送器」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12060,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 6454,
+        "channels": [
+          {
+            "question": "图中「压力变送器」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 166
+          },
+          {
+            "question": "图中「压力变送器」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 6454
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e981568347b9f913075e35357419e31b4b5fddd1ddbc8d20228a0e2739d5ed52",
+      "dataset_id": "r5-image-tuning-029",
+      "query": "请指出图中「压力变送器」的关键组成部件",
+      "scene": "image",
+      "ok": false,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "channel_failed",
+      "latency_ms": 19187,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 171,
+        "channels": [
+          {
+            "question": "压力变送器的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 171
+          },
+          {
+            "question": "压力变送器的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "d061b64e837c9f957fa3be9e2309fd9c295cbcca2c0ed73b03e7895454ce28b5",
+      "dataset_id": "r5-image-tuning-030",
+      "query": "图中「压力变送器」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9327,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 4889,
+        "channels": [
+          {
+            "question": "图中压力变送器是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 174
+          },
+          {
+            "question": "图中压力变送器是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4889
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "98c2f48e1e33b7c4a74ac678bb30000c6b3cf37afe1fa6618a1140bbca80da34",
+      "dataset_id": "r5-image-tuning-031",
+      "query": "请指出图中「离心机」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11592,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 7518,
+        "channels": [
+          {
+            "question": "离心机的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 721
+          },
+          {
+            "question": "离心机的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 7518
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "7f0df46b166311481964647f2a804fed9a67b01caaa8b360b8d10b5a8558c00a",
+      "dataset_id": "r5-image-tuning-032",
+      "query": "图中「离心机」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 10890,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 5360,
+        "channels": [
+          {
+            "question": "图中「离心机」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 5360
+          },
+          {
+            "question": "图中「离心机」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 157
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "62716ecfc22be99193d536707819924319fe9b0e496feb112f8341bc9edede42",
+      "dataset_id": "r5-image-tuning-033",
+      "query": "请指出图中「干洗机」的关键组成部件",
+      "scene": "image",
+      "ok": false,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "channel_failed",
+      "latency_ms": 13751,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1841,
+        "channels": [
+          {
+            "question": "干洗机的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1841
+          },
+          {
+            "question": "干洗机的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "24cdca6f638723648200cebf8f7a3314b57bc8e72576ac45bd2836015d979e11",
+      "dataset_id": "r5-image-tuning-034",
+      "query": "图中「干洗机」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 20063,
+      "num_refs": 5,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10001,
+        "channels": [
+          {
+            "question": "图中「干洗机」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10001
+          },
+          {
+            "question": "图中「干洗机」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 155
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "b9f58bee2bd172ef1f0bbfad008ee7b85e19443daeb85eeb8423d0080663c6c8",
+      "dataset_id": "r5-image-tuning-035",
+      "query": "根据手册页内容，判断该页说明的设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 3899,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 139,
+        "channels": [
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 131
+          },
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 139
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "ba1f68b886230966269059f2e7d3ff645dc30ead137a4b5de380c1caee256c8f",
+      "dataset_id": "r5-image-tuning-036",
+      "query": "根据手册页内容，判断该页说明的设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4587,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 427,
+        "channels": [
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 427
+          },
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 172
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "87d55fb3b42283c28f82fe46d4ae1eeec526b7918b0a997b6be2999be15f2ec8",
+      "dataset_id": "r5-image-tuning-037",
+      "query": "图中「汽车仪表盘」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5798,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1067,
+        "channels": [
+          {
+            "question": "图中「汽车仪表盘」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 536
+          },
+          {
+            "question": "图中「汽车仪表盘」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1067
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "b7c3c6bfd5b30edf16cdd02b149956231004cfd6c4efa307fbd74b9cff851d95",
+      "dataset_id": "r5-image-tuning-038",
+      "query": "请指出图中「汽车仪表盘」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "scanned_manual",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 17807,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 6384,
+        "channels": [
+          {
+            "question": "请指出图中「汽车仪表盘」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 283
+          },
+          {
+            "question": "请指出图中「汽车仪表盘」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 6384
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "6c46b4590a63d17c46fb13d67d1dce28e304fd0d6fa7ae503e396584c197202b",
+      "dataset_id": "r5-image-tuning-039",
+      "query": "观察现场照片，识别图中主要的工业设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9632,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1690,
+        "channels": [
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 130
+          },
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1690
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "503ee482f09f7501a213d159a10e9ca93655b9ab3f20e457ee7aa8c059721002",
+      "dataset_id": "r5-image-tuning-040",
+      "query": "请指出图中「熔炼炉浇铸」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7560,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2406,
+        "channels": [
+          {
+            "question": "图中熔炼炉浇铸的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2406
+          },
+          {
+            "question": "图中熔炼炉浇铸的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 170
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3432e93542e84ec7732d90499b544ec30edefc498c52daceee23e45fbb51d595",
+      "dataset_id": "r5-image-tuning-041",
+      "query": "图中「机械臂」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5284,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 157,
+        "channels": [
+          {
+            "question": "图中「机械臂」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 132
+          },
+          {
+            "question": "图中「机械臂」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 157
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "f76acc6360ede5deb9e845fe4b625be4d8f94fc030f669de37ee56177bb0f275",
+      "dataset_id": "r5-image-tuning-042",
+      "query": "观察现场照片，识别图中主要的工业设备类型",
+      "scene": "image",
+      "ok": false,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "channel_failed",
+      "latency_ms": 21268,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": false,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3349,
+        "channels": [
+          {
+            "question": "观察现场照片，识别图中主要的工业设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3349
+          },
+          {
+            "question": "观察现场照片，识别图中主要的工业设备类型",
+            "channel": "图像语义检索",
+            "status": "FAILED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 0
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "8a92d894688309bd064de67025f70f74e3c0cb5faade137f68e2690f4b839ef1",
+      "dataset_id": "r5-image-tuning-043",
+      "query": "图中「机械臂」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 16980,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 9367,
+        "channels": [
+          {
+            "question": "图中「机械臂」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 178
+          },
+          {
+            "question": "图中「机械臂」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 9367
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "63ee4d05f55c95fbae98d470516a2d497f96e48f54400fc325fd737d5c964da8",
+      "dataset_id": "r5-image-tuning-044",
+      "query": "请指出图中「桥式起重机」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6345,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 160,
+        "channels": [
+          {
+            "question": "桥式起重机的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 160
+          },
+          {
+            "question": "桥式起重机的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 154
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "44083279d0412e7514b20740d7753ca7d7ad0f5445809e4fb9ee724040b65189",
+      "dataset_id": "r5-image-tuning-045",
+      "query": "图中「桥式起重机」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11364,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 198,
+        "channels": [
+          {
+            "question": "图中「桥式起重机」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 187
+          },
+          {
+            "question": "图中「桥式起重机」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 198
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "394c0dae056c66bd2eff8a0edaa5ab7564b980d625c877cbb8a2575ffb49e246",
+      "dataset_id": "r5-image-tuning-046",
+      "query": "图中「石化塔器」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9724,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1092,
+        "channels": [
+          {
+            "question": "图中「石化塔器」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 204
+          },
+          {
+            "question": "图中「石化塔器」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1092
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "08477cc82da8ae59b51eceb14ab995371ce9f5c77861bf125eb396a1b639f8e6",
+      "dataset_id": "r5-image-tuning-047",
+      "query": "请指出图中「石化塔器」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4532,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 175,
+        "channels": [
+          {
+            "question": "图中「石化塔器」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 175
+          },
+          {
+            "question": "图中「石化塔器」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 162
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "8708b2cb14c99ef68f9a4494bf789364a2127b644d9a88149aca29b1f97e75a6",
+      "dataset_id": "r5-image-tuning-048",
+      "query": "图中「石化塔器」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 14292,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2840,
+        "channels": [
+          {
+            "question": "图中「石化塔器」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2840
+          },
+          {
+            "question": "图中「石化塔器」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 954
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "325cd3890ff25a1bec5a84e082dba0964649585502a582c00377ae015483351d",
+      "dataset_id": "r5-image-tuning-049",
+      "query": "图中「装配生产线」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12239,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 647,
+        "channels": [
+          {
+            "question": "图中「装配生产线」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 404
+          },
+          {
+            "question": "图中「装配生产线」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 647
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1ec119c100743ceb491e500d6bcd7e25df8d1b723f41c151673c317d0fffa2cc",
+      "dataset_id": "r5-image-tuning-050",
+      "query": "观察现场照片，识别图中主要的工业设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "tuning",
+      "business_tags": [
+        "site_photo",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11327,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 7481,
+        "channels": [
+          {
+            "question": "工业设备类型识别",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4467
+          },
+          {
+            "question": "工业设备类型识别",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 7481
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "5e5b3d8ce2d6a49de3874703794927578ae86c2f9bd48e8cbcf40729099f60db",
+      "dataset_id": "r5-image-frozen-001",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12620,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 8466,
+        "channels": [
+          {
+            "question": "图纸标注中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 8466
+          },
+          {
+            "question": "图纸标注中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3789
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1f54352a747111409845fec20453289145e64e71a372bb89ecd68f7a54ab860e",
+      "dataset_id": "r5-image-frozen-002",
+      "query": "请指出图中「CPU」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9929,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 243,
+        "channels": [
+          {
+            "question": "图中「CPU」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 207
+          },
+          {
+            "question": "图中「CPU」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 243
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "9fa6725105862e7142879260f59de91e8a5ea3c566492dc99188c0a1bf634bad",
+      "dataset_id": "r5-image-frozen-003",
+      "query": "请指出图中「制冷系统」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11375,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 241,
+        "channels": [
+          {
+            "question": "图中「制冷系统」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 241
+          },
+          {
+            "question": "图中「制冷系统」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 189
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "13de628e6b5e823ff83a9b9e9892377792516eb5e616e0bfffb30d90efbf5051",
+      "dataset_id": "r5-image-frozen-004",
+      "query": "图中「制冷系统」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 12332,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 775,
+        "channels": [
+          {
+            "question": "图中「制冷系统」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 204
+          },
+          {
+            "question": "图中「制冷系统」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 775
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "7b7bf668991e6ac8e747c8762f07a356a0b45a8ace7aeb6dff36328da45e6fab",
+      "dataset_id": "r5-image-frozen-005",
+      "query": "图中「制冷系统」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5303,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 234,
+        "channels": [
+          {
+            "question": "图中「制冷系统」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 234
+          },
+          {
+            "question": "图中「制冷系统」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 207
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "0281f2f4a37e2774f8fad08fb461ca57cdde528ea66d318da558418ab846f4bf",
+      "dataset_id": "r5-image-frozen-006",
+      "query": "图中「变压器」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7802,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 190,
+        "channels": [
+          {
+            "question": "图中「变压器」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 190
+          },
+          {
+            "question": "图中「变压器」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 183
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3102de1cf87717a1048eb5c39d3d2c60f8549eb660f1daa3d7924ee7c5e7e337",
+      "dataset_id": "r5-image-frozen-007",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4549,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 215,
+        "channels": [
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 215
+          },
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 181
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "5a0598c9f81eb9c0063e00ffa96b3e0323a8b0ef990f809fe55956dffa75b63a",
+      "dataset_id": "r5-image-frozen-008",
+      "query": "请指出图中「变压器」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5406,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 935,
+        "channels": [
+          {
+            "question": "图中「变压器」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 935
+          },
+          {
+            "question": "图中「变压器」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 168
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e715819423674c2f6c6e8658b4c4c3693b61557f2a5d35f7e0432f9f9acca872",
+      "dataset_id": "r5-image-frozen-009",
+      "query": "图中「品控流程」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8881,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.2,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 181,
+        "channels": [
+          {
+            "question": "图中「品控流程」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 181
+          },
+          {
+            "question": "图中「品控流程」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 165
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "7b28f94eda5d45c352646640823f2f496fc64ea6dd1970cca01b53bddda9057a",
+      "dataset_id": "r5-image-frozen-010",
+      "query": "图中「品控流程」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5629,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 170,
+        "channels": [
+          {
+            "question": "图中「品控流程」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 155
+          },
+          {
+            "question": "图中「品控流程」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 170
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "fde4f762b95d100c1904131c0c8ad89c5c69c482b52bb2c701d99bfd9c51912e",
+      "dataset_id": "r5-image-frozen-011",
+      "query": "请指出图中「品控流程」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4578,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 172,
+        "channels": [
+          {
+            "question": "图中「品控流程」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 172
+          },
+          {
+            "question": "图中「品控流程」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 146
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "dbc5fd9d297a2461831ca9122d2d56e91febd02f9c3e9485e32725f1947339b6",
+      "dataset_id": "r5-image-frozen-012",
+      "query": "图中「农业机械」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7957,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 319,
+        "channels": [
+          {
+            "question": "图中「农业机械」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 319
+          },
+          {
+            "question": "图中「农业机械」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 293
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3881de0cf9d75a7910daf37c48f47c45efa876e5968a7d682d4ccd0f67fd2acc",
+      "dataset_id": "r5-image-frozen-013",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4436,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 228,
+        "channels": [
+          {
+            "question": "根据图纸标注，判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 228
+          },
+          {
+            "question": "根据图纸标注，判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 133
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "583d991610d940ab85cd93debefe7c0f4770d7489113917e438602468af27591",
+      "dataset_id": "r5-image-frozen-014",
+      "query": "图中「机械零件」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11142,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2518,
+        "channels": [
+          {
+            "question": "图中「机械零件」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2518
+          },
+          {
+            "question": "图中「机械零件」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 132
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1d3a6be1a9e104d7134a31628e12889725343b9b3d7cbf7d61003a250d40cf54",
+      "dataset_id": "r5-image-frozen-015",
+      "query": "请指出图中「机械零件」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5028,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 209,
+        "channels": [
+          {
+            "question": "图中「机械零件」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 209
+          },
+          {
+            "question": "图中「机械零件」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 177
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "13d79be4182c2125e085a07121d248d3c5df13de9de00cdcacd84682ccb3f623",
+      "dataset_id": "r5-image-frozen-016",
+      "query": "图中「发电流程」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11903,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 965,
+        "channels": [
+          {
+            "question": "图中「发电流程」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 965
+          },
+          {
+            "question": "图中「发电流程」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 182
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "30c429021575fcd7f24350976ee6f7f87a452b220c4c3ece35977db76aa72d08",
+      "dataset_id": "r5-image-frozen-017",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7821,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3988,
+        "channels": [
+          {
+            "question": "图纸标注判断核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3988
+          },
+          {
+            "question": "图纸标注判断核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 137
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "87a552d135b67d5dc17b8023bf2049c4557f90ea55e08f7c5fc2535759bec652",
+      "dataset_id": "r5-image-frozen-018",
+      "query": "图中「发电流程」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 13286,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.25,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 8513,
+        "channels": [
+          {
+            "question": "图中「发电流程」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 192
+          },
+          {
+            "question": "图中「发电流程」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 8513
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1c72ff013282673d4895e5884389adf7519bbed0076a5b04b1a00262d199a98f",
+      "dataset_id": "r5-image-frozen-019",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5933,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 468,
+        "channels": [
+          {
+            "question": "图纸标注 图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 136
+          },
+          {
+            "question": "图纸标注 图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 468
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "780776f0b338b5f3a1ba50ff685472b0a9fc5a64268b0e80fc555231781c02be",
+      "dataset_id": "r5-image-frozen-020",
+      "query": "图中「管道仪表系统」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 11593,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 192,
+        "channels": [
+          {
+            "question": "图中「管道仪表系统」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 179
+          },
+          {
+            "question": "图中「管道仪表系统」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 192
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "6e73eb7630961fa75d817bc120d3cfef9e084eced4ea9f32b480e0500e67f6f7",
+      "dataset_id": "r5-image-frozen-021",
+      "query": "请指出图中「脉冲电磁阀」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8668,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2747,
+        "channels": [
+          {
+            "question": "脉冲电磁阀的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2747
+          },
+          {
+            "question": "脉冲电磁阀的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 518
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "16fc7b2e8e65cbb41d52a67ed0ad875c9b8ab8e2bd9ead2c77eec851c4c49b8a",
+      "dataset_id": "r5-image-frozen-022",
+      "query": "图中「脉冲电磁阀」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4734,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.3333333333333333,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 153,
+        "channels": [
+          {
+            "question": "脉冲电磁阀是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 153
+          },
+          {
+            "question": "脉冲电磁阀是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 139
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "1dea08a0e69b29cb45e57f1a379a67cfb7a6e9d16169a0d9efc8cf5b759f60b1",
+      "dataset_id": "r5-image-frozen-023",
+      "query": "根据图纸标注，判断图中描绘的核心设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4701,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 606,
+        "channels": [
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 174
+          },
+          {
+            "question": "根据图纸标注判断图中描绘的核心设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 606
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "68c06ef1afe479d45362b5cafe18580e21ac61fe843a8c41ba59d7949ba627f8",
+      "dataset_id": "r5-image-frozen-024",
+      "query": "图中「电气接线」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7633,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2316,
+        "channels": [
+          {
+            "question": "图中「电气接线」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 143
+          },
+          {
+            "question": "图中「电气接线」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2316
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "36f91838037e7123f8894620866f66e52b8d92b47eea223ce5eebb014543545b",
+      "dataset_id": "r5-image-frozen-025",
+      "query": "请指出图中「电气接线」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9049,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 4869,
+        "channels": [
+          {
+            "question": "图中「电气接线」的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 702
+          },
+          {
+            "question": "图中「电气接线」的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4869
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "8cd841e50fe315242eb5eddebe70a87aaf6d0841c5ed9e9d155238dc0de47447",
+      "dataset_id": "r5-image-frozen-026",
+      "query": "根据手册页内容，判断该页说明的设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9847,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 5964,
+        "channels": [
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2442
+          },
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 5964
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "8a55251a1fa783ed93e0d9d7d0b92ed75342681796a946c0dc9d30c5e39a97ed",
+      "dataset_id": "r5-image-frozen-027",
+      "query": "图中「电动机」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9518,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 5135,
+        "channels": [
+          {
+            "question": "图中「电动机」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1035
+          },
+          {
+            "question": "图中「电动机」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 5135
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "6d340d036e1c8d163c2fb9a7fbb2f405b257e5992e0fd80fcc4764fe14cb94c8",
+      "dataset_id": "r5-image-frozen-028",
+      "query": "根据手册页内容，判断该页说明的设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 10559,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 6556,
+        "channels": [
+          {
+            "question": "手册页说明的设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4641
+          },
+          {
+            "question": "手册页说明的设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 6556
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "2d5d1a8e9e48c7bc726b2425fc8c1f3af4256f929f6b5e3a76851717ea48a015",
+      "dataset_id": "r5-image-frozen-029",
+      "query": "图中「压力计」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6157,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 164,
+        "channels": [
+          {
+            "question": "图中「压力计」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 164
+          },
+          {
+            "question": "图中「压力计」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 131
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "b1538fe025cf26b14ce012c99625d23a0d76c822f6c4e04f43db9ca573138543",
+      "dataset_id": "r5-image-frozen-030",
+      "query": "请指出图中「绞磨机」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4286,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 150,
+        "channels": [
+          {
+            "question": "图中绞磨机的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 141
+          },
+          {
+            "question": "图中绞磨机的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 150
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3acbb9ee4591ab8d836b6371eecf861f6c83f429a5f9b21000537423d2a34294",
+      "dataset_id": "r5-image-frozen-031",
+      "query": "根据手册页内容，判断该页说明的设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4914,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": true
+      },
+      "mrr": 0.2,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 169,
+        "channels": [
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 169
+          },
+          {
+            "question": "根据手册页内容判断设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 156
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "0d2efdec379ad8030c1ec41e07042e5eb5e422c41e3727a49b6afd8708a89589",
+      "dataset_id": "r5-image-frozen-032",
+      "query": "图中「绞磨机」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8101,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 209,
+        "channels": [
+          {
+            "question": "图中绞磨机是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 198
+          },
+          {
+            "question": "图中绞磨机是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 209
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "daf3abfa46f4f6ff0ac008683d5bc851b5f1fb7776f2fdf7b1126b1ad2908e0f",
+      "dataset_id": "r5-image-frozen-033",
+      "query": "图中「柴油发电机」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6240,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 163,
+        "channels": [
+          {
+            "question": "图中「柴油发电机」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 140
+          },
+          {
+            "question": "图中「柴油发电机」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 163
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "15c838180c3e482e29fd987d18352a64aee45cca4331c257eb1afba4940b3c0f",
+      "dataset_id": "r5-image-frozen-034",
+      "query": "请指出图中「柴油发电机」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7299,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2333,
+        "channels": [
+          {
+            "question": "柴油发电机的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 193
+          },
+          {
+            "question": "柴油发电机的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2333
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "5ef1287e967783352c08fb903429d14f164ce0d77fb72398fc5cd5cdd07fcdae",
+      "dataset_id": "r5-image-frozen-035",
+      "query": "图中「柴油发电机」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 17027,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 7419,
+        "channels": [
+          {
+            "question": "图中「柴油发电机」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 7419
+          },
+          {
+            "question": "图中「柴油发电机」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1513
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "a8efb1b672355501c708f842749636d67c508904ddbe33398b291b99cc6ed604",
+      "dataset_id": "r5-image-frozen-036",
+      "query": "图中「流量计」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5618,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 201,
+        "channels": [
+          {
+            "question": "图中流量计是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 201
+          },
+          {
+            "question": "图中流量计是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 170
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "dd89b85d88864ac806913d213e731a057cfc30a6c36e11e6e0baac5045d50143",
+      "dataset_id": "r5-image-frozen-037",
+      "query": "图中「流量计」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "scanned_manual",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7233,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 2268,
+        "channels": [
+          {
+            "question": "图中「流量计」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 219
+          },
+          {
+            "question": "图中「流量计」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 2268
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "a9217c8365d065a74b46e5dbbf0a6e56d9531b49853fb48389b0b58678a901f9",
+      "dataset_id": "r5-image-frozen-038",
+      "query": "图中「连铸机」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 6140,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.1111111111111111,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 189,
+        "channels": [
+          {
+            "question": "图中「连铸机」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 163
+          },
+          {
+            "question": "图中「连铸机」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 189
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "0ff91308e37a7cc129dbe1bfe513d08e818388405987f75bce4cf7070bc6c81f",
+      "dataset_id": "r5-image-frozen-039",
+      "query": "观察现场照片，识别图中主要的工业设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5118,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 804,
+        "channels": [
+          {
+            "question": "识别图中主要的工业设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 804
+          },
+          {
+            "question": "识别图中主要的工业设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 166
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3ce7b3aabb56f86824b3adaf85a4f6e4b0b0e2e5234e8eec96f444269a04e3d6",
+      "dataset_id": "r5-image-frozen-040",
+      "query": "图中「连铸机」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4882,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.125,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 619,
+        "channels": [
+          {
+            "question": "图中「连铸机」是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 619
+          },
+          {
+            "question": "图中「连铸机」是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 141
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "634304627f2f87d857484549baf3af36730399cd9e39ff306baeaae96b8622f4",
+      "dataset_id": "r5-image-frozen-041",
+      "query": "图中「高炉」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 14500,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 145,
+        "channels": [
+          {
+            "question": "图中「高炉」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 136
+          },
+          {
+            "question": "图中「高炉」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 145
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "efc2496e774ea23fb22d0152aab2eb78c7970916c0889063d64e6ad6fd8de088",
+      "dataset_id": "r5-image-frozen-042",
+      "query": "请指出图中「高炉」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7580,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 3134,
+        "channels": [
+          {
+            "question": "图中高炉的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 316
+          },
+          {
+            "question": "图中高炉的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3134
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "e9f769f3adad862192f2411991c2ebbda5c138598c5ebcfb0b62960f00bc0153",
+      "dataset_id": "r5-image-frozen-043",
+      "query": "观察现场照片，识别图中主要的工业设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 13240,
+      "num_refs": 5,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 10002,
+        "channels": [
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 10002
+          },
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 7864
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "6aa5eb46c386b5bd5380b8027ab9aca07251797797f8331ea934faf30c1e9201",
+      "dataset_id": "r5-image-frozen-044",
+      "query": "图中「轧钢车间」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 15018,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 9409,
+        "channels": [
+          {
+            "question": "轧钢车间是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 7259
+          },
+          {
+            "question": "轧钢车间是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 9409
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3e1afd77012dba40fb84d489551b170d7f6232cfbb980e195092d680e9052d66",
+      "dataset_id": "r5-image-frozen-045",
+      "query": "请指出图中「轧钢车间」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 5915,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 1449,
+        "channels": [
+          {
+            "question": "轧钢车间的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 233
+          },
+          {
+            "question": "轧钢车间的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 1449
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "176785ed589a105ee5e6d1f439f845c1a47ab2f570be70be46bdb66f309f7fc7",
+      "dataset_id": "r5-image-frozen-046",
+      "query": "图中「轧机生产线」是否存在异常、磨损或故障迹象",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "fault_symptom"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7292,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": true,
+        "5": true
+      },
+      "mrr": 0.5,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 142,
+        "channels": [
+          {
+            "question": "轧机生产线是否存在异常、磨损或故障迹象",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 127
+          },
+          {
+            "question": "轧机生产线是否存在异常、磨损或故障迹象",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 142
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "69accf92f336bebb277f9638429866e82e4ea723c5ecf3373210a57af90d27f6",
+      "dataset_id": "r5-image-frozen-047",
+      "query": "观察现场照片，识别图中主要的工业设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 4642,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 346,
+        "channels": [
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 346
+          },
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 163
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "9af851c6b0548f7a3c1733ae27a5a6832e799b8a1719dbc471d389a23be0e0c9",
+      "dataset_id": "r5-image-frozen-048",
+      "query": "观察现场照片，识别图中主要的工业设备类型",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "device_identification"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 9090,
+      "num_refs": 10,
+      "hit": {
+        "1": false,
+        "3": false,
+        "5": false
+      },
+      "mrr": 0.0,
+      "channel_hit": true,
+      "source_id_hit": false,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 5290,
+        "channels": [
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 5290
+          },
+          {
+            "question": "现场照片中主要的工业设备类型",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 173
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3fa96f4a05ed8356e07f100c6f11dd70484d7ba51b0ecff0bcbbc966ee2b5459",
+      "dataset_id": "r5-image-frozen-049",
+      "query": "请指出图中「冷却塔」的关键组成部件",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "component_location"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 8151,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 4009,
+        "channels": [
+          {
+            "question": "图中冷却塔的关键组成部件",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 3865
+          },
+          {
+            "question": "图中冷却塔的关键组成部件",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 4009
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    },
+    {
+      "case_id": "3931a546a54b94dfc69b64f2f8fa26d8a274ad5f1a1801229347a3acba8709dc",
+      "dataset_id": "r5-image-frozen-050",
+      "query": "图中「冷却塔」是否有可见的仪表读数、铭牌或操作参数？如有请说明",
+      "scene": "image",
+      "ok": true,
+      "split": "frozen",
+      "business_tags": [
+        "site_photo",
+        "parameter_reading"
+      ],
+      "golden_hyperedge_ids": [],
+      "golden_source_documents": [],
+      "golden_hyperedge_sources": {},
+      "retrieval_status": "received",
+      "latency_ms": 7332,
+      "num_refs": 10,
+      "hit": {
+        "1": true,
+        "3": true,
+        "5": true
+      },
+      "mrr": 1.0,
+      "channel_hit": true,
+      "source_id_hit": true,
+      "relation": null,
+      "execution": {
+        "elapsedMillis": 506,
+        "channels": [
+          {
+            "question": "图中「冷却塔」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "VectorGlobalSearch",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 506
+          },
+          {
+            "question": "图中「冷却塔」是否有可见的仪表读数、铭牌或操作参数",
+            "channel": "图像语义检索",
+            "status": "COMPLETED",
+            "timedOut": false,
+            "cancelled": false,
+            "budgetMillis": 0,
+            "elapsedMillis": 162
+          }
+        ],
+        "cancelled": false,
+        "budgetMillis": 25000,
+        "timedOut": false
+      }
+    }
+  ]
+}

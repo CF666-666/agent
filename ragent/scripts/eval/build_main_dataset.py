@@ -80,12 +80,19 @@ def validate_subsets(subsets: dict[str, list[dict]]) -> None:
                     f"canonical question overlap between {seen[key]} and {name}: {question}")
             seen[key] = name
 
-    # 子集内记录级证据键不重复(source_id 是文档级,同一文档多条记录属正常,不参与去重)
+    # 子集内记录级证据键不重复(资产级证据键不参与去重,见下)
     for name in SUBSET_ORDER:
         evidence_seen: set[str] = set()
         for record in subsets[name]:
             for key in evaluation_contract.evidence_keys(record):
                 if key.startswith("source_id:"):
+                    # 文档级:同一 FAQ 文档可有多条 fact/noise 问题
+                    continue
+                if name == "image" and (key.startswith("image:")
+                                        or key.startswith("provenance:")):
+                    # 图片资产级:image 场景每图 2~3 问(R4-B 设计),同一图片的
+                    # 多条问题(设备识别/参数读取/故障症状/部件定位)共享同一
+                    # image_path 与 provenance.source_record_id,属正常,不参与去重
                     continue
                 if key in evidence_seen:
                     raise ValueError(
