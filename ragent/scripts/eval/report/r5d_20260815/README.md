@@ -42,8 +42,23 @@
 |---|---|
 | Docker 虚拟化失效（`virtualisation support wasn't detected`） | 打分阶段不依赖后端（仅 SiliconFlow 评估 LLM），用独立打分脚本 `_score_checkpoint.py` 先对 57 条已采集样本打分；Docker 恢复后补采集 3 条 relation |
 | 第一轮并发打分大量超时（faithfulness 42% None、context_precision 75% None） | 定位为并发放大 SiliconFlow 网络抖动（非真实低分，单条重跑全成功）；用 `_retry_none.py` 小批量（3 条/批）+ 600s 超时 + 断点续跑补齐，最终核心指标 None 降至 faithfulness 2 / context_precision 2 / context_recall 5 |
-| relation 层 contexts 偶发为空（超图通道稳定性） | `_retry_collect.py` 重试后补齐（001/014 各拿到 10 个 contexts） |
-| answer_relevancy 剩余 25 个 None | 内部指标、不进入简历，且首轮并发即成功部分已足够；未再补跑 |
+| 空 contexts（检索失败）样本共 5 条 | 分布：image 2 / relation 1 / noise 1 / text 1（见下），这些样本的 faithfulness/context_recall 会系统性为 0，**是检索失败而非生成质量差**，已计入对应层均值，未剔除 |
+| answer_relevancy 剩余 25 个 None（42%） | 内部指标、不进入简历；其 mean=0.42 仅基于 **35 条有效样本**（非 60 条），仅作内部参考，不参与简历表述 |
+| 评估 LLM 非确定性 | RAGAS 评估 LLM（DeepSeek-V3.2）对同一样本两次打分差异可达 ~0.19（如 fact-tuning-009 faithfulness 首轮 0.667 vs 重跑 0.476）；补跑策略「仅覆盖首轮为 None 的指标」，首轮非 None 值一律保留，故不产生覆盖歧义 |
+
+### 空 contexts 样本明细（检索失败）
+
+| case_id | 层 | query |
+|---|---|---|
+| r2-relation-frozen-017 | relation | 开关柜的绝缘电阻异常与对应故障有什么关系… |
+| r3-noise-frozen-001 | noise | 气轮机振动突然过 0.08 毫米… |
+| r5-fact-frozen-024 | text | 如何调节冷却塔的运行参数以适应负荷变化？ |
+| r5-image-frozen-048 | image | 观察现场照片，识别图中主要的工业设备类型 |
+| r5-image-tuning-004 | image | 图中「PCB」是否存在异常、磨损或故障迹象 |
+
+### 核心指标 None 剩余明细
+
+`remaining_none_after_retry`：faithfulness 2 / context_precision 2 / context_recall 5（分散在 8 个样本，无一「三核心全 None」，故 `sample_status.scored=60` 表示「60 条均至少有一个核心指标有效」，**不等于 60 条全部三核心指标完整**）。
 
 ## 3. 复现命令
 
@@ -60,13 +75,16 @@ $env:SILICONFLOW_API_KEY = "<key>"
 .\.venv\Scripts\python.exe _merge_final.py
 ```
 
+> **执行指纹说明**：最终报告的 `execution_fingerprint.runner.path` 指向 `_score_checkpoint.py`（首轮打分脚本），而非 `ragas_eval.py`——因本闭环在 Docker 失效期间用独立脚本打分，指纹如实记录了实际执行路径；用 ragas_eval.py 从头复现时 fingerprint 会指向 ragas_eval.py 自身。
+
 ## 4. 产出文件
 
 - `ragas_report_final.json`：最终 60 条报告（含 per_sample 逐条 4 指标 + 分层汇总 + 执行指纹）
-- `ragas_report.checkpoint.jsonl`：采集断点（60 条 collected，含 answer/contexts/reference）
+- `ragas_report.checkpoint.jsonl`：采集断点（60 条 collected 唯一，含 answer/contexts/reference）
 - `ragas_score_only.json`：57 条首轮打分（Docker 不可用期间）
 - `ragas_new_relation.json`：3 条新 relation 打分
-- 中间脚本：`_score_checkpoint.py` / `_retry_none.py` / `_collect_missing.py` / `_retry_collect.py` / `_score_new_relation.py` / `_merge_final.py`
+- `ragas_report.retry.json`：补跑断点（50 条，已清洗 NaN）
+- 中间脚本：`_score_checkpoint.py` / `_retry_none.py` / `_collect_missing.py` / `_retry_collect.py` / `_score_new_relation.py` / `_merge_final.py` / `_fix_p0.py`
 
 ## 5. R5-D 简历门槛对照
 

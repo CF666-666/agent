@@ -13,7 +13,7 @@
   },
   "r5-fact-tuning-014": {
     "faithfulness": 1.0,
-    "context_precision": NaN
+    "context_precision": null
   },
   "r5-fact-tuning-002": {
     "faithfulness": 1.0,
@@ -124,7 +124,7 @@
     "context_precision": 0.0
   },
   "r5-image-frozen-010": {
-    "faithfulness": NaN,
+    "faithfulness": null,
     "context_precision": 0.0
   },
   "r5-image-frozen-003": {
@@ -136,7 +136,7 @@
     "context_precision": 0.0
   },
   "r5-image-frozen-044": {
-    "faithfulness": NaN,
+    "faithfulness": null,
     "context_precision": 0.0
   },
   "r5-image-frozen-008": {
@@ -161,7 +161,7 @@
   },
   "r2-relation-tuning-008": {
     "faithfulness": 0.2791,
-    "context_precision": NaN
+    "context_precision": null
   },
   "r2-relation-tuning-012": {
     "faithfulness": 0.4615,

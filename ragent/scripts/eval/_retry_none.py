@@ -29,6 +29,16 @@ SILICON_BASE = "https://api.siliconflow.cn/v1"
 BATCH = 3
 
 
+def _clean(v):
+    """None/NaN -> None,否则保留 4 位 float。避免 json.dumps 写出非法 NaN。"""
+    if v is None:
+        return None
+    f = float(v)
+    if math.isnan(f):
+        return None
+    return round(f, 4)
+
+
 def load_checkpoint_unique(path: Path) -> dict:
     seen = {}
     with path.open(encoding="utf-8") as handle:
@@ -102,10 +112,8 @@ def main() -> None:
                 recs = df.to_dict(orient="records")
                 for cid, rec in zip(todo, recs):
                     patch[cid] = {
-                        "faithfulness": (round(float(rec["faithfulness"]), 4)
-                                         if rec.get("faithfulness") is not None else None),
-                        "context_precision": (round(float(rec["context_precision"]), 4)
-                                              if rec.get("context_precision") is not None else None),
+                        "faithfulness": _clean(rec.get("faithfulness")),
+                        "context_precision": _clean(rec.get("context_precision")),
                     }
                 ok = True
                 break
