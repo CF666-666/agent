@@ -424,7 +424,7 @@ Week 8 ──┘  Phase 8（RAGAS 端到端评测体系）
 | R3-D | 查询鲁棒性：错误改写离线审计 | ✅ 完成 | 08-14 | 08-14 | 离线复现（同 prompt/模型/参数）+ 确定性四类分类器 18 项单测。noise 40 条 correct 24/ineffective 16/注入 0；conversation 20 组 20/20 correct。单轮省略 9/10 补全失败（澄清机制缺失）、错字 3 例未纠，解释 R3-C noise on 45% Hit@1；R3 收口。 |
 | R6 | 可视化编排：5 条端到端验收 | ✅ 完成 | 08-14 | 08-14 | 后端 API 验证（场景 1-5 后端部分，含环检测与任务拓扑）+ 浏览器实测截图（场景 1/3 画布渲染）+ 关键校验代码审查（场景 4 validateGraph.detectCycle + handleSave 拦截、场景 5 TaskTopology）。R6 解锁条件满足，局限披露见 `scripts/eval/report/r6_accept_20260814/README.md` |
 | R4 | 图像评测扩容：40 素材 + 100 问题 + 评测 | ✅ 完成 | 08-15 | 08-15 | R4-A 40 素材（20/10/10，Qwen3-VL 描述，去重 1 组）+ R4-B 100 问题（人工审核）+ R4-C 索引重建与引用校验（修复图像 ingest 固定重试模型 ab35fc0 + timeout 3s→10s）+ R4-D 图像通道 100/100（Hit@1 34%/MRR 0.4173）+ 全链路 92/100（Hit@1 35.9%/MRR 0.4745，按 subcategory/split 分组含 Wilson 置信区间）。R4 收口 |
-| R5 | 总评测与 RAGAS：240 主集 + 60 RAGAS | 🔶 A/B/C/D 完成，E 待做 | 08-15 | 08-15 | R5-A 240 主集合并；R5-B 分场景评测（微平均 Hit@1 63.83% Wilson95 57.5%-69.7%、MRR 0.6944、P95 14.7s；text 86.67%/image 37.5%/relation 73.47%）；R5-C RAGAS Runner；R5-D 60 条 RAGAS（faithfulness 0.614/context_precision 0.627/context_recall 0.672，分层 text 最优、image context 最弱、relation faithfulness 最弱）。R5-E 限制性结论待收尾 |
+| R5 | 总评测与 RAGAS：240 主集 + 60 RAGAS | ✅ 完成 | 08-15 | 08-15 | R5-A 240 主集合并；R5-B 分场景评测（微平均 Hit@1 63.83% Wilson95 57.5%-69.7%、MRR 0.6944、P95 14.7s；text 86.67%/image 37.5%/relation 73.47%）；R5-C RAGAS Runner；R5-D 60 条 RAGAS（faithfulness 0.614/context_recall 0.672）；R5-E 限制性结论（唯一可写归因=查询重写，分场景差异禁止归因）。R5 收口 |
 | 2 | 图像检索链 | ✅ 完成 | 07-25 | 07-25 | 2 个闭环全部完成，Phase 2 完结 |
 | 3 | 超图引擎 | ✅ 完成 | 07-28 | 07-31 | 超边抽取 633 条，超图检索通道可用 |
 | 4 | 多路融合与答案增强 | ✅ 完成 | 07-31 | 08-01 | 6 个闭环全部完成，多源融合 + references 推送跑通 |
