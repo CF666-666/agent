@@ -1,0 +1,342 @@
+{
+  "schema_version": 2,
+  "summary": {
+    "samples": 12,
+    "faithfulness": {
+      "mean": 0.6052,
+      "ci95_half": 0.5571
+    },
+    "answer_relevancy": {
+      "mean": 0.2946,
+      "ci95_half": 0.16
+    },
+    "context_precision": {
+      "mean": null,
+      "ci95_half": null
+    },
+    "context_recall": {
+      "mean": 0.7922,
+      "ci95_half": 0.2693
+    }
+  },
+  "groups": {
+    "text": {
+      "n": 3,
+      "faithfulness": {
+        "mean": 0.9412,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.2602,
+        "ci95_half": 0.5442
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 0.6667,
+        "ci95_half": 1.3904
+      }
+    },
+    "noise": {
+      "n": 3,
+      "faithfulness": {
+        "mean": 0.8235,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.427,
+        "ci95_half": null
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "ci95_half": 0.0
+      }
+    },
+    "image": {
+      "n": 3,
+      "faithfulness": {
+        "mean": 0.1562,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.2794,
+        "ci95_half": null
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 0.5714,
+        "ci95_half": 1.2404
+      }
+    },
+    "relation": {
+      "n": 3,
+      "faithfulness": {
+        "mean": 0.5,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.2899,
+        "ci95_half": 0.6209
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "ci95_half": 0.0
+      }
+    }
+  },
+  "sample_status": {
+    "scored": 11,
+    "failed_collect": 0,
+    "failed_score": 1
+  },
+  "business_tags": {
+    "alias_synonym": 1,
+    "alias_variant": 1,
+    "component_location": 2,
+    "device_identification": 1,
+    "ellipsis_word_order": 1,
+    "engineering_drawing": 1,
+    "scanned_manual": 1,
+    "single_edge": 2,
+    "site_photo": 1,
+    "two_hop": 1,
+    "unit_format": 1,
+    "安全规范": 2,
+    "操作规程": 1,
+    "故障诊断": 2,
+    "维护保养": 1
+  },
+  "internal_metrics": [
+    "answer_relevancy"
+  ],
+  "confidence_interval": {
+    "method": "t_distribution_cornish_fisher",
+    "level": 0.95,
+    "note": "n<2 时 ci95_half 为 null;内部指标 answer_relevancy 不进入简历"
+  },
+  "execution_fingerprint": {
+    "fingerprint_version": 1,
+    "runner": {
+      "path": "scripts/eval/ragas_eval.py",
+      "sha256": "f6458abe34c0c19c779c66b320df6bede5e39b8bdfd65b0c8ba5b22be8344c01"
+    },
+    "evaluation_contract": {
+      "path": "scripts/eval/evaluation_contract.py",
+      "sha256": "546b1186c1514fecc5e9b54d576692c937763f34a3ccda6159bc05ab347d571a"
+    },
+    "dependencies": [],
+    "runtime_profile": {
+      "path": "scripts/eval/runtime-profiles/local-default.json",
+      "sha256": "849ffc178ef791d2dd29dd3d87f7e4d4d4e35bfd0c8155db8862cf5941ddf76b",
+      "name": "local-ragent-default",
+      "configured_models": {
+        "chat": {
+          "model_id": "qwen3-32b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-32B"
+        },
+        "embedding": {
+          "model_id": "qwen-emb-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Embedding-8B"
+        },
+        "rerank": {
+          "model_id": "qwen3-reranker-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Reranker-8B"
+        }
+      }
+    },
+    "application_config": {
+      "path": "bootstrap/src/main/resources/application.yaml",
+      "sha256": "d46af2b16eb0e439d3d7882d364843b7035e9fe89d6f58903aa1c6f8be20a811"
+    },
+    "git": {
+      "revision": "fd0f21daf8cacec496e7a376f624d1ada6c6240b",
+      "worktree_dirty": true
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.11.9"
+    },
+    "extra": {
+      "ragas_evaluator": {
+        "provider": "siliconflow",
+        "model": "deepseek-ai/DeepSeek-V3.2",
+        "embedding_model": "Qwen/Qwen3-Embedding-8B"
+      },
+      "sampling": {
+        "per_group": 3,
+        "seed": 202603,
+        "limit": 12
+      }
+    },
+    "sha256": "1347c260e19a937223737b66cdd34784a74b78090ccbd5cb9c3b89da2efa21ef"
+  },
+  "per_sample": [
+    {
+      "case_id": "r5-fact-frozen-017",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "ragas_group": "text",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": 0.0,
+      "context_precision": null,
+      "context_recall": 0.0
+    },
+    {
+      "case_id": "r5-fact-frozen-002",
+      "query": "在变压器附近作业时应遵守哪些安全距离规定？",
+      "ragas_group": "text",
+      "business_tags": [
+        "安全规范"
+      ],
+      "faithfulness": 0.9412,
+      "answer_relevancy": 0.3738,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r5-fact-tuning-004",
+      "query": "冷轧机区域有哪些强制性安全规范？",
+      "ragas_group": "text",
+      "business_tags": [
+        "安全规范"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": 0.4069,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r3-noise-frozen-016",
+      "query": "冷态准备冲转了，哪些数没到位不能开？",
+      "ragas_group": "noise",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "faithfulness": 0.8235,
+      "answer_relevancy": 0.427,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r3-noise-frozen-006",
+      "query": "汽机DEH定检都做哪些项目？",
+      "ragas_group": "noise",
+      "business_tags": [
+        "维护保养",
+        "alias_synonym"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null
+    },
+    {
+      "case_id": "r3-noise-frozen-014",
+      "query": "主变油温95度往上走，一般是什么原因？",
+      "ragas_group": "noise",
+      "business_tags": [
+        "故障诊断",
+        "unit_format"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r5-image-tuning-005",
+      "query": "请指出图中「PCB」的关键组成部件",
+      "ragas_group": "image",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "faithfulness": 0.1562,
+      "answer_relevancy": 0.2794,
+      "context_precision": null,
+      "context_recall": 0.7143
+    },
+    {
+      "case_id": "r5-image-frozen-045",
+      "query": "请指出图中「轧钢车间」的关键组成部件",
+      "ragas_group": "image",
+      "business_tags": [
+        "site_photo",
+        "component_location"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r5-image-tuning-026",
+      "query": "根据手册页内容，判断该页说明的设备类型",
+      "ragas_group": "image",
+      "business_tags": [
+        "scanned_manual",
+        "device_identification"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": 0.0
+    },
+    {
+      "case_id": "r2-relation-tuning-008",
+      "query": "发电机定子的绝缘电阻（≥10MΩ）及吸收比（R60s/R15s≥1.3）异常与对应故障有什么关系，应该如何排查？",
+      "ragas_group": "relation",
+      "business_tags": [
+        "single_edge",
+        "alias_variant"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": 0.4935,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r2-relation-tuning-012",
+      "query": "冷轧机的乳化液系统温度异常与对应故障有什么关系，应该如何排查？",
+      "ragas_group": "relation",
+      "business_tags": [
+        "single_edge"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": 0.3762,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r2-relation-tuning-010",
+      "query": "以离心压缩机为关联，润滑油粘度变化＞±15%（ISO VG46油品40℃运动粘度应在41.4–52.9 cSt）与颗粒污染度≥ISO 4406 18/16之间有什么关系，请给出完整关系路径？",
+      "ragas_group": "relation",
+      "business_tags": [
+        "two_hop"
+      ],
+      "faithfulness": 0.5,
+      "answer_relevancy": 0.0,
+      "context_precision": null,
+      "context_recall": 1.0
+    }
+  ]
+}

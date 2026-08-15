@@ -1,0 +1,8 @@
+D:\Java\agent\ragent\scripts\eval\ragas_eval.py:42: DeprecationWarning: Importing answer_relevancy from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import answer_relevancy
+  from ragas.metrics import (
+D:\Java\agent\ragent\scripts\eval\ragas_eval.py:42: DeprecationWarning: Importing context_precision from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import context_precision
+  from ragas.metrics import (
+D:\Java\agent\ragent\scripts\eval\ragas_eval.py:42: DeprecationWarning: Importing context_recall from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import context_recall
+  from ragas.metrics import (
+D:\Java\agent\ragent\scripts\eval\ragas_eval.py:42: DeprecationWarning: Importing faithfulness from 'ragas.metrics' is deprecated and will be removed in v1.0. Please use 'ragas.metrics.collections' instead. Example: from ragas.metrics.collections import faithfulness
+  from ragas.metrics import (

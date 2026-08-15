@@ -1,0 +1,39 @@
+[
+  {
+    "case_id": "r2-relation-frozen-001",
+    "query": "烧结机的台车轨道状态、台车栏板紧固螺栓扭矩异常与对应故障有什么关系，应该如何排查？（注意不要与同类设备的相似故障混淆）",
+    "ragas_group": "relation",
+    "business_tags": [
+      "single_edge",
+      "similar_entity_distractor"
+    ],
+    "faithfulness": 0.3864,
+    "answer_relevancy": 0.5344,
+    "context_precision": 1.0,
+    "context_recall": 1.0
+  },
+  {
+    "case_id": "r2-relation-frozen-008",
+    "query": "锅炉的饱和温度上升速度异常与对应故障有什么关系，应该如何排查？",
+    "ragas_group": "relation",
+    "business_tags": [
+      "single_edge"
+    ],
+    "faithfulness": 0.0,
+    "answer_relevancy": 0.0,
+    "context_precision": 0.0,
+    "context_recall": 0.0
+  },
+  {
+    "case_id": "r2-relation-frozen-014",
+    "query": "烧结机减速机的异响异常与存在异响有什么关系，应该如何排查？",
+    "ragas_group": "relation",
+    "business_tags": [
+      "single_edge"
+    ],
+    "faithfulness": 0.5652,
+    "answer_relevancy": 0.5018,
+    "context_precision": 0.8333,
+    "context_recall": 1.0
+  }
+]

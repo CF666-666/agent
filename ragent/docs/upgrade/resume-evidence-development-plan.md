@@ -280,11 +280,11 @@ R4-B 已完成：`build_image_dataset.py` 实现「query 与 Qwen-VL description
 
 | 编号 | 内容 | 验收 | 状态 |
 |---|---|---|---|
-| R5-A | 合并 240 条单轮主集 | 场景分布正确、来源去重、数据集哈希固定 | 🔶 fact 50 + 合并脚本已完成（image 100 待 R4） |
-| R5-B | 输出宏/微平均与场景报告 | Hit@K、MRR、P50/P95、超时和空引用分布完整 | ⬜ 未开始（需 Docker） |
+| R5-A | 合并 240 条单轮主集 | 场景分布正确、来源去重、数据集哈希固定 | ✅ 完成：240 条（fact 50 + noise 40 + image 100 + relation 50，split 120/120） |
+| R5-B | 输出宏/微平均与场景报告 | Hit@K、MRR、P50/P95、超时和空引用分布完整 | ✅ 完成：微平均 Hit@1 63.83%（Wilson95 57.5%-69.7%）、MRR 0.6944；text 86.67% / image 37.5% / relation 73.47% |
 | R5-C | 扩展 RAGAS Runner | 支持分层、固定种子、断点恢复、失败重试和失败统计 | ✅ 完成 |
-| R5-D | 完成 60 条 RAGAS | 四层各 15 条，无静默丢样本，原始逐条结果可查 | ⬜ 未开始（需 Docker） |
-| R5-E | 生成限制性结论 | 条件不同只写观察结果；严格 A/B 才写提升归因 | ⬜ 未开始 |
+| R5-D | 完成 60 条 RAGAS | 四层各 15 条，无静默丢样本，原始逐条结果可查 | ✅ 完成：faithfulness 0.614 / context_precision 0.627 / context_recall 0.672，分层结果见 `report/r5d_20260815/README.md` |
+| R5-E | 生成限制性结论 | 条件不同只写观察结果；严格 A/B 才写提升归因 | 🔶 待做（R5 收尾时统一） |
 
 R5-C 验收证据：`ragas_eval.py` 重构为「纯函数 core 模块 + 采集/打分流程」，新增分层（ragas_group 四层 + legacy scene 映射）、固定种子 `--seed`、断点恢复 `--resume`/checkpoint（失败样本带 status 标记、`--retry-failed` 可重试）、失败重试 `--retries`、失败统计（scored/failed_collect/failed_score）、95% 置信区间（t 分布 Cornish-Fisher 近似）、业务标签分布；报告 `schema_version` 升 2；19 项离线单测通过（`test_ragas_eval.py`）。
 
@@ -389,7 +389,7 @@ R0 不再单独重跑当前版本的 100 条四场景集。事实、真实口语
 | R2 超图关系质量 | ✅ 完成 | R2-A～R2-D 全部完成；frozen 质量门槛通过，专项结果已归档，简历最终数字待 R5 全链路同配置重跑 |
 | R3 查询鲁棒性 | ✅ 完成 | R3-A/B/C/D 全部完成：40 条噪声难例、20 组多轮 Runner、冻结集严格 rewrite A/B（含索引根因修复）、离线错误改写审计。R3 收口 |
 | R4 图像评测扩容 | ✅ 完成 | R4-A 40 张素材（20/10/10，Qwen3-VL 描述）+ R4-B 100 条问题（人工审核）+ R4-C 索引重建与引用校验（含 2 个 bug 修复）+ R4-D 图像通道/全链路评测（Hit/MRR/P95/置信区间）全部完成 |
-| R5 总评测与 RAGAS | 🔶 R5-C + R5-A 代码完成，其余未开始 | R5-C（扩展 RAGAS Runner）已完成，19 项离线单测通过；R5-A 的 fact 集已扩到 50 条（`industrial_fact_r5.jsonl`，source_doc 隔离，7 项测试通过）+ 主集合并脚本 `build_main_dataset.py`（合并 240 条 + 场景分布/去重/哈希校验 + split 保留，7 项测试通过），image 100 待 R4 生成后即可一键合并；R5-B/D/E 需 Docker |
+| R5 总评测与 RAGAS | 🔶 R5-A/B/C/D 完成，R5-E 待做 | R5-A 240 条主集合并；R5-B 分场景评测（微平均 Hit@1 63.83%、MRR 0.6944）；R5-C RAGAS Runner；R5-D 60 条 RAGAS（faithfulness 0.614 / context_recall 0.672）。R5-E 限制性结论待 R5 收尾统一产出 |
 | R6 可视化编排 | ✅ 完成 | R6-A～E 代码 + 5 条端到端验收全部通过。后端 API + 浏览器实测截图 + 代码审查三重证据；R6 闭环收口 |
 | R7 简历与文档校准 | ⬜ 未开始 | 最终发布阶段 |
 

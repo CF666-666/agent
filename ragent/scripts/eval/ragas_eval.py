@@ -226,6 +226,7 @@ def main():
     print(f"[ragas_eval] 开始 RAGAS 评测({len(collected)} 样本)...")
     eval_llm = LangchainLLMWrapper(ChatOpenAI(
         model=args.eval_model, api_key=api_key, base_url=llm_base, temperature=0,
+        request_timeout=180,
     ))
     eval_emb = LangchainEmbeddingsWrapper(OpenAIEmbeddings(
         model=emb_model, api_key=api_key, base_url=llm_base,

@@ -1,0 +1,234 @@
+{
+  "schema_version": 2,
+  "summary": {
+    "samples": 4,
+    "faithfulness": {
+      "mean": 0.7657,
+      "ci95_half": 0.6451
+    },
+    "answer_relevancy": {
+      "mean": 0.4092,
+      "ci95_half": 0.0761
+    },
+    "context_precision": {
+      "mean": null,
+      "ci95_half": null
+    },
+    "context_recall": {
+      "mean": 0.9286,
+      "ci95_half": 0.2256
+    }
+  },
+  "groups": {
+    "text": {
+      "n": 1,
+      "faithfulness": {
+        "mean": 1.0,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.4477,
+        "ci95_half": null
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "ci95_half": null
+      }
+    },
+    "noise": {
+      "n": 1,
+      "faithfulness": {
+        "mean": 0.8235,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.4229,
+        "ci95_half": null
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "ci95_half": null
+      }
+    },
+    "image": {
+      "n": 1,
+      "faithfulness": {
+        "mean": 0.4737,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.3388,
+        "ci95_half": null
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 0.7143,
+        "ci95_half": null
+      }
+    },
+    "relation": {
+      "n": 1,
+      "faithfulness": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "answer_relevancy": {
+        "mean": 0.4274,
+        "ci95_half": null
+      },
+      "context_precision": {
+        "mean": null,
+        "ci95_half": null
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "ci95_half": null
+      }
+    }
+  },
+  "sample_status": {
+    "scored": 4,
+    "failed_collect": 0,
+    "failed_score": 0
+  },
+  "business_tags": {
+    "alias_variant": 1,
+    "component_location": 1,
+    "ellipsis_word_order": 1,
+    "engineering_drawing": 1,
+    "single_edge": 1,
+    "操作规程": 1,
+    "故障诊断": 1
+  },
+  "internal_metrics": [
+    "answer_relevancy"
+  ],
+  "confidence_interval": {
+    "method": "t_distribution_cornish_fisher",
+    "level": 0.95,
+    "note": "n<2 时 ci95_half 为 null;内部指标 answer_relevancy 不进入简历"
+  },
+  "execution_fingerprint": {
+    "fingerprint_version": 1,
+    "runner": {
+      "path": "scripts/eval/ragas_eval.py",
+      "sha256": "9cb28490630c05c1d658defcbbb657ca639c59613a5f3769932a4a3c5851c965"
+    },
+    "evaluation_contract": {
+      "path": "scripts/eval/evaluation_contract.py",
+      "sha256": "546b1186c1514fecc5e9b54d576692c937763f34a3ccda6159bc05ab347d571a"
+    },
+    "dependencies": [],
+    "runtime_profile": {
+      "path": "scripts/eval/runtime-profiles/local-default.json",
+      "sha256": "849ffc178ef791d2dd29dd3d87f7e4d4d4e35bfd0c8155db8862cf5941ddf76b",
+      "name": "local-ragent-default",
+      "configured_models": {
+        "chat": {
+          "model_id": "qwen3-32b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-32B"
+        },
+        "embedding": {
+          "model_id": "qwen-emb-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Embedding-8B"
+        },
+        "rerank": {
+          "model_id": "qwen3-reranker-8b",
+          "provider": "siliconflow",
+          "model": "Qwen/Qwen3-Reranker-8B"
+        }
+      }
+    },
+    "application_config": {
+      "path": "bootstrap/src/main/resources/application.yaml",
+      "sha256": "d46af2b16eb0e439d3d7882d364843b7035e9fe89d6f58903aa1c6f8be20a811"
+    },
+    "git": {
+      "revision": "fd0f21daf8cacec496e7a376f624d1ada6c6240b",
+      "worktree_dirty": true
+    },
+    "python": {
+      "implementation": "CPython",
+      "version": "3.11.9"
+    },
+    "extra": {
+      "ragas_evaluator": {
+        "provider": "siliconflow",
+        "model": "deepseek-ai/DeepSeek-V3.2",
+        "embedding_model": "Qwen/Qwen3-Embedding-8B"
+      },
+      "sampling": {
+        "per_group": 1,
+        "seed": 202603,
+        "limit": 12
+      }
+    },
+    "sha256": "67a8556009dd6ea48b5982cf4511aaa1490d31082ac276fb5d1b6b31635f3589"
+  },
+  "per_sample": [
+    {
+      "case_id": "r5-fact-frozen-017",
+      "query": "开关柜内断路器频繁跳闸，可能原因有哪些？",
+      "ragas_group": "text",
+      "business_tags": [
+        "故障诊断"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.4477,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r3-noise-frozen-016",
+      "query": "冷态准备冲转了，哪些数没到位不能开？",
+      "ragas_group": "noise",
+      "business_tags": [
+        "操作规程",
+        "ellipsis_word_order"
+      ],
+      "faithfulness": 0.8235,
+      "answer_relevancy": 0.4229,
+      "context_precision": null,
+      "context_recall": 1.0
+    },
+    {
+      "case_id": "r5-image-tuning-005",
+      "query": "请指出图中「PCB」的关键组成部件",
+      "ragas_group": "image",
+      "business_tags": [
+        "engineering_drawing",
+        "component_location"
+      ],
+      "faithfulness": 0.4737,
+      "answer_relevancy": 0.3388,
+      "context_precision": null,
+      "context_recall": 0.7143
+    },
+    {
+      "case_id": "r2-relation-tuning-008",
+      "query": "发电机定子的绝缘电阻（≥10MΩ）及吸收比（R60s/R15s≥1.3）异常与对应故障有什么关系，应该如何排查？",
+      "ragas_group": "relation",
+      "business_tags": [
+        "single_edge",
+        "alias_variant"
+      ],
+      "faithfulness": null,
+      "answer_relevancy": 0.4274,
+      "context_precision": null,
+      "context_recall": 1.0
+    }
+  ]
+}

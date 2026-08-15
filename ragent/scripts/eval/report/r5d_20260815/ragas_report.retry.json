@@ -1,0 +1,202 @@
+{
+  "r5-fact-frozen-017": {
+    "faithfulness": 0.96,
+    "context_precision": 1.0
+  },
+  "r5-fact-tuning-004": {
+    "faithfulness": 0.8182,
+    "context_precision": 1.0
+  },
+  "r5-fact-tuning-010": {
+    "faithfulness": 0.8605,
+    "context_precision": 1.0
+  },
+  "r5-fact-tuning-014": {
+    "faithfulness": 1.0,
+    "context_precision": NaN
+  },
+  "r5-fact-tuning-002": {
+    "faithfulness": 1.0,
+    "context_precision": 1.0
+  },
+  "r5-fact-tuning-013": {
+    "faithfulness": 0.9091,
+    "context_precision": 1.0
+  },
+  "r5-fact-tuning-025": {
+    "faithfulness": 1.0,
+    "context_precision": 1.0
+  },
+  "r5-fact-frozen-006": {
+    "faithfulness": 0.7609,
+    "context_precision": 0.9167
+  },
+  "r5-fact-tuning-009": {
+    "faithfulness": 0.4762,
+    "context_precision": 1.0
+  },
+  "r5-fact-frozen-024": {
+    "faithfulness": 0.0,
+    "context_precision": 0.0
+  },
+  "r5-fact-frozen-007": {
+    "faithfulness": 0.9167,
+    "context_precision": 1.0
+  },
+  "r5-fact-frozen-008": {
+    "faithfulness": 0.6667,
+    "context_precision": 1.0
+  },
+  "r5-fact-frozen-001": {
+    "faithfulness": 0.7619,
+    "context_precision": 1.0
+  },
+  "r5-fact-frozen-020": {
+    "faithfulness": 0.0,
+    "context_precision": 0.0
+  },
+  "r3-noise-frozen-016": {
+    "faithfulness": 1.0,
+    "context_precision": 1.0
+  },
+  "r3-noise-frozen-006": {
+    "faithfulness": 0.7333,
+    "context_precision": 1.0
+  },
+  "r3-noise-frozen-014": {
+    "faithfulness": 0.8182,
+    "context_precision": 1.0
+  },
+  "r3-noise-tuning-017": {
+    "faithfulness": 0.7188,
+    "context_precision": 0.869
+  },
+  "r3-noise-frozen-009": {
+    "faithfulness": 0.8333,
+    "context_precision": 0.6906
+  },
+  "r3-noise-frozen-018": {
+    "faithfulness": 0.5789,
+    "context_precision": 1.0
+  },
+  "r3-noise-frozen-011": {
+    "faithfulness": 0.3704,
+    "context_precision": 1.0
+  },
+  "r3-noise-tuning-007": {
+    "faithfulness": 0.8421,
+    "context_precision": 1.0
+  },
+  "r3-noise-frozen-001": {
+    "faithfulness": 0.0,
+    "context_precision": 0.0
+  },
+  "r3-noise-frozen-019": {
+    "faithfulness": 0.0,
+    "context_precision": 0.0
+  },
+  "r3-noise-tuning-011": {
+    "faithfulness": 1.0,
+    "context_precision": 1.0
+  },
+  "r3-noise-tuning-018": {
+    "faithfulness": 0.8095,
+    "context_precision": 1.0
+  },
+  "r3-noise-frozen-004": {
+    "faithfulness": 0.6154,
+    "context_precision": 1.0
+  },
+  "r3-noise-tuning-004": {
+    "faithfulness": 0.6667,
+    "context_precision": 1.0
+  },
+  "r5-image-tuning-005": {
+    "faithfulness": 0.5581,
+    "context_precision": 1.0
+  },
+  "r5-image-frozen-045": {
+    "faithfulness": 0.8571,
+    "context_precision": 1.0
+  },
+  "r5-image-frozen-015": {
+    "faithfulness": 0.7,
+    "context_precision": 0.0
+  },
+  "r5-image-frozen-010": {
+    "faithfulness": NaN,
+    "context_precision": 0.0
+  },
+  "r5-image-frozen-003": {
+    "faithfulness": 0.8864,
+    "context_precision": 1.0
+  },
+  "r5-image-tuning-050": {
+    "faithfulness": 0.9592,
+    "context_precision": 0.0
+  },
+  "r5-image-frozen-044": {
+    "faithfulness": NaN,
+    "context_precision": 0.0
+  },
+  "r5-image-frozen-008": {
+    "faithfulness": 0.9524,
+    "context_precision": 1.0
+  },
+  "r5-image-tuning-033": {
+    "faithfulness": 0.4545,
+    "context_precision": 0.0
+  },
+  "r5-image-tuning-015": {
+    "faithfulness": 0.7083,
+    "context_precision": 0.0
+  },
+  "r5-image-frozen-009": {
+    "faithfulness": 0.6875,
+    "context_precision": 0.1111
+  },
+  "r5-image-frozen-023": {
+    "faithfulness": 0.7429,
+    "context_precision": 0.0
+  },
+  "r2-relation-tuning-008": {
+    "faithfulness": 0.2791,
+    "context_precision": NaN
+  },
+  "r2-relation-tuning-012": {
+    "faithfulness": 0.4615,
+    "context_precision": 0.7254
+  },
+  "r2-relation-frozen-011": {
+    "faithfulness": 0.8889,
+    "context_precision": 1.0
+  },
+  "r2-relation-tuning-001": {
+    "faithfulness": 0.1935,
+    "context_precision": 1.0
+  },
+  "r2-relation-frozen-012": {
+    "faithfulness": 0.2632,
+    "context_precision": 1.0
+  },
+  "r2-relation-tuning-015": {
+    "faithfulness": 0.5909,
+    "context_precision": 1.0
+  },
+  "r2-relation-frozen-003": {
+    "faithfulness": 0.4872,
+    "context_precision": 1.0
+  },
+  "r2-relation-tuning-022": {
+    "faithfulness": 0.3,
+    "context_precision": 0.8333
+  },
+  "r2-relation-frozen-020": {
+    "faithfulness": 0.9286,
+    "context_precision": 1.0
+  },
+  "r2-relation-tuning-007": {
+    "faithfulness": 0.9231,
+    "context_precision": 0.3873
+  }
+}
