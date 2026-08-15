@@ -23,7 +23,7 @@
 
 问答页面预览图：
 
-![](assets/qa-home.png)
+![](ragent/assets/qa-home.png)
 
 具体来说，Ragent 包含以下核心能力：
 
@@ -137,7 +137,7 @@ AI 这波浪潮，Java 程序员已经躲不过去了。
 
 市面上打着 RAG 旗号的项目不少，但很多要么是玩具级 Demo，要么是概念包装。在学之前，先把这几个误区理清楚，避免踩坑。
 
-![](assets/rag-misconceptions.png)
+![](ragent/assets/rag-misconceptions.png)
 
 ### 1. 调个 API 就算会 RAG 了
 
@@ -187,7 +187,7 @@ Ragent 是一个企业级 RAG 智能体平台，基于 Java 17 + Spring Boot 3 +
 
 它不是一个跑通 Demo 就收工的玩具项目，而是覆盖了 RAG 系统从文档入库到智能问答全链路的完整工程实现。你在企业里做 RAG 会遇到的问题——文档解析、分块策略、多路检索、意图识别、问题重写、会话记忆、模型容错、MCP 工具调用、链路追踪——Ragent 里都有对应的解决方案。
 
-![](assets/ragent-architecture.svg)
+![](ragent/assets/ragent-architecture.svg)
 
 ## Ragent 核心设计
 
@@ -195,7 +195,7 @@ Ragent 是一个企业级 RAG 智能体平台，基于 Java 17 + Spring Boot 3 +
 
 Ragent 采用前后端分离的单体架构，后端按职责分为四个 Maven 模块：
 
-<img src="assets/ragent-module-layering.png" width="50%" />
+<img src="ragent/assets/ragent-module-layering.png" width="50%" />
 
 这个分层不是为了炫技，而是解决实际问题：`framework` 层提供与业务无关的通用能力，`infra-ai` 层屏蔽不同模型供应商的差异，`bootstrap` 层专注业务逻辑。换模型供应商不用改业务代码，换业务逻辑不用动基础设施。
 
@@ -222,13 +222,13 @@ Ragent 采用前后端分离的单体架构，后端按职责分为四个 Maven 
 
 一次用户提问，在 Ragent 里经过的完整链路如下：
 
-![](assets/ragent-chain.png)
+![](ragent/assets/ragent-chain.png)
 
 #### 2.2 多路检索架构
 
 检索是 RAG 系统的核心，Ragent 的检索引擎采用多通道并行 + 后处理流水线的架构：
 
-![](assets/multi-channel-retrieval.png)
+![](ragent/assets/multi-channel-retrieval.png)
 
 每个通道独立执行、互不影响，通过线程池并行调度。后处理器按顺序串联，像流水线一样逐步精炼检索结果。
 
@@ -236,7 +236,7 @@ Ragent 采用前后端分离的单体架构，后端按职责分为四个 Maven 
 
 生产环境不可能只依赖一个模型供应商，Ragent 的模型路由机制解决的就是这个问题：
 
-![](assets/model-routing-failover.png)
+![](ragent/assets/model-routing-failover.png)
 
 关键设计：首包探测阶段会缓冲所有事件，确保模型切换时用户端不会收到半截的脏数据。
 
@@ -244,7 +244,7 @@ Ragent 采用前后端分离的单体架构，后端按职责分为四个 Maven 
 
 文档从上传到可检索，经过一条基于节点编排的 Pipeline：
 
-<img src="assets/ingestion-pipeline.png" width="25%" />
+<img src="ragent/assets/ingestion-pipeline.png" width="25%" />
 
 每个节点的配置存储在数据库中，支持条件执行和输出链式传递。每个任务和节点都有独立的执行日志，出了问题能精确定位到哪一步。
 
@@ -373,7 +373,7 @@ Ragent 提供完整的可视化控制台，覆盖**普通用户与管理员用�
 
 问答界面示例：
 
-![](assets/qa-home.png)
+![](ragent/assets/qa-home.png)
 
 用户提交问题后，模型会实时生成回答结果，并提供良好的阅读体验：
 
@@ -384,7 +384,7 @@ Ragent 提供完整的可视化控制台，覆盖**普通用户与管理员用�
 
 回答示例：
 
-![](assets/qa-answer.png)
+![](ragent/assets/qa-answer.png)
 
 #### 5.2 管理后台
 
@@ -392,21 +392,21 @@ Ragent 提供功能完善的管理后台，用于系统配置与运行管理。�
 
 管理后台界面示例：
 
-![](assets/admin-overview.png)
+![](ragent/assets/admin-overview.png)
 
-![](assets/admin-settings.png)
+![](ragent/assets/admin-settings.png)
 
-![](assets/admin-knowledge-base.png)
+![](ragent/assets/admin-knowledge-base.png)
 
-![](assets/admin-datasets.png)
+![](ragent/assets/admin-datasets.png)
 
-![](assets/admin-trace.png)
+![](ragent/assets/admin-trace.png)
 
-![](assets/admin-models.png)
+![](ragent/assets/admin-models.png)
 
 为了避免传统系统常见的“毛坯界面”体验，Ragent 的控制台经过多轮 AI 辅助设计与优化，逐步迭代完善，最终呈现出当前简洁、美观且实用的界面效果。
 
-![](assets/admin-theme.png)
+![](ragent/assets/admin-theme.png)
 
 ### 6. 和市面上项目的区别
 
@@ -478,7 +478,7 @@ docker compose up -d --build
 Windows 用户也可以直接双击工作区根目录的 `start-ragent.bat`。脚本会优先读取 Windows 系统或用户环境变量中的 `SILICONFLOW_API_KEY`，也会读取可选的 `BAILIAN_API_KEY`；仅在未设置时回退读取 `.env`。
 
 > [!TIP]
-> 数据库初始化、Milvus 集合创建、演示数据入库（FAQ 210 条 / 图纸 12 张 / 超边 633 条）均由编排自动完成，无需手动干预。详细步骤见 [部署指南](docs/deployment.md)。
+> 数据库初始化、Milvus 集合创建、演示数据入库（FAQ 210 条 / 图纸 12 张 / 超边 633 条）均由编排自动完成，无需手动干预。详细步骤见 [部署指南](ragent/docs/deployment.md)。
 
 ### 方式二：本地开发模式
 
@@ -506,12 +506,12 @@ npm run dev
 
 ### 文档导航
 
-- [📚 文档总索引](../DOCUMENTATION.md) — 全部文档按用途分类导航
-- [架构文档](docs/architecture.md) — 系统全景、模块划分、数据流、扩展点
-- [API 文档](docs/api.md) — REST 接口、LLM 路由、Milvus Schema
-- [部署指南](docs/deployment.md) — 一键容器化部署与生产配置
-- [评测结论](docs/eval/r5-restricted-conclusions.md) — R5 总评测权威结论
-- [演示 Query 集](docs/demo_queries.md) — 5 个典型工业问题
+- [📚 文档总索引](DOCUMENTATION.md) — 全部文档按用途分类导航
+- [架构文档](ragent/docs/architecture.md) — 系统全景、模块划分、数据流、扩展点
+- [API 文档](ragent/docs/api.md) — REST 接口、LLM 路由、Milvus Schema
+- [部署指南](ragent/docs/deployment.md) — 一键容器化部署与生产配置
+- [评测结论](ragent/docs/eval/r5-restricted-conclusions.md) — R5 总评测权威结论
+- [演示 Query 集](ragent/docs/demo_queries.md) — 5 个典型工业问题
 
 ## 为什么开源？
 

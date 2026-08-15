@@ -6,7 +6,7 @@
 
 | 想做什么 | 看这篇 |
 |---------|--------|
-| 了解项目是什么、有哪些能力 | [项目 README](ragent/README.md) |
+| 了解项目是什么、有哪些能力 | [项目 README](README.md) |
 | 从零克隆到启动（快速指南） | [仓库根快速开始](docs/quick-start.md) |
 | 快速启动（一键容器化） | [部署指南](ragent/docs/deployment.md) |
 | 查看全部接口 | [API 文档](ragent/docs/api.md) |
@@ -16,6 +16,7 @@
 
 ```
 agent/  (仓库根目录)
+├── README.md               # 项目主文档(核心能力、架构、快速开始)
 ├── DOCUMENTATION.md        # 文档导航(本页)
 ├── DEVELOPMENT.md          # AI 开发协作规范与 7 步工作流
 ├── docker-compose.yml      # 一键容器化编排(9 服务)
@@ -23,7 +24,6 @@ agent/  (仓库根目录)
 │   └── quick-start.md      # 从零克隆 → 启动基础设施 → 编译运行
 ├── milvus/                 # Milvus 独立部署配置
 └── ragent/
-    ├── README.md           # 项目主文档(核心能力、架构、快速开始)
     ├── CHANGELOG.md        # 版本变更日志
     ├── Dockerfile          # 后端容器化
     ├── frontend/
@@ -59,7 +59,7 @@ agent/  (仓库根目录)
 ### 项目入口
 | 文档 | 功能 |
 |------|------|
-| [ragent/README.md](ragent/README.md) | 项目主文档:核心能力、技术架构、快速开始 |
+| [README.md](README.md) | 项目主文档:核心能力、技术架构、快速开始 |
 | [ragent/CHANGELOG.md](ragent/CHANGELOG.md) | 版本变更日志(v1.0 / v2.0 / Unreleased) |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | AI 开发协作规范与 7 步工作流 |
 
@@ -115,7 +115,7 @@ agent/  (仓库根目录)
 
 ## 推荐阅读顺序
 
-**面试/学习**:ragent/README → architecture → api → multi-channel-retrieval → eval/r5-restricted-conclusions → resume-project
+**面试/学习**:README → architecture → api → multi-channel-retrieval → eval/r5-restricted-conclusions → resume-project
 
 **部署/演示**:docs/quick-start → ragent/docs/deployment → demo_queries
 
