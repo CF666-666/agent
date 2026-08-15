@@ -16,13 +16,80 @@ interface MarkdownRendererProps {
   content: string;
 }
 
+/**
+ * 修复 LLM 流式输出里 ATX heading 漏写空格导致 `###一、` 被当作普通段落渲染的问题。
+ * <p>
+ * CommonMark 规范要求 ATX heading (`###`) 之后必须紧跟空白字符才算标题，否则回退为段落、
+ * 字面输出 `###` 文本。仅匹配行首或换行后的 `#{1,6}`，避免误伤行内文本（如 `#hello`）。
+ */
+function normalizeAtxHeadings(text: string): string {
+  if (!text) return text;
+  return text.replace(/(^|\n)(#{1,6})([^\s#])/g, "$1$2 $3");
+}
+
+/**
+ * 防御 LLM 把整段中文塞进 `**...**` —— 业务 prompt 要求"不要大段加粗"，但偶发违规。
+ * <p>
+ * 策略：
+ * <ul>
+ *   <li>短强语义（如 `**结构组成**`、`**桥式起重机**`）保留加粗</li>
+ *   <li>内部纯文本超过 {@link #LONG_STRONG_TEXT_LIMIT} 字符的 strong，
+ *       视为"LOL 把整段加粗了"，降级为普通文本，避免视觉灾难</li>
+ * </ul>
+ */
+const LONG_STRONG_TEXT_LIMIT = 32;
+
+function collapseOverlongStrong(text: string): string {
+  if (!text) return text;
+  // 处理 `**长文本**`：文本可能含换行，用非贪婪并允许 .*? 跨越多行
+  return text.replace(/\*\*([\s\S]+?)\*\*/g, (match, inner: string) => {
+    if (inner.length > LONG_STRONG_TEXT_LIMIT) {
+      return inner;
+    }
+    return match;
+  });
+}
+
+/**
+ * 把 React children 节点递归收集为纯文本（用于在自定义 strong 中判断长度）。
+ */
+function collectStrongText(children: React.ReactNode): string {
+  if (children == null || children === false) return "";
+  if (Array.isArray(children)) return children.map(collectStrongText).join("");
+  if (typeof children === "string" || typeof children === "number") {
+    return String(children);
+  }
+  // @ts-expect-error ReactNode 子节点可能包含 props.children
+  if (children.props && children.props.children != null) {
+    // @ts-expect-error
+    return collectStrongText(children.props.children);
+  }
+  return "";
+}
+
+/**
+ * 自定义 strong 渲染：长度超限时降级为普通 span，避免整段加粗。
+ */
+function StrongNode(props: { children?: React.ReactNode }): React.ReactElement {
+  const text = collectStrongText(props.children);
+  if (text.length > LONG_STRONG_TEXT_LIMIT) {
+    return <span className="font-normal text-inherit">{props.children}</span>;
+  }
+  return <strong>{props.children}</strong>;
+}
+
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   const theme = useThemeStore((state) => state.theme);
+  const normalizedContent = React.useMemo(
+    () => collapseOverlongStrong(normalizeAtxHeadings(content)),
+    [content]
+  );
 
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
+        strong: StrongNode,
         code({ inline, className, children, node, ...props }) {
           const match = /language-(\w+)/.exec(className || "");
           const language = match?.[1] || "text";
@@ -165,7 +232,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       }}
       className="prose prose-gray max-w-none dark:prose-invert prose-headings:font-semibold prose-headings:text-[#1A1A1A] dark:prose-headings:text-[#EEEEEE] prose-p:text-[#333333] dark:prose-p:text-[#CCCCCC] prose-p:leading-relaxed prose-li:text-[#333333] dark:prose-li:text-[#CCCCCC] prose-strong:text-[#1A1A1A] dark:prose-strong:text-[#EEEEEE]"
     >
-      {content}
+      {normalizedContent}
     </ReactMarkdown>
   );
 }
